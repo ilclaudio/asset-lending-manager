@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Asset Lending Manager\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-14 14:10+0000\n"
+"PO-Revision-Date: 2025-12-14 14:11+0000\n"
+"Last-Translator: \n"
+"Language-Team: Italian\n"
+"Language: it_IT\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.9; php-8.4.10\n"
+"X-Domain: asset-lending-manager"
+
+#. Author of the plugin
+msgid "AAGG"
+msgstr ""
+
+#. Name of the plugin
+msgid "Asset Lending Manager"
+msgstr ""
+
+#: includes/class-plugin-manager.php:74
+msgid "Hello world"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/ilclaudio/asset-lending-manager"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.astrofilipisani.it/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Manage shared assets and internal lending workflows."
+msgstr ""
