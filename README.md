@@ -1,2 +1,2 @@
-# asset-lending-manager
+# WP Asset Lending Manager
 Asset Lending Manager
