@@ -3,27 +3,26 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * This is the main class of the plugin that registers all the needed components.
+ * Main module of the plugin to bootstrap and to coordinate all the other modules.
  */
 class ALM_Plugin_Manager {
 
 	/**
-	 * Singleton instance
+	 * Singleton instance.
 	 *
-	 * @var ALM_Plugin_Manager
+	 * @var ALM_Plugin_Manager|null
 	 */
 	private static $instance = null;
 
-	// Modules.
-	private $settings_manager;
-	private $role_manager;
-	private $device_manager;
-	private $loan_manager;
-	private $notification_manager;
-	private $frontend_manager;
+	/**
+	 * Registered plugin modules.
+	 *
+	 * @var array
+	 */
+	private $modules = array();
 
 	/**
-	 * Get singleton instance
+	 * Get singleton instance.
 	 *
 	 * @return ALM_Plugin_Manager
 	 */
@@ -31,63 +30,81 @@ class ALM_Plugin_Manager {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
+	 *
+	 * Private to enforce singleton.
 	 */
-	private function __construct() {
-		// private for singleton.
+	private function __construct() {}
+
+	/**
+	 * Plugin bootstrap.
+	 *
+	 * Called once from the main plugin file.
+	 */
+	public function init() {
+		$this->load_textdomain();
+		$this->init_modules();
+		$this->register_modules();
 	}
 
 	/**
-	 * Initialize plugin
+	 * Load plugin translations.
+	 *
+	 * @return void
 	 */
-	public function init() {
-		// Load text domain for translations.
+	private function load_textdomain() {
 		load_plugin_textdomain(
 			ALM_TEXT_DOMAIN,
 			false,
 			dirname( plugin_basename( ALM_PLUGIN_FILE ) ) . '/languages/'
 		);
+	}
 
-		// Initialize modules.
-		$this->settings_manager     = new ALM_Settings_Manager();
-		$this->role_manager         = new ALM_Role_Manager();
-		$this->device_manager       = new ALM_Device_Manager();
-		$this->loan_manager         = new ALM_Loan_Manager();
-		$this->notification_manager = new ALM_Notification_Manager();
-		$this->frontend_manager     = new ALM_Frontend_Manager();
-
-		// Register modules.
-		$this->settings_manager->register();
-		$this->role_manager->register();
-		$this->device_manager->register();
-		$this->loan_manager->register();
-		$this->notification_manager->register();
-		$this->frontend_manager->register();
-
-		// @TODO: Remove this ( Test i18n - debug only).
-		add_action(
-			'init',
-			function() {
-				// Translation example.
-				$english = __( 'Hello world', 'asset-lending-manager' );
-				error_log( 'Translation: ' . $english );
-			}
+	/**
+	 * Instantiate plugin modules.
+	 *
+	 * @return void
+	 */
+	private function init_modules() {
+		$this->modules = array(
+			new ALM_Settings_Manager(),
+			new ALM_Role_Manager(),
+			new ALM_Device_Manager(),
+			new ALM_Loan_Manager(),
+			new ALM_Notification_Manager(),
+			new ALM_Frontend_Manager(),
 		);
 	}
 
 	/**
-	 * To prevent cloning.
+	 * Register all modules with WordPress.
+	 *
+	 * @return void
+	 */
+	private function register_modules() {
+		foreach ( $this->modules as $module ) {
+			if ( method_exists( $module, 'register' ) ) {
+				$module->register();
+			}
+		}
+	}
+
+	/**
+	 * Prevent cloning.
 	 */
 	private function __clone() {}
 
 	/**
-	 * To prevent unserialization.
+	 * Prevent unserialization.
+	 *
+	 * @throws Exception If unserialization is attempted.
 	 */
 	public function __wakeup() {
-		throw new \Exception( 'Cannot unserialize singleton' );
+		throw new Exception( 'Cannot unserialize singleton.' );
 	}
 }
