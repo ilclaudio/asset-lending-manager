@@ -47,7 +47,7 @@ class ALM_Plugin_Manager {
 	 * Called once from the main plugin file.
 	 */
 	public function init() {
-		$this->load_textdomain();
+		$this->init_i18n();
 		$this->init_modules();
 		$this->register_modules();
 	}
@@ -57,12 +57,14 @@ class ALM_Plugin_Manager {
 	 *
 	 * @return void
 	 */
-	private function load_textdomain() {
-		load_plugin_textdomain(
-			ALM_TEXT_DOMAIN,
-			false,
-			dirname( plugin_basename( ALM_PLUGIN_FILE ) ) . '/languages/'
-		);
+	private function init_i18n() {
+		if ( function_exists( 'load_plugin_textdomain' ) ) {
+			load_plugin_textdomain(
+				ALM_TEXT_DOMAIN,
+				false,
+				dirname( plugin_basename( ALM_PLUGIN_FILE ) ) . '/languages/'
+			);
+		}
 	}
 
 	/**
@@ -82,16 +84,24 @@ class ALM_Plugin_Manager {
 	}
 
 	/**
-	 * Register all modules with WordPress.
+	 * Register all the plugin modules.
 	 *
 	 * @return void
 	 */
 	private function register_modules() {
-		foreach ( $this->modules as $module ) {
-			if ( method_exists( $module, 'register' ) ) {
+		// Register the modules.
+		if ( function_exists( 'add_action' ) ) {
+			foreach ( $this->modules as $module ) {
 				$module->register();
 			}
 		}
+	}
+
+	/**
+	 * Return the modules used by the plugin.
+	 */
+	public function get_modules() {
+		return $this->modules;
 	}
 
 	/**
