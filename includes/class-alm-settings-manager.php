@@ -1,10 +1,15 @@
 <?php
-// includes/class-settings-manager.php
 
 defined( 'ABSPATH' ) || exit;
 
-class Settings_Manager {
+/**
+ * This class manages all the settings of the plugin.
+ */
+class ALM_Settings_Manager {
 
+	/**
+	 * Register the module in WordPress.
+	 */
 	public function register() {
 		// Hook to register settings, options, etc.
 		add_action( 'admin_init', array( $this, 'register_settings' ) );

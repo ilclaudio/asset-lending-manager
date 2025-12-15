@@ -23,19 +23,19 @@ define( 'ALM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ALM_TEXT_DOMAIN', 'asset-lending-manager' );
 
 // Load classes.
-require_once ALM_PLUGIN_DIR . 'includes/class-plugin-manager.php';
-require_once ALM_PLUGIN_DIR . 'includes/class-settings-manager.php';
-require_once ALM_PLUGIN_DIR . 'includes/class-role-manager.php';
-require_once ALM_PLUGIN_DIR . 'includes/class-device-manager.php';
-require_once ALM_PLUGIN_DIR . 'includes/class-loan-manager.php';
-require_once ALM_PLUGIN_DIR . 'includes/class-notification-manager.php';
-require_once ALM_PLUGIN_DIR . 'includes/class-frontend-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-plugin-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-settings-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-role-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-device-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-loan-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-notification-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-frontend-manager.php';
 
 /**
  * Initialize PluginManager.
  */
 function alm_init_plugin() {
-	$plugin_manager = Plugin_Manager::get_instance();
+	$plugin_manager = ALM_Plugin_Manager::get_instance();
 	$plugin_manager->init();
 }
 add_action( 'plugins_loaded', 'alm_init_plugin' );
