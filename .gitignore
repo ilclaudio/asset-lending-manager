@@ -39,6 +39,9 @@ wp-config.php
 /vendor/
 composer.lock
 
+# Tests
+.phpunit.result.cache
+
 # All plugins
 #
 # Note: If you wish to whitelist plugins,

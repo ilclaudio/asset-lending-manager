@@ -43,6 +43,16 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 To execute the tests:
 ```bash
-   composer install
-   vendor\bin\phpunit --bootstrap tests/bootstrap.php --verbose tests
+	composer install
+	vendor\bin\phpunit --bootstrap tests/bootstrap.php tests/unit
+	vendor\bin\phpunit --bootstrap tests/bootstrap-integration.php tests/integration
+
+	# OR
+	vendor\bin\phpunit   -c phpunit.xml --verbose
+	vendor\bin\phpunit -c phpunit-integration.xml --verbose
+
+	# OR
+	composer test:integration
+	composer test:unit
+	composer test:all
 ```
