@@ -117,4 +117,39 @@ class ALM_Plugin_Manager {
 	public function __wakeup() {
 		throw new Exception( 'Cannot unserialize singleton.' );
 	}
+
+	/**
+	 * Plugin activation handler.
+	 *
+	 * Called by WordPress on plugin activation.
+	 *
+	 * @return void
+	 */
+	public function activate() {
+		$this->init_modules();
+
+		foreach ( $this->modules as $module ) {
+			if ( method_exists( $module, 'activate' ) ) {
+				$module->activate();
+			}
+		}
+	}
+
+	/**
+	 * Plugin deactivation handler.
+	 *
+	 * Called by WordPress on plugin deactivation.
+	 *
+	 * @return void
+	 */
+	public function deactivate() {
+		$this->init_modules();
+
+		foreach ( $this->modules as $module ) {
+			if ( method_exists( $module, 'deactivate' ) ) {
+				$module->deactivate();
+			}
+		}
+	}
+
 }

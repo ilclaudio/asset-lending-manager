@@ -10,7 +10,7 @@
  * Domain Path: /languages
  * License:     GPLv2 or later
  *
- * @package Asset_Lending_Manager
+ * @package AssetLendingManager
  */
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
@@ -31,11 +31,26 @@ require_once ALM_PLUGIN_DIR . 'includes/class-alm-loan-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-notification-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-frontend-manager.php';
 
+// Get the singleton Plugin Manager.
+$alm_plugin_manager = ALM_Plugin_Manager::get_instance();
+
+// Register activation/deactivation hooks.
+register_activation_hook(
+	__FILE__,
+	array( $alm_plugin_manager, 'activate' )
+);
+
+register_deactivation_hook(
+	__FILE__,
+	array( $alm_plugin_manager, 'deactivate' )
+);
+
 /**
  * Initialize PluginManager.
  */
 function alm_init_plugin() {
-	$plugin_manager = ALM_Plugin_Manager::get_instance();
-	$plugin_manager->init();
+	$alm_plugin_manager = ALM_Plugin_Manager::get_instance();
+	$alm_plugin_manager->init();
 }
+
 add_action( 'plugins_loaded', 'alm_init_plugin' );

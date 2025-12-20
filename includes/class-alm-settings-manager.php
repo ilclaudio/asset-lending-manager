@@ -22,7 +22,7 @@
  * any user interface. It acts as a configuration service used by
  * other plugin modules.
  *
- * @package Asset_Lending_Manager
+ * @package AssetLendingManager
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -73,7 +73,29 @@ class ALM_Settings_Manager {
 	 * Register hooks.
 	 */
 	public function register() {
-		// Reserved for future admin hooks.
+		// Register actions and filters here.
+	}
+
+	/**
+	 * Plugin activation handler.
+	 *
+	 * Called once when the plugin is activated.
+	 *
+	 * @return void
+	 */
+	public function activate() {
+		// Do nothing.
+	}
+
+	/**
+	 * Plugin deactivation handler.
+	 *
+	 * Called once when the plugin is deactivated.
+	 *
+	 * @return void
+	 */
+	public function deactivate() {
+		// Do nothing.
 	}
 
 	/**
