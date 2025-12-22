@@ -30,7 +30,7 @@ class ALM_Role_Manager {
 	 * @var string[]
 	 */
 	private $capabilities = array(
-		'alm_view_devices',
+		ALM_VIEW_DEVICES,
 		'alm_view_device',
 		'alm_create_device',
 		'alm_edit_device',
@@ -113,8 +113,8 @@ class ALM_Role_Manager {
 
 		// Member: read-only access to devices.
 		if ( $alm_member ) {
-			$alm_member->add_cap( 'alm_view_devices' );
-			$alm_member->add_cap( 'alm_view_device' );
+			$alm_member->add_cap( ALM_VIEW_DEVICES );
+			$alm_member->add_cap( ALM_VIEW_DEVICE );
 		}
 
 		// Operator: full device management.
@@ -147,6 +147,6 @@ class ALM_Role_Manager {
 	 * @return bool
 	 */
 	public function current_user_can_view_devices() {
-		return current_user_can( 'alm_view_devices' );
+		return current_user_can( ALM_VIEW_DEVICES );
 	}
 }

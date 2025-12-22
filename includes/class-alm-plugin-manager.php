@@ -1,4 +1,10 @@
 <?php
+/**
+ * Plugin Manager.
+ *
+ *
+ * @package AssetLendingManager
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -50,6 +56,10 @@ class ALM_Plugin_Manager {
 		$this->init_i18n();
 		$this->init_modules();
 		$this->register_modules();
+		// Register the main menu of the plugin.
+		add_action( 'admin_menu', array( $this, 'register_custom_menu' ) );
+		// Fix the menu navigation for taxonomies.
+		add_action( 'parent_file', array( $this, 'keep_taxonomy_menu_open' ) );
 	}
 
 	/**
@@ -104,6 +114,13 @@ class ALM_Plugin_Manager {
 		return $this->modules;
 	}
 
+	// /**
+	//  * Return a specific module.
+	//  */
+	// public function get_module( $name ) {
+	// 	return $this->modules[ $name ] ?? null;
+	// }
+
 	/**
 	 * Prevent cloning.
 	 */
@@ -150,6 +167,98 @@ class ALM_Plugin_Manager {
 				$module->deactivate();
 			}
 		}
+	}
+
+	/**
+	 * Register the main admin menu for the plugin.
+	 *
+	 * This menu acts as a container for all ALM-related CPTs and pages.
+	 *
+	 * @return void
+	 */
+	public function register_custom_menu() {
+
+		$slug_main_menu = ALM_SLUG_MAIN_MENU;
+
+		add_menu_page(
+			__( 'Asset Lending Manager', 'asset-lending-manager' ),  // Page title.
+			__( 'ALM', 'asset-lending-manager' ),                    // Menu title.
+			ALM_VIEW_DEVICES,                                        // Capability.
+			$slug_main_menu,                                         // Menu slug.
+			array( $this, 'get_plugin_presentation' ),               // Callback (handled by CPT).
+			ALM_MAIN_MENU_ICON,                                      // Icon.
+			30                                                       // Position.
+		);
+
+		// List of the devices.
+		add_submenu_page(
+			$slug_main_menu,                            // parent slug.
+			__( 'Devices', 'asset-lending-manager' ),   // page title.
+			__( 'Devices', 'asset-lending-manager' ),   // sub-menu title.
+			ALM_VIEW_DEVICES,                           // capability.
+			'edit.php?post_type=' . ALM_DEVICE_CPT_SLUG // link.
+		);
+
+		// Add a book.
+		add_submenu_page(
+			$slug_main_menu,
+			__( 'Add a device', 'asset-lending-manager' ),
+			__( 'Add a device', 'asset-lending-manager' ),
+			ALM_CREATE_DEVICE,
+			'post-new.php?post_type=' . ALM_DEVICE_CPT_SLUG
+		);
+
+		// Taxonomy: device structure.
+		add_submenu_page(
+			$slug_main_menu,
+			__( 'Device Structure', 'asset-lending-manager' ),
+			__( 'Device Structure', 'asset-lending-manager' ),
+			ALM_CREATE_DEVICE,
+			'edit-tags.php?taxonomy=' . ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
+		);
+
+		// Taxonomy: device type.
+		add_submenu_page(
+			$slug_main_menu,
+			__( 'Device Type', 'asset-lending-manager' ),
+			__( 'Device Type', 'asset-lending-manager' ),
+			ALM_CREATE_DEVICE,
+			'edit-tags.php?taxonomy=' . ALM_DEVICE_TYPE_TAXONOMY_SLUG,
+		);
+
+		// Taxonomy: device state.
+		add_submenu_page(
+			$slug_main_menu,
+			__( 'Device State', 'asset-lending-manager' ),
+			__( 'Device State', 'asset-lending-manager' ),
+			ALM_CREATE_DEVICE,
+			'edit-tags.php?taxonomy=' . ALM_DEVICE_STATE_TAXONOMY_SLUG,
+		);
+
+	}
+
+	/**
+	 * Return the name of the parent of a taxonomy in the menu.
+	 *
+	 * @param [type] $parent_file
+	 * @return void
+	 */
+	public function keep_taxonomy_menu_open( $parent_file ) {
+		global $current_screen;
+		$taxonomy = $current_screen->taxonomy;
+		if ( in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES ) ) {
+			$parent_file = ALM_SLUG_MAIN_MENU;
+		}
+		return $parent_file;
+	}
+
+	/**
+	 * Render the presentation page of the plugin.
+	 *
+	 * @return void
+	 */
+	public function get_plugin_presentation() {
+		require_once ALM_PLUGIN_DIR . 'admin/plugin-main-page.php';
 	}
 
 }
