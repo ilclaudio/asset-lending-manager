@@ -15,12 +15,10 @@
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-// Define constants.
-define( 'ALM_VERSION', '0.1.0' );
-define( 'ALM_PLUGIN_FILE', __FILE__ );
-define( 'ALM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'ALM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'ALM_TEXT_DOMAIN', 'asset-lending-manager' );
+/**
+ * The plugin configurations.
+ */
+require 'plugin-config.php';
 
 // Load classes.
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-plugin-manager.php';
