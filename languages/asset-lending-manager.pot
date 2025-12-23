@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-23 21:57+0000\n"
+"POT-Creation-Date: 2025-12-23 22:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "AAGG"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:73
+#: includes/class-alm-setup-manager.php:103
 msgid "Accessory"
 msgstr ""
 
@@ -37,7 +37,7 @@ msgstr ""
 msgid "Add New Device"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:95
+#: includes/class-alm-setup-manager.php:157
 msgid "Advanced"
 msgstr ""
 
@@ -51,23 +51,23 @@ msgstr ""
 msgid "Asset Lending Manager"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:83
+#: includes/class-alm-setup-manager.php:126
 msgid "Available"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:93
+#: includes/class-alm-setup-manager.php:149
 msgid "Basic"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:69
+#: includes/class-alm-setup-manager.php:91
 msgid "Binoculars"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:74
+#: includes/class-alm-setup-manager.php:107
 msgid "Book"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:57
+#: includes/class-alm-setup-manager.php:60
 msgid "Component"
 msgstr ""
 
@@ -76,6 +76,8 @@ msgid "Device"
 msgstr ""
 
 #: includes/class-alm-device-manager.php:192
+#: includes/class-alm-plugin-manager.php:241
+#: includes/class-alm-plugin-manager.php:242
 msgid "Device Level"
 msgstr ""
 
@@ -126,7 +128,7 @@ msgstr ""
 msgid "Edit Device"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:72
+#: includes/class-alm-setup-manager.php:99
 msgid "Filter"
 msgstr ""
 
@@ -138,19 +140,19 @@ msgstr ""
 msgid "https://www.astrofilipisani.it/"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:94
+#: includes/class-alm-setup-manager.php:153
 msgid "Intermediate"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:58
+#: includes/class-alm-setup-manager.php:64
 msgid "Kit"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:75
+#: includes/class-alm-setup-manager.php:111
 msgid "Magazine"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:84
+#: includes/class-alm-setup-manager.php:130
 msgid "Maintenance"
 msgstr ""
 
@@ -174,11 +176,11 @@ msgstr ""
 msgid "No devices found in Trash"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:66
+#: includes/class-alm-setup-manager.php:79
 msgid "Ocular"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:82
+#: includes/class-alm-setup-manager.php:122
 msgid "On loan"
 msgstr ""
 
@@ -186,15 +188,15 @@ msgstr ""
 msgid "Operator"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:68
+#: includes/class-alm-setup-manager.php:87
 msgid "Optical Tube"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:67
+#: includes/class-alm-setup-manager.php:83
 msgid "Refractor"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:85
+#: includes/class-alm-setup-manager.php:134
 msgid "Retired"
 msgstr ""
 
@@ -202,19 +204,15 @@ msgstr ""
 msgid "Search Devices"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:65
+#: includes/class-alm-setup-manager.php:75
 msgid "Telescope"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:71
-msgid "Tracker"
-msgstr ""
-
-#: includes/class-alm-setup-manager.php:86
+#: includes/class-alm-setup-manager.php:138
 msgid "Transferred"
 msgstr ""
 
-#: includes/class-alm-setup-manager.php:70
+#: includes/class-alm-setup-manager.php:95
 msgid "Tripod"
 msgstr ""
 
