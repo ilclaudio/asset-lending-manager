@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2025-12-14 14:12+0000\n"
+"PO-Revision-Date: 2025-12-23 22:04+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -19,13 +19,115 @@ msgstr ""
 msgid "AAGG"
 msgstr "AAGG"
 
+#: includes/class-alm-setup-manager.php:73
+msgid "Accessory"
+msgstr "Accessorio"
+
+#: includes/class-alm-plugin-manager.php:205
+#: includes/class-alm-plugin-manager.php:206
+msgid "Add a device"
+msgstr "Aggiungi dispositivo"
+
+#: includes/class-alm-device-manager.php:96
+msgid "Add New"
+msgstr "Aggiungi nuovo"
+
+#: includes/class-alm-device-manager.php:97
+msgid "Add New Device"
+msgstr "Aggiungi Nuovo Dispositivo"
+
+#: includes/class-alm-setup-manager.php:95
+msgid "Advanced"
+msgstr "Avanzato"
+
+#. Page title.
+#: includes/class-alm-plugin-manager.php:185
+msgid "ALM"
+msgstr "ALM"
+
 #. Name of the plugin
+#: includes/class-alm-plugin-manager.php:184
 msgid "Asset Lending Manager"
 msgstr "Asset Lending Manager"
 
-#: includes/class-plugin-manager.php:74
-msgid "Hello world"
-msgstr "Ciao Mondo"
+#: includes/class-alm-setup-manager.php:83
+msgid "Available"
+msgstr "Disponibile"
+
+#: includes/class-alm-setup-manager.php:93
+msgid "Basic"
+msgstr "Base"
+
+#: includes/class-alm-setup-manager.php:69
+msgid "Binoculars"
+msgstr "Binocolo"
+
+#: includes/class-alm-setup-manager.php:74
+msgid "Book"
+msgstr "Libro"
+
+#: includes/class-alm-setup-manager.php:57
+msgid "Component"
+msgstr "Componente"
+
+#: includes/class-alm-device-manager.php:95
+msgid "Device"
+msgstr "Dispositivo"
+
+#: includes/class-alm-device-manager.php:192
+msgid "Device Level"
+msgstr "Livello Dispositivo"
+
+#: includes/class-alm-device-manager.php:191
+msgid "Device Levels"
+msgstr "Livelli Dispositivo"
+
+#: includes/class-alm-device-manager.php:176
+#: includes/class-alm-plugin-manager.php:232
+#: includes/class-alm-plugin-manager.php:233
+msgid "Device State"
+msgstr "Stato Dispositivo"
+
+#: includes/class-alm-device-manager.php:175
+msgid "Device States"
+msgstr "Stati Dispositivo"
+
+#: includes/class-alm-device-manager.php:144
+#: includes/class-alm-plugin-manager.php:214
+#: includes/class-alm-plugin-manager.php:215
+msgid "Device Structure"
+msgstr "Struttura Dispositivo"
+
+#: includes/class-alm-device-manager.php:143
+msgid "Device Structures"
+msgstr "Strutture Dispositivo"
+
+#: includes/class-alm-device-manager.php:160
+#: includes/class-alm-plugin-manager.php:223
+#: includes/class-alm-plugin-manager.php:224
+msgid "Device Type"
+msgstr "Tipo Dispositivo"
+
+#: includes/class-alm-device-manager.php:159
+msgid "Device Types"
+msgstr "Tipi Dispositivo"
+
+#. parent slug.
+#. page title.
+#: includes/class-alm-device-manager.php:94
+#: includes/class-alm-device-manager.php:104
+#: includes/class-alm-plugin-manager.php:196
+#: includes/class-alm-plugin-manager.php:197
+msgid "Devices"
+msgstr "Dispositivi"
+
+#: includes/class-alm-device-manager.php:98
+msgid "Edit Device"
+msgstr "Modifica Dispositivo"
+
+#: includes/class-alm-setup-manager.php:72
+msgid "Filter"
+msgstr "Filtro"
 
 #. URI of the plugin
 msgid "https://github.com/ilclaudio/asset-lending-manager"
@@ -35,7 +137,87 @@ msgstr "https://github.com/ilclaudio/asset-lending-manager"
 msgid "https://www.astrofilipisani.it/"
 msgstr "https://www.astrofilipisani.it/"
 
+#: includes/class-alm-setup-manager.php:94
+msgid "Intermediate"
+msgstr "Intermedio"
+
+#: includes/class-alm-setup-manager.php:58
+msgid "Kit"
+msgstr "Kit"
+
+#: includes/class-alm-setup-manager.php:75
+msgid "Magazine"
+msgstr "Rivista"
+
+#: includes/class-alm-setup-manager.php:84
+msgid "Maintenance"
+msgstr "In manutenzione"
+
 #. Description of the plugin
 msgid "Manage shared assets and internal lending workflows."
 msgstr ""
 "Gestire le risorse condivise e i flussi di lavoro dei prestiti interni."
+
+#: includes/class-alm-role-manager.php:85
+msgid "Member"
+msgstr "Socio"
+
+#: includes/class-alm-device-manager.php:99
+msgid "New Device"
+msgstr "Nuovo Dispositivo"
+
+#: includes/class-alm-device-manager.php:102
+msgid "No devices found"
+msgstr "Nessun dispositivo trovato"
+
+#: includes/class-alm-device-manager.php:103
+msgid "No devices found in Trash"
+msgstr "Nessun dispsitivo nel cestino"
+
+#: includes/class-alm-setup-manager.php:66
+msgid "Ocular"
+msgstr "Oculare"
+
+#: includes/class-alm-setup-manager.php:82
+msgid "On loan"
+msgstr "In prestito"
+
+#: includes/class-alm-role-manager.php:95
+msgid "Operator"
+msgstr "Operatore"
+
+#: includes/class-alm-setup-manager.php:68
+msgid "Optical Tube"
+msgstr "Tubo Ottico"
+
+#: includes/class-alm-setup-manager.php:67
+msgid "Refractor"
+msgstr "Rifrattore"
+
+#: includes/class-alm-setup-manager.php:85
+msgid "Retired"
+msgstr "Ritirato"
+
+#: includes/class-alm-device-manager.php:101
+msgid "Search Devices"
+msgstr "Cerca Dispositivi"
+
+#: includes/class-alm-setup-manager.php:65
+msgid "Telescope"
+msgstr "Telescopio"
+
+#: includes/class-alm-setup-manager.php:71
+msgid "Tracker"
+msgstr "Tracker"
+
+#: includes/class-alm-setup-manager.php:86
+msgid "Transferred"
+msgstr "Trasferito"
+
+#: includes/class-alm-setup-manager.php:70
+msgid "Tripod"
+msgstr "Treppiede"
+
+#: includes/class-alm-device-manager.php:100
+msgid "View Device"
+msgstr "Vedi Dispositivo"

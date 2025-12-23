@@ -235,6 +235,15 @@ class ALM_Plugin_Manager {
 			'edit-tags.php?taxonomy=' . ALM_DEVICE_STATE_TAXONOMY_SLUG,
 		);
 
+		// Taxonomy: device levels.
+		add_submenu_page(
+			$slug_main_menu,
+			__( 'Device Level', 'asset-lending-manager' ),
+			__( 'Device Level', 'asset-lending-manager' ),
+			ALM_CREATE_DEVICE,
+			'edit-tags.php?taxonomy=' . ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
+		);
+
 	}
 
 	/**

@@ -15,19 +15,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once 'class-alm-acf-device-adapter.php';
+require_once 'class-alm-setup-manager.php';
+
 /**
  * Class ALM_Device_Manager
  */
 class ALM_Device_Manager {
 
 	/**
-	 * Register WordPress hooks.
+	 * ACF Adapter instance.
 	 *
-	 * @return void
+	 * @var ALM_ACF_Adapter
 	 */
-	public function register() {
-		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'init', array( $this, 'register_taxonomies' ) );
+	private $acf_adapter;
+
+	/**
+	 * Class initialization.
+	 */
+	public function __construct() {
+		$this->acf_adapter = new ALM_ACF_Device_Adapter();
 	}
 
 	/**
@@ -36,8 +43,15 @@ class ALM_Device_Manager {
 	 * @return void
 	 */
 	public function activate() {
-		// Intentionally left empty.
-		// CPTs and taxonomies must be registered at runtime.
+		// CPTs and taxonomies must be registered at runtime ( in the register() method).
+		// However to create default taxonomies during the plugin activation.
+		// we have to register CPT and taxonomies also here.
+		$this->register_post_type();
+		$this->register_taxonomies();
+		// Create default terms.
+		ALM_Setup_Manager::create_default_terms();
+		// Flush rewrite rules now that CPT and taxonomies exist.
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -46,7 +60,27 @@ class ALM_Device_Manager {
 	 * @return void
 	 */
 	public function deactivate() {
-		// Intentionally left empty.
+		// Do nothing.
+	}
+
+	/**
+	 * Register WordPress hooks.
+	 *
+	 * @return void
+	 */
+	public function register() {
+		// Register post types.
+		add_action( 'init', array( $this, 'register_post_type' ) );
+		// Register taxonomies.
+		add_action( 'init', array( $this, 'register_taxonomies' ) );
+		// Register ACF fields after ACF is initialized.
+		add_action(
+			'acf/include_fields',
+			array(
+				$this->acf_adapter,
+				'register_device_fields',
+			)
+		);
 	}
 
 	/**
@@ -105,7 +139,7 @@ class ALM_Device_Manager {
 			ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
 			ALM_DEVICE_CPT_SLUG,
 			array(
-				'labels' => array(
+				'labels'          => array(
 					'name'          => __( 'Device Structures', 'asset-lending-manager' ),
 					'singular_name' => __( 'Device Structure', 'asset-lending-manager' ),
 				),
@@ -147,6 +181,23 @@ class ALM_Device_Manager {
 				'show_admin_column' => true,
 			)
 		);
+
+		// Device level: basic, intermediate, advanced, etc.
+		register_taxonomy(
+			ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
+			ALM_DEVICE_CPT_SLUG,
+			array(
+				'labels' => array(
+					'name'          => __( 'Device Levels', 'asset-lending-manager' ),
+					'singular_name' => __( 'Device Level', 'asset-lending-manager' ),
+				),
+				'hierarchical'      => true,
+				'show_ui'           => true,
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+			)
+		);
+
 	}
 
 	/**
