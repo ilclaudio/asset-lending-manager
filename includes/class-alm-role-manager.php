@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once 'class-alm-capability-manager.php';
+
 /**
  * Class ALM_Role_Manager
  *
@@ -23,18 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * The plugin logic must always check capabilities, never roles.
  */
 class ALM_Role_Manager {
-
-	/**
-	 * List of custom plugin capabilities.
-	 *
-	 * @var string[]
-	 */
-	private $capabilities = array(
-		ALM_VIEW_DEVICES,
-		'alm_view_device',
-		'alm_create_device',
-		'alm_edit_device',
-	);
 
 	/**
 	 * Register WordPress hooks.
@@ -78,7 +68,7 @@ class ALM_Role_Manager {
 	 * @return void
 	 */
 	private function add_roles() {
-
+		// Create MEMBER role.
 		if ( ! get_role( 'alm_member' ) ) {
 			add_role(
 				'alm_member',
@@ -88,7 +78,7 @@ class ALM_Role_Manager {
 				)
 			);
 		}
-
+		// Create OPERATOR role.
 		if ( ! get_role( 'alm_operator' ) ) {
 			add_role(
 				'alm_operator',
@@ -106,29 +96,25 @@ class ALM_Role_Manager {
 	 * @return void
 	 */
 	private function add_capabilities() {
-
-		$alm_member   = get_role( 'alm_member' );
+		// Administrator: always grant plugin capabilities.
+		$admin = get_role( 'administrator' );
+		if ( $admin ) {
+			foreach ( ALM_Capability_Manager::get_all_device_caps() as $cap ) {
+				$admin->add_cap( $cap );
+			}
+		}
+		// Operator: full device management.
 		$alm_operator = get_role( 'alm_operator' );
-		$admin        = get_role( 'administrator' );
-
+		if ( $alm_operator ) {
+			foreach ( ALM_Capability_Manager::get_all_device_caps() as $cap ) {
+				$alm_operator->add_cap( $cap );
+			}
+		}
 		// Member: read-only access to devices.
+		$alm_member = get_role( 'alm_member' );
 		if ( $alm_member ) {
 			$alm_member->add_cap( ALM_VIEW_DEVICES );
 			$alm_member->add_cap( ALM_VIEW_DEVICE );
-		}
-
-		// Operator: full device management.
-		if ( $alm_operator ) {
-			foreach ( $this->capabilities as $capability ) {
-				$alm_operator->add_cap( $capability );
-			}
-		}
-
-		// Administrator: always grant plugin capabilities.
-		if ( $admin ) {
-			foreach ( $this->capabilities as $capability ) {
-				$admin->add_cap( $capability );
-			}
 		}
 	}
 
@@ -138,7 +124,7 @@ class ALM_Role_Manager {
 	 * @return bool
 	 */
 	public function current_user_can_manage_devices() {
-		return current_user_can( 'alm_create_device' ) || current_user_can( 'alm_edit_device' );
+		return current_user_can( ALM_CREATE_DEVICE ) || current_user_can( ALM_EDIT_DEVICE );
 	}
 
 	/**
