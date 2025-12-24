@@ -1,6 +1,5 @@
 
 
-1) Bug edit permissions.
 2) Link reload data.
 3) Test the system with real users.
 4) Manage layout admin.

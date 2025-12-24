@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
  * - CPT-level WordPress capabilities (used by core for CPT access control)
  * - Domain-level ALM capabilities (used by menus, frontend, business logic)
  */
-class ALM_Capability_Manager {
+class ALM_Capabilities {
 
 	/**
 	 * CPT capabilities for the Device post type.

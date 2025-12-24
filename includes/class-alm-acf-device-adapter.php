@@ -7,9 +7,7 @@
  * @package AssetLendingManager
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * The Adapter that adds custom ACF fields.
