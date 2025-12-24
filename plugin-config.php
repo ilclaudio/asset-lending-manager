@@ -12,14 +12,14 @@ define( 'ALM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ALM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ALM_TEXT_DOMAIN', 'asset-lending-manager' );
 
-// Main menu settins.
+// Main menu settings.
 define( 'ALM_SLUG_MAIN_MENU', 'alm' );
 
 // Permissions.
 define( 'ALM_VIEW_DEVICES', 'alm_view_devices' );
 define( 'ALM_VIEW_DEVICE', 'alm_view_device' );
 define( 'ALM_CREATE_DEVICE', 'alm_create_device' );
-define( 'ALM_EDIT_DEVICE', 'alm_create_device' );
+define( 'ALM_EDIT_DEVICE', 'alm_edit_device' );
 
 // Device CPT.
 define( 'ALM_DEVICE_CPT_SLUG', 'alm_device' );

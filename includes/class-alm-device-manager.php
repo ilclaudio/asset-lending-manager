@@ -106,7 +106,7 @@ class ALM_Device_Manager {
 
 		$args = array(
 			'labels'          => $labels,
-			'public'          => false,
+			'public'          => true,
 			'show_ui'         => true,
 			'show_in_menu'    => false,
 			'show_in_rest'    => true,
@@ -114,14 +114,6 @@ class ALM_Device_Manager {
 			'supports'        => array( 'title', 'editor', 'thumbnail' ),
 			'capability_type' => ALM_DEVICE_CPT_SLUG,
 			'map_meta_cap'    => true,
-			'capabilities'    => array(
-				'edit_posts'         => ALM_EDIT_DEVICE,
-				'edit_others_posts'  => ALM_EDIT_DEVICE,
-				'create_posts'       => ALM_CREATE_DEVICE,
-				'publish_posts'      => ALM_EDIT_DEVICE,
-				'delete_posts'       => ALM_EDIT_DEVICE,
-				'read_private_posts' => ALM_VIEW_DEVICES,
-			),
 		);
 
 		register_post_type( ALM_DEVICE_CPT_SLUG, $args );
@@ -143,10 +135,10 @@ class ALM_Device_Manager {
 					'name'          => __( 'Device Structures', 'asset-lending-manager' ),
 					'singular_name' => __( 'Device Structure', 'asset-lending-manager' ),
 				),
-				'hierarchical'      => false,
+				'hierarchical'      => true,
 				'show_ui'           => true,
 				'show_in_rest'      => true,
-				'show_admin_column' => true,
+				'show_admin_column' => false,
 			)
 		);
 
@@ -175,7 +167,7 @@ class ALM_Device_Manager {
 					'name'          => __( 'Device States', 'asset-lending-manager' ),
 					'singular_name' => __( 'Device State', 'asset-lending-manager' ),
 				),
-				'hierarchical'      => false,
+				'hierarchical'      => true,
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
@@ -194,7 +186,7 @@ class ALM_Device_Manager {
 				'hierarchical'      => true,
 				'show_ui'           => true,
 				'show_in_rest'      => true,
-				'show_admin_column' => true,
+				'show_admin_column' => false,
 			)
 		);
 
