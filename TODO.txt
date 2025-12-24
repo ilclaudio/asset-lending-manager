@@ -8,7 +8,6 @@
 7) Edit devices.
 8) Recover unit tests.
 
-
 8) Create loan and request tables. 
 9) Manage loan request.
 10) Manage loan.
