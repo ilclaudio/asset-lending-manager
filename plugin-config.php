@@ -5,6 +5,10 @@
  * @package AssetLendingManager
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Define constants.
 define( 'ALM_VERSION', '0.1.0' );
 define( 'ALM_PLUGIN_FILE', __FILE__ );
@@ -40,3 +44,7 @@ define(
 		ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
 	)
 );
+
+// Roles and permissions.
+define( 'ALM_MEMBER_ROLE', 'alm_member' );
+define( 'ALM_OPERATOR_ROLE', 'alm_operator' );

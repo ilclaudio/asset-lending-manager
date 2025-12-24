@@ -53,6 +53,7 @@ class ALM_Plugin_Manager {
 	 * Called once from the main plugin file.
 	 */
 	public function init() {
+		$this->check_dependencies();
 		$this->init_i18n();
 		$this->init_modules();
 		$this->register_modules();
@@ -60,6 +61,25 @@ class ALM_Plugin_Manager {
 		add_action( 'admin_menu', array( $this, 'register_custom_menu' ) );
 		// Fix the menu navigation for taxonomies.
 		add_action( 'parent_file', array( $this, 'keep_taxonomy_menu_open' ) );
+	}
+
+	/**
+	 * Check if all dependencies are satisfied, if not show an admin notice.
+	 *
+	 * @return void
+	 */
+	private function check_dependencies() {
+		if ( ! class_exists( 'ACF' ) ) {
+			add_action(
+				'admin_notices',
+				function() {
+					$msg = __( 'The ALM plugin requires the plugin ACF installed and enabled.', 'asset-lending-manager' );
+					echo '<div class="notice notice-error"><p>';
+					echo esc_html( $msg );
+					echo '</p></div>';
+				}
+			);
+		}
 	}
 
 	/**

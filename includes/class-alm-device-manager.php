@@ -11,9 +11,7 @@
  * @package AssetLendingManager
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 require_once 'class-alm-acf-device-adapter.php';
 require_once 'class-alm-setup-manager.php';
@@ -199,7 +197,7 @@ class ALM_Device_Manager {
 	 * @return bool
 	 */
 	public function is_kit( $device_id ) {
-		return has_term( 'kit', 'alm_device_type', $device_id );
+		return has_term( 'kit', ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG, $device_id );
 	}
 
 	/**
@@ -209,7 +207,7 @@ class ALM_Device_Manager {
 	 * @return bool
 	 */
 	public function is_component( $device_id ) {
-		return has_term( 'component', 'alm_device_type', $device_id );
+		return has_term( 'component', ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG, $device_id );
 	}
 
 	/**
@@ -219,7 +217,7 @@ class ALM_Device_Manager {
 	 * @return string|null
 	 */
 	public function get_device_state( $device_id ) {
-		$terms = get_the_terms( $device_id, 'alm_state' );
+		$terms = get_the_terms( $device_id, ALM_DEVICE_STATE_TAXONOMY_SLUG );
 
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return null;

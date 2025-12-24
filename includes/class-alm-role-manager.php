@@ -12,11 +12,9 @@
  * @package AssetLendingManager
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
-require_once 'class-alm-capability-manager.php';
+require_once 'class-alm-capabilities.php';
 
 /**
  * Class ALM_Role_Manager
@@ -69,9 +67,9 @@ class ALM_Role_Manager {
 	 */
 	private function add_roles() {
 		// Create MEMBER role.
-		if ( ! get_role( 'alm_member' ) ) {
+		if ( ! get_role( ALM_MEMBER_ROLE ) ) {
 			add_role(
-				'alm_member',
+				ALM_MEMBER_ROLE,
 				__( 'Member', 'asset-lending-manager' ),
 				array(
 					'read' => true,
@@ -79,9 +77,9 @@ class ALM_Role_Manager {
 			);
 		}
 		// Create OPERATOR role.
-		if ( ! get_role( 'alm_operator' ) ) {
+		if ( ! get_role( ALM_OPERATOR_ROLE ) ) {
 			add_role(
-				'alm_operator',
+				ALM_OPERATOR_ROLE,
 				__( 'Operator', 'asset-lending-manager' ),
 				array(
 					'read' => true,
@@ -99,19 +97,19 @@ class ALM_Role_Manager {
 		// Administrator: always grant plugin capabilities.
 		$admin = get_role( 'administrator' );
 		if ( $admin ) {
-			foreach ( ALM_Capability_Manager::get_all_device_caps() as $cap ) {
+			foreach ( ALM_Capabilities::get_all_device_caps() as $cap ) {
 				$admin->add_cap( $cap );
 			}
 		}
 		// Operator: full device management.
-		$alm_operator = get_role( 'alm_operator' );
+		$alm_operator = get_role( ALM_OPERATOR_ROLE );
 		if ( $alm_operator ) {
-			foreach ( ALM_Capability_Manager::get_all_device_caps() as $cap ) {
+			foreach ( ALM_Capabilities::get_all_device_caps() as $cap ) {
 				$alm_operator->add_cap( $cap );
 			}
 		}
 		// Member: read-only access to devices.
-		$alm_member = get_role( 'alm_member' );
+		$alm_member = get_role( ALM_MEMBER_ROLE );
 		if ( $alm_member ) {
 			$alm_member->add_cap( ALM_VIEW_DEVICES );
 			$alm_member->add_cap( ALM_VIEW_DEVICE );
