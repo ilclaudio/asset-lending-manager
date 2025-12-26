@@ -124,6 +124,7 @@ class ALM_Plugin_Manager {
 				new ALM_Loan_Manager(),
 				new ALM_Notification_Manager(),
 				new ALM_Frontend_Manager(),
+				new ALM_Admin_Manager(),
 			);
 		}
 	}
@@ -217,7 +218,7 @@ class ALM_Plugin_Manager {
 		add_menu_page(
 			__( 'Asset Lending Manager', 'asset-lending-manager' ),  // Page title.
 			__( 'ALM', 'asset-lending-manager' ),                    // Menu title.
-			ALM_VIEW_DEVICES,                                        // Capability.
+			ALM_EDIT_DEVICE,                                         // Capability.
 			$slug_main_menu,                                         // Menu slug.
 			array( $this, 'get_plugin_presentation' ),               // Callback (handled by CPT).
 			ALM_MAIN_MENU_ICON,                                      // Icon.
@@ -238,7 +239,7 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Add a device', 'asset-lending-manager' ),
 			__( 'Add a device', 'asset-lending-manager' ),
-			ALM_CREATE_DEVICE,
+			ALM_EDIT_DEVICE,
 			'post-new.php?post_type=' . ALM_DEVICE_CPT_SLUG
 		);
 
@@ -247,7 +248,7 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Device Structure', 'asset-lending-manager' ),
 			__( 'Device Structure', 'asset-lending-manager' ),
-			ALM_CREATE_DEVICE,
+			ALM_EDIT_DEVICE,
 			'edit-tags.php?taxonomy=' . ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
 		);
 
@@ -256,7 +257,7 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Device Type', 'asset-lending-manager' ),
 			__( 'Device Type', 'asset-lending-manager' ),
-			ALM_CREATE_DEVICE,
+			ALM_EDIT_DEVICE,
 			'edit-tags.php?taxonomy=' . ALM_DEVICE_TYPE_TAXONOMY_SLUG,
 		);
 
@@ -265,7 +266,7 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Device State', 'asset-lending-manager' ),
 			__( 'Device State', 'asset-lending-manager' ),
-			ALM_CREATE_DEVICE,
+			ALM_EDIT_DEVICE,
 			'edit-tags.php?taxonomy=' . ALM_DEVICE_STATE_TAXONOMY_SLUG,
 		);
 
@@ -274,7 +275,7 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Device Level', 'asset-lending-manager' ),
 			__( 'Device Level', 'asset-lending-manager' ),
-			ALM_CREATE_DEVICE,
+			ALM_EDIT_DEVICE,
 			'edit-tags.php?taxonomy=' . ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
 		);
 
@@ -283,7 +284,7 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'ALM Tools', 'asset-lending-manager' ),
 			__( 'Tools', 'asset-lending-manager' ),
-			ALM_CREATE_DEVICE,
+			ALM_EDIT_DEVICE,
 			'alm-tools',
 			array( $this, 'render_tools_page' )
 		);
@@ -310,7 +311,7 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function get_plugin_presentation() {
-		if ( ! current_user_can( ALM_CREATE_DEVICE ) ) {
+		if ( ! current_user_can( ALM_EDIT_DEVICE ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
 		}
 		require_once ALM_PLUGIN_DIR . 'admin/plugin-main-page.php';
@@ -322,7 +323,7 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function render_tools_page() {
-		if ( ! current_user_can( ALM_CREATE_DEVICE ) ) {
+		if ( ! current_user_can( ALM_EDIT_DEVICE ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
 		}
 		require_once ALM_PLUGIN_DIR . 'admin/alm-tools-page.php';
@@ -348,7 +349,7 @@ class ALM_Plugin_Manager {
 
 		// Ensure the current user has the required capability.
 		// This check is mandatory even if the menu item is already protected.
-		if ( ! current_user_can( ALM_CREATE_DEVICE ) ) {
+		if ( ! current_user_can( ALM_EDIT_DEVICE ) ) {
 				wp_die( esc_html__( 'Unauthorized action.', 'asset-lending-manager' ) );
 		}
 
