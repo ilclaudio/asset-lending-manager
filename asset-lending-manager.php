@@ -21,6 +21,7 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 require 'plugin-config.php';
 
 // Load classes.
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-logger.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-plugin-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-settings-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-role-manager.php';
@@ -49,6 +50,7 @@ register_deactivation_hook(
 function alm_init_plugin() {
 	$alm_plugin_manager = ALM_Plugin_Manager::get_instance();
 	$alm_plugin_manager->init();
+	ALM_Logger::debug( '*** Init the Plugin' );
 }
 
 add_action( 'plugins_loaded', 'alm_init_plugin' );
