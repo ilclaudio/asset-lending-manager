@@ -137,6 +137,12 @@ class ALM_Device_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
+				'capabilities' => array(
+					'manage_terms' => ALM_EDIT_DEVICE,
+					'edit_terms'   => ALM_EDIT_DEVICE,
+					'delete_terms' => ALM_EDIT_DEVICE,
+					'assign_terms' => ALM_EDIT_DEVICE,
+				),
 			)
 		);
 
@@ -153,6 +159,12 @@ class ALM_Device_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
+				'capabilities' => array(
+					'manage_terms' => ALM_EDIT_DEVICE,
+					'edit_terms'   => ALM_EDIT_DEVICE,
+					'delete_terms' => ALM_EDIT_DEVICE,
+					'assign_terms' => ALM_EDIT_DEVICE,
+				),
 			)
 		);
 
@@ -169,6 +181,12 @@ class ALM_Device_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
+				'capabilities' => array(
+					'manage_terms' => ALM_EDIT_DEVICE,
+					'edit_terms'   => ALM_EDIT_DEVICE,
+					'delete_terms' => ALM_EDIT_DEVICE,
+					'assign_terms' => ALM_EDIT_DEVICE,
+				),
 			)
 		);
 
@@ -185,6 +203,12 @@ class ALM_Device_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
+				'capabilities' => array(
+					'manage_terms' => ALM_EDIT_DEVICE,
+					'edit_terms'   => ALM_EDIT_DEVICE,
+					'delete_terms' => ALM_EDIT_DEVICE,
+					'assign_terms' => ALM_EDIT_DEVICE,
+				),
 			)
 		);
 

@@ -22,7 +22,6 @@ define( 'ALM_SLUG_MAIN_MENU', 'alm' );
 // Permissions.
 define( 'ALM_VIEW_DEVICES', 'alm_view_devices' );
 define( 'ALM_VIEW_DEVICE', 'alm_view_device' );
-define( 'ALM_CREATE_DEVICE', 'alm_create_device' );
 define( 'ALM_EDIT_DEVICE', 'alm_edit_device' );
 
 // Device CPT.

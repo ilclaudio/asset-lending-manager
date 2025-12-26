@@ -1,7 +1,5 @@
 
 
-1) Test the system with real users.
-2) Manage layout admin.
 3) Manage layout frontend.
 4) Si possono tradurre i ruoli?
 5) List devices.

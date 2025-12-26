@@ -53,7 +53,6 @@ class ALM_Capabilities {
 		return array(
 			ALM_VIEW_DEVICES,
 			ALM_VIEW_DEVICE,
-			ALM_CREATE_DEVICE,
 			ALM_EDIT_DEVICE,
 		);
 	}

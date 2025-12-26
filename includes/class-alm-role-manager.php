@@ -122,7 +122,7 @@ class ALM_Role_Manager {
 	 * @return bool
 	 */
 	public function current_user_can_manage_devices() {
-		return current_user_can( ALM_CREATE_DEVICE ) || current_user_can( ALM_EDIT_DEVICE );
+		return current_user_can( ALM_EDIT_DEVICE );
 	}
 
 	/**
