@@ -36,7 +36,6 @@ class ALM_Plugin_Manager {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
-
 		return self::$instance;
 	}
 
@@ -45,7 +44,9 @@ class ALM_Plugin_Manager {
 	 *
 	 * Private to enforce singleton.
 	 */
-	private function __construct() {}
+	private function __construct() {
+		$this->init_modules();
+	}
 
 	/**
 	 * Plugin bootstrap.
@@ -55,12 +56,24 @@ class ALM_Plugin_Manager {
 	public function init() {
 		$this->check_dependencies();
 		$this->init_i18n();
-		$this->init_modules();
+		// $this->init_modules();
 		$this->register_modules();
 		// Register the main menu of the plugin.
-		add_action( 'admin_menu', array( $this, 'register_custom_menu' ) );
-		// Fix the menu navigation for taxonomies.
-		add_action( 'parent_file', array( $this, 'keep_taxonomy_menu_open' ) );
+		add_action(
+			'admin_menu',
+			array( $this, 'register_alm_custom_menu' ),
+		);
+		// Fix the layout of the main menu for taxonomies entries.
+		add_action(
+			'parent_file',
+			array( $this, 'keep_alm_taxonomy_menu_open' ),
+		);
+		// Reload default taxonomy terms.
+		add_action(
+			'admin_post_alm_reload_default_terms',
+			array( $this, 'handle_reload_default_terms' ),
+		);
+
 	}
 
 	/**
@@ -103,14 +116,16 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	private function init_modules() {
-		$this->modules = array(
-			new ALM_Settings_Manager(),
-			new ALM_Role_Manager(),
-			new ALM_Device_Manager(),
-			new ALM_Loan_Manager(),
-			new ALM_Notification_Manager(),
-			new ALM_Frontend_Manager(),
-		);
+		if ( empty( $this->modules ) ) {
+			$this->modules = array(
+				new ALM_Settings_Manager(),
+				new ALM_Role_Manager(),
+				new ALM_Device_Manager(),
+				new ALM_Loan_Manager(),
+				new ALM_Notification_Manager(),
+				new ALM_Frontend_Manager(),
+			);
+		}
 	}
 
 	/**
@@ -163,8 +178,7 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function activate() {
-		$this->init_modules();
-
+		// $this->init_modules();
 		foreach ( $this->modules as $module ) {
 			if ( method_exists( $module, 'activate' ) ) {
 				$module->activate();
@@ -196,7 +210,7 @@ class ALM_Plugin_Manager {
 	 *
 	 * @return void
 	 */
-	public function register_custom_menu() {
+	public function register_alm_custom_menu() {
 
 		$slug_main_menu = ALM_SLUG_MAIN_MENU;
 
@@ -264,6 +278,15 @@ class ALM_Plugin_Manager {
 			'edit-tags.php?taxonomy=' . ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
 		);
 
+		// Link to the page to reload default data.
+		add_submenu_page(
+			$slug_main_menu,
+			__( 'ALM Tools', 'asset-lending-manager' ),
+			__( 'Tools', 'asset-lending-manager' ),
+			ALM_CREATE_DEVICE,
+			'alm-tools',
+			array( $this, 'render_tools_page' )
+		);
 	}
 
 	/**
@@ -272,7 +295,7 @@ class ALM_Plugin_Manager {
 	 * @param [type] $parent_file
 	 * @return void
 	 */
-	public function keep_taxonomy_menu_open( $parent_file ) {
+	public function keep_alm_taxonomy_menu_open( $parent_file ) {
 		global $current_screen;
 		$taxonomy = $current_screen->taxonomy;
 		if ( in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES ) ) {
@@ -287,7 +310,87 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function get_plugin_presentation() {
+		if ( ! current_user_can( ALM_CREATE_DEVICE ) ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
+		}
 		require_once ALM_PLUGIN_DIR . 'admin/plugin-main-page.php';
+	}
+
+	/**
+	 * Rendere the tools page.
+	 *
+	 * @return void
+	 */
+	public function render_tools_page() {
+		if ( ! current_user_can( ALM_CREATE_DEVICE ) ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
+		}
+		require_once ALM_PLUGIN_DIR . 'admin/alm-tools-page.php';
+	}
+
+	/**
+	 * Handles the admin action to reload default taxonomy terms.
+	 *
+	 * This method is triggered via admin-post.php and is responsible for:
+	 * - validating user capabilities
+	 * - verifying the security nonce
+	 * - executing an idempotent setup operation
+	 * - redirecting back to the tools page with a status flag
+	 *
+	 * @return void
+	 */
+	public function handle_reload_default_terms() {
+		$user_id = get_current_user_id();
+		ALM_Logger::info(
+			'Reload default terms action triggered.',
+			array( 'user_id' => $user_id )
+		);
+
+		// Ensure the current user has the required capability.
+		// This check is mandatory even if the menu item is already protected.
+		if ( ! current_user_can( ALM_CREATE_DEVICE ) ) {
+				wp_die( esc_html__( 'Unauthorized action.', 'asset-lending-manager' ) );
+		}
+
+		// Verify the nonce to protect against CSRF attacks.
+		check_admin_referer( 'alm_reload_terms_action', 'alm_reload_terms_nonce' );
+
+		try {
+			ALM_Logger::debug(
+				'Starting default terms setup.',
+				array( 'user_id' => $user_id )
+			);
+
+			require_once plugin_dir_path( __FILE__ ) . 'class-alm-installer.php';
+			// Execute the idempotent setup routine.
+			// Safe to call multiple times.
+			ALM_Installer::create_default_terms();
+			ALM_Logger::info(
+				'Default terms successfully reloaded.',
+				array( 'user_id' => $user_id )
+			);
+			$status = 'success';
+		} catch ( Exception $e ) {
+			ALM_Logger::error(
+				'Error while reloading default terms.',
+				array(
+					'user_id'   => $user_id,
+					'exception' => $e->getMessage(),
+				)
+			);
+			$status = 'error';
+		}
+
+		// Redirect back to the tools page with a status indicator.
+		// No output must be sent before this redirect.
+		wp_safe_redirect(
+			add_query_arg(
+				'alm_status',
+				$status,
+				admin_url( 'admin.php?page=alm-tools' )
+			)
+		);
+		exit;
 	}
 
 }
