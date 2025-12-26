@@ -1,11 +1,12 @@
 
-2) Menu link to reload data.
-3) Test the system with real users.
-4) Manage layout admin.
-5) Manage layout frontend.
-6) List devices.
-7) Edit devices.
-8) Recover unit tests.
+
+1) Test the system with real users.
+2) Manage layout admin.
+3) Manage layout frontend.
+4) Si possono tradurre i ruoli?
+5) List devices.
+6) Edit devices.
+7) Recover unit tests.
 
 8) Create loan and request tables. 
 9) Manage loan request.
