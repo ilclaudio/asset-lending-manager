@@ -14,9 +14,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class ALM_Setup_Manager
+ * Class ALM_Installer
  */
-class ALM_Setup_Manager {
+class ALM_Installer {
 
 	/**
 	 * Plugin activation hook.

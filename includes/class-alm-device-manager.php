@@ -14,7 +14,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once 'class-alm-acf-device-adapter.php';
-require_once 'class-alm-setup-manager.php';
+require_once 'class-alm-installer.php';
 
 /**
  * Class ALM_Device_Manager
@@ -47,7 +47,7 @@ class ALM_Device_Manager {
 		$this->register_post_type();
 		$this->register_taxonomies();
 		// Create default terms.
-		ALM_Setup_Manager::create_default_terms();
+		ALM_Installer::create_default_terms();
 		// Flush rewrite rules now that CPT and taxonomies exist.
 		flush_rewrite_rules();
 	}
