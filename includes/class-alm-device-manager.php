@@ -112,6 +112,8 @@ class ALM_Device_Manager {
 			'supports'        => array( 'title', 'editor', 'thumbnail' ),
 			'capability_type' => ALM_DEVICE_CPT_SLUG,
 			'map_meta_cap'    => true,
+			'has_archive'     => true,
+			'rewrite'         => array( 'slug' => 'device' ),
 		);
 
 		register_post_type( ALM_DEVICE_CPT_SLUG, $args );
@@ -248,5 +250,54 @@ class ALM_Device_Manager {
 		}
 
 		return $terms[0]->slug;
+	}
+
+	/**
+	 * Return a view model of a device for frontend display.
+	 *
+	 * @param int $device_id ID of the device post.
+	 * @return object|null Returns an object with title, permalink, thumbnail, and taxonomy arrays, or null if not found.
+	 */
+	public static function get_device_wrapper( $device_id ) {
+		$device = get_post( $device_id );
+
+		if ( ! $device || ALM_DEVICE_CPT_SLUG !== $device->post_type || 'publish' !== $device->post_status ) {
+			return null;
+		}
+
+		$wrapper            = new stdClass();
+		$wrapper->id        = $device->ID;
+		$wrapper->title     = get_the_title( $device );
+		$wrapper->permalink = get_permalink( $device );
+		$wrapper->content   = apply_filters( 'the_content', $device->post_content );
+		// Manage the device image.
+		$thumbnail_size = 'thumbnail';
+		if ( has_post_thumbnail( $device ) ) {
+			$wrapper->thumbnail = get_the_post_thumbnail( $device, $thumbnail_size );
+		} else {
+			$wrapper->thumbnail = sprintf(
+				'<img src="%s" alt="%s" class="alm-device-default-thumbnail">',
+				esc_url( ALM_PLUGIN_URL . 'assets/img/default_device_color_bw.png' ),
+				esc_attr( get_the_title( $device ) )
+			);
+		}
+
+		// Load the main taxonomies.
+		$taxonomies = array(
+			ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
+			ALM_DEVICE_TYPE_TAXONOMY_SLUG,
+			ALM_DEVICE_STATE_TAXONOMY_SLUG,
+		);
+
+		foreach ( $taxonomies as $taxonomy ) {
+			$terms = get_the_terms( $device, $taxonomy );
+			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+				$wrapper->{$taxonomy} = wp_list_pluck( $terms, 'name' );
+			} else {
+				$wrapper->{$taxonomy} = array();
+			}
+		}
+
+		return $wrapper;
 	}
 }
