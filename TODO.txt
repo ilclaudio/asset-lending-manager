@@ -1,5 +1,7 @@
 
 
+
+
 3) Manage layout frontend.
 4) Si possono tradurre i ruoli?
 5) List devices.
@@ -13,3 +15,11 @@
 20) Build unit tests.
 21) Integration tests.
 22) Functional tests.
+
+- Refactring of add_submenu_page
+
+- ??? // ALM_Device_Manager dipende da ACF_Adapter
+// Meglio passarlo nel costruttore:
+public function __construct(ALM_ACF_Device_Adapter $adapter = null) {
+    $this->acf_adapter = $adapter ?? new ALM_ACF_Device_Adapter();
+}

@@ -55,7 +55,6 @@ class ALM_Logger {
 		$entry = sprintf( '[ALM][%s] %s', $label, $message );
 		if ( ! empty( $context ) ) {
 			$entry .= ' ' . wp_json_encode( $context );
-			// $entry .= ' | ' . print_r( $context, true ).
 		}
 		error_log( $entry ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
