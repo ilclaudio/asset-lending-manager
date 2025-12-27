@@ -56,7 +56,7 @@ class ALM_Plugin_Manager {
 	public function init() {
 		$this->check_dependencies();
 		$this->init_i18n();
-		// $this->init_modules();
+		// Register all the other modules of the plugin.
 		$this->register_modules();
 		// Register the main menu of the plugin.
 		add_action(
@@ -179,7 +179,7 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function activate() {
-		// $this->init_modules();
+		// Activate all the other modules of the plugin.
 		foreach ( $this->modules as $module ) {
 			if ( method_exists( $module, 'activate' ) ) {
 				$module->activate();
@@ -195,8 +195,8 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function deactivate() {
-		$this->init_modules();
-
+		// $this->init_modules();
+		// Deactivate all the other modules of the plugin.
 		foreach ( $this->modules as $module ) {
 			if ( method_exists( $module, 'deactivate' ) ) {
 				$module->deactivate();

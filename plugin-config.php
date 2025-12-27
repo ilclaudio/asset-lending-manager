@@ -5,9 +5,7 @@
  * @package AssetLendingManager
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 // Define constants.
 define( 'ALM_VERSION', '0.1.0' );

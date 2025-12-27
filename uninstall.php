@@ -9,6 +9,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+require_once ALM_PLUGIN_DIR . 'plugin-config.php';
+
 // Remove custom roles.
 remove_role( ALM_MEMBER_ROLE );
 remove_role( ALM_OPERATOR_ROLE );

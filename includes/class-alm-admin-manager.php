@@ -74,7 +74,7 @@ class ALM_Admin_Manager {
 	 */
 	private function is_restricted_user() {
 		$user = wp_get_current_user();
-		if ( empty( $user->ID ) ) {
+		if ( ( ! $user ) || empty( $user->ID ) ) {
 			return false;
 		}
 		foreach ( $this->restricted_roles as $role ) {
