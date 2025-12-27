@@ -1,11 +1,12 @@
 
+1) Uso degli shortcodes.
+2) Gestione di picocss e miglioramento layout della lista.
+3) Aggiunta form di ricerca e paginazione.
+4) Aggiunta di Algolia Automplete e autocomplete manager?
+5) Miglioramento layout dettaglio device e sezioni per utenti.
 
 
-
-3) Manage layout frontend.
-4) Si possono tradurre i ruoli?
-5) List devices.
-6) Edit devices.
+6) Si possono tradurre i ruoli?
 7) Recover unit tests.
 
 8) Create loan and request tables. 
@@ -23,3 +24,35 @@
 public function __construct(ALM_ACF_Device_Adapter $adapter = null) {
     $this->acf_adapter = $adapter ?? new ALM_ACF_Device_Adapter();
 }
+
+- 2. Script per trasformare Checkbox in Radio Button
+Aggiungi questo codice nel tuo file functions.php o nel file principale del tuo plugin. Questo script cerca il box della tua tassonomia e trasforma tutti gli input checkbox in radio.
+
+PHP
+
+/**
+ * Trasforma le checkbox della tassonomia Device Level in Radio Button
+ */
+add_action('admin_footer', function() {
+    $screen = get_current_screen();
+    
+    // Esegui lo script solo nella pagina di modifica del tuo CPT
+    // Sostituisci ALM_DEVICE_CPT_SLUG con la tua stringa se non è definita qui
+    if ( $screen->post_type !== 'device' ) return; 
+
+    ?>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // ID del meta box: di solito è 'taxonomy-{slug}'
+            // Sostituisci 'device_level' con il valore della tua costante ALM_DEVICE_LEVEL_TAXONOMY_SLUG
+            var taxonomyName = 'device_level'; 
+            var $container = $('#' + taxonomyName + 'div, #' + taxonomyName + 'checklist');
+
+            $container.find('input[type="checkbox"]').each(function() {
+                $(this).attr('type', 'radio');
+                $(this).attr('name', 'tax_input[' + taxonomyName + '][]');
+            });
+        });
+    </script>
+    <?php
+});
