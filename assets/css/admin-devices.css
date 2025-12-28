@@ -1,0 +1,167 @@
+/**
+ * Admin styles for ALM devices
+ *
+ * Loaded only on ALM admin pages (device edit, list, taxonomies, custom pages).
+ *
+ * @package AssetLendingManager
+ */
+
+/* Device list table enhancements */
+.post-type-alm_device .wp-list-table .column-thumbnail {
+	width: 80px;
+}
+
+.post-type-alm_device .wp-list-table .column-thumbnail img {
+	max-width: 60px;
+	height: auto;
+	border-radius: 4px;
+	border: 1px solid #ddd;
+}
+
+/* Device edit page enhancements */
+.post-type-alm_device #poststuff .inside {
+	margin: 0;
+	padding: 12px;
+}
+
+.post-type-alm_device .acf-field {
+	padding: 15px 12px !important;
+}
+
+/* Taxonomy term page */
+.taxonomy-alm_structure .term-description-wrap,
+.taxonomy-alm_type .term-description-wrap,
+.taxonomy-alm_state .term-description-wrap,
+.taxonomy-alm_level .term-description-wrap {
+	max-width: 600px;
+}
+
+/* ALM custom admin pages styling */
+.alm-admin-page {
+	background: #fff;
+	padding: 20px;
+	margin: 20px 0;
+	border: 1px solid #ccd0d4;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.alm-admin-page h2 {
+	margin-top: 0;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ddd;
+}
+
+/* Device status badges */
+.alm-status-badge {
+	display: inline-block;
+	padding: 3px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.alm-status-badge.available {
+	background: #d4edda;
+	color: #155724;
+}
+
+.alm-status-badge.loaned {
+	background: #fff3cd;
+	color: #856404;
+}
+
+.alm-status-badge.maintenance {
+	background: #f8d7da;
+	color: #721c24;
+}
+
+/* ACF field groups styling */
+.acf-field-group .acf-field {
+	border-top: 1px solid #eeeeee;
+}
+
+.acf-field-group .acf-label label {
+	font-weight: 600;
+	color: #23282d;
+}
+
+/* Device thumbnail in metabox */
+#postimagediv .inside img {
+	max-width: 100%;
+	height: auto;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+/* Quick edit enhancements */
+.inline-edit-col-left,
+.inline-edit-col-right {
+	vertical-align: top;
+}
+
+/* Toolbar button styles */
+.alm-toolbar-button {
+	margin: 2px 0 0 4px;
+	padding: 3px 10px;
+	font-size: 13px;
+	line-height: 26px;
+	height: 28px;
+	cursor: pointer;
+	border: 1px solid #0071a1;
+	background: #0073aa;
+	color: #fff;
+	text-decoration: none;
+	border-radius: 3px;
+}
+
+.alm-toolbar-button:hover {
+	background: #005a87;
+	border-color: #005a87;
+	color: #fff;
+}
+
+/* Notice styles for ALM pages */
+.alm-notice {
+	margin: 15px 0;
+	padding: 12px;
+	border-left: 4px solid;
+	background: #fff;
+}
+
+.alm-notice.success {
+	border-left-color: #46b450;
+	background: #ecf7ed;
+}
+
+.alm-notice.error {
+	border-left-color: #dc3232;
+	background: #fef7f7;
+}
+
+.alm-notice.warning {
+	border-left-color: #ffba00;
+	background: #fff8e5;
+}
+
+/* Loading spinner */
+.alm-spinner {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border: 3px solid rgba(0, 0, 0, 0.1);
+	border-radius: 50%;
+	border-top-color: #0073aa;
+	animation: alm-spin 0.8s linear infinite;
+}
+
+@keyframes alm-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 782px) {
+	.post-type-alm_device .wp-list-table .column-thumbnail {
+		display: none;
+	}
+}

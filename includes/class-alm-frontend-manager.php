@@ -7,6 +7,7 @@
  * Responsibilities:
  * - Provide fallback templates for alm_device CPT.
  * - Register shortcodes for device list and device view.
+ * - Enqueue frontend CSS and JS for device pages.
  * - Keep rendering logic inside plugin templates.
  *
  * @package AssetLendingManager
@@ -41,6 +42,8 @@ class ALM_Frontend_Manager {
 		// Register shortcodes.
 		add_shortcode( 'alm_device_list', array( $this, 'shortcode_device_list' ) );
 		add_shortcode( 'alm_device_view', array( $this, 'shortcode_device_view' ) );
+		// Enqueue frontend assets (CSS/JS).
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 	}
 
 	/**
@@ -77,6 +80,68 @@ class ALM_Frontend_Manager {
 			return $plugin_template;
 		}
 		return $default;
+	}
+
+	/**
+	 * Enqueue frontend CSS and JS for device pages.
+	 *
+	 * Loads assets only on pages where devices are displayed:
+	 * - Archive page (device list)
+	 * - Single device page
+	 * - Pages with device shortcodes
+	 *
+	 * @return void
+	 */
+	public function enqueue_frontend_assets() {
+		// Load only on device-related pages.
+		if ( ! $this->is_device_page() ) {
+			return;
+		}
+		// Enqueue CSS.
+		wp_enqueue_style(
+			'alm-frontend-devices',
+			ALM_PLUGIN_URL . 'assets/css/frontend-devices.css',
+			array(),
+			ALM_VERSION,
+			'all'
+		);
+		// Enqueue JS.
+		wp_enqueue_script(
+			'alm-frontend-devices',
+			ALM_PLUGIN_URL . 'assets/js/frontend-devices.js',
+			array( 'jquery' ),
+			ALM_VERSION,
+			true
+		);
+		// Pass data from PHP to JavaScript (useful for AJAX).
+		wp_localize_script(
+			'alm-frontend-devices',
+			'almFrontend',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'alm_frontend_nonce' ),
+			)
+		);
+	}
+
+	/**
+	 * Check if current page is device-related.
+	 *
+	 * @return bool True if on device archive, single, or page with device shortcodes.
+	 */
+	private function is_device_page() {
+		// Archive or single device page.
+		if ( is_post_type_archive( ALM_DEVICE_CPT_SLUG ) || is_singular( ALM_DEVICE_CPT_SLUG ) ) {
+			return true;
+		}
+
+		// Page with device shortcodes.
+		global $post;
+		if ( $post && ( has_shortcode( $post->post_content, 'alm_device_list' ) || has_shortcode( $post->post_content, 'alm_device_view' ) ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
