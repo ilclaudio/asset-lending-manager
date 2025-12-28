@@ -2,12 +2,12 @@
 /**
  * Asset Lending Manager - Frontend Manager
  *
- * Handles frontend rendering for ALM devices using
- * WordPress-native archive and single templates.
+ * Handles frontend rendering for ALM devices using shortcodes.
  *
  * Responsibilities:
- * - Provide fallback templates for alm_device CPT
- * - Keep rendering logic inside plugin templates
+ * - Provide fallback templates for alm_device CPT.
+ * - Register shortcodes for device list and device view.
+ * - Keep rendering logic inside plugin templates.
  *
  * @package AssetLendingManager
  */
@@ -22,12 +22,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ALM_Frontend_Manager {
 
 	/**
-	 * Register frontend hooks.
+	 * Plugin activation hook.
+	 *
+	 * @return void
+	 */
+	public function activate() {
+		// No activation tasks needed for frontend.
+	}
+
+	/**
+	 * Register frontend hooks and shortcodes.
 	 *
 	 * @return void
 	 */
 	public function register() {
+		// Register template loading filter.
 		add_filter( 'template_include', array( $this, 'load_device_template' ) );
+		// Register shortcodes.
+		add_shortcode( 'alm_device_list', array( $this, 'shortcode_device_list' ) );
+		add_shortcode( 'alm_device_view', array( $this, 'shortcode_device_view' ) );
 	}
 
 	/**
@@ -64,5 +77,144 @@ class ALM_Frontend_Manager {
 			return $plugin_template;
 		}
 		return $default;
+	}
+
+	/**
+	 * Shortcode handler for device list.
+	 *
+	 * Usage: [alm_device_list]
+	 *
+	 * @param array $attributes Shortcode attributes.
+	 * @return string HTML output.
+	 */
+	public function shortcode_device_list( $attributes ) {
+		// Parse shortcode attributes (for future extensions like filters).
+		$attributes = shortcode_atts(
+			array(
+				'posts_per_page' => -1,
+			),
+			$attributes,
+			'alm_device_list'
+		);
+		// Start output buffering.
+		ob_start();
+		// Render the device list template.
+		$this->render_device_list_template( $attributes );
+		return ob_get_clean();
+	}
+
+	/**
+	 * Shortcode handler for single device view.
+	 *
+	 * Usage:
+	 * - [alm_device_view slug="binocolo"]
+	 * - [alm_device_view] (uses query string ?device=binocolo or current post)
+	 *
+	 * @param array $attributes Shortcode attributes.
+	 * @return string HTML output.
+	 */
+	public function shortcode_device_view( $attributes ) {
+		// Parse shortcode attributes.
+		$attributes = shortcode_atts(
+			array(
+				'slug' => '',
+			),
+			$attributes,
+			'alm_device_view'
+		);
+
+		// Determine device ID.
+		$device_id = $this->get_device_id_from_context( $attributes['slug'] );
+
+		if ( ! $device_id ) {
+			return '<p class="alm-error">' . esc_html__( 'Device not found.', 'asset-lending-manager' ) . '</p>';
+		}
+
+		// Start output buffering.
+		ob_start();
+
+		// Render the device view template.
+		$this->render_device_view_template( $device_id );
+
+		return ob_get_clean();
+	}
+
+	/**
+	 * Get device ID from slug, query string, or current post context.
+	 *
+	 * Priority:
+	 * 1. Slug from shortcode attribute
+	 * 2. Slug from query string (?device=binocolo)
+	 * 3. Current post ID (if in single context)
+	 *
+	 * @param string $slug Device slug from shortcode attribute.
+	 * @return int|null Device post ID or null if not found.
+	 */
+	private function get_device_id_from_context( $slug ) {
+		// Priority 1: Slug from shortcode attribute.
+		if ( ! empty( $slug ) ) {
+			$device = get_page_by_path( $slug, OBJECT, ALM_DEVICE_CPT_SLUG );
+			if ( $device ) {
+				return $device->ID;
+			}
+		}
+
+		// Priority 2: Slug from query string.
+		if ( isset( $_GET['device'] ) && ! empty( $_GET['device'] ) ) {
+			$query_slug = sanitize_title( $_GET['device'] );
+			$device = get_page_by_path( $query_slug, OBJECT, ALM_DEVICE_CPT_SLUG );
+			if ( $device ) {
+				return $device->ID;
+			}
+		}
+
+		// Priority 3: Current post ID (if in single device context).
+		if ( is_singular( ALM_DEVICE_CPT_SLUG ) ) {
+			return get_the_ID();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Render the device list template.
+	 *
+	 * @param array $attributes Template attributes.
+	 * @return void
+	 */
+	private function render_device_list_template( $attributes ) {
+		// Get devices from Device Manager.
+		$query_args = array(
+			'posts_per_page' => intval( $attributes['posts_per_page'] ),
+		);
+		// Variable used in the included template.
+		$devices = ALM_Device_Manager::get_devices( $query_args );
+		// Include template (has access to $devices variable).
+		$template_path = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/shortcodes/device_list.php';
+		if ( file_exists( $template_path ) ) {
+			include $template_path;
+		}
+	}
+
+	/**
+	 * Render the device view template.
+	 *
+	 * @param int $device_id Device post ID.
+	 * @return void
+	 */
+	private function render_device_view_template( $device_id ) {
+		// Get device wrapper.
+		$device = ALM_Device_Manager::get_device_wrapper( $device_id );
+
+		if ( ! $device ) {
+			echo '<p class="alm-error">' . esc_html__( 'Device not found.', 'asset-lending-manager' ) . '</p>';
+			return;
+		}
+
+		// Include template.
+		$template_path = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/shortcodes/device_view.php';
+		if ( file_exists( $template_path ) ) {
+			include $template_path;
+		}
 	}
 }

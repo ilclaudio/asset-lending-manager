@@ -253,6 +253,49 @@ class ALM_Device_Manager {
 	}
 
 	/**
+	 * Get all published devices as wrapper objects.
+	 *
+	 * @param array $args Optional. Query arguments to customize the device retrieval.
+	 *   Accepts any WP_Query parameter. Common options:
+	 *   - 'posts_per_page': Number of devices to retrieve (default: -1 for all)
+	 *   - 'orderby': Sort field (default: 'title')
+	 *   - 'order': Sort direction (default: 'ASC')
+	 *   - 'tax_query': Taxonomy query for filtering
+	 * @return array Array of device wrapper objects from get_device_wrapper()
+	 */
+	public static function get_devices( $args = array() ) {
+		// Default query arguments.
+		$defaults = array(
+			'post_type'      => ALM_DEVICE_CPT_SLUG,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		);
+
+		// Merge user args with defaults.
+		$query_args = wp_parse_args( $args, $defaults );
+
+		// Execute query.
+		$query = new WP_Query( $query_args );
+
+		// Prepare devices array using wrappers.
+		$devices = array();
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$device = self::get_device_wrapper( get_the_ID() );
+				if ( $device ) {
+					$devices[] = $device;
+				}
+			}
+			wp_reset_postdata();
+		}
+
+		return $devices;
+	}
+
+	/**
 	 * Return a view model of a device for frontend display.
 	 *
 	 * @param int $device_id ID of the device post.
