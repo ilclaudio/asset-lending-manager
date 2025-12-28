@@ -1,5 +1,4 @@
 
-1) Uso degli shortcodes.
 2) Gestione di picocss e miglioramento layout della lista.
 3) Aggiunta form di ricerca e paginazione.
 4) Aggiunta di Algolia Automplete e autocomplete manager?
