@@ -45,3 +45,7 @@ define(
 // Roles and permissions.
 define( 'ALM_MEMBER_ROLE', 'alm_member' );
 define( 'ALM_OPERATOR_ROLE', 'alm_operator' );
+
+// Autocomplete.
+define( 'ALM_AUTOCOMPLETE_MAX_RESULTS', 5 );
+define( 'ALM_AUTOCOMPLETE_DESC_LENGTH', 20 );

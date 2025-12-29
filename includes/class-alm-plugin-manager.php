@@ -125,6 +125,7 @@ class ALM_Plugin_Manager {
 				new ALM_Notification_Manager(),
 				new ALM_Frontend_Manager(),
 				new ALM_Admin_Manager(),
+				new ALM_Autocomplete_Manager(),
 			);
 		}
 	}
