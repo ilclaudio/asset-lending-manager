@@ -27,20 +27,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<div class="alm-device-thumbnail"><?php echo $alm_device->thumbnail; ?></div>
 					<?php endif; ?>
 
-					<h2 class="alm-device-title"><?php echo esc_html( $alm_device->title ); ?></h2>
+					<div class="alm-device-content-wrapper">
+						<h2 class="alm-device-title"><?php echo esc_html( $alm_device->title ); ?></h2>
+
+						<div class="alm-device-taxonomies">
+							<?php foreach ( array( 'alm_structure', 'alm_type', 'alm_state' ) as $taxonomy ) : ?>
+								<?php if ( ! empty( $alm_device->{$taxonomy} ) ) : ?>
+									<div class="alm-device-taxonomy alm-tax-<?php echo esc_attr( $taxonomy ); ?>">
+										<span class="alm-tax-label"><?php echo esc_html( get_taxonomy( $taxonomy )->labels->singular_name ); ?>:</span>
+										<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_device->{$taxonomy} ) ); ?></span>
+									</div>
+								<?php endif; ?>
+							<?php endforeach; ?>
+						</div>
+					</div>
 
 				</a>
-
-				<div class="alm-device-taxonomies">
-					<?php foreach ( array( 'alm_structure', 'alm_type', 'alm_state' ) as $taxonomy ) : ?>
-						<?php if ( ! empty( $alm_device->{$taxonomy} ) ) : ?>
-							<div class="alm-device-taxonomy alm-tax-<?php echo esc_attr( $taxonomy ); ?>">
-								<span class="alm-tax-label"><?php echo esc_html( get_taxonomy( $taxonomy )->labels->singular_name ); ?>:</span>
-								<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_device->{$taxonomy} ) ); ?></span>
-							</div>
-						<?php endif; ?>
-					<?php endforeach; ?>
-				</div>
 
 			</article>
 
