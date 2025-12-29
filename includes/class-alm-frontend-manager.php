@@ -13,9 +13,7 @@
  * @package AssetLendingManager
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Definition of the public layout of the plugin.
@@ -161,11 +159,16 @@ class ALM_Frontend_Manager {
 			$attributes,
 			'alm_device_list'
 		);
+		// Read and sanitize search parameter.
+		$search_term = '';
+		if ( isset( $_GET['s'] ) ) {
+			$search_term = sanitize_text_field( wp_unslash( $_GET['s'] ) );
+		}
 		// Start output buffering.
 		ob_start();
 		// Render the device list template.
-		$this->render_device_list_template( $attributes );
-		return ob_get_clean();
+		$this->render_device_list_template( $attributes, $search_term );
+		return ob_get_clean(); // End output buffering.
 	}
 
 	/**
@@ -242,23 +245,41 @@ class ALM_Frontend_Manager {
 	}
 
 	/**
-	 * Render the device list template.
+	 * Render device list template.
 	 *
-	 * @param array $attributes Template attributes.
+	 * @param array  $attributes  Shortcode attributes.
+	 * @param string $search_term Optional search term.
 	 * @return void
 	 */
-	private function render_device_list_template( $attributes ) {
-		// Get devices from Device Manager.
-		$query_args = array(
-			'posts_per_page' => intval( $attributes['posts_per_page'] ),
-		);
-		// Variable used in the included template.
-		$devices = ALM_Device_Manager::get_devices( $query_args );
-		// Include template (has access to $devices variable).
-		$template_path = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/shortcodes/device_list.php';
-		if ( file_exists( $template_path ) ) {
-			include $template_path;
+	protected function render_device_list_template( $attributes, $search_term = '' ) {
+		if ( ! empty( $search_term ) ) {
+			$query_args = array(
+				'post_type'      => ALM_DEVICE_CPT_SLUG,
+				'post_status'    => 'publish',
+				's'              => $search_term,
+				'posts_per_page' => $attributes['posts_per_page'],
+			);
+		} else {
+			$query_args = array(
+				'post_type'      => ALM_DEVICE_CPT_SLUG,
+				'post_status'    => 'publish',
+				'posts_per_page' => $attributes['posts_per_page'],
+			);
 		}
+		$query = new WP_Query( $query_args );
+		$devices       = array();
+		$devices_count = 0;
+		if ( $query->have_posts() ) {
+			foreach ( $query->posts as $post ) {
+				$devices_count = (int) $query->found_posts;
+				$wrapper = ALM_Device_Manager::get_device_wrapper( $post->ID );
+				if ( $wrapper ) {
+					$devices[] = $wrapper;
+				}
+			}
+		}
+		wp_reset_postdata();
+		include ALM_PLUGIN_DIR . 'templates/shortcodes/device_list.php';
 	}
 
 	/**

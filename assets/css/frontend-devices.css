@@ -260,3 +260,28 @@
 		padding: 12px;
 	}
 }
+
+#alm_device_search_form {
+	position: relative;
+	width: 100%;
+	margin-bottom: 1em;
+}
+
+.alm-device-search-form {
+	display: flex;
+	align-items: center;
+	gap: 8px; /* spazio tra input e pulsante */
+}
+
+.alm-device-search-form input[name="s"] {
+	width: 50%;       /* metà pagina */
+	padding: 8px;
+	font-size: 1em;
+	box-sizing: border-box;
+}
+
+.alm-device-search-form button {
+	padding: 8px 16px;
+	font-size: 1em;
+	cursor: pointer;
+}
