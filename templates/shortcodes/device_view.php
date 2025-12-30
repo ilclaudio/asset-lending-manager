@@ -146,23 +146,6 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 		}
 	?>
 	<aside class="alm-device-view__taxbox" aria-label="<?php esc_attr_e( 'Device taxonomies', 'asset-lending-manager' ); ?>">
-		<?php if ( $alm_manufacturer_value || $alm_model_value ) : ?>
-			<div class="alm-device-quick-meta">
-				<?php if ( $alm_manufacturer_value ) : ?>
-					<div class="alm-device-quick-row">
-						<span class="alm-tax-label"><?php esc_html_e( 'Manufacturer', 'asset-lending-manager' ); ?></span>
-						<span class="alm-tax-value"><?php echo esc_html( $alm_manufacturer_value ); ?></span>
-					</div>
-				<?php endif; ?>
-				<?php if ( $alm_model_value ) : ?>
-					<div class="alm-device-quick-row">
-						<span class="alm-tax-label"><?php esc_html_e( 'Model', 'asset-lending-manager' ); ?></span>
-						<span class="alm-tax-value"><?php echo esc_html( $alm_model_value ); ?></span>
-					</div>
-				<?php endif; ?>
-			</div>
-		<?php endif; ?>
-
 		<div class="alm-device-taxonomies alm-device-taxonomies--boxed">
 			<?php
 			$alm_render_tax_row( 'alm_structure', isset( $device->alm_structure ) ? $device->alm_structure : array() );
@@ -175,7 +158,6 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 						<?php echo esc_html( get_taxonomy( 'alm_state' )->labels->singular_name ); ?>
 					</span>
 					<span class="alm-tax-value">
-						<?php echo esc_html( $alm_state_label ); ?>
 						<span class="alm-availability <?php echo esc_attr( $alm_state_css_class ); ?>">
 							<?php echo esc_html( $alm_state_label ); ?>
 						</span>
