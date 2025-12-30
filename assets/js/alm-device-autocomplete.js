@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	let debounceTimer;
 
+	function escapeHtml(text) {
+		const div = document.createElement('div');
+		div.textContent = text;
+		return div.innerHTML;
+	}
+
 	function renderDropdown(items) {
 		if (items.length === 0) {
 			dropdown.innerHTML = '';
@@ -21,12 +27,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		let html = '';
 		items.forEach(item => {
 			html += `<div class="alm-autocomplete-item">
-						<div class="alm-autocomplete-title"><a href="${item.permalink}"><strong>${item.title}</strong></a></div>
-						<div class="alm-autocomplete-description">${item.description}</div>
-						<div class="alm-autocomplete-meta"><strong>${item.structure}</strong> - <em>${item.type}</em></div>
-					</div>`;
+				<div class="alm-autocomplete-title">
+					<a href="${escapeHtml(item.permalink)}">
+						<strong>${escapeHtml(item.title)}</strong>
+					</a>
+				</div>
+				<div class="alm-autocomplete-description">${escapeHtml(item.description)}</div>
+				<div class="alm-autocomplete-meta">
+					<strong>${escapeHtml(item.structure)}</strong> - 
+					<em>${escapeHtml(item.type)}</em>
+				</div>
+			</div>`;
 		});
-
 		dropdown.innerHTML = html;
 		dropdown.style.display = 'block';
 	}
@@ -45,9 +57,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			fetch(almAutocomplete.restUrl, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+					'X-WP-Nonce': almAutocomplete.restNonce,
 				},
-				body: new URLSearchParams({ term: term })
+				body: new URLSearchParams({
+					term: term,
+					nonce: almAutocomplete.restNonce
+				})
 			})
 			.then(res => res.json())
 			.then(data => renderDropdown(data))

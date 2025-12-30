@@ -69,14 +69,30 @@ class ALM_Frontend_Manager {
 	 * @return string
 	 */
 	protected function locate_template( $template_name, $default ) {
+		// 1) Try to locate the template in the theme (child theme first, then parent).
 		$theme_template = locate_template( $template_name );
-		if ( $theme_template ) {
+		// 2) Allow override via filter (can replace or confirm the template path).
+		$template = apply_filters(
+			'alm_locate_template',
+			$theme_template,
+			$template_name,
+			$default
+		);
+		// 3) If the filter returned a valid template path, use it.
+		if ( is_string( $template ) && $template !== '' && file_exists( $template ) ) {
+			return $template;
+		}
+		// 4) If the theme template exists and the filter did not return a valid path, use it.
+		if ( is_string( $theme_template ) && $theme_template !== '' && file_exists( $theme_template ) ) {
 			return $theme_template;
 		}
-		$plugin_template = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/' . $template_name;
+		// 5) Fallback to the plugin template.
+		$plugin_template = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/' . ltrim( $template_name, '/\\' );
 		if ( file_exists( $plugin_template ) ) {
 			return $plugin_template;
 		}
+
+		// 6) Final fallback for safety
 		return $default;
 	}
 
@@ -226,16 +242,14 @@ class ALM_Frontend_Manager {
 				return $device->ID;
 			}
 		}
-
 		// Priority 2: Slug from query string.
 		if ( isset( $_GET['device'] ) && ! empty( $_GET['device'] ) ) {
 			$query_slug = sanitize_title( $_GET['device'] );
-			$device = get_page_by_path( $query_slug, OBJECT, ALM_DEVICE_CPT_SLUG );
+			$device     = get_page_by_path( $query_slug, OBJECT, ALM_DEVICE_CPT_SLUG );
 			if ( $device ) {
 				return $device->ID;
 			}
 		}
-
 		// Priority 3: Current post ID (if in single device context).
 		if ( is_singular( ALM_DEVICE_CPT_SLUG ) ) {
 			return get_the_ID();
