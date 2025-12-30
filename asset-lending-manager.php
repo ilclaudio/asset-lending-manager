@@ -52,7 +52,6 @@ register_deactivation_hook(
 function alm_init_plugin() {
 	$alm_plugin_manager = ALM_Plugin_Manager::get_instance();
 	$alm_plugin_manager->init();
-	// ALM_Logger::debug( '*** Init the Plugin' ).
 }
 
 add_action( 'plugins_loaded', 'alm_init_plugin' );

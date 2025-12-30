@@ -28,7 +28,7 @@ if ( isset( $_GET['s'] ) ) {
 			<?php esc_html_e( 'Search', 'asset-lending-manager' ); ?>
 		</button>
 	</form>
-	<div id="alm_device_autocomplete_dropdown" class="alm-autocomplete-dropdown">CIAO</div>
+	<div id="alm_device_autocomplete_dropdown" class="alm-autocomplete-dropdown"></div>
 </div>
 
 <div id="alm_device_search_results">

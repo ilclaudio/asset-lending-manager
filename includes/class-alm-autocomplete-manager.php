@@ -69,14 +69,17 @@ class ALM_Autocomplete_Manager {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'handle_autocomplete' ),
 				'permission_callback' => '__return_true',
+				// 'permission_callback' => function() {
+				// 	return current_user_can( ALM_VIEW_DEVICES );
+				// },
 				'args'                => array(
 					'term' => array(
 						'required'          => true,
 						'sanitize_callback' => 'sanitize_text_field',
+						'validate_callback' => function( $param ) {
+							return is_string( $param ) && strlen( $param ) >= 3;
+						},
 					),
-					// 'nonce' => array(
-					// 	'required' => true,
-					// ),
 				),
 			)
 		);
@@ -90,22 +93,35 @@ class ALM_Autocomplete_Manager {
 	 */
 	public function handle_autocomplete( WP_REST_Request $request ) {
 		// // Read nonce from POST.
-		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( $_POST['nonce'] ) : '';
+		$nonce = $request->get_param( 'nonce' ) ?? '';
+		$nonce = $nonce ? sanitize_text_field( $nonce ) : '';
 		error_log( '*** Nonce in handle_autocomplete:' . $nonce );
+
+		// Check nonce.
+		// $nonce = $request->get_param( 'nonce' );
 		// if ( ! wp_verify_nonce( $nonce, 'alm_autocomplete_nonce' ) ) {
 		// 	return new WP_REST_Response(
-		// 		array(
-		// 			'error' => __( 'Invalid nonce.', 'asset-lending-manager' ),
-		// 		),
+		// 		array( 'error' => __( 'Invalid security token.', 'asset-lending-manager' ) ),
 		// 		403
 		// 	);
 		// }
+
+		// // Check capability.
+		// if ( ! current_user_can( ALM_VIEW_DEVICES ) ) {
+		// 	return new WP_REST_Response(
+		// 		array( 'error' => __( 'Insufficient permissions.', 'asset-lending-manager' ) ),
+		// 		403
+		// 	);
+		// }
+
 		// Read search term.
-		$term = isset( $_POST['term'] ) ? trim( wp_unslash( $_POST['term'] ) ) : '';
+		$term  = $request->get_param( 'term' ) ?? '';
+		$term = $term ? trim( wp_unslash( $term ) ) : '';
 		// Require at least 3 characters.
 		if ( strlen( $term ) < 3 ) {
 			return rest_ensure_response( array() );
 		}
+
 		// Query devices.
 		$query_args = array(
 			'post_type'      => ALM_DEVICE_CPT_SLUG,
@@ -124,7 +140,7 @@ class ALM_Autocomplete_Manager {
 				$results[] = array(
 					'id'          => $post->ID,
 					'title'       => $wrapper->title,
-					'description' => wp_trim_words( wp_strip_all_tags( $post->post_content ), ALM_AUTOCOMPLETE_DESC_LENGTH, '…' ),
+					'description' => wp_trim_words( wp_strip_all_tags( $post->post_content ), ALM_AUTOCOMPLETE_DESC_LENGTH, '...' ),
 					'structure'   => ! empty( $wrapper->alm_structure ) ? implode( ', ', $wrapper->alm_structure ) : '',
 					'type'        => ! empty( $wrapper->alm_type ) ? implode( ', ', $wrapper->alm_type ) : '',
 					'permalink'   => $wrapper->permalink,
