@@ -133,10 +133,6 @@ class ALM_Installer {
 					'slug'  => 'retired',
 					'label' => __( 'Retired', 'asset-lending-manager' ),
 				),
-				array(
-					'slug'  => 'transferred',
-					'label' => __( 'Transferred', 'asset-lending-manager' ),
-				),
 			)
 		);
 
