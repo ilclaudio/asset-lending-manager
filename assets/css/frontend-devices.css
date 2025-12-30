@@ -261,6 +261,7 @@
 	}
 }
 
+/* Search form */
 #alm_device_search_form {
 	position: relative;
 	width: 100%;
@@ -270,12 +271,17 @@
 .alm-device-search-form {
 	display: flex;
 	align-items: center;
-	gap: 8px; /* spazio tra input e pulsante */
+	gap: 8px;
+}
+
+/* wrapper per input + icona + dropdown */
+.alm-search-input-wrap {
+	position: relative;
 }
 
 .alm-device-search-form input[name="s"] {
-	width: 50%;       /* metà pagina */
-	padding: 8px;
+	width: 100%;
+	padding: 8px 8px 8px 34px; /* spazio per lente/spinner */
 	font-size: 1em;
 	box-sizing: border-box;
 }
@@ -284,4 +290,266 @@
 	padding: 8px 16px;
 	font-size: 1em;
 	cursor: pointer;
+}
+
+/* Lens + loading spinner */
+#alm_device_search_form .alm-search-icon {
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	pointer-events: none;
+	z-index: 2;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	transform: translateY(-50%);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+}
+
+#alm_device_search_form.alm-autocomplete-loading .alm-search-icon {
+	background-image: none;
+	border: 2px solid #666;
+	border-top-color: transparent;
+	border-radius: 50%;
+	box-sizing: border-box;
+	animation: almSpin 0.8s linear infinite;
+}
+
+@keyframes almSpin {
+	to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Device view (shortcode) layout */
+.alm-device-view__title {
+	margin-bottom: 18px;
+}
+
+.alm-device-view__hero {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	margin-bottom: 20px;
+}
+
+.alm-device-view__media {
+	flex: 1 1 420px;
+	min-width: 280px;
+}
+
+.alm-device-view__taxbox {
+	flex: 0 0 320px;
+	max-width: 380px;
+	background: #f9f9f9;
+	border: 1px solid #e6e6e6;
+	border-radius: 8px;
+	padding: 16px;
+}
+
+.alm-device-section-title {
+	margin: 0 0 12px 0;
+	font-size: 1.1em;
+}
+
+.alm-device-thumbnail--large {
+	width: 100%;
+	height: auto;
+	max-width: none;
+	margin: 0;
+}
+
+.alm-device-thumbnail--large img {
+	width: 100%;
+	height: auto;
+	max-height: 520px;
+	object-fit: contain;
+	border-radius: 8px;
+	display: block;
+}
+
+.alm-device-taxonomies--boxed {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+	border-radius: 0;
+}
+
+.alm-device-tax-row {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.alm-device-tax-row .alm-tax-label {
+	font-weight: 700;
+	color: #444;
+	margin: 0;
+}
+
+.alm-device-tax-row .alm-tax-value {
+	color: #0073aa;
+}
+
+/* Collapsible sections (details/summary) */
+.alm-collapsible {
+	margin-top: 18px;
+	border: 1px solid #e6e6e6;
+	border-radius: 8px;
+	background: #fff;
+	overflow: hidden;
+}
+
+.alm-collapsible__summary {
+	cursor: pointer;
+	padding: 14px 16px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	background: #f7f7f7;
+	font-weight: 700;
+}
+
+.alm-collapsible__summary::-webkit-details-marker {
+	display: none;
+}
+
+.alm-collapsible[open] .alm-collapsible__summary {
+	border-bottom: 1px solid #e6e6e6;
+}
+
+.alm-collapsible__body {
+	padding: 14px 16px;
+}
+
+.alm-collapsible__hint {
+	font-weight: 400;
+	color: #666;
+}
+
+.alm-device-acf-list {
+	margin: 0;
+}
+
+.alm-device-acf-row {
+	display: grid;
+	grid-template-columns: 200px 1fr;
+	gap: 12px;
+	padding: 10px 0;
+	border-bottom: 1px solid #eee;
+}
+
+.alm-device-acf-row:last-child {
+	border-bottom: none;
+}
+
+.alm-device-acf-label {
+	font-weight: 700;
+	margin: 0;
+}
+
+.alm-device-acf-value {
+	margin: 0;
+	color: #333;
+}
+
+.alm-device-components {
+	margin: 0;
+	padding-left: 18px;
+}
+
+.alm-link {
+	color: #0073aa;
+	text-decoration: none;
+}
+
+.alm-link:hover {
+	text-decoration: underline;
+}
+
+.alm-muted {
+	color: #666;
+	margin: 8px 0 0 0;
+}
+
+/* Responsive tweaks for device view */
+@media (max-width: 768px) {
+	.alm-device-view__taxbox {
+		flex: 1 1 100%;
+		max-width: none;
+	}
+
+	.alm-device-acf-row {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Quick meta (Manufacturer/Model) in taxbox */
+.alm-device-quick-meta {
+	padding: 10px 12px;
+	background: #fff;
+	border: 1px solid #e6e6e6;
+	border-radius: 8px;
+	margin: 0 0 12px 0;
+	display: grid;
+	gap: 8px;
+}
+
+.alm-device-quick-row {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+/* Badge state inside the taxbox */
+.alm-device-view__taxbox .alm-availability {
+	margin-left: 8px;
+	vertical-align: middle;
+}
+
+/* Device state badges (alm_state) */
+.alm-availability {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 14px;
+	font-size: 0.75em;
+	font-weight: 700;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+/* available → green */
+.alm-state-available {
+	background: #d4edda;
+	color: #155724;
+}
+
+/* on-loan → dark green */
+.alm-state-on-loan {
+	background: #1e7e34;
+	color: #ffffff;
+}
+
+/* maintenance → red */
+.alm-state-maintenance {
+	background: #dc3545;
+	color: #ffffff;
+}
+
+/* retired → dark gray */
+.alm-state-retired {
+	background: #6c757d;
+	color: #ffffff;
+}
+
+/* badge alignment inside taxbox */
+.alm-device-view__taxbox .alm-availability {
+	margin-left: 8px;
+	vertical-align: middle;
 }
