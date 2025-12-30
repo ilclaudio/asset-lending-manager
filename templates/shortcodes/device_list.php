@@ -18,17 +18,18 @@ if ( isset( $_GET['s'] ) ) {
 
 <div id="alm_device_search_form">
 	<form method="get" class="alm-device-search-form">
-		<input
-			type="search"
-			name="s"
-			value="<?php echo esc_attr( $alm_current_search ); ?>"
-			placeholder="<?php esc_attr_e( 'Search devices...', 'asset-lending-manager' ); ?>"
-		/>
-		<button type="submit">
-			<?php esc_html_e( 'Search', 'asset-lending-manager' ); ?>
-		</button>
+		<div class="alm-search-input-wrap">
+			<span class="alm-search-icon" aria-hidden="true"></span>
+			<input
+				type="search"
+				name="s"
+				value="<?php echo esc_attr( $alm_current_search ); ?>"
+				placeholder="<?php esc_attr_e( 'Search devices...', 'asset-lending-manager' ); ?>"
+			/>
+			<div id="alm_device_autocomplete_dropdown" class="alm-autocomplete-dropdown"></div>
+		</div>
+		<button type="submit"><?php esc_html_e( 'Search', 'asset-lending-manager' ); ?></button>
 	</form>
-	<div id="alm_device_autocomplete_dropdown" class="alm-autocomplete-dropdown"></div>
 </div>
 
 <div id="alm_device_search_results">

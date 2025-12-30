@@ -11,35 +11,286 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$alm_device_id = isset( $device->id ) ? (int) $device->id : 0;
+if ( $alm_device_id <= 0 ) {
+	return;
+}
+
+/**
+ * Helper: render a taxonomy row.
+ */
+$alm_render_tax_row = function( $taxonomy_slug, $values ) {
+	if ( empty( $values ) || ! is_array( $values ) ) {
+		return;
+	}
+
+	$taxonomy_obj = get_taxonomy( $taxonomy_slug );
+	$label        = $taxonomy_obj && ! empty( $taxonomy_obj->labels->singular_name ) ? $taxonomy_obj->labels->singular_name : $taxonomy_slug;
+
+	?>
+	<div class="alm-device-tax-row alm-tax-<?php echo esc_attr( $taxonomy_slug ); ?>">
+		<span class="alm-tax-label"><?php echo esc_html( $label ); ?></span>
+		<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $values ) ); ?></span>
+	</div>
+	<?php
+};
+
+/**
+ * ACF fields (ordered as defined in adapter).
+ */
+$alm_order = array(
+	'manufacturer',
+	'model',
+	'data_acquisto',
+	'cost',
+	'dimensions',
+	'weight',
+	'location',
+	'components',
+	'user_manual',
+	'technical_data_sheet',
+	'serial_number',
+	'external_code',
+	'notes',
+);
+
+$alm_field_objects      = array();
+$alm_manufacturer_value = '';
+$alm_model_value        = '';
+if ( function_exists( 'get_field' ) ) {
+	$alm_manufacturer_value = (string) get_field( 'manufacturer', $device_id );
+	$alm_model_value         = (string) get_field( 'model', $device_id );
+}
+
+if ( function_exists( 'get_field_objects' ) ) {
+	$alm_tmp = get_field_objects( $alm_device_id );
+	if ( is_array( $alm_tmp ) ) {
+		$alm_field_objects = $alm_tmp;
+	}
+}
+
+$alm_rows = array();
+if ( ! empty( $alm_field_objects ) ) {
+	foreach ( $alm_order as $alm_field_name ) {
+		if ( ! isset( $alm_field_objects[ $alm_field_name ] ) ) {
+			continue;
+		}
+		$field = $alm_field_objects[ $alm_field_name ];
+		$label = isset( $field['label'] ) ? (string) $field['label'] : $alm_field_name;
+		$value = $field['value'] ?? null;
+		// Normalize empty values.
+		$alm_is_empty = ( null === $value || '' === $value || ( is_array( $value ) && empty( $value ) ) );
+		if ( $alm_is_empty ) {
+			continue;
+		}
+
+		$alm_rows[] = array(
+			'name'  => $alm_field_name,
+			'label' => $label,
+			'type'  => isset( $field['type'] ) ? (string) $field['type'] : '',
+			'value' => $value,
+		);
+	}
+}
+
+/**
+ * Big image for detail (do not change list thumbnail).
+ */
+$alm_detail_image_html = '';
+if ( has_post_thumbnail( $alm_device_id ) ) {
+	$alm_detail_image_html = get_the_post_thumbnail( $alm_device_id, 'large' );
+} else {
+	// Fallback to wrapper thumbnail (already includes plugin default image).
+	$alm_detail_image_html = isset( $device->thumbnail ) ? (string) $device->thumbnail : '';
+}
 ?>
 
-<article class="alm-device-detail">
+<article class="alm-device-detail alm-device-view">
 
-	<header class="alm-device-header">
-
+	<!-- I fascia: TITOLO -->
+	<header class="alm-device-view__title">
 		<h1 class="alm-device-title"><?php echo esc_html( $device->title ); ?></h1>
+	</header>
 
-		<?php if ( $device->thumbnail ) : ?>
-			<div class="alm-device-thumbnail">
-				<?php echo $device->thumbnail; ?>
+	<!-- II fascia: FOTO (sx) + BOX TASSE (dx) -->
+	<?php
+		$alm_state_slug  = '';
+		$alm_state_label = '';
+
+		$alm_state_terms = get_the_terms( $device_id, 'alm_state' );
+		if ( ! is_wp_error( $alm_state_terms ) && ! empty( $alm_state_terms ) ) {
+			$alm_state_slug  = (string) $alm_state_terms[0]->slug;
+			$alm_state_label = (string) $alm_state_terms[0]->name;
+		}
+		?>
+	<section class="alm-device-view__hero" aria-label="<?php esc_attr_e( 'Device overview', 'asset-lending-manager' ); ?>">
+		<div class="alm-device-view__media">
+			<?php if ( $alm_detail_image_html ) : ?>
+				<div class="alm-device-thumbnail alm-device-thumbnail--large">
+					<?php echo $alm_detail_image_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
+			<?php endif; ?>
+		</div>
+
+	<?php
+		$alm_state_class_map = array(
+			'available'   => 'alm-state-available',
+			'on-loan'     => 'alm-state-on-loan',
+			'maintenance' => 'alm-state-maintenance',
+			'retired'     => 'alm-state-retired',
+		);
+		$alm_state_css_class = '';
+		if ( $alm_state_slug && isset( $alm_state_class_map[ $alm_state_slug ] ) ) {
+			$alm_state_css_class = $alm_state_class_map[ $alm_state_slug ];
+		}
+	?>
+	<aside class="alm-device-view__taxbox" aria-label="<?php esc_attr_e( 'Device taxonomies', 'asset-lending-manager' ); ?>">
+		<?php if ( $alm_manufacturer_value || $alm_model_value ) : ?>
+			<div class="alm-device-quick-meta">
+				<?php if ( $alm_manufacturer_value ) : ?>
+					<div class="alm-device-quick-row">
+						<span class="alm-tax-label"><?php esc_html_e( 'Manufacturer', 'asset-lending-manager' ); ?></span>
+						<span class="alm-tax-value"><?php echo esc_html( $alm_manufacturer_value ); ?></span>
+					</div>
+				<?php endif; ?>
+				<?php if ( $alm_model_value ) : ?>
+					<div class="alm-device-quick-row">
+						<span class="alm-tax-label"><?php esc_html_e( 'Model', 'asset-lending-manager' ); ?></span>
+						<span class="alm-tax-value"><?php echo esc_html( $alm_model_value ); ?></span>
+					</div>
+				<?php endif; ?>
 			</div>
 		<?php endif; ?>
 
-	</header>
-
-	<div class="alm-device-taxonomies">
-		<?php foreach ( array( 'alm_structure', 'alm_type', 'alm_state' ) as $taxonomy ) : ?>
-			<?php if ( ! empty( $device->{$taxonomy} ) ) : ?>
-				<div class="alm-device-taxonomy alm-tax-<?php echo esc_attr( $taxonomy ); ?>">
-					<span class="alm-tax-label"><?php echo esc_html( get_taxonomy( $taxonomy )->labels->singular_name ); ?>:</span>
-					<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $device->{$taxonomy} ) ); ?></span>
+		<div class="alm-device-taxonomies alm-device-taxonomies--boxed">
+			<?php
+			$alm_render_tax_row( 'alm_structure', isset( $device->alm_structure ) ? $device->alm_structure : array() );
+			$alm_render_tax_row( 'alm_type', isset( $device->alm_type ) ? $device->alm_type : array() );
+			// State as badge + text.
+			if ( $alm_state_label ) :
+			?>
+				<div class="alm-device-tax-row alm-tax-alm_state">
+					<span class="alm-tax-label">
+						<?php echo esc_html( get_taxonomy( 'alm_state' )->labels->singular_name ); ?>
+					</span>
+					<span class="alm-tax-value">
+						<?php echo esc_html( $alm_state_label ); ?>
+						<span class="alm-availability <?php echo esc_attr( $alm_state_css_class ); ?>">
+							<?php echo esc_html( $alm_state_label ); ?>
+						</span>
+					</span>
 				</div>
 			<?php endif; ?>
-		<?php endforeach; ?>
-	</div>
+		</div	>
+	</aside>
 
-	<div class="alm-device-content">
-		<?php echo $device->content; ?>
-	</div>
+	</section>
+
+	<!-- III fascia: DESCRIZIONE COMPLETA -->
+	<section class="alm-device-view__content" aria-label="<?php esc_attr_e( 'Full description', 'asset-lending-manager' ); ?>">
+		<div class="alm-device-content">
+			<?php echo $device->content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+	</section>
+
+	<!-- IV fascia: ACF (inizialmente chiuso, espandibile) -->
+	<section class="alm-device-view__acf" aria-label="<?php esc_attr_e( 'Additional fields', 'asset-lending-manager' ); ?>">
+
+		<details class="alm-collapsible alm-collapsible--acf">
+			<summary class="alm-collapsible__summary">
+				<span class="alm-collapsible__title"><?php esc_html_e( 'Leggi dettagli', 'asset-lending-manager' ); ?></span>
+				<span class="alm-collapsible__hint" aria-hidden="true"><?php esc_html_e( 'Apri/Chiudi', 'asset-lending-manager' ); ?></span>
+			</summary>
+
+			<div class="alm-collapsible__body">
+				<?php if ( ! empty( $alm_rows ) ) : ?>
+					<dl class="alm-device-acf-list">
+						<?php foreach ( $alm_rows as $row ) : ?>
+							<div class="alm-device-acf-row alm-acf-<?php echo esc_attr( $row['name'] ); ?>">
+								<dt class="alm-device-acf-label"><?php echo esc_html( $row['label'] ); ?></dt>
+								<dd class="alm-device-acf-value">
+									<?php
+									// Render by type.
+									if ( 'file' === $row['type'] && is_array( $row['value'] ) && ! empty( $row['value']['url'] ) ) {
+										$file_url  = (string) $row['value']['url'];
+										$file_name = ! empty( $row['value']['filename'] ) ? (string) $row['value']['filename'] : $file_url;
+										?>
+										<a href="<?php echo esc_url( $file_url ); ?>" class="alm-link" target="_blank" rel="noopener">
+											<?php echo esc_html( $file_name ); ?>
+										</a>
+										<?php
+									} elseif ( 'post_object' === $row['type'] && is_array( $row['value'] ) ) {
+										// Multiple components (objects).
+										echo '<ul class="alm-device-components">';
+										foreach ( $row['value'] as $component_post ) {
+											if ( is_object( $component_post ) && ! empty( $component_post->ID ) ) {
+												$title = get_the_title( $component_post->ID );
+												$link  = get_permalink( $component_post->ID );
+												echo '<li><a class="alm-link" href="' . esc_url( $link ) . '">' . esc_html( $title ) . '</a></li>';
+											}
+										}
+										echo '</ul>';
+									} elseif ( 'number' === $row['type'] ) {
+										// Cost / numeric fields.
+										echo esc_html( (string) $row['value'] );
+									} else {
+										// Default (text, date, textarea, etc).
+										if ( is_array( $row['value'] ) ) {
+											echo esc_html( implode( ', ', array_map( 'strval', $row['value'] ) ) );
+										} else {
+											echo esc_html( (string) $row['value'] );
+										}
+									}
+									?>
+								</dd>
+							</div>
+						<?php endforeach; ?>
+					</dl>
+				<?php else : ?>
+					<p class="alm-muted"><?php esc_html_e( 'Nessun dettaglio aggiuntivo disponibile.', 'asset-lending-manager' ); ?></p>
+				<?php endif; ?>
+			</div>
+		</details>
+
+	</section>
+
+	<!-- V fascia: RICHIEDI PRESTITO -->
+	<section class="alm-device-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
+		<h2 class="alm-device-section-title"><?php esc_html_e( 'Richiedi prestito', 'asset-lending-manager' ); ?></h2>
+
+		<?php if ( is_user_logged_in() && current_user_can( 'alm_member' ) ) : ?>
+			<button type="button" class="alm-button" disabled="disabled">
+				<?php esc_html_e( 'Richiedi prestito', 'asset-lending-manager' ); ?>
+			</button>
+			<p class="alm-muted"><?php esc_html_e( 'Funzionalità in sviluppo.', 'asset-lending-manager' ); ?></p>
+		<?php else : ?>
+			<p class="alm-muted">
+				<?php esc_html_e( 'Per richiedere un prestito è necessario accedere come socio.', 'asset-lending-manager' ); ?>
+			</p>
+		<?php endif; ?>
+	</section>
+
+	<!-- VI fascia: RICHIESTE DI PRESTITO (vuota per ora) -->
+	<section class="alm-device-view__loan-requests" aria-label="<?php esc_attr_e( 'Loan requests', 'asset-lending-manager' ); ?>">
+		<h2 class="alm-device-section-title"><?php esc_html_e( 'Richieste di prestito', 'asset-lending-manager' ); ?></h2>
+		<p class="alm-muted"><?php esc_html_e( 'Nessuna richiesta da mostrare (sezione in sviluppo).', 'asset-lending-manager' ); ?></p>
+	</section>
+
+	<!-- VII fascia: STORICO PRESTITI (chiuso, apri/chiudi) -->
+	<section class="alm-device-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
+		<details class="alm-collapsible alm-collapsible--history">
+			<summary class="alm-collapsible__summary">
+				<span class="alm-collapsible__title"><?php esc_html_e( 'Storico dei prestiti', 'asset-lending-manager' ); ?></span>
+				<span class="alm-collapsible__hint" aria-hidden="true"><?php esc_html_e( 'Apri/Chiudi', 'asset-lending-manager' ); ?></span>
+			</summary>
+
+			<div class="alm-collapsible__body">
+				<p class="alm-muted">
+					<?php esc_html_e( 'Storico non disponibile (sezione in sviluppo).', 'asset-lending-manager' ); ?>
+				</p>
+			</div>
+		</details>
+	</section>
 
 </article>

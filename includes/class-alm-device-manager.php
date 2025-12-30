@@ -330,6 +330,7 @@ class ALM_Device_Manager {
 			ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
 			ALM_DEVICE_TYPE_TAXONOMY_SLUG,
 			ALM_DEVICE_STATE_TAXONOMY_SLUG,
+			ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
 		);
 
 		foreach ( $taxonomies as $taxonomy ) {
