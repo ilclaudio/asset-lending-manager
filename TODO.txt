@@ -1,8 +1,7 @@
 
-2) Gestione di picocss e miglioramento layout della lista.
-3) Aggiunta form di ricerca e paginazione.
-4) Aggiunta di Algolia Automplete e autocomplete manager?
-5) Miglioramento layout dettaglio device e sezioni per utenti.
+1) Search autocoplete: parameter for title or title+body.
+2) Device list: pagination.
+3) Device list: Kit filter and type filter.
 
 
 6) Si possono tradurre i ruoli?
