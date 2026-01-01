@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-01-01 09:03+0000\n"
+"PO-Revision-Date: 2026-01-01 18:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Additional fields"
 msgstr ""
 
-#: includes/class-alm-installer.php:153
+#: includes/class-alm-installer.php:161
 msgid "Advanced"
 msgstr ""
 
@@ -67,11 +67,11 @@ msgstr ""
 msgid "Asset Lending Manager"
 msgstr ""
 
-#: includes/class-alm-installer.php:126
+#: includes/class-alm-installer.php:134
 msgid "Available"
 msgstr ""
 
-#: includes/class-alm-installer.php:145
+#: includes/class-alm-installer.php:153
 msgid "Basic"
 msgstr ""
 
@@ -105,8 +105,8 @@ msgstr ""
 msgid "Device Levels"
 msgstr ""
 
-#: includes/class-alm-frontend-manager.php:214
-#: includes/class-alm-frontend-manager.php:310
+#: includes/class-alm-frontend-manager.php:263
+#: includes/class-alm-frontend-manager.php:359
 msgid "Device not found."
 msgstr ""
 
@@ -177,6 +177,10 @@ msgstr ""
 msgid "Full description"
 msgstr ""
 
+#: includes/class-alm-installer.php:119
+msgid "Generic"
+msgstr ""
+
 #: templates/shortcodes/device_view.php:269
 msgid "History not available (section under development)."
 msgstr ""
@@ -189,12 +193,16 @@ msgstr ""
 msgid "https://www.astrofilipisani.it/"
 msgstr ""
 
-#: includes/class-alm-installer.php:149
+#: includes/class-alm-installer.php:157
 msgid "Intermediate"
 msgstr ""
 
 #: includes/class-alm-installer.php:64
 msgid "Kit"
+msgstr ""
+
+#: templates/shortcodes/device_list.php:79
+msgid "Level"
 msgstr ""
 
 #: templates/shortcodes/device_view.php:260
@@ -219,7 +227,7 @@ msgstr ""
 msgid "Main page of the plugin"
 msgstr ""
 
-#: includes/class-alm-installer.php:130
+#: includes/class-alm-installer.php:138
 msgid "Maintenance"
 msgstr ""
 
@@ -229,6 +237,10 @@ msgstr ""
 
 #: includes/class-alm-role-manager.php:73
 msgid "Member"
+msgstr ""
+
+#: includes/class-alm-installer.php:115
+msgid "Mount"
 msgstr ""
 
 #: includes/class-alm-device-manager.php:97
@@ -247,7 +259,7 @@ msgstr ""
 msgid "No devices found in Trash"
 msgstr ""
 
-#: templates/shortcodes/device_list.php:89
+#: templates/shortcodes/device_list.php:99
 msgid "No devices found."
 msgstr ""
 
@@ -255,7 +267,7 @@ msgstr ""
 msgid "No requests to show (section under development)."
 msgstr ""
 
-#: templates/shortcodes/device_list.php:85
+#: templates/shortcodes/device_list.php:95
 #, php-format
 msgid "No results found for \"%s\"."
 msgstr ""
@@ -264,7 +276,7 @@ msgstr ""
 msgid "Ocular"
 msgstr ""
 
-#: includes/class-alm-installer.php:122
+#: includes/class-alm-installer.php:130
 msgid "On loan"
 msgstr ""
 
@@ -293,7 +305,7 @@ msgstr ""
 msgid "Reload Default Taxonomies Terms"
 msgstr ""
 
-#: includes/class-alm-installer.php:134
+#: includes/class-alm-installer.php:142
 msgid "Retired"
 msgstr ""
 
@@ -307,6 +319,14 @@ msgstr ""
 
 #: templates/shortcodes/device_list.php:27
 msgid "Search devices..."
+msgstr ""
+
+#: templates/shortcodes/device_list.php:74
+msgid "State"
+msgstr ""
+
+#: templates/shortcodes/device_list.php:64
+msgid "Structure"
 msgstr ""
 
 #: includes/class-alm-installer.php:75
@@ -327,6 +347,10 @@ msgstr ""
 
 #: includes/class-alm-installer.php:95
 msgid "Tripod"
+msgstr ""
+
+#: templates/shortcodes/device_list.php:69
+msgid "Type"
 msgstr ""
 
 #: includes/class-alm-plugin-manager.php:354
