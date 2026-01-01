@@ -49,7 +49,6 @@ if ( isset( $_GET['s'] ) ) {
 
 		<div class="alm-device-list">
 			<?php foreach ( $devices as $alm_device ) : ?>
-
 				<article class="alm-device-card">
 					<a href="<?php echo esc_url( $alm_device->permalink ); ?>" class="alm-device-link">
 						<?php if ( $alm_device->thumbnail ) : ?>
@@ -60,19 +59,30 @@ if ( isset( $_GET['s'] ) ) {
 						<div class="alm-device-content-wrapper">
 							<h2 class="alm-device-title"><?php echo esc_html( $alm_device->title ); ?></h2>
 							<div class="alm-device-taxonomies">
-								<?php foreach ( array( 'alm_structure', 'alm_type', 'alm_state' ) as $taxonomy ) : ?>
-									<?php if ( ! empty( $alm_device->{$taxonomy} ) ) : ?>
-										<div class="alm-device-taxonomy alm-tax-<?php echo esc_attr( $taxonomy ); ?>">
-											<span class="alm-tax-label"><?php echo esc_html( get_taxonomy( $taxonomy )->labels->singular_name ); ?>:</span>
-											<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_device->{$taxonomy} ) ); ?></span>
-										</div>
-									<?php endif; ?>
-								<?php endforeach; ?>
+								<!-- Tax: Structure -->
+								<div class="alm-device-taxonomy">
+									<span class="alm-tax-label"><?php echo esc_attr( __( 'Structure', 'asset-lending-manager' ) ); ?>:</span>
+									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_device->alm_structure ) ); ?></span>
+								</div>
+								<!-- Tax: Type -->
+								<div class="alm-device-taxonomy">
+									<span class="alm-tax-label"><?php echo esc_attr( __( 'Type', 'asset-lending-manager' ) ); ?>:</span>
+									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_device->alm_type ) ); ?></span>
+								</div>
+								<!-- Tax: State -->
+								<div class="alm-device-taxonomy">
+									<span class="alm-tax-label"><?php echo esc_attr( __( 'State', 'asset-lending-manager' ) ); ?>:</span>
+									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_device->alm_state ) ); ?></span>
+								</div>
+								<!-- Tax: Level -->
+								<div class="alm-device-taxonomy">
+									<span class="alm-tax-label"><?php echo esc_attr( __( 'Level', 'asset-lending-manager' ) ); ?>:</span>
+									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_device->alm_level ) ); ?></span>
+								</div>
 							</div>
 						</div>
 					</a>
 				</article>
-
 			<?php endforeach; ?>
 		</div>
 

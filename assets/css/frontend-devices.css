@@ -6,6 +6,10 @@
  * @package AssetLendingManager
  */
 
+/* ========================================================================
+   COMMON STYLES - Shared across all device views
+   ======================================================================== */
+
 /* Container */
 .alm-container {
 	max-width: 1200px;
@@ -26,47 +30,16 @@
 	font-size: 2em;
 }
 
-/* Device list */
-.alm-device-list {
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-	margin: 20px 0;
+/* Device title (used in both list and view) */
+.alm-device-title {
+	font-size: 1.2em;
+	margin: 0;
+	color: #23282d;
+	transition: color 0.3s ease;
+	line-height: 1.3;
 }
 
-/* Device card - horizontal layout */
-.alm-device-card {
-	background: #fff;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	padding: 15px;
-	transition: all 0.3s ease;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-	display: flex;
-	align-items: flex-start;
-	gap: 15px;
-}
-
-.alm-device-card:hover {
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-	transform: translateX(4px);
-}
-
-.alm-device-link {
-	text-decoration: none;
-	color: inherit;
-	display: flex;
-	align-items: flex-start;
-	gap: 15px;
-	flex: 1;
-	min-width: 0;
-}
-
-.alm-device-link:hover .alm-device-title {
-	color: #0073aa;
-}
-
-/* Device thumbnail - smaller, left side */
+/* Device thumbnail - base styles */
 .alm-device-thumbnail {
 	flex-shrink: 0;
 	width: 100px;
@@ -87,35 +60,13 @@
 	transition: transform 0.3s ease;
 }
 
-.alm-device-card:hover .alm-device-thumbnail img {
-	transform: scale(1.1);
-}
-
 .alm-device-default-thumbnail {
 	opacity: 0.6;
 	object-fit: contain;
 	padding: 10px;
 }
 
-/* Device content area - right side */
-.alm-device-content-wrapper {
-	flex: 1;
-	min-width: 0;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-/* Device title */
-.alm-device-title {
-	font-size: 1.2em;
-	margin: 0;
-	color: #23282d;
-	transition: color 0.3s ease;
-	line-height: 1.3;
-}
-
-/* Device taxonomies */
+/* Device taxonomies - base styles */
 .alm-device-taxonomies {
 	margin-top: 8px;
 	font-size: 0.85em;
@@ -140,7 +91,140 @@
 	color: #0073aa;
 }
 
-/* Single device detail */
+/* Device state badges (alm_state) */
+.alm-availability {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 14px;
+	font-size: 0.75em;
+	font-weight: 700;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+/* available → green */
+.alm-state-available {
+	background: #d4edda;
+	color: #155724;
+}
+
+/* on-loan → dark green */
+.alm-state-on-loan {
+	background: #1e7e34;
+	color: #ffffff;
+}
+
+/* maintenance → red */
+.alm-state-maintenance {
+	background: #dc3545;
+	color: #ffffff;
+}
+
+/* retired → dark gray */
+.alm-state-retired {
+	background: #6c757d;
+	color: #ffffff;
+}
+
+/* No results message */
+.alm-no-results {
+	text-align: center;
+	padding: 40px 20px;
+	color: #666;
+	font-size: 1.1em;
+}
+
+/* Error message */
+.alm-error {
+	background: #ffebee;
+	border-left: 4px solid #c62828;
+	padding: 15px;
+	color: #c62828;
+	border-radius: 4px;
+}
+
+/* Search form - used in device list */
+#alm_device_search_form {
+	position: relative;
+	width: 100%;
+	margin-bottom: 1em;
+}
+
+.alm-device-search-form {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+/* wrapper per input + icona + dropdown */
+.alm-search-input-wrap {
+	position: relative;
+	width: 60%;
+}
+
+.alm-device-search-form input[name="s"] {
+	width: 100%;
+	padding: 8px 8px 8px 34px; /* spazio per lente/spinner */
+	font-size: 1em;
+	box-sizing: border-box;
+}
+
+.alm-device-search-form button {
+	padding: 8px 16px;
+	font-size: 1em;
+	cursor: pointer;
+}
+
+/* Lens + loading spinner */
+#alm_device_search_form .alm-search-icon {
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	pointer-events: none;
+	z-index: 2;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	transform: translateY(-50%);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+}
+
+#alm_device_search_form.alm-autocomplete-loading .alm-search-icon {
+	background-image: none;
+	border: 2px solid #666;
+	border-top-color: transparent;
+	border-radius: 50%;
+	box-sizing: border-box;
+	animation: almSpin 0.8s linear infinite;
+}
+
+@keyframes almSpin {
+	to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Utility classes */
+.alm-link {
+	color: #0073aa;
+	text-decoration: none;
+}
+
+.alm-link:hover {
+	text-decoration: underline;
+}
+
+.alm-muted {
+	color: #666;
+	margin: 8px 0 0 0;
+}
+
+/* ========================================================================
+   DEVICE VIEW STYLES - Single device detail page (device_view.php)
+   ======================================================================== */
+
+/* Single device detail container */
 .alm-device-single {
 	max-width: 900px;
 }
@@ -192,135 +276,6 @@
 
 .alm-device-content p {
 	margin-bottom: 15px;
-}
-
-/* No results message */
-.alm-no-results {
-	text-align: center;
-	padding: 40px 20px;
-	color: #666;
-	font-size: 1.1em;
-}
-
-/* Error message */
-.alm-error {
-	background: #ffebee;
-	border-left: 4px solid #c62828;
-	padding: 15px;
-	color: #c62828;
-	border-radius: 4px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-	.alm-device-card {
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.alm-device-link {
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-	}
-
-	.alm-device-thumbnail {
-		width: 120px;
-		height: 120px;
-	}
-
-	.alm-device-content-wrapper {
-		align-items: center;
-	}
-
-	.alm-device-taxonomies {
-		justify-content: center;
-	}
-
-	.alm-device-detail {
-		padding: 20px;
-	}
-
-	.alm-device-detail .alm-device-title {
-		font-size: 1.5em;
-	}
-}
-
-@media (max-width: 480px) {
-	.alm-device-thumbnail {
-		width: 100px;
-		height: 100px;
-	}
-
-	.alm-container {
-		padding: 10px;
-	}
-
-	.alm-device-card {
-		padding: 12px;
-	}
-}
-
-/* Search form */
-#alm_device_search_form {
-	position: relative;
-	width: 100%;
-	margin-bottom: 1em;
-}
-
-.alm-device-search-form {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-/* wrapper per input + icona + dropdown */
-.alm-search-input-wrap {
-	position: relative;
-	width: 50%;
-}
-
-.alm-device-search-form input[name="s"] {
-	width: 100%;
-	padding: 8px 8px 8px 34px; /* spazio per lente/spinner */
-	font-size: 1em;
-	box-sizing: border-box;
-}
-
-.alm-device-search-form button {
-	padding: 8px 16px;
-	font-size: 1em;
-	cursor: pointer;
-}
-
-/* Lens + loading spinner */
-#alm_device_search_form .alm-search-icon {
-	position: absolute;
-	left: 10px;
-	top: 50%;
-	width: 16px;
-	height: 16px;
-	display: inline-block;
-	pointer-events: none;
-	z-index: 2;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: contain;
-	transform: translateY(-50%);
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-}
-
-#alm_device_search_form.alm-autocomplete-loading .alm-search-icon {
-	background-image: none;
-	border: 2px solid #666;
-	border-top-color: transparent;
-	border-radius: 50%;
-	box-sizing: border-box;
-	animation: almSpin 0.8s linear infinite;
-}
-
-@keyframes almSpin {
-	to { transform: translateY(-50%) rotate(360deg); }
 }
 
 /* Device view (shortcode) layout */
@@ -465,32 +420,6 @@
 	padding-left: 18px;
 }
 
-.alm-link {
-	color: #0073aa;
-	text-decoration: none;
-}
-
-.alm-link:hover {
-	text-decoration: underline;
-}
-
-.alm-muted {
-	color: #666;
-	margin: 8px 0 0 0;
-}
-
-/* Responsive tweaks for device view */
-@media (max-width: 768px) {
-	.alm-device-view__taxbox {
-		flex: 1 1 100%;
-		max-width: none;
-	}
-
-	.alm-device-acf-row {
-		grid-template-columns: 1fr;
-	}
-}
-
 /* Quick meta (Manufacturer/Model) in taxbox */
 .alm-device-quick-meta {
 	padding: 10px 12px;
@@ -514,43 +443,247 @@
 	vertical-align: middle;
 }
 
-/* Device state badges (alm_state) */
-.alm-availability {
-	display: inline-block;
-	padding: 4px 10px;
-	border-radius: 14px;
-	font-size: 0.75em;
-	font-weight: 700;
-	line-height: 1;
-	white-space: nowrap;
+/* ========================================================================
+   DEVICE LIST STYLES - Archive and list views (device_list.php)
+   ======================================================================== */
+
+/* Device list container */
+.alm-device-list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	margin: 20px 0;
 }
 
-/* available → green */
-.alm-state-available {
-	background: #d4edda;
-	color: #155724;
+/* Device card - horizontal layout */
+.alm-device-card {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 15px;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	display: flex;
+	align-items: flex-start;
+	gap: 15px;
 }
 
-/* on-loan → dark green */
-.alm-state-on-loan {
-	background: #1e7e34;
-	color: #ffffff;
+.alm-device-card:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	transform: translateX(4px);
 }
 
-/* maintenance → red */
-.alm-state-maintenance {
-	background: #dc3545;
-	color: #ffffff;
+.alm-device-link {
+	text-decoration: none;
+	color: inherit;
+	display: flex;
+	align-items: flex-start;
+	gap: 15px;
+	flex: 1;
+	min-width: 0;
 }
 
-/* retired → dark gray */
-.alm-state-retired {
-	background: #6c757d;
-	color: #ffffff;
+.alm-device-link:hover .alm-device-title {
+	color: #0073aa;
 }
 
-/* badge alignment inside taxbox */
-.alm-device-view__taxbox .alm-availability {
-	margin-left: 8px;
-	vertical-align: middle;
+.alm-device-card:hover .alm-device-thumbnail img {
+	transform: scale(1.1);
+}
+
+/* Device content area - right side */
+.alm-device-content-wrapper {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* ========================================================================
+   RESPONSIVE STYLES
+   ======================================================================== */
+
+/* Tablet e schermi medi (768px - 1024px) */
+@media (max-width: 1024px) {
+	.alm-device-taxonomies {
+		gap: 8px;
+		font-size: 0.8em;
+	}
+	
+	.alm-device-taxonomy {
+		min-width: 45%;
+	}
+}
+
+/* Smartphone e schermi piccoli (fino a 768px) */
+@media (max-width: 768px) {
+	/* Common styles responsive */
+	.alm-container {
+		padding: 15px;
+	}
+
+	/* Device list responsive */
+	.alm-device-card {
+		flex-direction: column;
+		align-items: center;
+		padding: 15px;
+	}
+
+	.alm-device-link {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		width: 100%;
+	}
+
+	.alm-device-thumbnail {
+		width: 150px;
+		height: 150px;
+		margin-bottom: 12px;
+	}
+
+	.alm-device-content-wrapper {
+		align-items: center;
+		width: 100%;
+	}
+
+	.alm-device-title {
+		font-size: 1.1em;
+		text-align: center;
+	}
+
+	/* Taxonomies: una colonna su mobile */
+	.alm-device-taxonomies {
+		flex-direction: column;
+		gap: 8px;
+		width: 100%;
+		justify-content: flex-start;
+	}
+
+	.alm-device-taxonomy {
+		width: 100%;
+		text-align: left;
+		padding: 6px 0;
+		border-bottom: 1px solid #f0f0f0;
+	}
+
+	.alm-device-taxonomy:last-child {
+		border-bottom: none;
+	}
+
+	/* Search form responsive */
+	.alm-device-search-form {
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.alm-search-input-wrap {
+		width: 100%;
+	}
+
+	.alm-device-search-form button {
+		width: 100%;
+		padding: 10px 16px;
+	}
+
+	/* Device view responsive */
+	.alm-device-detail {
+		padding: 20px;
+	}
+
+	.alm-device-detail .alm-device-title {
+		font-size: 1.5em;
+	}
+
+	.alm-device-detail .alm-device-taxonomies {
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.alm-device-detail .alm-device-taxonomy {
+		min-width: 100%;
+	}
+
+	.alm-device-view__taxbox {
+		flex: 1 1 100%;
+		max-width: none;
+	}
+
+	.alm-device-acf-row {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Schermi molto piccoli (fino a 480px) */
+@media (max-width: 480px) {
+	.alm-container {
+		padding: 10px;
+	}
+
+	.alm-device-card {
+		padding: 12px;
+		gap: 10px;
+	}
+
+	.alm-device-thumbnail {
+		width: 120px;
+		height: 120px;
+	}
+
+	.alm-device-title {
+		font-size: 1em;
+	}
+
+	.alm-device-taxonomies {
+		font-size: 0.85em;
+		gap: 6px;
+	}
+
+	.alm-tax-label {
+		display: block;
+		margin-bottom: 2px;
+	}
+
+	.alm-archive-title {
+		font-size: 1.5em;
+	}
+}
+
+/* Landscape mode per smartphone */
+@media (max-width: 768px) and (orientation: landscape) {
+	.alm-device-card {
+		flex-direction: row;
+	}
+
+	.alm-device-link {
+		flex-direction: row;
+		text-align: left;
+	}
+
+	.alm-device-thumbnail {
+		width: 100px;
+		height: 100px;
+		margin-bottom: 0;
+		margin-right: 15px;
+	}
+
+	.alm-device-content-wrapper {
+		align-items: flex-start;
+	}
+
+	.alm-device-title {
+		text-align: left;
+	}
+
+	.alm-device-taxonomies {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.alm-device-taxonomy {
+		width: auto;
+		min-width: 45%;
+		border-bottom: none;
+	}
 }
