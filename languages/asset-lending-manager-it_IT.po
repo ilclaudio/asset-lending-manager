@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-01-01 09:03+0000\n"
+"PO-Revision-Date: 2026-01-01 10:36+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -160,7 +160,7 @@ msgstr "Dispositivi"
 
 #: templates/shortcodes/device_list.php:41
 msgid "Devices found: %d"
-msgstr "Dispotivi trovati: %d"
+msgstr "Dispositivi trovati: %d"
 
 #: includes/class-alm-device-manager.php:96
 msgid "Edit Device"

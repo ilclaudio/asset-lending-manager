@@ -138,7 +138,7 @@ class ALM_Device_Manager {
 				'hierarchical'      => true,
 				'show_ui'           => true,
 				'show_in_rest'      => true,
-				'show_admin_column' => false,
+				'show_admin_column' => true,
 				'capabilities' => array(
 					'manage_terms' => ALM_EDIT_DEVICE,
 					'edit_terms'   => ALM_EDIT_DEVICE,
