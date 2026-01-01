@@ -277,6 +277,7 @@
 /* wrapper per input + icona + dropdown */
 .alm-search-input-wrap {
 	position: relative;
+	width: 50%;
 }
 
 .alm-device-search-form input[name="s"] {
