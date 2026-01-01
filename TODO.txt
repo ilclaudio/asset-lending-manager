@@ -1,21 +1,27 @@
 
-1) Search autocoplete: parameter for title or title+body.
-2) Device list: pagination.
-3) Device list: Kit filter and type filter.
+1) DeviceView: Taxonomies layout.
+2) DeviceView: Component list for KIT.
+3) DeviceView: KIT link for component.
+4) Open/Close for all sections.
+5) DeviceList: Kit filter.
+6) DeviceList: Type filter.
+
+8) Search autocomplete: parameter for title or title+body.
+9) Device list: pagination.
 
 
-6) Si possono tradurre i ruoli?
-7) Recover unit tests.
+10) Roles translation.
+11) Recover unit tests.
 
-8) Create loan and request tables. 
-9) Manage loan request.
-10) Manage loan.
+12) Create loan and request tables. 
+13) Manage loan request.
+14) Manage loan.
 
 20) Build unit tests.
 21) Integration tests.
 22) Functional tests.
 
-- Refactring of add_submenu_page
+
 
 - ??? // ALM_Device_Manager dipende da ACF_Adapter
 // Meglio passarlo nel costruttore:
