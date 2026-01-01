@@ -110,6 +110,14 @@ class ALM_Installer {
 					'slug'  => 'magazine',
 					'label' => __( 'Magazine', 'asset-lending-manager' ),
 				),
+				array(
+					'slug'  => 'mount',
+					'label' => __( 'Mount', 'asset-lending-manager' ),
+				),
+				array(
+					'slug'  => 'generic',
+					'label' => __( 'Generic', 'asset-lending-manager' ),
+				),
 			)
 		);
 

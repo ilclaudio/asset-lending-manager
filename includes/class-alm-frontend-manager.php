@@ -42,6 +42,9 @@ class ALM_Frontend_Manager {
 		add_shortcode( 'alm_device_view', array( $this, 'shortcode_device_view' ) );
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
+		// Login and logout redirect for operators and members.
+		add_filter( 'login_redirect', array( $this, 'redirect_login_by_role' ), 10, 3 );
+		add_filter( 'logout_redirect', array( $this, 'redirect_logout_by_role' ), 10, 3 );
 	}
 
 	/**
@@ -59,6 +62,52 @@ class ALM_Frontend_Manager {
 			return $this->locate_template( 'single-alm_device.php', $template );
 		}
 		return $template;
+	}
+
+	/**
+	 * Redirect operators and members after login.
+	 *
+	 * @param [type] $redirect_to
+	 * @param [type] $requested
+	 * @param [type] $user
+	 * @return void
+	 */
+	public function redirect_login_by_role( $redirect_to, $requested, $user ) {
+		if ( ! $user instanceof WP_User ) {
+			return $redirect_to;
+		}
+		// Explicit role check.
+		$roles = (array) $user->roles;
+		if (
+			in_array( ALM_MEMBER_ROLE, $roles, true ) ||
+			in_array( ALM_OPERATOR_ROLE, $roles, true )
+		) {
+			return home_url( '/device/' );
+		}
+		return $redirect_to;
+	}
+
+	/**
+	 * Redirect operators and members after logout.
+	 *
+	 * @param [type] $redirect_to
+	 * @param [type] $requested
+	 * @param [type] $user
+	 * @return void
+	 */
+	public function redirect_logout_by_role( $redirect_to, $requested, $user ) {
+		if ( ! $user instanceof WP_User ) {
+			return home_url( '/' );
+		}
+		// Explicit role check.
+		$roles = (array) $user->roles;
+		if (
+			in_array( ALM_MEMBER_ROLE, $roles, true ) ||
+			in_array( ALM_OPERATOR_ROLE, $roles, true )
+		) {
+			return home_url( '/' );
+		}
+		return $redirect_to;
 	}
 
 	/**
