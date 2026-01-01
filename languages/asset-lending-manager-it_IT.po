@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2025-12-26 14:00+0000\n"
+"PO-Revision-Date: 2026-01-01 09:03+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -23,8 +23,8 @@ msgstr "AAGG"
 msgid "Accessory"
 msgstr "Accessorio"
 
-#: includes/class-alm-plugin-manager.php:239
-#: includes/class-alm-plugin-manager.php:240
+#: includes/class-alm-plugin-manager.php:241
+#: includes/class-alm-plugin-manager.php:242
 msgid "Add a device"
 msgstr "Aggiungi dispositivo"
 
@@ -36,26 +36,35 @@ msgstr "Aggiungi nuovo"
 msgid "Add New Device"
 msgstr "Aggiungi nuovo dispositivo"
 
-#: includes/class-alm-installer.php:157
+#: templates/shortcodes/device_view.php:180
+msgid "Additional fields"
+msgstr "Campi aggiuntivi"
+
+#: includes/class-alm-installer.php:153
 msgid "Advanced"
 msgstr "Avanzato"
 
 #. Page title.
-#: includes/class-alm-plugin-manager.php:219
+#: includes/class-alm-plugin-manager.php:221
 msgid "ALM"
 msgstr "ALM"
 
-#: admin/alm-tools-page.php:6 includes/class-alm-plugin-manager.php:284
+#: admin/alm-tools-page.php:7 includes/class-alm-plugin-manager.php:286
 msgid "ALM Tools"
 msgstr "Strumenti ALM"
 
-#: admin/alm-tools-page.php:15
+#: admin/alm-tools-page.php:16
 msgid "An error occurred while loading default terms."
 msgstr ""
 "Si è verificato un errore durante il caricamento dei termini predefiniti."
 
+#: templates/shortcodes/device_view.php:239
+#: templates/shortcodes/device_view.php:243
+msgid "Ask for a loan"
+msgstr "Richiesta di prestito"
+
 #. Name of the plugin
-#: includes/class-alm-plugin-manager.php:218
+#: includes/class-alm-plugin-manager.php:220
 msgid "Asset Lending Manager"
 msgstr "Asset Lending Manager"
 
@@ -63,7 +72,7 @@ msgstr "Asset Lending Manager"
 msgid "Available"
 msgstr "Disponibile"
 
-#: includes/class-alm-installer.php:149
+#: includes/class-alm-installer.php:145
 msgid "Basic"
 msgstr "Base"
 
@@ -79,7 +88,7 @@ msgstr "Libro"
 msgid "Component"
 msgstr "Componente"
 
-#: admin/alm-tools-page.php:11
+#: admin/alm-tools-page.php:12
 msgid "Default terms loaded successfully."
 msgstr "Termini predefiniti caricati correttamente."
 
@@ -87,43 +96,56 @@ msgstr "Termini predefiniti caricati correttamente."
 msgid "Device"
 msgstr "Dispositivo"
 
-#: includes/class-alm-device-manager.php:182
-#: includes/class-alm-plugin-manager.php:275
-#: includes/class-alm-plugin-manager.php:276
+#: includes/class-alm-device-manager.php:202
+#: includes/class-alm-plugin-manager.php:277
+#: includes/class-alm-plugin-manager.php:278
 msgid "Device Level"
 msgstr "Livello dispositivo"
 
-#: includes/class-alm-device-manager.php:181
+#: includes/class-alm-device-manager.php:201
 msgid "Device Levels"
 msgstr "Livelli dispositivo"
 
-#: includes/class-alm-device-manager.php:166
-#: includes/class-alm-plugin-manager.php:266
-#: includes/class-alm-plugin-manager.php:267
+#: includes/class-alm-frontend-manager.php:214
+#: includes/class-alm-frontend-manager.php:310
+msgid "Device not found."
+msgstr "Dispositivo non trovato."
+
+#: templates/shortcodes/device_view.php:127
+msgid "Device overview"
+msgstr "Anteprima del dispositivo."
+
+#: includes/class-alm-device-manager.php:180
+#: includes/class-alm-plugin-manager.php:268
+#: includes/class-alm-plugin-manager.php:269
 msgid "Device State"
 msgstr "Stato dispositivo"
 
-#: includes/class-alm-device-manager.php:165
+#: includes/class-alm-device-manager.php:179
 msgid "Device States"
 msgstr "Stati dispositivo"
 
-#: includes/class-alm-device-manager.php:134
-#: includes/class-alm-plugin-manager.php:248
-#: includes/class-alm-plugin-manager.php:249
+#: includes/class-alm-device-manager.php:136
+#: includes/class-alm-plugin-manager.php:250
+#: includes/class-alm-plugin-manager.php:251
 msgid "Device Structure"
 msgstr "Struttura dispositivo"
 
-#: includes/class-alm-device-manager.php:133
+#: includes/class-alm-device-manager.php:135
 msgid "Device Structures"
 msgstr "Strutture dispositivo"
 
-#: includes/class-alm-device-manager.php:150
-#: includes/class-alm-plugin-manager.php:257
-#: includes/class-alm-plugin-manager.php:258
+#: templates/shortcodes/device_view.php:148
+msgid "Device taxonomies"
+msgstr "Tassonomie del dispositivo"
+
+#: includes/class-alm-device-manager.php:158
+#: includes/class-alm-plugin-manager.php:259
+#: includes/class-alm-plugin-manager.php:260
 msgid "Device Type"
 msgstr "Tipo dispositivo"
 
-#: includes/class-alm-device-manager.php:149
+#: includes/class-alm-device-manager.php:157
 msgid "Device Types"
 msgstr "Tipi dispositivo"
 
@@ -131,18 +153,34 @@ msgstr "Tipi dispositivo"
 #. page title.
 #: includes/class-alm-device-manager.php:92
 #: includes/class-alm-device-manager.php:102
-#: includes/class-alm-plugin-manager.php:230
-#: includes/class-alm-plugin-manager.php:231
+#: includes/class-alm-plugin-manager.php:232
+#: includes/class-alm-plugin-manager.php:233
 msgid "Devices"
 msgstr "Dispositivi"
+
+#: templates/shortcodes/device_list.php:41
+msgid "Devices found: %d"
+msgstr "Dispotivi trovati: %d"
 
 #: includes/class-alm-device-manager.php:96
 msgid "Edit Device"
 msgstr "Modifica dispositivo"
 
+#: templates/shortcodes/device_view.php:245
+msgid "Features under development."
+msgstr "Funzionalità in fase di sviluppo."
+
 #: includes/class-alm-installer.php:99
 msgid "Filter"
 msgstr "Filtro"
+
+#: templates/shortcodes/device_view.php:173
+msgid "Full description"
+msgstr "Descrizione completa"
+
+#: templates/shortcodes/device_view.php:269
+msgid "History not available (section under development)."
+msgstr "Storico non disponibile (sezione in fase di sviluppo)."
 
 #. URI of the plugin
 msgid "https://github.com/ilclaudio/asset-lending-manager"
@@ -152,13 +190,27 @@ msgstr "https://github.com/ilclaudio/asset-lending-manager"
 msgid "https://www.astrofilipisani.it/"
 msgstr "https://www.astrofilipisani.it/"
 
-#: includes/class-alm-installer.php:153
+#: includes/class-alm-installer.php:149
 msgid "Intermediate"
 msgstr "Intermedio"
 
 #: includes/class-alm-installer.php:64
 msgid "Kit"
 msgstr "Kit"
+
+#: templates/shortcodes/device_view.php:260
+#: templates/shortcodes/device_view.php:263
+msgid "Loan history"
+msgstr "Storico dei prestiti"
+
+#: templates/shortcodes/device_view.php:238
+msgid "Loan request"
+msgstr "Richiesta di prestito"
+
+#: templates/shortcodes/device_view.php:254
+#: templates/shortcodes/device_view.php:255
+msgid "Loan requests"
+msgstr "Richieste di prestito"
 
 #: includes/class-alm-installer.php:111
 msgid "Magazine"
@@ -185,6 +237,10 @@ msgstr "Socio"
 msgid "New Device"
 msgstr "Nuovo dispositivo"
 
+#: templates/shortcodes/device_view.php:231
+msgid "No additional details available."
+msgstr "Non sono disponibili ulteriori dettagli."
+
 #: includes/class-alm-device-manager.php:100
 msgid "No devices found"
 msgstr "Nessun dispositivo trovato"
@@ -192,6 +248,19 @@ msgstr "Nessun dispositivo trovato"
 #: includes/class-alm-device-manager.php:101
 msgid "No devices found in Trash"
 msgstr "Nessun dispsitivo nel cestino"
+
+#: templates/shortcodes/device_list.php:89
+msgid "No devices found."
+msgstr "Nessun dispositivo trovato."
+
+#: templates/shortcodes/device_view.php:256
+msgid "No requests to show (section under development)."
+msgstr "Nessuna richiesta da mostrare (sezione in fase di sviluppo)."
+
+#: templates/shortcodes/device_list.php:85
+#, php-format
+msgid "No results found for \"%s\"."
+msgstr "Nessun risultato per \"%s\""
 
 #: includes/class-alm-installer.php:79
 msgid "Ocular"
@@ -201,6 +270,11 @@ msgstr "Oculare"
 msgid "On loan"
 msgstr "In prestito"
 
+#: templates/shortcodes/device_view.php:184
+#: templates/shortcodes/device_view.php:264
+msgid "Open/Close"
+msgstr "Apri/chiudi"
+
 #: includes/class-alm-role-manager.php:83
 msgid "Operator"
 msgstr "Operatore"
@@ -209,11 +283,15 @@ msgstr "Operatore"
 msgid "Optical Tube"
 msgstr "Tubo ottico"
 
+#: templates/shortcodes/device_view.php:183
+msgid "Read details"
+msgstr "Leggi i dettagli"
+
 #: includes/class-alm-installer.php:83
 msgid "Refractor"
 msgstr "Rifrattore"
 
-#: admin/alm-tools-page.php:23
+#: admin/alm-tools-page.php:24
 msgid "Reload Default Taxonomies Terms"
 msgstr "Ricarica i termini delle tassonomie predefinite"
 
@@ -221,9 +299,17 @@ msgstr "Ricarica i termini delle tassonomie predefinite"
 msgid "Retired"
 msgstr "Ritirato"
 
+#: templates/shortcodes/device_list.php:31
+msgid "Search"
+msgstr "Cerca"
+
 #: includes/class-alm-device-manager.php:99
 msgid "Search Devices"
 msgstr "Cerca dispositivi"
+
+#: templates/shortcodes/device_list.php:27
+msgid "Search devices..."
+msgstr "Cerca i dispositivi..."
 
 #: includes/class-alm-installer.php:75
 msgid "Telescope"
@@ -233,19 +319,20 @@ msgstr "Telescopio"
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr "Il plugin ALM richiede che il plugin ACF sia installato e abilitato."
 
-#: includes/class-alm-plugin-manager.php:285
+#: templates/shortcodes/device_view.php:248
+msgid "To request a loan, you must log in as a member."
+msgstr ""
+"Per richiedere un prestito, è necessario effettuare l'accesso come membro."
+
+#: includes/class-alm-plugin-manager.php:287
 msgid "Tools"
 msgstr "Strumenti"
-
-#: includes/class-alm-installer.php:138
-msgid "Transferred"
-msgstr "Trasferito"
 
 #: includes/class-alm-installer.php:95
 msgid "Tripod"
 msgstr "Treppiede"
 
-#: includes/class-alm-plugin-manager.php:352
+#: includes/class-alm-plugin-manager.php:354
 msgid "Unauthorized action."
 msgstr "Azione non autorizzata."
 
@@ -253,7 +340,7 @@ msgstr "Azione non autorizzata."
 msgid "View Device"
 msgstr "Vedi dispositivo"
 
-#: includes/class-alm-plugin-manager.php:314
-#: includes/class-alm-plugin-manager.php:326
+#: includes/class-alm-plugin-manager.php:316
+#: includes/class-alm-plugin-manager.php:328
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Non hai autorizzazioni sufficienti per accedere a questa pagina."

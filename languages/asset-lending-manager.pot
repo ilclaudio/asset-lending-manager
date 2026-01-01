@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-26 13:57+0000\n"
+"POT-Creation-Date: 2026-01-01 09:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -24,8 +24,8 @@ msgstr ""
 msgid "Accessory"
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:239
-#: includes/class-alm-plugin-manager.php:240
+#: includes/class-alm-plugin-manager.php:241
+#: includes/class-alm-plugin-manager.php:242
 msgid "Add a device"
 msgstr ""
 
@@ -37,25 +37,34 @@ msgstr ""
 msgid "Add New Device"
 msgstr ""
 
-#: includes/class-alm-installer.php:157
+#: templates/shortcodes/device_view.php:180
+msgid "Additional fields"
+msgstr ""
+
+#: includes/class-alm-installer.php:153
 msgid "Advanced"
 msgstr ""
 
 #. Page title.
-#: includes/class-alm-plugin-manager.php:219
+#: includes/class-alm-plugin-manager.php:221
 msgid "ALM"
 msgstr ""
 
-#: admin/alm-tools-page.php:6 includes/class-alm-plugin-manager.php:284
+#: admin/alm-tools-page.php:7 includes/class-alm-plugin-manager.php:286
 msgid "ALM Tools"
 msgstr ""
 
-#: admin/alm-tools-page.php:15
+#: admin/alm-tools-page.php:16
 msgid "An error occurred while loading default terms."
 msgstr ""
 
+#: templates/shortcodes/device_view.php:239
+#: templates/shortcodes/device_view.php:243
+msgid "Ask for a loan"
+msgstr ""
+
 #. Name of the plugin
-#: includes/class-alm-plugin-manager.php:218
+#: includes/class-alm-plugin-manager.php:220
 msgid "Asset Lending Manager"
 msgstr ""
 
@@ -63,7 +72,7 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-#: includes/class-alm-installer.php:149
+#: includes/class-alm-installer.php:145
 msgid "Basic"
 msgstr ""
 
@@ -79,7 +88,7 @@ msgstr ""
 msgid "Component"
 msgstr ""
 
-#: admin/alm-tools-page.php:11
+#: admin/alm-tools-page.php:12
 msgid "Default terms loaded successfully."
 msgstr ""
 
@@ -87,43 +96,56 @@ msgstr ""
 msgid "Device"
 msgstr ""
 
-#: includes/class-alm-device-manager.php:182
-#: includes/class-alm-plugin-manager.php:275
-#: includes/class-alm-plugin-manager.php:276
+#: includes/class-alm-device-manager.php:202
+#: includes/class-alm-plugin-manager.php:277
+#: includes/class-alm-plugin-manager.php:278
 msgid "Device Level"
 msgstr ""
 
-#: includes/class-alm-device-manager.php:181
+#: includes/class-alm-device-manager.php:201
 msgid "Device Levels"
 msgstr ""
 
-#: includes/class-alm-device-manager.php:166
-#: includes/class-alm-plugin-manager.php:266
-#: includes/class-alm-plugin-manager.php:267
+#: includes/class-alm-frontend-manager.php:214
+#: includes/class-alm-frontend-manager.php:310
+msgid "Device not found."
+msgstr ""
+
+#: templates/shortcodes/device_view.php:127
+msgid "Device overview"
+msgstr ""
+
+#: includes/class-alm-device-manager.php:180
+#: includes/class-alm-plugin-manager.php:268
+#: includes/class-alm-plugin-manager.php:269
 msgid "Device State"
 msgstr ""
 
-#: includes/class-alm-device-manager.php:165
+#: includes/class-alm-device-manager.php:179
 msgid "Device States"
 msgstr ""
 
-#: includes/class-alm-device-manager.php:134
-#: includes/class-alm-plugin-manager.php:248
-#: includes/class-alm-plugin-manager.php:249
+#: includes/class-alm-device-manager.php:136
+#: includes/class-alm-plugin-manager.php:250
+#: includes/class-alm-plugin-manager.php:251
 msgid "Device Structure"
 msgstr ""
 
-#: includes/class-alm-device-manager.php:133
+#: includes/class-alm-device-manager.php:135
 msgid "Device Structures"
 msgstr ""
 
-#: includes/class-alm-device-manager.php:150
-#: includes/class-alm-plugin-manager.php:257
-#: includes/class-alm-plugin-manager.php:258
+#: templates/shortcodes/device_view.php:148
+msgid "Device taxonomies"
+msgstr ""
+
+#: includes/class-alm-device-manager.php:158
+#: includes/class-alm-plugin-manager.php:259
+#: includes/class-alm-plugin-manager.php:260
 msgid "Device Type"
 msgstr ""
 
-#: includes/class-alm-device-manager.php:149
+#: includes/class-alm-device-manager.php:157
 msgid "Device Types"
 msgstr ""
 
@@ -131,17 +153,33 @@ msgstr ""
 #. page title.
 #: includes/class-alm-device-manager.php:92
 #: includes/class-alm-device-manager.php:102
-#: includes/class-alm-plugin-manager.php:230
-#: includes/class-alm-plugin-manager.php:231
+#: includes/class-alm-plugin-manager.php:232
+#: includes/class-alm-plugin-manager.php:233
 msgid "Devices"
+msgstr ""
+
+#: templates/shortcodes/device_list.php:41
+msgid "Devices found: %d"
 msgstr ""
 
 #: includes/class-alm-device-manager.php:96
 msgid "Edit Device"
 msgstr ""
 
+#: templates/shortcodes/device_view.php:245
+msgid "Features under development."
+msgstr ""
+
 #: includes/class-alm-installer.php:99
 msgid "Filter"
+msgstr ""
+
+#: templates/shortcodes/device_view.php:173
+msgid "Full description"
+msgstr ""
+
+#: templates/shortcodes/device_view.php:269
+msgid "History not available (section under development)."
 msgstr ""
 
 #. URI of the plugin
@@ -152,12 +190,26 @@ msgstr ""
 msgid "https://www.astrofilipisani.it/"
 msgstr ""
 
-#: includes/class-alm-installer.php:153
+#: includes/class-alm-installer.php:149
 msgid "Intermediate"
 msgstr ""
 
 #: includes/class-alm-installer.php:64
 msgid "Kit"
+msgstr ""
+
+#: templates/shortcodes/device_view.php:260
+#: templates/shortcodes/device_view.php:263
+msgid "Loan history"
+msgstr ""
+
+#: templates/shortcodes/device_view.php:238
+msgid "Loan request"
+msgstr ""
+
+#: templates/shortcodes/device_view.php:254
+#: templates/shortcodes/device_view.php:255
+msgid "Loan requests"
 msgstr ""
 
 #: includes/class-alm-installer.php:111
@@ -184,12 +236,29 @@ msgstr ""
 msgid "New Device"
 msgstr ""
 
+#: templates/shortcodes/device_view.php:231
+msgid "No additional details available."
+msgstr ""
+
 #: includes/class-alm-device-manager.php:100
 msgid "No devices found"
 msgstr ""
 
 #: includes/class-alm-device-manager.php:101
 msgid "No devices found in Trash"
+msgstr ""
+
+#: templates/shortcodes/device_list.php:89
+msgid "No devices found."
+msgstr ""
+
+#: templates/shortcodes/device_view.php:256
+msgid "No requests to show (section under development)."
+msgstr ""
+
+#: templates/shortcodes/device_list.php:85
+#, php-format
+msgid "No results found for \"%s\"."
 msgstr ""
 
 #: includes/class-alm-installer.php:79
@@ -200,6 +269,11 @@ msgstr ""
 msgid "On loan"
 msgstr ""
 
+#: templates/shortcodes/device_view.php:184
+#: templates/shortcodes/device_view.php:264
+msgid "Open/Close"
+msgstr ""
+
 #: includes/class-alm-role-manager.php:83
 msgid "Operator"
 msgstr ""
@@ -208,11 +282,15 @@ msgstr ""
 msgid "Optical Tube"
 msgstr ""
 
+#: templates/shortcodes/device_view.php:183
+msgid "Read details"
+msgstr ""
+
 #: includes/class-alm-installer.php:83
 msgid "Refractor"
 msgstr ""
 
-#: admin/alm-tools-page.php:23
+#: admin/alm-tools-page.php:24
 msgid "Reload Default Taxonomies Terms"
 msgstr ""
 
@@ -220,8 +298,16 @@ msgstr ""
 msgid "Retired"
 msgstr ""
 
+#: templates/shortcodes/device_list.php:31
+msgid "Search"
+msgstr ""
+
 #: includes/class-alm-device-manager.php:99
 msgid "Search Devices"
+msgstr ""
+
+#: templates/shortcodes/device_list.php:27
+msgid "Search devices..."
 msgstr ""
 
 #: includes/class-alm-installer.php:75
@@ -232,19 +318,19 @@ msgstr ""
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:285
-msgid "Tools"
+#: templates/shortcodes/device_view.php:248
+msgid "To request a loan, you must log in as a member."
 msgstr ""
 
-#: includes/class-alm-installer.php:138
-msgid "Transferred"
+#: includes/class-alm-plugin-manager.php:287
+msgid "Tools"
 msgstr ""
 
 #: includes/class-alm-installer.php:95
 msgid "Tripod"
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:352
+#: includes/class-alm-plugin-manager.php:354
 msgid "Unauthorized action."
 msgstr ""
 
@@ -252,7 +338,7 @@ msgstr ""
 msgid "View Device"
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:314
-#: includes/class-alm-plugin-manager.php:326
+#: includes/class-alm-plugin-manager.php:316
+#: includes/class-alm-plugin-manager.php:328
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
