@@ -108,12 +108,12 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 
 <article class="alm-device-detail alm-device-view">
 
-	<!-- I fascia: TITOLO -->
+	<!-- I section: Title -->
 	<header class="alm-device-view__title">
 		<h1 class="alm-device-title"><?php echo esc_html( $device->title ); ?></h1>
 	</header>
 
-	<!-- II fascia: FOTO (sx) + BOX TASSE (dx) -->
+	<!-- II section: FOTO (sx) + Taxonomies box (dx) -->
 	<?php
 		$alm_state_slug  = '';
 		$alm_state_label = '';
@@ -152,7 +152,7 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 			$alm_render_tax_row( 'alm_type', isset( $device->alm_type ) ? $device->alm_type : array() );
 			// State as badge + text.
 			if ( $alm_state_label ) :
-			?>
+				?>
 				<div class="alm-device-tax-row alm-tax-alm_state">
 					<span class="alm-tax-label">
 						<?php echo esc_html( get_taxonomy( 'alm_state' )->labels->singular_name ); ?>
@@ -169,22 +169,20 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 
 	</section>
 
-	<!-- III fascia: DESCRIZIONE COMPLETA -->
+	<!-- III section: Device description -->
 	<section class="alm-device-view__content" aria-label="<?php esc_attr_e( 'Full description', 'asset-lending-manager' ); ?>">
 		<div class="alm-device-content">
 			<?php echo $device->content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 	</section>
 
-	<!-- IV fascia: ACF (inizialmente chiuso, espandibile) -->
+	<!-- IV section: Device optional fields -->
 	<section class="alm-device-view__acf" aria-label="<?php esc_attr_e( 'Additional fields', 'asset-lending-manager' ); ?>">
-
 		<details class="alm-collapsible alm-collapsible--acf">
 			<summary class="alm-collapsible__summary">
-				<span class="alm-collapsible__title"><?php esc_html_e( 'Leggi dettagli', 'asset-lending-manager' ); ?></span>
-				<span class="alm-collapsible__hint" aria-hidden="true"><?php esc_html_e( 'Apri/Chiudi', 'asset-lending-manager' ); ?></span>
+				<span class="alm-collapsible__title"><?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?></span>
+				<span class="alm-collapsible__hint" aria-hidden="true"><?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?></span>
 			</summary>
-
 			<div class="alm-collapsible__body">
 				<?php if ( ! empty( $alm_rows ) ) : ?>
 					<dl class="alm-device-acf-list">
@@ -230,46 +228,45 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 						<?php endforeach; ?>
 					</dl>
 				<?php else : ?>
-					<p class="alm-muted"><?php esc_html_e( 'Nessun dettaglio aggiuntivo disponibile.', 'asset-lending-manager' ); ?></p>
+					<p class="alm-muted"><?php esc_html_e( 'No additional details available.', 'asset-lending-manager' ); ?></p>
 				<?php endif; ?>
 			</div>
 		</details>
-
 	</section>
 
-	<!-- V fascia: RICHIEDI PRESTITO -->
+	<!-- V section: Book loan request -->
 	<section class="alm-device-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
-		<h2 class="alm-device-section-title"><?php esc_html_e( 'Richiedi prestito', 'asset-lending-manager' ); ?></h2>
+		<h2 class="alm-device-section-title"><?php esc_html_e( 'Ask for a loan', 'asset-lending-manager' ); ?></h2>
 
 		<?php if ( is_user_logged_in() && current_user_can( 'alm_member' ) ) : ?>
 			<button type="button" class="alm-button" disabled="disabled">
-				<?php esc_html_e( 'Richiedi prestito', 'asset-lending-manager' ); ?>
+				<?php esc_html_e( 'Ask for a loan', 'asset-lending-manager' ); ?>
 			</button>
-			<p class="alm-muted"><?php esc_html_e( 'Funzionalità in sviluppo.', 'asset-lending-manager' ); ?></p>
+			<p class="alm-muted"><?php esc_html_e( 'Features under development.', 'asset-lending-manager' ); ?></p>
 		<?php else : ?>
 			<p class="alm-muted">
-				<?php esc_html_e( 'Per richiedere un prestito è necessario accedere come socio.', 'asset-lending-manager' ); ?>
+				<?php esc_html_e( 'To request a loan, you must log in as a member.', 'asset-lending-manager' ); ?>
 			</p>
 		<?php endif; ?>
 	</section>
 
-	<!-- VI fascia: RICHIESTE DI PRESTITO (vuota per ora) -->
+	<!-- VI section: Loan requests -->
 	<section class="alm-device-view__loan-requests" aria-label="<?php esc_attr_e( 'Loan requests', 'asset-lending-manager' ); ?>">
-		<h2 class="alm-device-section-title"><?php esc_html_e( 'Richieste di prestito', 'asset-lending-manager' ); ?></h2>
-		<p class="alm-muted"><?php esc_html_e( 'Nessuna richiesta da mostrare (sezione in sviluppo).', 'asset-lending-manager' ); ?></p>
+		<h2 class="alm-device-section-title"><?php esc_html_e( 'Loan requests', 'asset-lending-manager' ); ?></h2>
+		<p class="alm-muted"><?php esc_html_e( 'No requests to show (section under development).', 'asset-lending-manager' ); ?></p>
 	</section>
 
-	<!-- VII fascia: STORICO PRESTITI (chiuso, apri/chiudi) -->
+	<!-- VII section: Loan history -->
 	<section class="alm-device-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
 		<details class="alm-collapsible alm-collapsible--history">
 			<summary class="alm-collapsible__summary">
-				<span class="alm-collapsible__title"><?php esc_html_e( 'Storico dei prestiti', 'asset-lending-manager' ); ?></span>
-				<span class="alm-collapsible__hint" aria-hidden="true"><?php esc_html_e( 'Apri/Chiudi', 'asset-lending-manager' ); ?></span>
+				<span class="alm-collapsible__title"><?php esc_html_e( 'Loan history', 'asset-lending-manager' ); ?></span>
+				<span class="alm-collapsible__hint" aria-hidden="true"><?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?></span>
 			</summary>
 
 			<div class="alm-collapsible__body">
 				<p class="alm-muted">
-					<?php esc_html_e( 'Storico non disponibile (sezione in sviluppo).', 'asset-lending-manager' ); ?>
+					<?php esc_html_e( 'History not available (section under development).', 'asset-lending-manager' ); ?>
 				</p>
 			</div>
 		</details>
