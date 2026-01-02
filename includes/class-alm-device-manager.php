@@ -216,84 +216,84 @@ class ALM_Device_Manager {
 
 	}
 
-	/**
-	 * Check if a device is a kit.
-	 *
-	 * @param int $device_id Device post ID.
-	 * @return bool
-	 */
-	public function is_kit( $device_id ) {
-		return has_term( 'kit', ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG, $device_id );
-	}
+	// /**
+	//  * Check if a device is a kit.
+	//  *
+	//  * @param int $device_id Device post ID.
+	//  * @return bool
+	//  */
+	// public function is_kit( $device_id ) {
+	// 	return has_term( ALM_DEVICE_KIT_SLUG, ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG, $device_id );
+	// }
 
-	/**
-	 * Check if a device is a component.
-	 *
-	 * @param int $device_id Device post ID.
-	 * @return bool
-	 */
-	public function is_component( $device_id ) {
-		return has_term( 'component', ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG, $device_id );
-	}
+	// /**
+	//  * Check if a device is a component.
+	//  *
+	//  * @param int $device_id Device post ID.
+	//  * @return bool
+	//  */
+	// public function is_component( $device_id ) {
+	// 	return has_term( ALM_DEVICE_COMPONENT_SLUG, ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG, $device_id );
+	// }
 
-	/**
-	 * Get current device state.
-	 *
-	 * @param int $device_id Device post ID.
-	 * @return string|null
-	 */
-	public function get_device_state( $device_id ) {
-		$terms = get_the_terms( $device_id, ALM_DEVICE_STATE_TAXONOMY_SLUG );
+	// /**
+	//  * Get current device state.
+	//  *
+	//  * @param int $device_id Device post ID.
+	//  * @return string|null
+	//  */
+	// public function get_device_state( $device_id ) {
+	// 	$terms = get_the_terms( $device_id, ALM_DEVICE_STATE_TAXONOMY_SLUG );
 
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			return null;
-		}
+	// 	if ( is_wp_error( $terms ) || empty( $terms ) ) {
+	// 		return null;
+	// 	}
 
-		return $terms[0]->slug;
-	}
+	// 	return $terms[0]->slug;
+	// }
 
-	/**
-	 * Get all published devices as wrapper objects.
-	 *
-	 * @param array $args Optional. Query arguments to customize the device retrieval.
-	 *   Accepts any WP_Query parameter. Common options:
-	 *   - 'posts_per_page': Number of devices to retrieve (default: -1 for all)
-	 *   - 'orderby': Sort field (default: 'title')
-	 *   - 'order': Sort direction (default: 'ASC')
-	 *   - 'tax_query': Taxonomy query for filtering
-	 * @return array Array of device wrapper objects from get_device_wrapper()
-	 */
-	public static function get_devices( $args = array() ) {
-		// Default query arguments.
-		$defaults = array(
-			'post_type'      => ALM_DEVICE_CPT_SLUG,
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'orderby'        => 'title',
-			'order'          => 'ASC',
-		);
+	// /**
+	//  * Get all published devices as wrapper objects.
+	//  *
+	//  * @param array $args Optional. Query arguments to customize the device retrieval.
+	//  *   Accepts any WP_Query parameter. Common options:
+	//  *   - 'posts_per_page': Number of devices to retrieve (default: -1 for all)
+	//  *   - 'orderby': Sort field (default: 'title')
+	//  *   - 'order': Sort direction (default: 'ASC')
+	//  *   - 'tax_query': Taxonomy query for filtering
+	//  * @return array Array of device wrapper objects from get_device_wrapper()
+	//  */
+	// public static function get_devices( $args = array() ) {
+	// 	// Default query arguments.
+	// 	$defaults = array(
+	// 		'post_type'      => ALM_DEVICE_CPT_SLUG,
+	// 		'post_status'    => 'publish',
+	// 		'posts_per_page' => -1,
+	// 		'orderby'        => 'title',
+	// 		'order'          => 'ASC',
+	// 	);
 
-		// Merge user args with defaults.
-		$query_args = wp_parse_args( $args, $defaults );
+	// 	// Merge user args with defaults.
+	// 	$query_args = wp_parse_args( $args, $defaults );
 
-		// Execute query.
-		$query = new WP_Query( $query_args );
+	// 	// Execute query.
+	// 	$query = new WP_Query( $query_args );
 
-		// Prepare devices array using wrappers.
-		$devices = array();
-		if ( $query->have_posts() ) {
-			while ( $query->have_posts() ) {
-				$query->the_post();
-				$device = self::get_device_wrapper( get_the_ID() );
-				if ( $device ) {
-					$devices[] = $device;
-				}
-			}
-			wp_reset_postdata();
-		}
+	// 	// Prepare devices array using wrappers.
+	// 	$devices = array();
+	// 	if ( $query->have_posts() ) {
+	// 		while ( $query->have_posts() ) {
+	// 			$query->the_post();
+	// 			$device = self::get_device_wrapper( get_the_ID() );
+	// 			if ( $device ) {
+	// 				$devices[] = $device;
+	// 			}
+	// 		}
+	// 		wp_reset_postdata();
+	// 	}
 
-		return $devices;
-	}
+	// 	return $devices;
+	// }
 
 	/**
 	 * Return a view model of a device for frontend display.
@@ -365,14 +365,14 @@ class ALM_Device_Manager {
 			'dimensions',
 			'weight',
 			'location',
-			'components',
 			'user_manual',
 			'technical_data_sheet',
 			'serial_number',
 			'external_code',
 			'notes',
+			'components',
 		);
-		$field_objects      = array();
+		$field_objects = array();
 		// $manufacturer_value = (string) get_field( 'manufacturer', $device_id );
 		if ( function_exists( 'get_field_objects' ) ) {
 			$tmp = get_field_objects( $device_id );

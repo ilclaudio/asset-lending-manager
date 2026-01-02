@@ -27,6 +27,10 @@ define( 'ALM_DEVICE_CPT_SLUG', 'alm_device' );
 define( 'ALM_MAIN_MENU_ICON', 'dashicons-hammer' );
 define( 'ALM_DEVICE_ICON', 'dashicons-hammer' );
 
+// Device structures.
+define( 'ALM_DEVICE_KIT_SLUG', 'kit' );
+define( 'ALM_DEVICE_COMPONENT_SLUG', 'component' );
+
 // Taxonomies.
 define( 'ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG', 'alm_structure' );
 define( 'ALM_DEVICE_TYPE_TAXONOMY_SLUG', 'alm_type' );

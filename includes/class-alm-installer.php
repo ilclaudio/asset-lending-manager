@@ -56,11 +56,11 @@ class ALM_Installer {
 			ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
 			array(
 				array(
-					'slug'  => 'component',
+					'slug'  => ALM_DEVICE_COMPONENT_SLUG,
 					'label' => __( 'Component', 'asset-lending-manager' ),
 				),
 				array(
-					'slug'  => 'kit',
+					'slug'  => ALM_DEVICE_KIT_SLUG,
 					'label' => __( 'Kit', 'asset-lending-manager' ),
 				),
 			)
