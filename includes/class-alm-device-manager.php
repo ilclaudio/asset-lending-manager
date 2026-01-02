@@ -349,8 +349,8 @@ class ALM_Device_Manager {
 	/**
 	 * Return an array containing all the custom device fields.
 	 *
-	 * @param [type] $device_id
-	 * @return void
+	 * @param [type] $device_id - The device id.
+	 * @return array
 	 */
 	public static function get_device_custom_fields( $device_id ) {
 		$device_fields = array();
@@ -402,5 +402,19 @@ class ALM_Device_Manager {
 			}
 		}
 		return $device_fields;
+	}
+
+	/**
+	 * Return the classes related to the device states.
+	 *
+	 * @return array
+	 */
+	public static function get_state_classes() {
+		return array(
+			'available'   => 'alm-state-available',
+			'on-loan'     => 'alm-state-on-loan',
+			'maintenance' => 'alm-state-maintenance',
+			'retired'     => 'alm-state-retired',
+		);
 	}
 }
