@@ -36,64 +36,8 @@ $alm_render_tax_row = function( $taxonomy_slug, $values ) {
 	<?php
 };
 
-/**
- * ACF fields (ordered as defined in adapter).
- */
-$alm_order = array(
-	'manufacturer',
-	'model',
-	'data_acquisto',
-	'cost',
-	'dimensions',
-	'weight',
-	'location',
-	'components',
-	'user_manual',
-	'technical_data_sheet',
-	'serial_number',
-	'external_code',
-	'notes',
-);
 
-$alm_field_objects      = array();
-$alm_manufacturer_value = '';
-$alm_model_value        = '';
-if ( function_exists( 'get_field' ) ) {
-	$alm_manufacturer_value = (string) get_field( 'manufacturer', $device_id );
-	$alm_model_value         = (string) get_field( 'model', $device_id );
-}
-
-if ( function_exists( 'get_field_objects' ) ) {
-	$alm_tmp = get_field_objects( $alm_device_id );
-	if ( is_array( $alm_tmp ) ) {
-		$alm_field_objects = $alm_tmp;
-	}
-}
-
-$alm_rows = array();
-if ( ! empty( $alm_field_objects ) ) {
-	foreach ( $alm_order as $alm_field_name ) {
-		if ( ! isset( $alm_field_objects[ $alm_field_name ] ) ) {
-			continue;
-		}
-		$field = $alm_field_objects[ $alm_field_name ];
-		$label = isset( $field['label'] ) ? (string) $field['label'] : $alm_field_name;
-		$value = $field['value'] ?? null;
-		// Normalize empty values.
-		$alm_is_empty = ( null === $value || '' === $value || ( is_array( $value ) && empty( $value ) ) );
-		if ( $alm_is_empty ) {
-			continue;
-		}
-
-		$alm_rows[] = array(
-			'name'  => $alm_field_name,
-			'label' => $label,
-			'type'  => isset( $field['type'] ) ? (string) $field['type'] : '',
-			'value' => $value,
-		);
-	}
-}
-
+$alm_device_fields = ALM_Device_Manager::get_device_custom_fields( $alm_device_id );
 /**
  * Big image for detail (do not change list thumbnail).
  */
@@ -180,13 +124,17 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 	<section class="alm-device-view__acf" aria-label="<?php esc_attr_e( 'Additional fields', 'asset-lending-manager' ); ?>">
 		<details class="alm-collapsible alm-collapsible--acf">
 			<summary class="alm-collapsible__summary">
-				<span class="alm-collapsible__title"><?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?></span>
-				<span class="alm-collapsible__hint" aria-hidden="true"><?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?></span>
+				<span class="alm-collapsible__title">
+					<?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?>
+				</span>
+				<span class="alm-collapsible__hint" aria-hidden="true">
+					<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
+				</span>
 			</summary>
 			<div class="alm-collapsible__body">
-				<?php if ( ! empty( $alm_rows ) ) : ?>
+				<?php if ( ! empty( $alm_device_fields ) ) : ?>
 					<dl class="alm-device-acf-list">
-						<?php foreach ( $alm_rows as $row ) : ?>
+						<?php foreach ( $alm_device_fields as $row ) : ?>
 							<div class="alm-device-acf-row alm-acf-<?php echo esc_attr( $row['name'] ); ?>">
 								<dt class="alm-device-acf-label"><?php echo esc_html( $row['label'] ); ?></dt>
 								<dd class="alm-device-acf-value">
