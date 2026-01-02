@@ -69,6 +69,7 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 		}
 	?>
 	<section class="alm-device-view__hero" aria-label="<?php esc_attr_e( 'Device overview', 'asset-lending-manager' ); ?>">
+		<!-- Device foto -->
 		<div class="alm-device-view__media">
 			<?php if ( $alm_detail_image_html ) : ?>
 				<div class="alm-device-thumbnail alm-device-thumbnail--large">
@@ -77,35 +78,35 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 			<?php endif; ?>
 		</div>
 
-	<?php
+		<!-- Device taxonomies -->
+		<?php
 		$alm_state_class_map = ALM_Device_Manager::get_state_classes();
 		$alm_state_css_class = '';
 		if ( $alm_state_slug && isset( $alm_state_class_map[ $alm_state_slug ] ) ) {
 			$alm_state_css_class = $alm_state_class_map[ $alm_state_slug ];
 		}
-	?>
-	<aside class="alm-device-view__taxbox" aria-label="<?php esc_attr_e( 'Device taxonomies', 'asset-lending-manager' ); ?>">
-		<div class="alm-device-taxonomies alm-device-taxonomies--boxed">
-			<?php
-			$alm_render_tax_row( 'alm_structure', isset( $device->alm_structure ) ? $device->alm_structure : array() );
-			$alm_render_tax_row( 'alm_type', isset( $device->alm_type ) ? $device->alm_type : array() );
-			// State as badge + text.
-			if ( $alm_state_label ) :
-				?>
-				<div class="alm-device-tax-row alm-tax-alm_state">
-					<span class="alm-tax-label">
-						<?php echo esc_html( get_taxonomy( 'alm_state' )->labels->singular_name ); ?>
-					</span>
-					<span class="alm-tax-value">
-						<span class="alm-availability <?php echo esc_attr( $alm_state_css_class ); ?>">
-							<?php echo esc_html( $alm_state_label ); ?>
+		?>
+		<aside class="alm-device-view__taxbox" aria-label="<?php esc_attr_e( 'Device taxonomies', 'asset-lending-manager' ); ?>">
+			<div class="alm-device-taxonomies alm-device-taxonomies--boxed">
+				<?php
+				$alm_render_tax_row( 'alm_structure', isset( $device->alm_structure ) ? $device->alm_structure : array() );
+				$alm_render_tax_row( 'alm_type', isset( $device->alm_type ) ? $device->alm_type : array() );
+				// State as badge + text.
+				if ( $alm_state_label ) :
+					?>
+					<div class="alm-device-tax-row alm-tax-alm_state">
+						<span class="alm-tax-label">
+							<?php echo esc_html( get_taxonomy( 'alm_state' )->labels->singular_name ); ?>
 						</span>
-					</span>
-				</div>
-			<?php endif; ?>
-		</div	>
-	</aside>
-
+						<span class="alm-tax-value">
+							<span class="alm-availability <?php echo esc_attr( $alm_state_css_class ); ?>">
+								<?php echo esc_html( $alm_state_label ); ?>
+							</span>
+						</span>
+					</div>
+				<?php endif; ?>
+			</div	>
+		</aside>
 	</section>
 
 	<!-- III section: Device description -->
@@ -129,40 +130,40 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 			<div class="alm-collapsible__body">
 				<?php if ( ! empty( $alm_device_fields ) ) : ?>
 					<dl class="alm-device-acf-list">
-						<?php foreach ( $alm_device_fields as $row ) : ?>
-							<div class="alm-device-acf-row alm-acf-<?php echo esc_attr( $row['name'] ); ?>">
-								<dt class="alm-device-acf-label"><?php echo esc_html( $row['label'] ); ?></dt>
+						<?php foreach ( $alm_device_fields as $device_row ) : ?>
+							<div class="alm-device-acf-row alm-acf-<?php echo esc_attr( $device_row['name'] ); ?>">
+								<dt class="alm-device-acf-label"><?php echo esc_html( $device_row['label'] ); ?></dt>
 								<dd class="alm-device-acf-value">
 									<?php
 									// Render by type.
-									if ( 'file' === $row['type'] && is_array( $row['value'] ) && ! empty( $row['value']['url'] ) ) {
-										$file_url  = (string) $row['value']['url'];
-										$file_name = ! empty( $row['value']['filename'] ) ? (string) $row['value']['filename'] : $file_url;
+									if ( 'file' === $device_row['type'] && is_array( $device_row['value'] ) && ! empty( $device_row['value']['url'] ) ) {
+										$file_url  = (string) $device_row['value']['url'];
+										$file_name = ! empty( $device_row['value']['filename'] ) ? (string) $device_row['value']['filename'] : $file_url;
 										?>
 										<a href="<?php echo esc_url( $file_url ); ?>" class="alm-link" target="_blank" rel="noopener">
 											<?php echo esc_html( $file_name ); ?>
 										</a>
 										<?php
-									} elseif ( 'post_object' === $row['type'] && is_array( $row['value'] ) ) {
+									} elseif ( 'post_object' === $device_row['type'] && is_array( $device_row['value'] ) ) {
 										// Multiple components (objects).
 										echo '<ul class="alm-device-components">';
-										foreach ( $row['value'] as $component_post ) {
+										foreach ( $device_row['value'] as $component_post ) {
 											if ( is_object( $component_post ) && ! empty( $component_post->ID ) ) {
-												$title = get_the_title( $component_post->ID );
-												$link  = get_permalink( $component_post->ID );
-												echo '<li><a class="alm-link" href="' . esc_url( $link ) . '">' . esc_html( $title ) . '</a></li>';
+												$device_title = get_the_title( $component_post->ID );
+												$device_link  = get_permalink( $component_post->ID );
+												echo '<li><a class="alm-link" href="' . esc_url( $device_link ) . '">' . esc_html( $device_title ) . '</a></li>';
 											}
 										}
 										echo '</ul>';
-									} elseif ( 'number' === $row['type'] ) {
+									} elseif ( 'number' === $device_row['type'] ) {
 										// Cost / numeric fields.
-										echo esc_html( (string) $row['value'] );
+										echo esc_html( (string) $device_row['value'] );
 									} else {
 										// Default (text, date, textarea, etc).
-										if ( is_array( $row['value'] ) ) {
-											echo esc_html( implode( ', ', array_map( 'strval', $row['value'] ) ) );
+										if ( is_array( $device_row['value'] ) ) {
+											echo esc_html( implode( ', ', array_map( 'strval', $device_row['value'] ) ) );
 										} else {
-											echo esc_html( (string) $row['value'] );
+											echo esc_html( (string) $device_row['value'] );
 										}
 									}
 									?>
