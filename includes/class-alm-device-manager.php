@@ -344,4 +344,63 @@ class ALM_Device_Manager {
 
 		return $wrapper;
 	}
+
+
+	/**
+	 * Return an array containing all the custom device fields.
+	 *
+	 * @param [type] $device_id
+	 * @return void
+	 */
+	public static function get_device_custom_fields( $device_id ) {
+		$device_fields = array();
+		/**
+		 * ACF fields (ordered as defined in adapter).
+		 */
+		$order = array(
+			'manufacturer',
+			'model',
+			'data_acquisto',
+			'cost',
+			'dimensions',
+			'weight',
+			'location',
+			'components',
+			'user_manual',
+			'technical_data_sheet',
+			'serial_number',
+			'external_code',
+			'notes',
+		);
+		$field_objects      = array();
+		// $manufacturer_value = (string) get_field( 'manufacturer', $device_id );
+		if ( function_exists( 'get_field_objects' ) ) {
+			$tmp = get_field_objects( $device_id );
+			if ( is_array( $tmp ) ) {
+				$field_objects = $tmp;
+			}
+		}
+		if ( ! empty( $field_objects ) ) {
+			foreach ( $order as $field_name ) {
+				if ( ! isset( $field_objects[ $field_name ] ) ) {
+					continue;
+				}
+				$field = $field_objects[ $field_name ];
+				$label = isset( $field['label'] ) ? (string) $field['label'] : $field_name;
+				$value = $field['value'] ?? null;
+				// Normalize empty values.
+				$is_empty = ( null === $value || '' === $value || ( is_array( $value ) && empty( $value ) ) );
+				if ( $is_empty ) {
+					continue;
+				}
+				$device_fields[] = array(
+					'name'  => $field_name,
+					'label' => $label,
+					'type'  => isset( $field['type'] ) ? (string) $field['type'] : '',
+					'value' => $value,
+				);
+			}
+		}
+		return $device_fields;
+	}
 }
