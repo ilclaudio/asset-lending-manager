@@ -67,7 +67,7 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 			$alm_state_slug  = (string) $alm_state_terms[0]->slug;
 			$alm_state_label = (string) $alm_state_terms[0]->name;
 		}
-		?>
+	?>
 	<section class="alm-device-view__hero" aria-label="<?php esc_attr_e( 'Device overview', 'asset-lending-manager' ); ?>">
 		<div class="alm-device-view__media">
 			<?php if ( $alm_detail_image_html ) : ?>
@@ -78,12 +78,7 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 		</div>
 
 	<?php
-		$alm_state_class_map = array(
-			'available'   => 'alm-state-available',
-			'on-loan'     => 'alm-state-on-loan',
-			'maintenance' => 'alm-state-maintenance',
-			'retired'     => 'alm-state-retired',
-		);
+		$alm_state_class_map = ALM_Device_Manager::get_state_classes();
 		$alm_state_css_class = '';
 		if ( $alm_state_slug && isset( $alm_state_class_map[ $alm_state_slug ] ) ) {
 			$alm_state_css_class = $alm_state_class_map[ $alm_state_slug ];
