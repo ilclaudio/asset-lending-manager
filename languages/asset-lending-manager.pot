@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-01 18:31+0000\n"
+"POT-Creation-Date: 2026-01-02 22:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -37,7 +37,7 @@ msgstr ""
 msgid "Add New Device"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:180
+#: templates/shortcodes/device-view.php:119
 msgid "Additional fields"
 msgstr ""
 
@@ -58,8 +58,8 @@ msgstr ""
 msgid "An error occurred while loading default terms."
 msgstr ""
 
-#: templates/shortcodes/device_view.php:239
-#: templates/shortcodes/device_view.php:243
+#: templates/shortcodes/device-view.php:184
+#: templates/shortcodes/device-view.php:187
 msgid "Ask for a loan"
 msgstr ""
 
@@ -88,6 +88,14 @@ msgstr ""
 msgid "Component"
 msgstr ""
 
+#: includes/class-alm-acf-device-adapter.php:34
+msgid "Components"
+msgstr ""
+
+#: includes/class-alm-acf-device-adapter.php:30
+msgid "Cost"
+msgstr ""
+
 #: admin/alm-tools-page.php:12
 msgid "Default terms loaded successfully."
 msgstr ""
@@ -111,7 +119,7 @@ msgstr ""
 msgid "Device not found."
 msgstr ""
 
-#: templates/shortcodes/device_view.php:127
+#: templates/shortcodes/device-view.php:42
 msgid "Device overview"
 msgstr ""
 
@@ -135,7 +143,7 @@ msgstr ""
 msgid "Device Structures"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:148
+#: templates/shortcodes/device-view.php:71
 msgid "Device taxonomies"
 msgstr ""
 
@@ -158,15 +166,23 @@ msgstr ""
 msgid "Devices"
 msgstr ""
 
-#: templates/shortcodes/device_list.php:41
+#: templates/shortcodes/device-list.php:41
 msgid "Devices found: %d"
+msgstr ""
+
+#: includes/class-alm-acf-device-adapter.php:31
+msgid "Dimensions"
 msgstr ""
 
 #: includes/class-alm-device-manager.php:96
 msgid "Edit Device"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:245
+#: includes/class-alm-acf-device-adapter.php:38
+msgid "External code"
+msgstr ""
+
+#: templates/shortcodes/device-view.php:189
 msgid "Features under development."
 msgstr ""
 
@@ -174,7 +190,7 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:173
+#: templates/shortcodes/device-view.php:112
 msgid "Full description"
 msgstr ""
 
@@ -182,7 +198,7 @@ msgstr ""
 msgid "Generic"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:269
+#: templates/shortcodes/device-view.php:213
 msgid "History not available (section under development)."
 msgstr ""
 
@@ -202,22 +218,27 @@ msgstr ""
 msgid "Kit"
 msgstr ""
 
-#: templates/shortcodes/device_list.php:79
+#: templates/shortcodes/device-list.php:79
+#: templates/shortcodes/device-view.php:91
 msgid "Level"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:260
-#: templates/shortcodes/device_view.php:263
+#: templates/shortcodes/device-view.php:204
+#: templates/shortcodes/device-view.php:207
 msgid "Loan history"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:238
+#: templates/shortcodes/device-view.php:183
 msgid "Loan request"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:254
-#: templates/shortcodes/device_view.php:255
+#: templates/shortcodes/device-view.php:198
+#: templates/shortcodes/device-view.php:199
 msgid "Loan requests"
+msgstr ""
+
+#: includes/class-alm-acf-device-adapter.php:33
+msgid "Location"
 msgstr ""
 
 #: includes/class-alm-installer.php:111
@@ -236,8 +257,16 @@ msgstr ""
 msgid "Manage shared assets and internal lending workflows."
 msgstr ""
 
+#: includes/class-alm-acf-device-adapter.php:27
+msgid "Manufacturer"
+msgstr ""
+
 #: includes/class-alm-role-manager.php:73
 msgid "Member"
+msgstr ""
+
+#: includes/class-alm-acf-device-adapter.php:28
+msgid "Model"
 msgstr ""
 
 #: includes/class-alm-installer.php:115
@@ -248,7 +277,7 @@ msgstr ""
 msgid "New Device"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:231
+#: templates/shortcodes/device-view.php:176
 msgid "No additional details available."
 msgstr ""
 
@@ -260,17 +289,21 @@ msgstr ""
 msgid "No devices found in Trash"
 msgstr ""
 
-#: templates/shortcodes/device_list.php:99
+#: templates/shortcodes/device-list.php:99
 msgid "No devices found."
 msgstr ""
 
-#: templates/shortcodes/device_view.php:256
+#: templates/shortcodes/device-view.php:200
 msgid "No requests to show (section under development)."
 msgstr ""
 
-#: templates/shortcodes/device_list.php:95
+#: templates/shortcodes/device-list.php:95
 #, php-format
 msgid "No results found for \"%s\"."
+msgstr ""
+
+#: includes/class-alm-acf-device-adapter.php:39
+msgid "Notes"
 msgstr ""
 
 #: includes/class-alm-installer.php:79
@@ -281,8 +314,8 @@ msgstr ""
 msgid "On loan"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:184
-#: templates/shortcodes/device_view.php:264
+#: templates/shortcodes/device-view.php:126
+#: templates/shortcodes/device-view.php:208
 msgid "Open/Close"
 msgstr ""
 
@@ -294,7 +327,11 @@ msgstr ""
 msgid "Optical Tube"
 msgstr ""
 
-#: templates/shortcodes/device_view.php:183
+#: includes/class-alm-acf-device-adapter.php:29
+msgid "Purchase date"
+msgstr ""
+
+#: templates/shortcodes/device-view.php:123
 msgid "Read details"
 msgstr ""
 
@@ -310,7 +347,7 @@ msgstr ""
 msgid "Retired"
 msgstr ""
 
-#: templates/shortcodes/device_list.php:31
+#: templates/shortcodes/device-list.php:31
 msgid "Search"
 msgstr ""
 
@@ -318,16 +355,26 @@ msgstr ""
 msgid "Search Devices"
 msgstr ""
 
-#: templates/shortcodes/device_list.php:27
+#: templates/shortcodes/device-list.php:27
 msgid "Search devices..."
 msgstr ""
 
-#: templates/shortcodes/device_list.php:74
+#: includes/class-alm-acf-device-adapter.php:37
+msgid "Serial number"
+msgstr ""
+
+#: templates/shortcodes/device-list.php:74
+#: templates/shortcodes/device-view.php:99
 msgid "State"
 msgstr ""
 
-#: templates/shortcodes/device_list.php:64
+#: templates/shortcodes/device-list.php:64
+#: templates/shortcodes/device-view.php:75
 msgid "Structure"
+msgstr ""
+
+#: includes/class-alm-acf-device-adapter.php:36
+msgid "Technical data sheet"
 msgstr ""
 
 #: includes/class-alm-installer.php:75
@@ -338,7 +385,7 @@ msgstr ""
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr ""
 
-#: templates/shortcodes/device_view.php:248
+#: templates/shortcodes/device-view.php:192
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 
@@ -350,7 +397,8 @@ msgstr ""
 msgid "Tripod"
 msgstr ""
 
-#: templates/shortcodes/device_list.php:69
+#: templates/shortcodes/device-list.php:69
+#: templates/shortcodes/device-view.php:83
 msgid "Type"
 msgstr ""
 
@@ -358,8 +406,16 @@ msgstr ""
 msgid "Unauthorized action."
 msgstr ""
 
+#: includes/class-alm-acf-device-adapter.php:35
+msgid "User manual"
+msgstr ""
+
 #: includes/class-alm-device-manager.php:98
 msgid "View Device"
+msgstr ""
+
+#: includes/class-alm-acf-device-adapter.php:32
+msgid "Weight"
 msgstr ""
 
 #: includes/class-alm-plugin-manager.php:316

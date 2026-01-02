@@ -15,6 +15,33 @@ defined( 'ABSPATH' ) || exit;
 class ALM_ACF_Device_Adapter {
 
 	/**
+	 * This functions is never used.
+	 * It simply allow the translations of custom fields.
+	 *
+	 * @return void
+	 */
+	private function define_custom_field_labels() {
+		define(
+			'ALM_CUSTOM_FIELD_LABELS',
+			array(
+				__( 'Manufacturer', 'asset-lending-manager' ),
+				__( 'Model', 'asset-lending-manager' ),
+				__( 'Purchase date', 'asset-lending-manager' ),
+				__( 'Cost', 'asset-lending-manager' ),
+				__( 'Dimensions', 'asset-lending-manager' ),
+				__( 'Weight', 'asset-lending-manager' ),
+				__( 'Location', 'asset-lending-manager' ),
+				__( 'Components', 'asset-lending-manager' ),
+				__( 'User manual', 'asset-lending-manager' ),
+				__( 'Technical data sheet', 'asset-lending-manager' ),
+				__( 'Serial number', 'asset-lending-manager' ),
+				__( 'External code', 'asset-lending-manager' ),
+				__( 'Notes', 'asset-lending-manager' ),
+			)
+		);
+	}
+
+	/**
 	 * Register device fields via ACF.
 	 *
 	 * @return void

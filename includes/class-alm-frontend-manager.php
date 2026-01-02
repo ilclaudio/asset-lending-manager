@@ -342,7 +342,7 @@ class ALM_Frontend_Manager {
 			}
 		}
 		wp_reset_postdata();
-		include ALM_PLUGIN_DIR . 'templates/shortcodes/device_list.php';
+		include ALM_PLUGIN_DIR . 'templates/shortcodes/device-list.php';
 	}
 
 	/**
@@ -361,7 +361,7 @@ class ALM_Frontend_Manager {
 		}
 
 		// Include template.
-		$template_path = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/shortcodes/device_view.php';
+		$template_path = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/shortcodes/device-view.php';
 		if ( file_exists( $template_path ) ) {
 			include $template_path;
 		}

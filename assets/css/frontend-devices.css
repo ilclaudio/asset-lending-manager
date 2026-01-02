@@ -221,7 +221,7 @@
 }
 
 /* ========================================================================
-   DEVICE VIEW STYLES - Single device detail page (device_view.php)
+   DEVICE VIEW STYLES - Single device detail page (device-view.php)
    ======================================================================== */
 
 /* Single device detail container */
@@ -326,26 +326,16 @@
 	display: block;
 }
 
-.alm-device-taxonomies--boxed {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 10px;
-	margin: 0;
-	padding: 0;
-	background: transparent;
-	border-radius: 0;
-}
+.alm-device-taxonomies--boxed {}
 
 .alm-device-tax-row {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
+	display: contents;
 }
 
 .alm-device-tax-row .alm-tax-label {
-	font-weight: 700;
-	color: #444;
-	margin: 0;
+	display: grid;
+	grid-template-columns: var(--alm-tax-label-width, 100px) 1fr;
+	align-items: baseline;
 }
 
 .alm-device-tax-row .alm-tax-value {
@@ -444,7 +434,7 @@
 }
 
 /* ========================================================================
-   DEVICE LIST STYLES - Archive and list views (device_list.php)
+   DEVICE LIST STYLES - Archive and list views (device-list.php)
    ======================================================================== */
 
 /* Device list container */
