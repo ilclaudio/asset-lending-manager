@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-01-03 16:03+0000\n"
+"PO-Revision-Date: 2026-01-03 16:28+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -58,10 +58,9 @@ msgid "An error occurred while loading default terms."
 msgstr ""
 "Si è verificato un errore durante il caricamento dei termini predefiniti."
 
-#: templates/shortcodes/device-view.php:184
-#: templates/shortcodes/device-view.php:187
+#: templates/shortcodes/device-view.php:189
 msgid "Ask for a loan"
-msgstr "Richiesta di prestito"
+msgstr "Richiedi in prestito"
 
 #. Name of the plugin
 #: includes/class-alm-plugin-manager.php:220
@@ -182,7 +181,7 @@ msgstr "Modifica dispositivo"
 msgid "External code"
 msgstr "Codice esterno"
 
-#: templates/shortcodes/device-view.php:189
+#: templates/shortcodes/device-view.php:201
 msgid "Features under development."
 msgstr "Funzionalità in fase di sviluppo."
 
@@ -198,7 +197,7 @@ msgstr "Descrizione completa"
 msgid "Generic"
 msgstr "Generico"
 
-#: templates/shortcodes/device-view.php:213
+#: templates/shortcodes/device-view.php:232
 msgid "History not available (section under development)."
 msgstr "Storico non disponibile (sezione in fase di sviluppo)."
 
@@ -223,17 +222,17 @@ msgstr "Kit"
 msgid "Level"
 msgstr "Livello"
 
-#: templates/shortcodes/device-view.php:204
-#: templates/shortcodes/device-view.php:207
+#: templates/shortcodes/device-view.php:219
+#: templates/shortcodes/device-view.php:223
 msgid "Loan history"
 msgstr "Storico dei prestiti"
 
-#: templates/shortcodes/device-view.php:183
+#: templates/shortcodes/device-view.php:185
 msgid "Loan request"
 msgstr "Richiesta di prestito"
 
-#: templates/shortcodes/device-view.php:198
-#: templates/shortcodes/device-view.php:199
+#: templates/shortcodes/device-view.php:213
+#: templates/shortcodes/device-view.php:214
 msgid "Loan requests"
 msgstr "Richieste di prestito"
 
@@ -282,7 +281,7 @@ msgstr "Montatura"
 msgid "New Device"
 msgstr "Nuovo dispositivo"
 
-#: templates/shortcodes/device-view.php:176
+#: templates/shortcodes/device-view.php:178
 msgid "No additional details available."
 msgstr "Non sono disponibili ulteriori dettagli."
 
@@ -298,7 +297,7 @@ msgstr "Nessun dispsitivo nel cestino"
 msgid "No devices found."
 msgstr "Nessun dispositivo trovato."
 
-#: templates/shortcodes/device-view.php:200
+#: templates/shortcodes/device-view.php:215
 msgid "No requests to show (section under development)."
 msgstr "Nessuna richiesta da mostrare (sezione in fase di sviluppo)."
 
@@ -320,7 +319,8 @@ msgid "On loan"
 msgstr "In prestito"
 
 #: templates/shortcodes/device-view.php:126
-#: templates/shortcodes/device-view.php:208
+#: templates/shortcodes/device-view.php:192
+#: templates/shortcodes/device-view.php:226
 msgid "Open/Close"
 msgstr "Apri/chiudi"
 
@@ -364,6 +364,11 @@ msgstr "Cerca dispositivi"
 msgid "Search devices..."
 msgstr "Cerca i dispositivi..."
 
+#: templates/shortcodes/device-view.php:198
+#| msgid "Send loan request"
+msgid "Send loan request..."
+msgstr "Invia richiesta di prestito..."
+
 #: includes/class-alm-acf-device-adapter.php:37
 msgid "Serial number"
 msgstr "Numero seriale"
@@ -390,7 +395,7 @@ msgstr "Telescopio"
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr "Il plugin ALM richiede che il plugin ACF sia installato e abilitato."
 
-#: templates/shortcodes/device-view.php:192
+#: templates/shortcodes/device-view.php:205
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 "Per richiedere un prestito, è necessario effettuare l'accesso come membro."
