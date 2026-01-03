@@ -295,12 +295,14 @@ class ALM_Device_Manager {
 		);
 		$field_objects = array();
 		// $manufacturer_value = (string) get_field( 'manufacturer', $device_id );
+		// Get all the custom fields for this device.
 		if ( function_exists( 'get_field_objects' ) ) {
 			$tmp = get_field_objects( $device_id );
 			if ( is_array( $tmp ) ) {
 				$field_objects = $tmp;
 			}
 		}
+		// Build an array with the fields ordered based on $order.
 		if ( ! empty( $field_objects ) ) {
 			foreach ( $order as $field_name ) {
 				if ( ! isset( $field_objects[ $field_name ] ) ) {
@@ -320,6 +322,31 @@ class ALM_Device_Manager {
 					'type'  => isset( $field['type'] ) ? (string) $field['type'] : '',
 					'value' => $value,
 				);
+			}
+			// Add a field 'kit' if this device is a component of a kit.
+			if ( has_term( ALM_DEVICE_COMPONENT_SLUG, ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG, $device_id ) ) {
+				$args = array(
+					'post_type'      => ALM_DEVICE_CPT_SLUG,
+					'post_status'    => 'publish',
+					'posts_per_page' => 1,
+					'meta_query'     => array(
+						array(
+							'key'     => $field_name,
+							'value'   => '"' . $device_id . '"',
+							'compare' => 'LIKE',
+						),
+					),
+				);
+				$kit_result = new WP_Query( $args );
+				if ( $kit_result->have_posts() ) {
+					$item = array(
+						'name'  => 'kit',
+						'label' => 'Membership kit',
+						'type'  => 'post_object',
+						'value' => $kit_result->posts,
+					);
+					array_push( $device_fields, $item );
+				}
 			}
 		}
 		return $device_fields;
