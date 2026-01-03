@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-01-03 16:02+0000\n"
+"PO-Revision-Date: 2026-01-03 16:25+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -57,8 +57,7 @@ msgstr ""
 msgid "An error occurred while loading default terms."
 msgstr ""
 
-#: templates/shortcodes/device-view.php:184
-#: templates/shortcodes/device-view.php:187
+#: templates/shortcodes/device-view.php:189
 msgid "Ask for a loan"
 msgstr ""
 
@@ -181,7 +180,7 @@ msgstr ""
 msgid "External code"
 msgstr ""
 
-#: templates/shortcodes/device-view.php:189
+#: templates/shortcodes/device-view.php:201
 msgid "Features under development."
 msgstr ""
 
@@ -197,7 +196,7 @@ msgstr ""
 msgid "Generic"
 msgstr ""
 
-#: templates/shortcodes/device-view.php:213
+#: templates/shortcodes/device-view.php:232
 msgid "History not available (section under development)."
 msgstr ""
 
@@ -222,17 +221,17 @@ msgstr ""
 msgid "Level"
 msgstr ""
 
-#: templates/shortcodes/device-view.php:204
-#: templates/shortcodes/device-view.php:207
+#: templates/shortcodes/device-view.php:219
+#: templates/shortcodes/device-view.php:223
 msgid "Loan history"
 msgstr ""
 
-#: templates/shortcodes/device-view.php:183
+#: templates/shortcodes/device-view.php:185
 msgid "Loan request"
 msgstr ""
 
-#: templates/shortcodes/device-view.php:198
-#: templates/shortcodes/device-view.php:199
+#: templates/shortcodes/device-view.php:213
+#: templates/shortcodes/device-view.php:214
 msgid "Loan requests"
 msgstr ""
 
@@ -280,7 +279,7 @@ msgstr ""
 msgid "New Device"
 msgstr ""
 
-#: templates/shortcodes/device-view.php:176
+#: templates/shortcodes/device-view.php:178
 msgid "No additional details available."
 msgstr ""
 
@@ -296,7 +295,7 @@ msgstr ""
 msgid "No devices found."
 msgstr ""
 
-#: templates/shortcodes/device-view.php:200
+#: templates/shortcodes/device-view.php:215
 msgid "No requests to show (section under development)."
 msgstr ""
 
@@ -318,7 +317,8 @@ msgid "On loan"
 msgstr ""
 
 #: templates/shortcodes/device-view.php:126
-#: templates/shortcodes/device-view.php:208
+#: templates/shortcodes/device-view.php:192
+#: templates/shortcodes/device-view.php:226
 msgid "Open/Close"
 msgstr ""
 
@@ -362,6 +362,10 @@ msgstr ""
 msgid "Search devices..."
 msgstr ""
 
+#: templates/shortcodes/device-view.php:198
+msgid "Send loan request"
+msgstr ""
+
 #: includes/class-alm-acf-device-adapter.php:37
 msgid "Serial number"
 msgstr ""
@@ -388,7 +392,7 @@ msgstr ""
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr ""
 
-#: templates/shortcodes/device-view.php:192
+#: templates/shortcodes/device-view.php:205
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 
