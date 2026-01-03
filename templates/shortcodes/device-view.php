@@ -130,46 +130,48 @@ if ( has_post_thumbnail( $alm_device_id ) ) {
 				<?php if ( ! empty( $alm_device_fields ) ) : ?>
 					<dl class="alm-device-acf-list">
 						<?php foreach ( $alm_device_fields as $alm_device_row ) : ?>
-							<div class="alm-device-acf-row alm-acf-<?php echo esc_attr( $alm_device_row['name'] ); ?>">
-								<dt class="alm-device-acf-label">
-									<?php echo esc_attr_e( $alm_device_row['label'], 'asset-lending-manager' ); ?>
-								</dt>
-								<dd class="alm-device-acf-value">
-									<?php
-									// Render by type.
-									if ( 'file' === $alm_device_row['type'] && is_array( $alm_device_row['value'] ) && ! empty( $alm_device_row['value']['url'] ) ) {
-										$alm_file_url  = (string) $alm_device_row['value']['url'];
-										$alm_file_name = ! empty( $alm_device_row['value']['filename'] ) ? (string) $alm_device_row['value']['filename'] : $alm_file_url;
-										?>
-										<a href="<?php echo esc_url( $alm_file_url ); ?>" class="alm-link" target="_blank" rel="noopener">
-											<?php echo esc_html( $alm_file_name ); ?>
-										</a>
+							<?php if ( $alm_device_row['value'] ): ?>
+								<div class="alm-device-acf-row alm-acf-<?php echo esc_attr( $alm_device_row['name'] ); ?>">
+									<dt class="alm-device-acf-label">
+										<?php echo esc_attr_e( $alm_device_row['label'], 'asset-lending-manager' ); ?>
+									</dt>
+									<dd class="alm-device-acf-value">
 										<?php
-									} elseif ( 'post_object' === $alm_device_row['type'] && is_array( $alm_device_row['value'] ) ) {
-										// Multiple components (objects).
-										echo '<ul class="alm-device-components">';
-										foreach ( $alm_device_row['value'] as $alm_component_post ) {
-											if ( is_object( $alm_component_post ) && ! empty( $alm_component_post->ID ) ) {
-												$alm_device_title = get_the_title( $alm_component_post->ID );
-												$alm_device_link  = get_permalink( $alm_component_post->ID );
-												echo '<li><a class="alm-link" href="' . esc_url( $alm_device_link ) . '">' . esc_html( $alm_device_title ) . '</a></li>';
+										// Render by type.
+										if ( 'file' === $alm_device_row['type'] && is_array( $alm_device_row['value'] ) && ! empty( $alm_device_row['value']['url'] ) ) {
+											$alm_file_url  = (string) $alm_device_row['value']['url'];
+											$alm_file_name = ! empty( $alm_device_row['value']['filename'] ) ? (string) $alm_device_row['value']['filename'] : $alm_file_url;
+											?>
+											<a href="<?php echo esc_url( $alm_file_url ); ?>" class="alm-link" target="_blank" rel="noopener">
+												<?php echo esc_html( $alm_file_name ); ?>
+											</a>
+											<?php
+										} elseif ( 'post_object' === $alm_device_row['type'] && is_array( $alm_device_row['value'] ) ) {
+											// Multiple components (objects).
+											echo '<ul class="alm-device-components">';
+											foreach ( $alm_device_row['value'] as $alm_component_post ) {
+												if ( is_object( $alm_component_post ) && ! empty( $alm_component_post->ID ) ) {
+													$alm_device_title = get_the_title( $alm_component_post->ID );
+													$alm_device_link  = get_permalink( $alm_component_post->ID );
+													echo '<li><a class="alm-link" href="' . esc_url( $alm_device_link ) . '">' . esc_html( $alm_device_title ) . '</a></li>';
+												}
+											}
+											echo '</ul>';
+										} elseif ( 'number' === $alm_device_row['type'] ) {
+											// Cost / numeric fields.
+											echo esc_html( (string) $alm_device_row['value'] );
+										} else {
+											// Default (text, date, textarea, etc).
+											if ( is_array( $alm_device_row['value'] ) ) {
+												echo esc_html( implode( ', ', array_map( 'strval', $alm_device_row['value'] ) ) );
+											} else {
+												echo esc_html( (string) $alm_device_row['value'] );
 											}
 										}
-										echo '</ul>';
-									} elseif ( 'number' === $alm_device_row['type'] ) {
-										// Cost / numeric fields.
-										echo esc_html( (string) $alm_device_row['value'] );
-									} else {
-										// Default (text, date, textarea, etc).
-										if ( is_array( $alm_device_row['value'] ) ) {
-											echo esc_html( implode( ', ', array_map( 'strval', $alm_device_row['value'] ) ) );
-										} else {
-											echo esc_html( (string) $alm_device_row['value'] );
-										}
-									}
-									?>
-								</dd>
-							</div>
+										?>
+									</dd>
+								</div>
+							<?php endif; ?>
 						<?php endforeach; ?>
 					</dl>
 				<?php else : ?>

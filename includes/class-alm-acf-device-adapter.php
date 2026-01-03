@@ -37,6 +37,7 @@ class ALM_ACF_Device_Adapter {
 				__( 'Serial number', 'asset-lending-manager' ),
 				__( 'External code', 'asset-lending-manager' ),
 				__( 'Notes', 'asset-lending-manager' ),
+				__( 'Membership kit', 'asset-lending-manager' ),
 			)
 		);
 	}

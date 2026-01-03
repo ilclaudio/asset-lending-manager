@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-01-02 22:38+0000\n"
+"PO-Revision-Date: 2026-01-03 16:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -262,6 +262,10 @@ msgstr ""
 
 #: includes/class-alm-role-manager.php:73
 msgid "Member"
+msgstr ""
+
+#: includes/class-alm-acf-device-adapter.php:40
+msgid "Membership kit"
 msgstr ""
 
 #: includes/class-alm-acf-device-adapter.php:28
