@@ -1,6 +1,6 @@
 <?php
 /**
- * Autocomplete manager for ALM devices.
+ * Autocomplete manager for ALM assets.
  *
  * Handles REST API endpoint for frontend autocomplete search.
  *
@@ -33,23 +33,23 @@ class ALM_Autocomplete_Manager {
 	 */
 	public function enqueue_assets() {
 		wp_enqueue_script(
-			'alm-device-autocomplete',
-			ALM_PLUGIN_URL . 'assets/js/alm-device-autocomplete.js',
+			'alm-asset-autocomplete',
+			ALM_PLUGIN_URL . 'assets/js/alm-asset-autocomplete.js',
 			array( 'jquery' ),
 			ALM_VERSION,
 			true
 		);
 		wp_enqueue_style(
-			'alm-device-autocomplete',
-			ALM_PLUGIN_URL . 'assets/css/alm-device-autocomplete.css',
+			'alm-asset-autocomplete',
+			ALM_PLUGIN_URL . 'assets/css/alm-asset-autocomplete.css',
 			array(),
 			ALM_VERSION
 		);
 		wp_localize_script(
-			'alm-device-autocomplete',
+			'alm-asset-autocomplete',
 			'almAutocomplete',
 			array(
-				'restUrl'   => esc_url( rest_url( 'alm/v1/devices/autocomplete' ) ),
+				'restUrl'   => esc_url( rest_url( 'alm/v1/assets/autocomplete' ) ),
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
 				'minChars'  => 3,
 			)
@@ -64,13 +64,13 @@ class ALM_Autocomplete_Manager {
 	public function register_routes() {
 		register_rest_route(
 			'alm/v1',
-			'/devices/autocomplete',
+			'/assets/autocomplete',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'handle_autocomplete' ),
 				'permission_callback' => '__return_true',
 				// 'permission_callback' => function() {
-				// 	return current_user_can( ALM_VIEW_DEVICES );
+				// 	return current_user_can( ALM_VIEW_ASSETS );
 				// },
 				'args'                => array(
 					'term' => array(
@@ -107,7 +107,7 @@ class ALM_Autocomplete_Manager {
 		// }
 
 		// // Check capability.
-		// if ( ! current_user_can( ALM_VIEW_DEVICES ) ) {
+		// if ( ! current_user_can( ALM_VIEW_ASSETS ) ) {
 		// 	return new WP_REST_Response(
 		// 		array( 'error' => __( 'Insufficient permissions.', 'asset-lending-manager' ) ),
 		// 		403
@@ -122,9 +122,9 @@ class ALM_Autocomplete_Manager {
 			return rest_ensure_response( array() );
 		}
 
-		// Query devices.
+		// Query assets.
 		$query_args = array(
-			'post_type'      => ALM_DEVICE_CPT_SLUG,
+			'post_type'      => ALM_ASSET_CPT_SLUG,
 			'post_status'    => 'publish',
 			's'              => $term,
 			'posts_per_page' => ALM_AUTOCOMPLETE_MAX_RESULTS,
@@ -133,7 +133,7 @@ class ALM_Autocomplete_Manager {
 		$results = array();
 		if ( $query->have_posts() ) {
 			foreach ( $query->posts as $post ) {
-				$wrapper = ALM_Device_Manager::get_device_wrapper( $post->ID );
+				$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
 				if ( ! $wrapper ) {
 					continue;
 				}

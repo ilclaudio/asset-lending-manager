@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
-	const searchForm = document.getElementById('alm_device_search_form');
-	const input = document.querySelector('#alm_device_search_form input[name="s"]');
+	const searchForm = document.getElementById('alm_asset_search_form');
+	const input = document.querySelector('#alm_asset_search_form input[name="s"]');
 	if (!searchForm || !input) return;
 
 	// Usa il dropdown già presente; se non esiste lo crea.
-	let dropdown = document.getElementById('alm_device_autocomplete_dropdown');
+	let dropdown = document.getElementById('alm_asset_autocomplete_dropdown');
 	if (!dropdown) {
 		dropdown = document.createElement('div');
-		dropdown.id = 'alm_device_autocomplete_dropdown';
+		dropdown.id = 'alm_asset_autocomplete_dropdown';
 		dropdown.className = 'alm-autocomplete-dropdown';
 		input.parentNode.appendChild(dropdown);
 	}

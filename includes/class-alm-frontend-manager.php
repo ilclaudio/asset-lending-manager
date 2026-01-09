@@ -2,12 +2,12 @@
 /**
  * Asset Lending Manager - Frontend Manager
  *
- * Handles frontend rendering for ALM devices using shortcodes.
+ * Handles frontend rendering for ALM assets using shortcodes.
  *
  * Responsibilities:
- * - Provide fallback templates for alm_device CPT.
- * - Register shortcodes for device list and device view.
- * - Enqueue frontend CSS and JS for device pages.
+ * - Provide fallback templates for alm_asset CPT.
+ * - Register shortcodes for asset list and asset view.
+ * - Enqueue frontend CSS and JS for asset pages.
  * - Keep rendering logic inside plugin templates.
  *
  * @package AssetLendingManager
@@ -36,10 +36,10 @@ class ALM_Frontend_Manager {
 	 */
 	public function register() {
 		// Register template loading filter.
-		add_filter( 'template_include', array( $this, 'load_device_template' ) );
+		add_filter( 'template_include', array( $this, 'load_asset_template' ) );
 		// Register shortcodes.
-		add_shortcode( 'alm_device_list', array( $this, 'shortcode_device_list' ) );
-		add_shortcode( 'alm_device_view', array( $this, 'shortcode_device_view' ) );
+		add_shortcode( 'alm_asset_list', array( $this, 'shortcode_asset_list' ) );
+		add_shortcode( 'alm_asset_view', array( $this, 'shortcode_asset_view' ) );
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 		// Login and logout redirect for operators and members.
@@ -48,18 +48,18 @@ class ALM_Frontend_Manager {
 	}
 
 	/**
-	 * Load plugin templates for alm_device archive and single views
+	 * Load plugin templates for alm_asset archive and single views
 	 * if the active theme does not provide them.
 	 *
 	 * @param string $template The path to the template WordPress intends to use.
 	 * @return string
 	 */
-	public function load_device_template( $template ) {
-		if ( is_post_type_archive( ALM_DEVICE_CPT_SLUG ) ) {
-			return $this->locate_template( 'archive-alm_device.php', $template );
+	public function load_asset_template( $template ) {
+		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) ) {
+			return $this->locate_template( 'archive-alm_asset.php', $template );
 		}
-		if ( is_singular( ALM_DEVICE_CPT_SLUG ) ) {
-			return $this->locate_template( 'single-alm_device.php', $template );
+		if ( is_singular( ALM_ASSET_CPT_SLUG ) ) {
+			return $this->locate_template( 'single-alm_asset.php', $template );
 		}
 		return $template;
 	}
@@ -82,7 +82,7 @@ class ALM_Frontend_Manager {
 			in_array( ALM_MEMBER_ROLE, $roles, true ) ||
 			in_array( ALM_OPERATOR_ROLE, $roles, true )
 		) {
-			return home_url( '/device/' );
+			return home_url( '/asset/' );
 		}
 		return $redirect_to;
 	}
@@ -146,39 +146,39 @@ class ALM_Frontend_Manager {
 	}
 
 	/**
-	 * Enqueue frontend CSS and JS for device pages.
+	 * Enqueue frontend CSS and JS for asset pages.
 	 *
-	 * Loads assets only on pages where devices are displayed:
-	 * - Archive page (device list)
-	 * - Single device page
-	 * - Pages with device shortcodes
+	 * Loads assets only on pages where assets are displayed:
+	 * - Archive page (asset list)
+	 * - Single asset page
+	 * - Pages with asset shortcodes
 	 *
 	 * @return void
 	 */
 	public function enqueue_frontend_assets() {
-		// Load only on device-related pages.
-		if ( ! $this->is_device_page() ) {
+		// Load only on asset-related pages.
+		if ( ! $this->is_asset_page() ) {
 			return;
 		}
 		// Enqueue CSS.
 		wp_enqueue_style(
-			'alm-frontend-devices',
-			ALM_PLUGIN_URL . 'assets/css/frontend-devices.css',
+			'alm-frontend-assets',
+			ALM_PLUGIN_URL . 'assets/css/frontend-assets.css',
 			array(),
 			ALM_VERSION,
 			'all'
 		);
 		// Enqueue JS.
 		wp_enqueue_script(
-			'alm-frontend-devices',
-			ALM_PLUGIN_URL . 'assets/js/frontend-devices.js',
+			'alm-frontend-assets',
+			ALM_PLUGIN_URL . 'assets/js/frontend-assets.js',
 			array( 'jquery' ),
 			ALM_VERSION,
 			true
 		);
 		// Pass data from PHP to JavaScript (useful for AJAX).
 		wp_localize_script(
-			'alm-frontend-devices',
+			'alm-frontend-assets',
 			'almFrontend',
 			array(
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
@@ -188,19 +188,19 @@ class ALM_Frontend_Manager {
 	}
 
 	/**
-	 * Check if current page is device-related.
+	 * Check if current page is asset-related.
 	 *
-	 * @return bool True if on device archive, single, or page with device shortcodes.
+	 * @return bool True if on asset archive, single, or page with asset shortcodes.
 	 */
-	private function is_device_page() {
-		// Archive or single device page.
-		if ( is_post_type_archive( ALM_DEVICE_CPT_SLUG ) || is_singular( ALM_DEVICE_CPT_SLUG ) ) {
+	private function is_asset_page() {
+		// Archive or single asset page.
+		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) || is_singular( ALM_ASSET_CPT_SLUG ) ) {
 			return true;
 		}
 
-		// Page with device shortcodes.
+		// Page with asset shortcodes.
 		global $post;
-		if ( $post && ( has_shortcode( $post->post_content, 'alm_device_list' ) || has_shortcode( $post->post_content, 'alm_device_view' ) ) ) {
+		if ( $post && ( has_shortcode( $post->post_content, 'alm_asset_list' ) || has_shortcode( $post->post_content, 'alm_asset_view' ) ) ) {
 			return true;
 		}
 
@@ -208,21 +208,21 @@ class ALM_Frontend_Manager {
 	}
 
 	/**
-	 * Shortcode handler for device list.
+	 * Shortcode handler for asset list.
 	 *
-	 * Usage: [alm_device_list]
+	 * Usage: [alm_asset_list]
 	 *
 	 * @param array $attributes Shortcode attributes.
 	 * @return string HTML output.
 	 */
-	public function shortcode_device_list( $attributes ) {
+	public function shortcode_asset_list( $attributes ) {
 		// Parse shortcode attributes (for future extensions like filters).
 		$attributes = shortcode_atts(
 			array(
 				'posts_per_page' => -1,
 			),
 			$attributes,
-			'alm_device_list'
+			'alm_asset_list'
 		);
 		// Read and sanitize search parameter.
 		$search_term = '';
@@ -231,76 +231,76 @@ class ALM_Frontend_Manager {
 		}
 		// Start output buffering.
 		ob_start();
-		// Render the device list template.
-		$this->render_device_list_template( $attributes, $search_term );
+		// Render the asset list template.
+		$this->render_asset_list_template( $attributes, $search_term );
 		return ob_get_clean(); // End output buffering.
 	}
 
 	/**
-	 * Shortcode handler for single device view.
+	 * Shortcode handler for single asset view.
 	 *
 	 * Usage:
-	 * - [alm_device_view slug="binocolo"]
-	 * - [alm_device_view] (uses query string ?device=binocolo or current post)
+	 * - [alm_asset_view slug="binocolo"]
+	 * - [alm_asset_view] (uses query string ?asset=binocolo or current post)
 	 *
 	 * @param array $attributes Shortcode attributes.
 	 * @return string HTML output.
 	 */
-	public function shortcode_device_view( $attributes ) {
+	public function shortcode_asset_view( $attributes ) {
 		// Parse shortcode attributes.
 		$attributes = shortcode_atts(
 			array(
 				'slug' => '',
 			),
 			$attributes,
-			'alm_device_view'
+			'alm_asset_view'
 		);
 
-		// Determine device ID.
-		$device_id = $this->get_device_id_from_context( $attributes['slug'] );
+		// Determine asset ID.
+		$asset_id = $this->get_asset_id_from_context( $attributes['slug'] );
 
-		if ( ! $device_id ) {
-			return '<p class="alm-error">' . esc_html__( 'Device not found.', 'asset-lending-manager' ) . '</p>';
+		if ( ! $asset_id ) {
+			return '<p class="alm-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
 		}
 
 		// Start output buffering.
 		ob_start();
 
-		// Render the device view template.
-		$this->render_device_view_template( $device_id );
+		// Render the asset view template.
+		$this->render_asset_view_template( $asset_id );
 
 		return ob_get_clean();
 	}
 
 	/**
-	 * Get device ID from slug, query string, or current post context.
+	 * Get asset ID from slug, query string, or current post context.
 	 *
 	 * Priority:
 	 * 1. Slug from shortcode attribute
-	 * 2. Slug from query string (?device=binocolo)
+	 * 2. Slug from query string (?asset=binocolo)
 	 * 3. Current post ID (if in single context)
 	 *
-	 * @param string $slug Device slug from shortcode attribute.
-	 * @return int|null Device post ID or null if not found.
+	 * @param string $slug Asset slug from shortcode attribute.
+	 * @return int|null Asset post ID or null if not found.
 	 */
-	private function get_device_id_from_context( $slug ) {
+	private function get_asset_id_from_context( $slug ) {
 		// Priority 1: Slug from shortcode attribute.
 		if ( ! empty( $slug ) ) {
-			$device = get_page_by_path( $slug, OBJECT, ALM_DEVICE_CPT_SLUG );
-			if ( $device ) {
-				return $device->ID;
+			$asset = get_page_by_path( $slug, OBJECT, ALM_ASSET_CPT_SLUG );
+			if ( $asset ) {
+				return $asset->ID;
 			}
 		}
 		// Priority 2: Slug from query string.
-		if ( isset( $_GET['device'] ) && ! empty( $_GET['device'] ) ) {
-			$query_slug = sanitize_title( $_GET['device'] );
-			$device     = get_page_by_path( $query_slug, OBJECT, ALM_DEVICE_CPT_SLUG );
-			if ( $device ) {
-				return $device->ID;
+		if ( isset( $_GET['asset'] ) && ! empty( $_GET['asset'] ) ) {
+			$query_slug = sanitize_title( $_GET['asset'] );
+			$asset     = get_page_by_path( $query_slug, OBJECT, ALM_ASSET_CPT_SLUG );
+			if ( $asset ) {
+				return $asset->ID;
 			}
 		}
-		// Priority 3: Current post ID (if in single device context).
-		if ( is_singular( ALM_DEVICE_CPT_SLUG ) ) {
+		// Priority 3: Current post ID (if in single asset context).
+		if ( is_singular( ALM_ASSET_CPT_SLUG ) ) {
 			return get_the_ID();
 		}
 
@@ -308,60 +308,60 @@ class ALM_Frontend_Manager {
 	}
 
 	/**
-	 * Render device list template.
+	 * Render asset list template.
 	 *
 	 * @param array  $attributes  Shortcode attributes.
 	 * @param string $search_term Optional search term.
 	 * @return void
 	 */
-	protected function render_device_list_template( $attributes, $search_term = '' ) {
+	protected function render_asset_list_template( $attributes, $search_term = '' ) {
 		if ( ! empty( $search_term ) ) {
 			$query_args = array(
-				'post_type'      => ALM_DEVICE_CPT_SLUG,
+				'post_type'      => ALM_ASSET_CPT_SLUG,
 				'post_status'    => 'publish',
 				's'              => $search_term,
 				'posts_per_page' => $attributes['posts_per_page'],
 			);
 		} else {
 			$query_args = array(
-				'post_type'      => ALM_DEVICE_CPT_SLUG,
+				'post_type'      => ALM_ASSET_CPT_SLUG,
 				'post_status'    => 'publish',
 				'posts_per_page' => $attributes['posts_per_page'],
 			);
 		}
 		$query = new WP_Query( $query_args );
-		$devices       = array();
-		$devices_count = 0;
+		$assets       = array();
+		$assets_count = 0;
 		if ( $query->have_posts() ) {
 			foreach ( $query->posts as $post ) {
-				$devices_count = (int) $query->found_posts;
-				$wrapper = ALM_Device_Manager::get_device_wrapper( $post->ID );
+				$assets_count = (int) $query->found_posts;
+				$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
 				if ( $wrapper ) {
-					$devices[] = $wrapper;
+					$assets[] = $wrapper;
 				}
 			}
 		}
 		wp_reset_postdata();
-		include ALM_PLUGIN_DIR . 'templates/shortcodes/device-list.php';
+		include ALM_PLUGIN_DIR . 'templates/shortcodes/asset-list.php';
 	}
 
 	/**
-	 * Render the device view template.
+	 * Render the asset view template.
 	 *
-	 * @param int $device_id Device post ID.
+	 * @param int $asset_id Asset post ID.
 	 * @return void
 	 */
-	private function render_device_view_template( $device_id ) {
-		// Get device wrapper.
-		$device = ALM_Device_Manager::get_device_wrapper( $device_id );
+	private function render_asset_view_template( $asset_id ) {
+		// Get asset wrapper.
+		$asset = ALM_Asset_Manager::get_asset_wrapper( $asset_id );
 
-		if ( ! $device ) {
-			echo '<p class="alm-error">' . esc_html__( 'Device not found.', 'asset-lending-manager' ) . '</p>';
+		if ( ! $asset ) {
+			echo '<p class="alm-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
 			return;
 		}
 
 		// Include template.
-		$template_path = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/shortcodes/device-view.php';
+		$template_path = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/shortcodes/asset-view.php';
 		if ( file_exists( $template_path ) ) {
 			include $template_path;
 		}

@@ -1,13 +1,13 @@
 /**
- * Frontend styles for ALM devices
+ * Frontend styles for ALM assets
  *
- * Loaded only on device archive, single, and pages with device shortcodes.
+ * Loaded only on asset archive, single, and pages with asset shortcodes.
  *
  * @package AssetLendingManager
  */
 
 /* ========================================================================
-   COMMON STYLES - Shared across all device views
+   COMMON STYLES - Shared across all asset views
    ======================================================================== */
 
 /* Container */
@@ -30,8 +30,8 @@
 	font-size: 2em;
 }
 
-/* Device title (used in both list and view) */
-.alm-device-title {
+/* Asset title (used in both list and view) */
+.alm-asset-title {
 	font-size: 1.2em;
 	margin: 0;
 	color: #23282d;
@@ -39,8 +39,8 @@
 	line-height: 1.3;
 }
 
-/* Device thumbnail - base styles */
-.alm-device-thumbnail {
+/* Asset thumbnail - base styles */
+.alm-asset-thumbnail {
 	flex-shrink: 0;
 	width: 100px;
 	height: 100px;
@@ -52,7 +52,7 @@
 	justify-content: center;
 }
 
-.alm-device-thumbnail img {
+.alm-asset-thumbnail img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
@@ -60,14 +60,14 @@
 	transition: transform 0.3s ease;
 }
 
-.alm-device-default-thumbnail {
+.alm-asset-default-thumbnail {
 	opacity: 0.6;
 	object-fit: contain;
 	padding: 10px;
 }
 
-/* Device taxonomies - base styles */
-.alm-device-taxonomies {
+/* Asset taxonomies - base styles */
+.alm-asset-taxonomies {
 	margin-top: 8px;
 	font-size: 0.85em;
 	display: flex;
@@ -75,7 +75,7 @@
 	gap: 10px;
 }
 
-.alm-device-taxonomy {
+.alm-asset-taxonomy {
 	margin: 0;
 	padding: 0;
 	white-space: nowrap;
@@ -91,7 +91,7 @@
 	color: #0073aa;
 }
 
-/* Device state badges (alm_state) */
+/* Asset state badges (alm_state) */
 .alm-availability {
 	display: inline-block;
 	padding: 4px 10px;
@@ -143,14 +143,14 @@
 	border-radius: 4px;
 }
 
-/* Search form - used in device list */
-#alm_device_search_form {
+/* Search form - used in asset list */
+#alm_asset_search_form {
 	position: relative;
 	width: 100%;
 	margin-bottom: 1em;
 }
 
-.alm-device-search-form {
+.alm-asset-search-form {
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -162,21 +162,21 @@
 	width: 60%;
 }
 
-.alm-device-search-form input[name="s"] {
+.alm-asset-search-form input[name="s"] {
 	width: 100%;
 	padding: 8px 8px 8px 34px; /* spazio per lente/spinner */
 	font-size: 1em;
 	box-sizing: border-box;
 }
 
-.alm-device-search-form button {
+.alm-asset-search-form button {
 	padding: 8px 16px;
 	font-size: 1em;
 	cursor: pointer;
 }
 
 /* Lens + loading spinner */
-#alm_device_search_form .alm-search-icon {
+#alm_asset_search_form .alm-search-icon {
 	position: absolute;
 	left: 10px;
 	top: 50%;
@@ -192,7 +192,7 @@
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
 }
 
-#alm_device_search_form.alm-autocomplete-loading .alm-search-icon {
+#alm_asset_search_form.alm-autocomplete-loading .alm-search-icon {
 	background-image: none;
 	border: 2px solid #666;
 	border-top-color: transparent;
@@ -221,15 +221,15 @@
 }
 
 /* ========================================================================
-   DEVICE VIEW STYLES - Single device detail page (device-view.php)
+   ASSET VIEW STYLES - Single asset detail page (asset-view.php)
    ======================================================================== */
 
-/* Single device detail container */
-.alm-device-single {
+/* Single asset detail container */
+.alm-asset-single {
 	max-width: 900px;
 }
 
-.alm-device-detail {
+.alm-asset-detail {
 	background: #fff;
 	border: 1px solid #ddd;
 	border-radius: 8px;
@@ -237,23 +237,23 @@
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.alm-device-header {
+.alm-asset-header {
 	margin-bottom: 25px;
 	border-bottom: 2px solid #0073aa;
 	padding-bottom: 20px;
 }
 
-.alm-device-detail .alm-device-title {
+.alm-asset-detail .alm-asset-title {
 	font-size: 2em;
 	margin: 0 0 20px 0;
 }
 
-.alm-device-detail .alm-device-thumbnail {
+.alm-asset-detail .alm-asset-thumbnail {
 	max-width: 400px;
 	margin: 0 auto;
 }
 
-.alm-device-detail .alm-device-taxonomies {
+.alm-asset-detail .alm-asset-taxonomies {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 15px;
@@ -263,27 +263,27 @@
 	border-radius: 4px;
 }
 
-.alm-device-detail .alm-device-taxonomy {
+.alm-asset-detail .alm-asset-taxonomy {
 	flex: 1 1 auto;
 	min-width: 200px;
 }
 
-.alm-device-content {
+.alm-asset-content {
 	margin-top: 25px;
 	line-height: 1.6;
 	color: #444;
 }
 
-.alm-device-content p {
+.alm-asset-content p {
 	margin-bottom: 15px;
 }
 
-/* Device view (shortcode) layout */
-.alm-device-view__title {
+/* Asset view (shortcode) layout */
+.alm-asset-view__title {
 	margin-bottom: 18px;
 }
 
-.alm-device-view__hero {
+.alm-asset-view__hero {
 	display: flex;
 	gap: 20px;
 	align-items: flex-start;
@@ -291,12 +291,12 @@
 	margin-bottom: 20px;
 }
 
-.alm-device-view__media {
+.alm-asset-view__media {
 	flex: 1 1 420px;
 	min-width: 280px;
 }
 
-.alm-device-view__taxbox {
+.alm-asset-view__taxbox {
 	flex: 0 0 320px;
 	max-width: 380px;
 	background: #f9f9f9;
@@ -305,19 +305,19 @@
 	padding: 16px;
 }
 
-.alm-device-section-title {
+.alm-asset-section-title {
 	margin: 0 0 12px 0;
 	font-size: 1.1em;
 }
 
-.alm-device-thumbnail--large {
+.alm-asset-thumbnail--large {
 	width: 100%;
 	height: auto;
 	max-width: none;
 	margin: 0;
 }
 
-.alm-device-thumbnail--large img {
+.alm-asset-thumbnail--large img {
 	width: 100%;
 	height: auto;
 	max-height: 520px;
@@ -326,19 +326,19 @@
 	display: block;
 }
 
-.alm-device-taxonomies--boxed {}
+.alm-asset-taxonomies--boxed {}
 
-.alm-device-tax-row {
+.alm-asset-tax-row {
 	display: contents;
 }
 
-.alm-device-tax-row .alm-tax-label {
+.alm-asset-tax-row .alm-tax-label {
 	display: grid;
 	grid-template-columns: var(--alm-tax-label-width, 100px) 1fr;
 	align-items: baseline;
 }
 
-.alm-device-tax-row .alm-tax-value {
+.alm-asset-tax-row .alm-tax-value {
 	color: #0073aa;
 }
 
@@ -379,11 +379,11 @@
 	color: #666;
 }
 
-.alm-device-acf-list {
+.alm-asset-acf-list {
 	margin: 0;
 }
 
-.alm-device-acf-row {
+.alm-asset-acf-row {
 	display: grid;
 	grid-template-columns: 200px 1fr;
 	gap: 12px;
@@ -391,27 +391,27 @@
 	border-bottom: 1px solid #eee;
 }
 
-.alm-device-acf-row:last-child {
+.alm-asset-acf-row:last-child {
 	border-bottom: none;
 }
 
-.alm-device-acf-label {
+.alm-asset-acf-label {
 	font-weight: 700;
 	margin: 0;
 }
 
-.alm-device-acf-value {
+.alm-asset-acf-value {
 	margin: 0;
 	color: #333;
 }
 
-.alm-device-components {
+.alm-asset-components {
 	margin: 0;
 	padding-left: 18px;
 }
 
 /* Quick meta (Manufacturer/Model) in taxbox */
-.alm-device-quick-meta {
+.alm-asset-quick-meta {
 	padding: 10px 12px;
 	background: #fff;
 	border: 1px solid #e6e6e6;
@@ -421,32 +421,32 @@
 	gap: 8px;
 }
 
-.alm-device-quick-row {
+.alm-asset-quick-row {
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
 }
 
 /* Badge state inside the taxbox */
-.alm-device-view__taxbox .alm-availability {
+.alm-asset-view__taxbox .alm-availability {
 	margin-left: 8px;
 	vertical-align: middle;
 }
 
 /* ========================================================================
-   DEVICE LIST STYLES - Archive and list views (device-list.php)
+   ASSET LIST STYLES - Archive and list views (asset-list.php)
    ======================================================================== */
 
-/* Device list container */
-.alm-device-list {
+/* Asset list container */
+.alm-asset-list {
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
 	margin: 20px 0;
 }
 
-/* Device card - horizontal layout */
-.alm-device-card {
+/* Asset card - horizontal layout */
+.alm-asset-card {
 	background: #fff;
 	border: 1px solid #ddd;
 	border-radius: 8px;
@@ -458,12 +458,12 @@
 	gap: 15px;
 }
 
-.alm-device-card:hover {
+.alm-asset-card:hover {
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	transform: translateX(4px);
 }
 
-.alm-device-link {
+.alm-asset-link {
 	text-decoration: none;
 	color: inherit;
 	display: flex;
@@ -473,16 +473,16 @@
 	min-width: 0;
 }
 
-.alm-device-link:hover .alm-device-title {
+.alm-asset-link:hover .alm-asset-title {
 	color: #0073aa;
 }
 
-.alm-device-card:hover .alm-device-thumbnail img {
+.alm-asset-card:hover .alm-asset-thumbnail img {
 	transform: scale(1.1);
 }
 
-/* Device content area - right side */
-.alm-device-content-wrapper {
+/* Asset content area - right side */
+.alm-asset-content-wrapper {
 	flex: 1;
 	min-width: 0;
 	display: flex;
@@ -496,12 +496,12 @@
 
 /* Tablet e schermi medi (768px - 1024px) */
 @media (max-width: 1024px) {
-	.alm-device-taxonomies {
+	.alm-asset-taxonomies {
 		gap: 8px;
 		font-size: 0.8em;
 	}
 	
-	.alm-device-taxonomy {
+	.alm-asset-taxonomy {
 		min-width: 45%;
 	}
 }
@@ -513,57 +513,57 @@
 		padding: 15px;
 	}
 
-	/* Device list responsive */
-	.alm-device-card {
+	/* Asset list responsive */
+	.alm-asset-card {
 		flex-direction: column;
 		align-items: center;
 		padding: 15px;
 	}
 
-	.alm-device-link {
+	.alm-asset-link {
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
 		width: 100%;
 	}
 
-	.alm-device-thumbnail {
+	.alm-asset-thumbnail {
 		width: 150px;
 		height: 150px;
 		margin-bottom: 12px;
 	}
 
-	.alm-device-content-wrapper {
+	.alm-asset-content-wrapper {
 		align-items: center;
 		width: 100%;
 	}
 
-	.alm-device-title {
+	.alm-asset-title {
 		font-size: 1.1em;
 		text-align: center;
 	}
 
 	/* Taxonomies: una colonna su mobile */
-	.alm-device-taxonomies {
+	.alm-asset-taxonomies {
 		flex-direction: column;
 		gap: 8px;
 		width: 100%;
 		justify-content: flex-start;
 	}
 
-	.alm-device-taxonomy {
+	.alm-asset-taxonomy {
 		width: 100%;
 		text-align: left;
 		padding: 6px 0;
 		border-bottom: 1px solid #f0f0f0;
 	}
 
-	.alm-device-taxonomy:last-child {
+	.alm-asset-taxonomy:last-child {
 		border-bottom: none;
 	}
 
 	/* Search form responsive */
-	.alm-device-search-form {
+	.alm-asset-search-form {
 		flex-direction: column;
 		gap: 10px;
 	}
@@ -572,35 +572,35 @@
 		width: 100%;
 	}
 
-	.alm-device-search-form button {
+	.alm-asset-search-form button {
 		width: 100%;
 		padding: 10px 16px;
 	}
 
-	/* Device view responsive */
-	.alm-device-detail {
+	/* Asset view responsive */
+	.alm-asset-detail {
 		padding: 20px;
 	}
 
-	.alm-device-detail .alm-device-title {
+	.alm-asset-detail .alm-asset-title {
 		font-size: 1.5em;
 	}
 
-	.alm-device-detail .alm-device-taxonomies {
+	.alm-asset-detail .alm-asset-taxonomies {
 		flex-direction: column;
 		gap: 10px;
 	}
 
-	.alm-device-detail .alm-device-taxonomy {
+	.alm-asset-detail .alm-asset-taxonomy {
 		min-width: 100%;
 	}
 
-	.alm-device-view__taxbox {
+	.alm-asset-view__taxbox {
 		flex: 1 1 100%;
 		max-width: none;
 	}
 
-	.alm-device-acf-row {
+	.alm-asset-acf-row {
 		grid-template-columns: 1fr;
 	}
 }
@@ -611,21 +611,21 @@
 		padding: 10px;
 	}
 
-	.alm-device-card {
+	.alm-asset-card {
 		padding: 12px;
 		gap: 10px;
 	}
 
-	.alm-device-thumbnail {
+	.alm-asset-thumbnail {
 		width: 120px;
 		height: 120px;
 	}
 
-	.alm-device-title {
+	.alm-asset-title {
 		font-size: 1em;
 	}
 
-	.alm-device-taxonomies {
+	.alm-asset-taxonomies {
 		font-size: 0.85em;
 		gap: 6px;
 	}
@@ -642,36 +642,36 @@
 
 /* Landscape mode per smartphone */
 @media (max-width: 768px) and (orientation: landscape) {
-	.alm-device-card {
+	.alm-asset-card {
 		flex-direction: row;
 	}
 
-	.alm-device-link {
+	.alm-asset-link {
 		flex-direction: row;
 		text-align: left;
 	}
 
-	.alm-device-thumbnail {
+	.alm-asset-thumbnail {
 		width: 100px;
 		height: 100px;
 		margin-bottom: 0;
 		margin-right: 15px;
 	}
 
-	.alm-device-content-wrapper {
+	.alm-asset-content-wrapper {
 		align-items: flex-start;
 	}
 
-	.alm-device-title {
+	.alm-asset-title {
 		text-align: left;
 	}
 
-	.alm-device-taxonomies {
+	.alm-asset-taxonomies {
 		flex-direction: row;
 		flex-wrap: wrap;
 	}
 
-	.alm-device-taxonomy {
+	.alm-asset-taxonomy {
 		width: auto;
 		min-width: 45%;
 		border-bottom: none;

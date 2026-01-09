@@ -1,8 +1,8 @@
 <?php
 /**
- * Archive template for ALM Devices
+ * Archive template for ALM Assets
  *
- * This template uses the [alm_device_list] shortcode.
+ * This template uses the [alm_asset_list] shortcode.
  *
  * @package AssetLendingManager
  */
@@ -16,7 +16,7 @@ if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
 }
 ?>
 
-<div class="alm-container alm-device-archive">
+<div class="alm-container alm-asset-archive">
 
 	<header class="alm-archive-header">
 		<h1 class="alm-archive-title">
@@ -24,7 +24,7 @@ if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
 		</h1>
 	</header>
 
-	<?php echo do_shortcode( '[alm_device_list]' ); ?>
+	<?php echo do_shortcode( '[alm_asset_list]' ); ?>
 
 </div>
 

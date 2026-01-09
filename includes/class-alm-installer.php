@@ -51,24 +51,24 @@ class ALM_Installer {
 	 */
 	public static function create_default_terms(): void {
 
-		// Device structure.
+		// Asset structure.
 		self::add_default_terms(
-			ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
+			ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
 			array(
 				array(
-					'slug'  => ALM_DEVICE_COMPONENT_SLUG,
+					'slug'  => ALM_ASSET_COMPONENT_SLUG,
 					'label' => __( 'Component', 'asset-lending-manager' ),
 				),
 				array(
-					'slug'  => ALM_DEVICE_KIT_SLUG,
+					'slug'  => ALM_ASSET_KIT_SLUG,
 					'label' => __( 'Kit', 'asset-lending-manager' ),
 				),
 			)
 		);
 
-		// Device types.
+		// Asset types.
 		self::add_default_terms(
-			ALM_DEVICE_TYPE_TAXONOMY_SLUG,
+			ALM_ASSET_TYPE_TAXONOMY_SLUG,
 			array(
 				array(
 					'slug'  => 'telescope',
@@ -121,9 +121,9 @@ class ALM_Installer {
 			)
 		);
 
-		// Device state.
+		// Asset state.
 		self::add_default_terms(
-			ALM_DEVICE_STATE_TAXONOMY_SLUG,
+			ALM_ASSET_STATE_TAXONOMY_SLUG,
 			array(
 				array(
 					'slug'  => 'on-loan',
@@ -144,9 +144,9 @@ class ALM_Installer {
 			)
 		);
 
-		// Device level.
+		// Asset level.
 		self::add_default_terms(
-			ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
+			ALM_ASSET_LEVEL_TAXONOMY_SLUG,
 			array(
 				array(
 					'slug'  => 'basic',

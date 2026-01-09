@@ -29,5 +29,5 @@ remove_role( ALM_OPERATOR_ROLE );
 
 // Remove custom tables.
 // global $wpdb;
-// $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}alm_devices" );
+// $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}alm_assets" );
 // $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}alm_logs" );
