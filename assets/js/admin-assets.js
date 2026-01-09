@@ -1,7 +1,7 @@
 /**
- * Admin JavaScript for ALM devices
+ * Admin JavaScript for ALM assets
  *
- * Loaded only on ALM admin pages (device edit, list, taxonomies, custom pages).
+ * Loaded only on ALM admin pages (asset edit, list, taxonomies, custom pages).
  *
  * @package AssetLendingManager
  */
@@ -34,17 +34,17 @@
 			}
 
 			// Initialize components.
-			this.initDeviceStatusBadges();
+			this.initAssetStatusBadges();
 			this.initQuickActions();
 			this.initFormValidation();
 		},
 
 		/**
-		 * Add status badges to device list table.
+		 * Add status badges to asset list table.
 		 */
-		initDeviceStatusBadges: function() {
-			// Add visual status indicators in the devices list.
-			$('.post-type-alm_device .wp-list-table tbody tr').each(function() {
+		initAssetStatusBadges: function() {
+			// Add visual status indicators in the assets list.
+			$('.post-type-alm_asset .wp-list-table tbody tr').each(function() {
 				var $row = $(this);
 				var $stateCell = $row.find('.column-taxonomy-alm_state');
 				
@@ -68,17 +68,17 @@
 		},
 
 		/**
-		 * Initialize quick actions for devices.
+		 * Initialize quick actions for assets.
 		 */
 		initQuickActions: function() {
-			// Add custom quick actions to device rows.
-			$('.post-type-alm_device .row-actions').each(function() {
+			// Add custom quick actions to asset rows.
+			$('.post-type-alm_asset .row-actions').each(function() {
 				var $actions = $(this);
 				var postId = $actions.closest('tr').attr('id').replace('post-', '');
 				
 				// Example: Add a "View Frontend" link.
 				var viewLink = '<span class="alm-view-frontend"> | ' +
-					'<a href="' + ALM_Admin.getDevicePermalink(postId) + '" target="_blank">' +
+					'<a href="' + ALM_Admin.getAssetPermalink(postId) + '" target="_blank">' +
 					'View on Frontend</a></span>';
 				
 				$actions.append(viewLink);
@@ -86,12 +86,12 @@
 		},
 
 		/**
-		 * Get device permalink (placeholder - would need actual data).
+		 * Get asset permalink (placeholder - would need actual data).
 		 * 
-		 * @param {number} postId Device post ID.
-		 * @return {string} Device permalink.
+		 * @param {number} postId Asset post ID.
+		 * @return {string} Asset permalink.
 		 */
-		getDevicePermalink: function(postId) {
+		getAssetPermalink: function(postId) {
 			// This is a placeholder. In a real implementation, you would:
 			// 1. Store permalinks in data attributes
 			// 2. Use AJAX to fetch the permalink
@@ -100,11 +100,11 @@
 		},
 
 		/**
-		 * Initialize form validation for device edit.
+		 * Initialize form validation for asset edit.
 		 */
 		initFormValidation: function() {
-			// Only on device edit page.
-			if (!$('body').hasClass('post-type-alm_device') || !$('body').hasClass('post-php')) {
+			// Only on asset edit page.
+			if (!$('body').hasClass('post-type-alm_asset') || !$('body').hasClass('post-php')) {
 				return;
 			}
 
@@ -116,14 +116,14 @@
 				// Check if title is filled.
 				var title = $('#title').val().trim();
 				if (!title) {
-					errors.push('Device name is required.');
+					errors.push('Asset name is required.');
 					isValid = false;
 				}
 
-				// Check if device type is selected.
-				var deviceType = $('input[name="tax_input[alm_type][]"]:checked').length;
-				if (deviceType === 0) {
-					errors.push('Please select a device type.');
+				// Check if asset type is selected.
+				var assetType = $('input[name="tax_input[alm_type][]"]:checked').length;
+				if (assetType === 0) {
+					errors.push('Please select a asset type.');
 					isValid = false;
 				}
 

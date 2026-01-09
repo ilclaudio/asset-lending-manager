@@ -42,7 +42,7 @@ class PluginManagerModulesTest extends TestCase {
 		$expected_classes = array(
 			ALM_Settings_Manager::class,
 			ALM_Role_Manager::class,
-			ALM_Device_Manager::class,
+			ALM_Asset_Manager::class,
 			ALM_Loan_Manager::class,
 			ALM_Notification_Manager::class,
 			ALM_Frontend_Manager::class,

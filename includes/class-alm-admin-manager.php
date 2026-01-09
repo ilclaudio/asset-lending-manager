@@ -83,7 +83,7 @@ class ALM_Admin_Manager {
 	 * Enqueue admin CSS and JS for ALM pages.
 	 *
 	 * Loads assets only on plugin-related admin pages:
-	 * - Device post type pages (list, edit, add)
+	 * - Asset post type pages (list, edit, add)
 	 * - ALM custom admin pages
 	 * - ALM taxonomy pages
 	 *
@@ -98,8 +98,8 @@ class ALM_Admin_Manager {
 
 		// Enqueue CSS.
 		wp_enqueue_style(
-			'alm-admin-devices',
-			ALM_PLUGIN_URL . 'assets/css/admin-devices.css',
+			'alm-admin-assets',
+			ALM_PLUGIN_URL . 'assets/css/admin-assets.css',
 			array(),
 			ALM_VERSION,
 			'all'
@@ -107,8 +107,8 @@ class ALM_Admin_Manager {
 
 		// Enqueue JS.
 		wp_enqueue_script(
-			'alm-admin-devices',
-			ALM_PLUGIN_URL . 'assets/js/admin-devices.js',
+			'alm-admin-assets',
+			ALM_PLUGIN_URL . 'assets/js/admin-assets.js',
 			array( 'jquery' ),
 			ALM_VERSION,
 			true
@@ -116,7 +116,7 @@ class ALM_Admin_Manager {
 
 		// Pass data from PHP to JavaScript (useful for AJAX).
 		wp_localize_script(
-			'alm-admin-devices',
+			'alm-admin-assets',
 			'almAdmin',
 			array(
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
@@ -133,8 +133,8 @@ class ALM_Admin_Manager {
 	 */
 	private function is_alm_admin_page( $hook ) {
 		global $post_type;
-		// Device CPT pages (edit, list, add new).
-		if ( ALM_DEVICE_CPT_SLUG === $post_type ) {
+		// Asset CPT pages (edit, list, add new).
+		if ( ALM_ASSET_CPT_SLUG === $post_type ) {
 			return true;
 		}
 		// ALM custom admin pages (main menu, tools, etc).

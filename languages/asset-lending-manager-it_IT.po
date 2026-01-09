@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-01-03 16:28+0000\n"
+"PO-Revision-Date: 2026-01-09 18:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -25,18 +25,18 @@ msgstr "Accessorio"
 
 #: includes/class-alm-plugin-manager.php:241
 #: includes/class-alm-plugin-manager.php:242
-msgid "Add a device"
-msgstr "Aggiungi dispositivo"
+msgid "Add a asset"
+msgstr "Aggiungi risorsa"
 
-#: includes/class-alm-device-manager.php:94
+#: includes/class-alm-asset-manager.php:94
 msgid "Add New"
-msgstr "Aggiungi nuovo"
+msgstr "Aggiungi nuova"
 
-#: includes/class-alm-device-manager.php:95
-msgid "Add New Device"
-msgstr "Aggiungi nuovo dispositivo"
+#: includes/class-alm-asset-manager.php:95
+msgid "Add New Asset"
+msgstr "Aggiungi nuova risorsa"
 
-#: templates/shortcodes/device-view.php:119
+#: templates/shortcodes/asset-view.php:119
 msgid "Additional fields"
 msgstr "Campi aggiuntivi"
 
@@ -58,14 +58,84 @@ msgid "An error occurred while loading default terms."
 msgstr ""
 "Si è verificato un errore durante il caricamento dei termini predefiniti."
 
-#: templates/shortcodes/device-view.php:189
+#: templates/shortcodes/asset-view.php:189
 msgid "Ask for a loan"
 msgstr "Richiedi in prestito"
+
+#: includes/class-alm-asset-manager.php:93
+msgid "Asset"
+msgstr "Risorsa"
 
 #. Name of the plugin
 #: includes/class-alm-plugin-manager.php:220
 msgid "Asset Lending Manager"
 msgstr "Asset Lending Manager"
+
+#: includes/class-alm-asset-manager.php:202
+#: includes/class-alm-plugin-manager.php:277
+#: includes/class-alm-plugin-manager.php:278
+msgid "Asset Level"
+msgstr "Livello risorsa"
+
+#: includes/class-alm-asset-manager.php:201
+msgid "Asset Levels"
+msgstr "Livelli risorse"
+
+#: includes/class-alm-frontend-manager.php:263
+#: includes/class-alm-frontend-manager.php:359
+msgid "Asset not found."
+msgstr "Risorsa non trovata."
+
+#: templates/shortcodes/asset-view.php:42
+msgid "Asset overview"
+msgstr "Anteprima della risorsa."
+
+#: includes/class-alm-asset-manager.php:180
+#: includes/class-alm-plugin-manager.php:268
+#: includes/class-alm-plugin-manager.php:269
+msgid "Asset State"
+msgstr "Stato risorsa"
+
+#: includes/class-alm-asset-manager.php:179
+msgid "Asset States"
+msgstr "Stati risorsa"
+
+#: includes/class-alm-asset-manager.php:136
+#: includes/class-alm-plugin-manager.php:250
+#: includes/class-alm-plugin-manager.php:251
+msgid "Asset Structure"
+msgstr "Struttura risorsa"
+
+#: includes/class-alm-asset-manager.php:135
+msgid "Asset Structures"
+msgstr "Strutture risorsa"
+
+#: templates/shortcodes/asset-view.php:71
+msgid "Asset taxonomies"
+msgstr "Tassonomie del risorsa"
+
+#: includes/class-alm-asset-manager.php:158
+#: includes/class-alm-plugin-manager.php:259
+#: includes/class-alm-plugin-manager.php:260
+msgid "Asset Type"
+msgstr "Tipo risorsa"
+
+#: includes/class-alm-asset-manager.php:157
+msgid "Asset Types"
+msgstr "Tipi risorsa"
+
+#. parent slug.
+#. page title.
+#: includes/class-alm-asset-manager.php:92
+#: includes/class-alm-asset-manager.php:102
+#: includes/class-alm-plugin-manager.php:232
+#: includes/class-alm-plugin-manager.php:233
+msgid "Assets"
+msgstr "Risorse"
+
+#: templates/shortcodes/asset-list.php:41
+msgid "Assets found: %d"
+msgstr "Risorse trovate %d"
 
 #: includes/class-alm-installer.php:134
 msgid "Available"
@@ -87,11 +157,11 @@ msgstr "Libro"
 msgid "Component"
 msgstr "Componente"
 
-#: includes/class-alm-acf-device-adapter.php:34
+#: includes/class-alm-acf-asset-adapter.php:34
 msgid "Components"
 msgstr "Componenti"
 
-#: includes/class-alm-acf-device-adapter.php:30
+#: includes/class-alm-acf-asset-adapter.php:30
 msgid "Cost"
 msgstr "Costo"
 
@@ -99,89 +169,19 @@ msgstr "Costo"
 msgid "Default terms loaded successfully."
 msgstr "Termini predefiniti caricati correttamente."
 
-#: includes/class-alm-device-manager.php:93
-msgid "Device"
-msgstr "Dispositivo"
-
-#: includes/class-alm-device-manager.php:202
-#: includes/class-alm-plugin-manager.php:277
-#: includes/class-alm-plugin-manager.php:278
-msgid "Device Level"
-msgstr "Livello dispositivo"
-
-#: includes/class-alm-device-manager.php:201
-msgid "Device Levels"
-msgstr "Livelli dispositivo"
-
-#: includes/class-alm-frontend-manager.php:263
-#: includes/class-alm-frontend-manager.php:359
-msgid "Device not found."
-msgstr "Dispositivo non trovato."
-
-#: templates/shortcodes/device-view.php:42
-msgid "Device overview"
-msgstr "Anteprima del dispositivo."
-
-#: includes/class-alm-device-manager.php:180
-#: includes/class-alm-plugin-manager.php:268
-#: includes/class-alm-plugin-manager.php:269
-msgid "Device State"
-msgstr "Stato dispositivo"
-
-#: includes/class-alm-device-manager.php:179
-msgid "Device States"
-msgstr "Stati dispositivo"
-
-#: includes/class-alm-device-manager.php:136
-#: includes/class-alm-plugin-manager.php:250
-#: includes/class-alm-plugin-manager.php:251
-msgid "Device Structure"
-msgstr "Struttura dispositivo"
-
-#: includes/class-alm-device-manager.php:135
-msgid "Device Structures"
-msgstr "Strutture dispositivo"
-
-#: templates/shortcodes/device-view.php:71
-msgid "Device taxonomies"
-msgstr "Tassonomie del dispositivo"
-
-#: includes/class-alm-device-manager.php:158
-#: includes/class-alm-plugin-manager.php:259
-#: includes/class-alm-plugin-manager.php:260
-msgid "Device Type"
-msgstr "Tipo dispositivo"
-
-#: includes/class-alm-device-manager.php:157
-msgid "Device Types"
-msgstr "Tipi dispositivo"
-
-#. parent slug.
-#. page title.
-#: includes/class-alm-device-manager.php:92
-#: includes/class-alm-device-manager.php:102
-#: includes/class-alm-plugin-manager.php:232
-#: includes/class-alm-plugin-manager.php:233
-msgid "Devices"
-msgstr "Dispositivi"
-
-#: templates/shortcodes/device-list.php:41
-msgid "Devices found: %d"
-msgstr "Dispositivi trovati: %d"
-
-#: includes/class-alm-acf-device-adapter.php:31
+#: includes/class-alm-acf-asset-adapter.php:31
 msgid "Dimensions"
 msgstr "Dimensioni"
 
-#: includes/class-alm-device-manager.php:96
-msgid "Edit Device"
-msgstr "Modifica dispositivo"
+#: includes/class-alm-asset-manager.php:96
+msgid "Edit Asset"
+msgstr "Modifica risorsa"
 
-#: includes/class-alm-acf-device-adapter.php:38
+#: includes/class-alm-acf-asset-adapter.php:38
 msgid "External code"
 msgstr "Codice esterno"
 
-#: templates/shortcodes/device-view.php:201
+#: templates/shortcodes/asset-view.php:201
 msgid "Features under development."
 msgstr "Funzionalità in fase di sviluppo."
 
@@ -189,7 +189,7 @@ msgstr "Funzionalità in fase di sviluppo."
 msgid "Filter"
 msgstr "Filtro"
 
-#: templates/shortcodes/device-view.php:112
+#: templates/shortcodes/asset-view.php:112
 msgid "Full description"
 msgstr "Descrizione completa"
 
@@ -197,7 +197,7 @@ msgstr "Descrizione completa"
 msgid "Generic"
 msgstr "Generico"
 
-#: templates/shortcodes/device-view.php:232
+#: templates/shortcodes/asset-view.php:232
 msgid "History not available (section under development)."
 msgstr "Storico non disponibile (sezione in fase di sviluppo)."
 
@@ -217,26 +217,26 @@ msgstr "Intermedio"
 msgid "Kit"
 msgstr "Kit"
 
-#: templates/shortcodes/device-list.php:79
-#: templates/shortcodes/device-view.php:91
+#: templates/shortcodes/asset-list.php:79
+#: templates/shortcodes/asset-view.php:91
 msgid "Level"
 msgstr "Livello"
 
-#: templates/shortcodes/device-view.php:219
-#: templates/shortcodes/device-view.php:223
+#: templates/shortcodes/asset-view.php:219
+#: templates/shortcodes/asset-view.php:223
 msgid "Loan history"
 msgstr "Storico dei prestiti"
 
-#: templates/shortcodes/device-view.php:185
+#: templates/shortcodes/asset-view.php:185
 msgid "Loan request"
 msgstr "Richiesta di prestito"
 
-#: templates/shortcodes/device-view.php:213
-#: templates/shortcodes/device-view.php:214
+#: templates/shortcodes/asset-view.php:213
+#: templates/shortcodes/asset-view.php:214
 msgid "Loan requests"
 msgstr "Richieste di prestito"
 
-#: includes/class-alm-acf-device-adapter.php:33
+#: includes/class-alm-acf-asset-adapter.php:33
 msgid "Location"
 msgstr "Locazione"
 
@@ -257,7 +257,7 @@ msgid "Manage shared assets and internal lending workflows."
 msgstr ""
 "Gestire le risorse condivise e i flussi di lavoro dei prestiti interni."
 
-#: includes/class-alm-acf-device-adapter.php:27
+#: includes/class-alm-acf-asset-adapter.php:27
 msgid "Manufacturer"
 msgstr "Marca"
 
@@ -265,11 +265,11 @@ msgstr "Marca"
 msgid "Member"
 msgstr "Socio"
 
-#: includes/class-alm-acf-device-adapter.php:40
+#: includes/class-alm-acf-asset-adapter.php:40
 msgid "Membership kit"
 msgstr "Kit di appartenenza"
 
-#: includes/class-alm-acf-device-adapter.php:28
+#: includes/class-alm-acf-asset-adapter.php:28
 msgid "Model"
 msgstr "Modello"
 
@@ -277,36 +277,36 @@ msgstr "Modello"
 msgid "Mount"
 msgstr "Montatura"
 
-#: includes/class-alm-device-manager.php:97
-msgid "New Device"
-msgstr "Nuovo dispositivo"
+#: includes/class-alm-asset-manager.php:97
+msgid "New Asset"
+msgstr "Nuova risorsa"
 
-#: templates/shortcodes/device-view.php:178
+#: templates/shortcodes/asset-view.php:178
 msgid "No additional details available."
 msgstr "Non sono disponibili ulteriori dettagli."
 
-#: includes/class-alm-device-manager.php:100
-msgid "No devices found"
-msgstr "Nessun dispositivo trovato"
+#: includes/class-alm-asset-manager.php:100
+msgid "No assets found"
+msgstr "Nessuna risorsa trovato"
 
-#: includes/class-alm-device-manager.php:101
-msgid "No devices found in Trash"
-msgstr "Nessun dispsitivo nel cestino"
+#: includes/class-alm-asset-manager.php:101
+msgid "No assets found in Trash"
+msgstr "Nessuna risorsa nel cestino"
 
-#: templates/shortcodes/device-list.php:99
-msgid "No devices found."
-msgstr "Nessun dispositivo trovato."
+#: templates/shortcodes/asset-list.php:99
+msgid "No assets found."
+msgstr "Nessuna risorsa trovato."
 
-#: templates/shortcodes/device-view.php:215
+#: templates/shortcodes/asset-view.php:215
 msgid "No requests to show (section under development)."
 msgstr "Nessuna richiesta da mostrare (sezione in fase di sviluppo)."
 
-#: templates/shortcodes/device-list.php:95
+#: templates/shortcodes/asset-list.php:95
 #, php-format
 msgid "No results found for \"%s\"."
 msgstr "Nessun risultato per \"%s\""
 
-#: includes/class-alm-acf-device-adapter.php:39
+#: includes/class-alm-acf-asset-adapter.php:39
 msgid "Notes"
 msgstr "Note"
 
@@ -318,9 +318,9 @@ msgstr "Oculare"
 msgid "On loan"
 msgstr "In prestito"
 
-#: templates/shortcodes/device-view.php:126
-#: templates/shortcodes/device-view.php:192
-#: templates/shortcodes/device-view.php:226
+#: templates/shortcodes/asset-view.php:126
+#: templates/shortcodes/asset-view.php:192
+#: templates/shortcodes/asset-view.php:226
 msgid "Open/Close"
 msgstr "Apri/chiudi"
 
@@ -332,11 +332,11 @@ msgstr "Operatore"
 msgid "Optical Tube"
 msgstr "Tubo ottico"
 
-#: includes/class-alm-acf-device-adapter.php:29
+#: includes/class-alm-acf-asset-adapter.php:29
 msgid "Purchase date"
 msgstr "Data acquisto"
 
-#: templates/shortcodes/device-view.php:123
+#: templates/shortcodes/asset-view.php:123
 msgid "Read details"
 msgstr "Leggi i dettagli"
 
@@ -352,38 +352,38 @@ msgstr "Ricarica i termini delle tassonomie predefinite"
 msgid "Retired"
 msgstr "Ritirato"
 
-#: templates/shortcodes/device-list.php:31
+#: templates/shortcodes/asset-list.php:31
 msgid "Search"
 msgstr "Cerca"
 
-#: includes/class-alm-device-manager.php:99
-msgid "Search Devices"
-msgstr "Cerca dispositivi"
+#: includes/class-alm-asset-manager.php:99
+msgid "Search Assets"
+msgstr "Cerca risorse"
 
-#: templates/shortcodes/device-list.php:27
-msgid "Search devices..."
-msgstr "Cerca i dispositivi..."
+#: templates/shortcodes/asset-list.php:27
+msgid "Search assets..."
+msgstr "Cerca le risorse..."
 
-#: templates/shortcodes/device-view.php:198
+#: templates/shortcodes/asset-view.php:198
 #| msgid "Send loan request"
 msgid "Send loan request..."
 msgstr "Invia richiesta di prestito..."
 
-#: includes/class-alm-acf-device-adapter.php:37
+#: includes/class-alm-acf-asset-adapter.php:37
 msgid "Serial number"
 msgstr "Numero seriale"
 
-#: templates/shortcodes/device-list.php:74
-#: templates/shortcodes/device-view.php:99
+#: templates/shortcodes/asset-list.php:74
+#: templates/shortcodes/asset-view.php:99
 msgid "State"
 msgstr "Stato"
 
-#: templates/shortcodes/device-list.php:64
-#: templates/shortcodes/device-view.php:75
+#: templates/shortcodes/asset-list.php:64
+#: templates/shortcodes/asset-view.php:75
 msgid "Structure"
 msgstr "Sruttura"
 
-#: includes/class-alm-acf-device-adapter.php:36
+#: includes/class-alm-acf-asset-adapter.php:36
 msgid "Technical data sheet"
 msgstr "Scheda tecnica"
 
@@ -395,7 +395,7 @@ msgstr "Telescopio"
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr "Il plugin ALM richiede che il plugin ACF sia installato e abilitato."
 
-#: templates/shortcodes/device-view.php:205
+#: templates/shortcodes/asset-view.php:205
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 "Per richiedere un prestito, è necessario effettuare l'accesso come membro."
@@ -408,8 +408,8 @@ msgstr "Strumenti"
 msgid "Tripod"
 msgstr "Treppiede"
 
-#: templates/shortcodes/device-list.php:69
-#: templates/shortcodes/device-view.php:83
+#: templates/shortcodes/asset-list.php:69
+#: templates/shortcodes/asset-view.php:83
 msgid "Type"
 msgstr "Tipo"
 
@@ -417,15 +417,15 @@ msgstr "Tipo"
 msgid "Unauthorized action."
 msgstr "Azione non autorizzata."
 
-#: includes/class-alm-acf-device-adapter.php:35
+#: includes/class-alm-acf-asset-adapter.php:35
 msgid "User manual"
 msgstr "Manuale utente"
 
-#: includes/class-alm-device-manager.php:98
-msgid "View Device"
-msgstr "Vedi dispositivo"
+#: includes/class-alm-asset-manager.php:98
+msgid "View Asset"
+msgstr "Vedi risorsa"
 
-#: includes/class-alm-acf-device-adapter.php:32
+#: includes/class-alm-acf-asset-adapter.php:32
 msgid "Weight"
 msgstr "Peso"
 

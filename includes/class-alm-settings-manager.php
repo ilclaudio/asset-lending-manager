@@ -61,7 +61,7 @@ class ALM_Settings_Manager {
 			'allow_multiple_requests' => true,
 		),
 		'frontend' => array(
-			'devices_page_id' => 0,
+			'assets_page_id' => 0,
 		),
 		'logging' => array(
 			'enabled' => false,

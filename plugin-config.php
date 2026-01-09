@@ -18,31 +18,31 @@ define( 'ALM_TEXT_DOMAIN', 'asset-lending-manager' );
 define( 'ALM_SLUG_MAIN_MENU', 'alm' );
 
 // Permissions.
-define( 'ALM_VIEW_DEVICES', 'alm_view_devices' );
-define( 'ALM_VIEW_DEVICE', 'alm_view_device' );
-define( 'ALM_EDIT_DEVICE', 'alm_edit_device' );
+define( 'ALM_VIEW_ASSETS', 'alm_view_assets' );
+define( 'ALM_VIEW_ASSET', 'alm_view_asset' );
+define( 'ALM_EDIT_ASSET', 'alm_edit_asset' );
 
-// Device CPT.
-define( 'ALM_DEVICE_CPT_SLUG', 'alm_device' );
+// Asset CPT.
+define( 'ALM_ASSET_CPT_SLUG', 'alm_asset' );
 define( 'ALM_MAIN_MENU_ICON', 'dashicons-hammer' );
-define( 'ALM_DEVICE_ICON', 'dashicons-hammer' );
+define( 'ALM_ASSET_ICON', 'dashicons-hammer' );
 
-// Device structures.
-define( 'ALM_DEVICE_KIT_SLUG', 'kit' );
-define( 'ALM_DEVICE_COMPONENT_SLUG', 'component' );
+// Asset structures.
+define( 'ALM_ASSET_KIT_SLUG', 'kit' );
+define( 'ALM_ASSET_COMPONENT_SLUG', 'component' );
 
 // Taxonomies.
-define( 'ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG', 'alm_structure' );
-define( 'ALM_DEVICE_TYPE_TAXONOMY_SLUG', 'alm_type' );
-define( 'ALM_DEVICE_STATE_TAXONOMY_SLUG', 'alm_state' );
-define( 'ALM_DEVICE_LEVEL_TAXONOMY_SLUG', 'alm_level' );
+define( 'ALM_ASSET_STRUCTURE_TAXONOMY_SLUG', 'alm_structure' );
+define( 'ALM_ASSET_TYPE_TAXONOMY_SLUG', 'alm_type' );
+define( 'ALM_ASSET_STATE_TAXONOMY_SLUG', 'alm_state' );
+define( 'ALM_ASSET_LEVEL_TAXONOMY_SLUG', 'alm_level' );
 define(
 	'ALM_CUSTOM_TAXONOMIES',
 	array(
-		ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
-		ALM_DEVICE_TYPE_TAXONOMY_SLUG,
-		ALM_DEVICE_STATE_TAXONOMY_SLUG,
-		ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
+		ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+		ALM_ASSET_TYPE_TAXONOMY_SLUG,
+		ALM_ASSET_STATE_TAXONOMY_SLUG,
+		ALM_ASSET_LEVEL_TAXONOMY_SLUG,
 	)
 );
 

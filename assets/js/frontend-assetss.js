@@ -1,7 +1,7 @@
 /**
- * Frontend JavaScript for ALM devices
+ * Frontend JavaScript for ALM assets
  *
- * Loaded only on device archive, single, and pages with device shortcodes.
+ * Loaded only on asset archive, single, and pages with asset shortcodes.
  *
  * @package AssetLendingManager
  */
@@ -35,19 +35,19 @@
 
 			// Initialize components.
 			this.initImageLightbox();
-			this.initDeviceFilters();
-			this.initDeviceSearch();
+			this.initAssetFilters();
+			this.initAssetSearch();
 		},
 
 		/**
-		 * Initialize image lightbox for device thumbnails.
+		 * Initialize image lightbox for asset thumbnails.
 		 * 
-		 * Opens device images in a simple lightbox overlay.
+		 * Opens asset images in a simple lightbox overlay.
 		 */
 		initImageLightbox: function() {
-			$('.alm-device-thumbnail img').on('click', function(e) {
-				// Only in single device view.
-				if (!$('.alm-device-single').length) {
+			$('.alm-asset-thumbnail img').on('click', function(e) {
+				// Only in single asset view.
+				if (!$('.alm-asset-single').length) {
 					return;
 				}
 
@@ -81,12 +81,12 @@
 		},
 
 		/**
-		 * Initialize device filters (if present).
+		 * Initialize asset filters (if present).
 		 * 
 		 * Example: filter by type, state, etc.
 		 */
-		initDeviceFilters: function() {
-			var $filters = $('.alm-device-filters');
+		initAssetFilters: function() {
+			var $filters = $('.alm-asset-filters');
 			if (!$filters.length) {
 				return;
 			}
@@ -99,12 +99,12 @@
 		},
 
 		/**
-		 * Initialize device search (if present).
+		 * Initialize asset search (if present).
 		 * 
-		 * Example: live search in device list.
+		 * Example: live search in asset list.
 		 */
-		initDeviceSearch: function() {
-			var $searchInput = $('.alm-device-search-input');
+		initAssetSearch: function() {
+			var $searchInput = $('.alm-asset-search-input');
 			if (!$searchInput.length) {
 				return;
 			}

@@ -97,40 +97,40 @@ class ALM_Role_Manager {
 		// Administrator: always grant plugin capabilities.
 		$admin = get_role( 'administrator' );
 		if ( $admin ) {
-			foreach ( ALM_Capabilities::get_all_device_caps() as $cap ) {
+			foreach ( ALM_Capabilities::get_all_asset_caps() as $cap ) {
 				$admin->add_cap( $cap );
 			}
 		}
-		// Operator: full device management.
+		// Operator: full asset management.
 		$alm_operator = get_role( ALM_OPERATOR_ROLE );
 		if ( $alm_operator ) {
-			foreach ( ALM_Capabilities::get_all_device_caps() as $cap ) {
+			foreach ( ALM_Capabilities::get_all_asset_caps() as $cap ) {
 				$alm_operator->add_cap( $cap );
 			}
 		}
-		// Member: read-only access to devices.
+		// Member: read-only access to assets.
 		$alm_member = get_role( ALM_MEMBER_ROLE );
 		if ( $alm_member ) {
-			$alm_member->add_cap( ALM_VIEW_DEVICES );
-			$alm_member->add_cap( ALM_VIEW_DEVICE );
+			$alm_member->add_cap( ALM_VIEW_ASSETS );
+			$alm_member->add_cap( ALM_VIEW_ASSET );
 		}
 	}
 
 	/**
-	 * Check if the current user can manage devices.
+	 * Check if the current user can manage assets.
 	 *
 	 * @return bool
 	 */
-	public function current_user_can_manage_devices() {
-		return current_user_can( ALM_EDIT_DEVICE );
+	public function current_user_can_manage_assets() {
+		return current_user_can( ALM_EDIT_ASSET );
 	}
 
 	/**
-	 * Check if the current user can view devices.
+	 * Check if the current user can view assets.
 	 *
 	 * @return bool
 	 */
-	public function current_user_can_view_devices() {
-		return current_user_can( ALM_VIEW_DEVICES );
+	public function current_user_can_view_assets() {
+		return current_user_can( ALM_VIEW_ASSETS );
 	}
 }

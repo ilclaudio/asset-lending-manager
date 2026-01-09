@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 == Description ==
 Asset Lending Manager is a WordPress plugin that helps organizations manage shared assets and internal lending workflows.
 
-Members can browse available assets, submit loan requests, and track assignments, while administrators manage devices, users, and loan history through the WordPress dashboard.
+Members can browse available assets, submit loan requests, and track assignments, while administrators manage assets, users, and loan history through the WordPress dashboard.
 
 The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof.
 

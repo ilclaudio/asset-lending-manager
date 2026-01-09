@@ -1,7 +1,7 @@
 [
     {
         "key": "group_694a655eddefc",
-        "title": "ALM Device Fields",
+        "title": "ALM Asset Fields",
         "fields": [
             {
                 "key": "field_694a656243fca",
@@ -289,7 +289,7 @@
                 {
                     "param": "post_type",
                     "operator": "==",
-                    "value": "alm_device"
+                    "value": "alm_asset"
                 }
             ]
         ],

@@ -1,13 +1,13 @@
 
-1) DeviceView: Taxonomies layout.
-2) DeviceView: Component list for KIT.
-3) DeviceView: KIT link for component.
+1) AssetView: Taxonomies layout.
+2) AssetView: Component list for KIT.
+3) AssetView: KIT link for component.
 4) Open/Close for all sections.
-5) DeviceList: Kit filter.
-6) DeviceList: Type filter.
+5) AssetList: Kit filter.
+6) AssetList: Type filter.
 
 8) Search autocomplete: parameter for title or title+body.
-9) Device list: pagination.
+9) Asset list: pagination.
 
 
 10) Roles translation.
@@ -23,10 +23,10 @@
 
 
 
-- ??? // ALM_Device_Manager dipende da ACF_Adapter
+- ??? // ALM_Asset_Manager dipende da ACF_Adapter
 // Meglio passarlo nel costruttore:
-public function __construct(ALM_ACF_Device_Adapter $adapter = null) {
-    $this->acf_adapter = $adapter ?? new ALM_ACF_Device_Adapter();
+public function __construct(ALM_ACF_Asset_Adapter $adapter = null) {
+    $this->acf_adapter = $adapter ?? new ALM_ACF_Asset_Adapter();
 }
 
 - 2. Script per trasformare Checkbox in Radio Button
@@ -35,21 +35,21 @@ Aggiungi questo codice nel tuo file functions.php o nel file principale del tuo 
 PHP
 
 /**
- * Trasforma le checkbox della tassonomia Device Level in Radio Button
+ * Trasforma le checkbox della tassonomia Asset Level in Radio Button
  */
 add_action('admin_footer', function() {
     $screen = get_current_screen();
     
     // Esegui lo script solo nella pagina di modifica del tuo CPT
-    // Sostituisci ALM_DEVICE_CPT_SLUG con la tua stringa se non è definita qui
-    if ( $screen->post_type !== 'device' ) return; 
+    // Sostituisci ALM_ASSET_CPT_SLUG con la tua stringa se non è definita qui
+    if ( $screen->post_type !== 'asset' ) return; 
 
     ?>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             // ID del meta box: di solito è 'taxonomy-{slug}'
-            // Sostituisci 'device_level' con il valore della tua costante ALM_DEVICE_LEVEL_TAXONOMY_SLUG
-            var taxonomyName = 'device_level'; 
+            // Sostituisci 'asset_level' con il valore della tua costante ALM_ASSET_LEVEL_TAXONOMY_SLUG
+            var taxonomyName = 'asset_level'; 
             var $container = $('#' + taxonomyName + 'div, #' + taxonomyName + 'checklist');
 
             $container.find('input[type="checkbox"]').each(function() {

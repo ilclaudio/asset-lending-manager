@@ -1,25 +1,25 @@
 <?php
 /**
- * Asset Lending Manager - Device Manager
+ * Asset Lending Manager - Asset Manager
  *
- * Handles device domain logic.
+ * Handles asset domain logic.
  * Responsible for:
- * - Registering the alm_device Custom Post Type
- * - Registering device-related taxonomies
- * - Providing read-only helpers for device properties
+ * - Registering the alm_asset Custom Post Type
+ * - Registering asset-related taxonomies
+ * - Providing read-only helpers for asset properties
  *
  * @package AssetLendingManager
  */
 
 defined( 'ABSPATH' ) || exit;
 
-require_once 'class-alm-acf-device-adapter.php';
+require_once 'class-alm-acf-asset-adapter.php';
 require_once 'class-alm-installer.php';
 
 /**
- * Class ALM_Device_Manager
+ * Class ALM_Asset_Manager
  */
-class ALM_Device_Manager {
+class ALM_Asset_Manager {
 
 	/**
 	 * ACF Adapter instance.
@@ -32,7 +32,7 @@ class ALM_Device_Manager {
 	 * Class initialization.
 	 */
 	public function __construct() {
-		$this->acf_adapter = new ALM_ACF_Device_Adapter();
+		$this->acf_adapter = new ALM_ACF_Asset_Adapter();
 	}
 
 	/**
@@ -76,30 +76,30 @@ class ALM_Device_Manager {
 			'acf/include_fields',
 			array(
 				$this->acf_adapter,
-				'register_device_fields',
+				'register_asset_fields',
 			)
 		);
 	}
 
 	/**
-	 * Register the alm_device Custom Post Type.
+	 * Register the alm_asset Custom Post Type.
 	 *
 	 * @return void
 	 */
 	public function register_post_type() {
 
 		$labels = array(
-			'name'               => __( 'Devices', 'asset-lending-manager' ),
-			'singular_name'      => __( 'Device', 'asset-lending-manager' ),
+			'name'               => __( 'Assets', 'asset-lending-manager' ),
+			'singular_name'      => __( 'Asset', 'asset-lending-manager' ),
 			'add_new'            => __( 'Add New', 'asset-lending-manager' ),
-			'add_new_item'       => __( 'Add New Device', 'asset-lending-manager' ),
-			'edit_item'          => __( 'Edit Device', 'asset-lending-manager' ),
-			'new_item'           => __( 'New Device', 'asset-lending-manager' ),
-			'view_item'          => __( 'View Device', 'asset-lending-manager' ),
-			'search_items'       => __( 'Search Devices', 'asset-lending-manager' ),
-			'not_found'          => __( 'No devices found', 'asset-lending-manager' ),
-			'not_found_in_trash' => __( 'No devices found in Trash', 'asset-lending-manager' ),
-			'menu_name'          => __( 'Devices', 'asset-lending-manager' ),
+			'add_new_item'       => __( 'Add New Asset', 'asset-lending-manager' ),
+			'edit_item'          => __( 'Edit Asset', 'asset-lending-manager' ),
+			'new_item'           => __( 'New Asset', 'asset-lending-manager' ),
+			'view_item'          => __( 'View Asset', 'asset-lending-manager' ),
+			'search_items'       => __( 'Search Assets', 'asset-lending-manager' ),
+			'not_found'          => __( 'No assets found', 'asset-lending-manager' ),
+			'not_found_in_trash' => __( 'No assets found in Trash', 'asset-lending-manager' ),
+			'menu_name'          => __( 'Assets', 'asset-lending-manager' ),
 		);
 
 		$args = array(
@@ -108,108 +108,108 @@ class ALM_Device_Manager {
 			'show_ui'         => true,
 			'show_in_menu'    => false,
 			'show_in_rest'    => true,
-			'menu_icon'       => ALM_DEVICE_ICON,
+			'menu_icon'       => ALM_ASSET_ICON,
 			'supports'        => array( 'title', 'editor', 'thumbnail' ),
-			'capability_type' => ALM_DEVICE_CPT_SLUG,
+			'capability_type' => ALM_ASSET_CPT_SLUG,
 			'map_meta_cap'    => true,
 			'has_archive'     => true,
-			'rewrite'         => array( 'slug' => 'device' ),
+			'rewrite'         => array( 'slug' => 'asset' ),
 		);
 
-		register_post_type( ALM_DEVICE_CPT_SLUG, $args );
+		register_post_type( ALM_ASSET_CPT_SLUG, $args );
 	}
 
 	/**
-	 * Register device-related taxonomies.
+	 * Register asset-related taxonomies.
 	 *
 	 * @return void
 	 */
 	public function register_taxonomies() {
 
-		// Logical device structure: component or kit.
+		// Logical asset structure: component or kit.
 		register_taxonomy(
-			ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
-			ALM_DEVICE_CPT_SLUG,
+			ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+			ALM_ASSET_CPT_SLUG,
 			array(
 				'labels'          => array(
-					'name'          => __( 'Device Structures', 'asset-lending-manager' ),
-					'singular_name' => __( 'Device Structure', 'asset-lending-manager' ),
+					'name'          => __( 'Asset Structures', 'asset-lending-manager' ),
+					'singular_name' => __( 'Asset Structure', 'asset-lending-manager' ),
 				),
 				'hierarchical'      => true,
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
 				'capabilities' => array(
-					'manage_terms' => ALM_EDIT_DEVICE,
-					'edit_terms'   => ALM_EDIT_DEVICE,
-					'delete_terms' => ALM_EDIT_DEVICE,
-					'assign_terms' => ALM_EDIT_DEVICE,
+					'manage_terms' => ALM_EDIT_ASSET,
+					'edit_terms'   => ALM_EDIT_ASSET,
+					'delete_terms' => ALM_EDIT_ASSET,
+					'assign_terms' => ALM_EDIT_ASSET,
 				),
 			)
 		);
 
-		// Device type (e.g. telescope, book, eyepiece).
+		// Asset type (e.g. telescope, book, eyepiece).
 		register_taxonomy(
-			ALM_DEVICE_TYPE_TAXONOMY_SLUG,
-			ALM_DEVICE_CPT_SLUG,
+			ALM_ASSET_TYPE_TAXONOMY_SLUG,
+			ALM_ASSET_CPT_SLUG,
 			array(
 				'labels' => array(
-					'name'          => __( 'Device Types', 'asset-lending-manager' ),
-					'singular_name' => __( 'Device Type', 'asset-lending-manager' ),
+					'name'          => __( 'Asset Types', 'asset-lending-manager' ),
+					'singular_name' => __( 'Asset Type', 'asset-lending-manager' ),
 				),
 				'hierarchical'      => true,
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
 				'capabilities' => array(
-					'manage_terms' => ALM_EDIT_DEVICE,
-					'edit_terms'   => ALM_EDIT_DEVICE,
-					'delete_terms' => ALM_EDIT_DEVICE,
-					'assign_terms' => ALM_EDIT_DEVICE,
+					'manage_terms' => ALM_EDIT_ASSET,
+					'edit_terms'   => ALM_EDIT_ASSET,
+					'delete_terms' => ALM_EDIT_ASSET,
+					'assign_terms' => ALM_EDIT_ASSET,
 				),
 			)
 		);
 
-		// Device state: available, loaned, maintenance, etc.
+		// Asset state: available, loaned, maintenance, etc.
 		register_taxonomy(
-			ALM_DEVICE_STATE_TAXONOMY_SLUG,
-			ALM_DEVICE_CPT_SLUG,
+			ALM_ASSET_STATE_TAXONOMY_SLUG,
+			ALM_ASSET_CPT_SLUG,
 			array(
 				'labels' => array(
-					'name'          => __( 'Device States', 'asset-lending-manager' ),
-					'singular_name' => __( 'Device State', 'asset-lending-manager' ),
+					'name'          => __( 'Asset States', 'asset-lending-manager' ),
+					'singular_name' => __( 'Asset State', 'asset-lending-manager' ),
 				),
 				'hierarchical'      => true,
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
 				'capabilities' => array(
-					'manage_terms' => ALM_EDIT_DEVICE,
-					'edit_terms'   => ALM_EDIT_DEVICE,
-					'delete_terms' => ALM_EDIT_DEVICE,
-					'assign_terms' => ALM_EDIT_DEVICE,
+					'manage_terms' => ALM_EDIT_ASSET,
+					'edit_terms'   => ALM_EDIT_ASSET,
+					'delete_terms' => ALM_EDIT_ASSET,
+					'assign_terms' => ALM_EDIT_ASSET,
 				),
 			)
 		);
 
-		// Device level: basic, intermediate, advanced, etc.
+		// Asset level: basic, intermediate, advanced, etc.
 		register_taxonomy(
-			ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
-			ALM_DEVICE_CPT_SLUG,
+			ALM_ASSET_LEVEL_TAXONOMY_SLUG,
+			ALM_ASSET_CPT_SLUG,
 			array(
 				'labels' => array(
-					'name'          => __( 'Device Levels', 'asset-lending-manager' ),
-					'singular_name' => __( 'Device Level', 'asset-lending-manager' ),
+					'name'          => __( 'Asset Levels', 'asset-lending-manager' ),
+					'singular_name' => __( 'Asset Level', 'asset-lending-manager' ),
 				),
 				'hierarchical'      => true,
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
 				'capabilities' => array(
-					'manage_terms' => ALM_EDIT_DEVICE,
-					'edit_terms'   => ALM_EDIT_DEVICE,
-					'delete_terms' => ALM_EDIT_DEVICE,
-					'assign_terms' => ALM_EDIT_DEVICE,
+					'manage_terms' => ALM_EDIT_ASSET,
+					'edit_terms'   => ALM_EDIT_ASSET,
+					'delete_terms' => ALM_EDIT_ASSET,
+					'assign_terms' => ALM_EDIT_ASSET,
 				),
 			)
 		);
@@ -217,45 +217,45 @@ class ALM_Device_Manager {
 	}
 
 	/**
-	 * Return a view model of a device for frontend display.
+	 * Return a view model of a asset for frontend display.
 	 *
-	 * @param int $device_id ID of the device post.
+	 * @param int $asset_id ID of the asset post.
 	 * @return object|null Returns an object with title, permalink, thumbnail, and taxonomy arrays, or null if not found.
 	 */
-	public static function get_device_wrapper( $device_id ) {
-		$device = get_post( $device_id );
+	public static function get_asset_wrapper( $asset_id ) {
+		$asset = get_post( $asset_id );
 
-		if ( ! $device || ALM_DEVICE_CPT_SLUG !== $device->post_type || 'publish' !== $device->post_status ) {
+		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type || 'publish' !== $asset->post_status ) {
 			return null;
 		}
 
 		$wrapper            = new stdClass();
-		$wrapper->id        = $device->ID;
-		$wrapper->title     = get_the_title( $device );
-		$wrapper->permalink = get_permalink( $device );
-		$wrapper->content   = apply_filters( 'the_content', $device->post_content );
-		// Manage the device image.
+		$wrapper->id        = $asset->ID;
+		$wrapper->title     = get_the_title( $asset );
+		$wrapper->permalink = get_permalink( $asset );
+		$wrapper->content   = apply_filters( 'the_content', $asset->post_content );
+		// Manage the asset image.
 		$thumbnail_size = 'thumbnail';
-		if ( has_post_thumbnail( $device ) ) {
-			$wrapper->thumbnail = get_the_post_thumbnail( $device, $thumbnail_size );
+		if ( has_post_thumbnail( $asset ) ) {
+			$wrapper->thumbnail = get_the_post_thumbnail( $asset, $thumbnail_size );
 		} else {
 			$wrapper->thumbnail = sprintf(
-				'<img src="%s" alt="%s" class="alm-device-default-thumbnail">',
-				esc_url( ALM_PLUGIN_URL . 'assets/img/default_device_color_bw.png' ),
-				esc_attr( get_the_title( $device ) )
+				'<img src="%s" alt="%s" class="alm-asset-default-thumbnail">',
+				esc_url( ALM_PLUGIN_URL . 'assets/img/default_asset_color_bw.png' ),
+				esc_attr( get_the_title( $asset ) )
 			);
 		}
 
 		// Load the main taxonomies.
 		$taxonomies = array(
-			ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG,
-			ALM_DEVICE_TYPE_TAXONOMY_SLUG,
-			ALM_DEVICE_STATE_TAXONOMY_SLUG,
-			ALM_DEVICE_LEVEL_TAXONOMY_SLUG,
+			ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+			ALM_ASSET_TYPE_TAXONOMY_SLUG,
+			ALM_ASSET_STATE_TAXONOMY_SLUG,
+			ALM_ASSET_LEVEL_TAXONOMY_SLUG,
 		);
 
 		foreach ( $taxonomies as $taxonomy ) {
-			$terms = get_the_terms( $device, $taxonomy );
+			$terms = get_the_terms( $asset, $taxonomy );
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 				$wrapper->{$taxonomy} = wp_list_pluck( $terms, 'name' );
 			} else {
@@ -268,13 +268,13 @@ class ALM_Device_Manager {
 
 
 	/**
-	 * Return an array containing all the custom device fields.
+	 * Return an array containing all the custom asset fields.
 	 *
-	 * @param [type] $device_id - The device id.
+	 * @param [type] $asset_id - The asset id.
 	 * @return array
 	 */
-	public static function get_device_custom_fields( $device_id ) {
-		$device_fields = array();
+	public static function get_asset_custom_fields( $asset_id ) {
+		$asset_fields = array();
 		/**
 		 * ACF fields (ordered as defined in adapter).
 		 */
@@ -294,10 +294,10 @@ class ALM_Device_Manager {
 			'components',
 		);
 		$field_objects = array();
-		// $manufacturer_value = (string) get_field( 'manufacturer', $device_id );
-		// Get all the custom fields for this device.
+		// $manufacturer_value = (string) get_field( 'manufacturer', $asset_id );
+		// Get all the custom fields for this asset.
 		if ( function_exists( 'get_field_objects' ) ) {
-			$tmp = get_field_objects( $device_id );
+			$tmp = get_field_objects( $asset_id );
 			if ( is_array( $tmp ) ) {
 				$field_objects = $tmp;
 			}
@@ -316,23 +316,23 @@ class ALM_Device_Manager {
 				if ( $is_empty ) {
 					continue;
 				}
-				$device_fields[] = array(
+				$asset_fields[] = array(
 					'name'  => $field_name,
 					'label' => $label,
 					'type'  => isset( $field['type'] ) ? (string) $field['type'] : '',
 					'value' => $value,
 				);
 			}
-			// Add a field 'kit' if this device is a component of a kit.
-			if ( has_term( ALM_DEVICE_COMPONENT_SLUG, ALM_DEVICE_STRUCTURE_TAXONOMY_SLUG, $device_id ) ) {
+			// Add a field 'kit' if this asset is a component of a kit.
+			if ( has_term( ALM_ASSET_COMPONENT_SLUG, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
 				$args = array(
-					'post_type'      => ALM_DEVICE_CPT_SLUG,
+					'post_type'      => ALM_ASSET_CPT_SLUG,
 					'post_status'    => 'publish',
 					'posts_per_page' => 1,
 					'meta_query'     => array(
 						array(
 							'key'     => $field_name,
-							'value'   => '"' . $device_id . '"',
+							'value'   => '"' . $asset_id . '"',
 							'compare' => 'LIKE',
 						),
 					),
@@ -345,15 +345,15 @@ class ALM_Device_Manager {
 						'type'  => 'post_object',
 						'value' => $kit_result->posts,
 					);
-					array_push( $device_fields, $item );
+					array_push( $asset_fields, $item );
 				}
 			}
 		}
-		return $device_fields;
+		return $asset_fields;
 	}
 
 	/**
-	 * Return the classes related to the device states.
+	 * Return the classes related to the asset states.
 	 *
 	 * @return array
 	 */

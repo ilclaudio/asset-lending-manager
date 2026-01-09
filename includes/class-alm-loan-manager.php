@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * This class manages the loans of the devices.
+ * This class manages the loans of the assets.
  */
 class ALM_Loan_Manager {
 

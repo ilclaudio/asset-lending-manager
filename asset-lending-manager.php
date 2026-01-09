@@ -25,7 +25,7 @@ require_once ALM_PLUGIN_DIR . 'includes/class-alm-logger.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-plugin-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-settings-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-role-manager.php';
-require_once ALM_PLUGIN_DIR . 'includes/class-alm-device-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-asset-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-loan-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-notification-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-frontend-manager.php';
@@ -55,3 +55,4 @@ function alm_init_plugin() {
 }
 
 add_action( 'plugins_loaded', 'alm_init_plugin' );
+
