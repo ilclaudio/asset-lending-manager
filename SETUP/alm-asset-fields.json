@@ -166,7 +166,7 @@
                     "id": ""
                 },
                 "post_type": [
-                    "alm_device"
+                    "alm_asset"
                 ],
                 "post_status": "",
                 "taxonomy": "",
