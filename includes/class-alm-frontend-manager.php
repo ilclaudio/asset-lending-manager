@@ -329,7 +329,7 @@ class ALM_Frontend_Manager {
 				'posts_per_page' => $attributes['posts_per_page'],
 			);
 		}
-		$query = new WP_Query( $query_args );
+		$query        = new WP_Query( $query_args );
 		$assets       = array();
 		$assets_count = 0;
 		if ( $query->have_posts() ) {
