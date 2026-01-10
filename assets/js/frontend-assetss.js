@@ -25,12 +25,12 @@
 		 * Initialize frontend functionality.
 		 */
 		init: function() {
-			console.log('ALM Frontend initialized');
+			console.log('*** ALM Frontend initialized');
 			
 			// Access to data passed from PHP via wp_localize_script.
 			if (typeof almFrontend !== 'undefined') {
-				console.log('AJAX URL:', almFrontend.ajaxUrl);
-				console.log('Nonce:', almFrontend.nonce);
+				console.log('*** AJAX URL:', almFrontend.ajaxUrl);
+				console.log('*** Nonce:', almFrontend.nonce);
 			}
 
 			// Initialize components.
@@ -80,23 +80,42 @@
 			});
 		},
 
-		/**
-		 * Initialize asset filters (if present).
-		 * 
-		 * Example: filter by type, state, etc.
-		 */
-		initAssetFilters: function() {
-			var $filters = $('.alm-asset-filters');
-			if (!$filters.length) {
-				return;
+	/**
+	 * Initialize asset filters (if present).
+	 * 
+	 * Handles visual feedback for active filters.
+	 * Does NOT interfere with autocomplete functionality.
+	 */
+	initAssetFilters: function() {
+		var $filters = $('.alm-filters-collapsible');
+		if (!$filters.length) {
+			return;
+		}
+		// Auto-open filters if any filter is active
+		var hasActiveFilters = false;
+		$filters.find('select').each(function() {
+			if ($(this).val() !== '') {
+				hasActiveFilters = true;
+				return false; // break loop
 			}
+		});
 
-			$filters.find('select, input[type="checkbox"]').on('change', function() {
-				console.log('Filter changed:', $(this).val());
-				// Here you would implement AJAX filtering.
-				// For now, just a placeholder.
-			});
-		},
+		if (hasActiveFilters) {
+			$filters.attr('open', 'open');
+		}
+		// Visual feedback on filter change
+		$filters.find('select').on('change', function() {
+			var $select = $(this);
+			if ($select.val() !== '') {
+				$select.addClass('alm-filter-active');
+			} else {
+				$select.removeClass('alm-filter-active');
+			}
+		});
+		// Trigger change on page load to set initial state
+		$filters.find('select').trigger('change');
+		console.log('*** Asset filters initialized');
+	},
 
 		/**
 		 * Initialize asset search (if present).
@@ -117,7 +136,7 @@
 				
 				searchTimeout = setTimeout(function() {
 					if (query.length >= 3) {
-						console.log('Searching for:', query);
+						console.log('*** Searching for:', query);
 						// Here you would implement AJAX search.
 						// For now, just a placeholder.
 					}
@@ -135,6 +154,10 @@
 (function() {
 	var style = document.createElement('style');
 	style.textContent = `
+		.alm-filter-active {
+			border-color: #0073aa !important;
+			background-color: #f0f8ff !important;
+		}
 		.alm-lightbox {
 			position: fixed;
 			top: 0;
