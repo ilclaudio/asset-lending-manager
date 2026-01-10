@@ -144,6 +144,24 @@
 	}
 
 	/* Search form - used in asset list */
+	.alm-search-submit-btn {
+		width: 100%;
+		padding: 10px 16px;
+		font-size: 1em;
+		cursor: pointer;
+		margin-top: 8px;
+		background: #0073aa;
+		color: #fff;
+		border: none;
+		border-radius: 4px;
+		font-weight: 600;
+		transition: background 0.3s ease;
+	}
+
+	.alm-search-submit-btn:hover {
+		background: #005a87;
+	}
+
 	#alm_asset_search_form {
 		position: relative;
 		width: 100%;
@@ -153,13 +171,6 @@
 	.alm-asset-search-form {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
-	}
-
-	/* Search row: input + button on same line */
-	.alm-search-row {
-		display: flex;
-		align-items: center;
 		gap: 8px;
 	}
 
@@ -577,10 +588,6 @@
 		/* Search form responsive */
 		.alm-search-input-wrap {
 			width: 100%;
-		}
-
-		.alm-search-row {
-			flex-direction: column;
 		}
 		
 		.alm-asset-search-form button {
