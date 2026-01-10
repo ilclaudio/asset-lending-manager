@@ -1,679 +1,851 @@
-/**
- * Frontend styles for ALM assets
- *
- * Loaded only on asset archive, single, and pages with asset shortcodes.
- *
- * @package AssetLendingManager
- */
-
-/* ========================================================================
-   COMMON STYLES - Shared across all asset views
-   ======================================================================== */
-
-/* Container */
-.alm-container {
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 20px;
-}
-
-/* Archive header */
-.alm-archive-header {
-	margin-bottom: 30px;
-	border-bottom: 2px solid #0073aa;
-	padding-bottom: 15px;
-}
-
-.alm-archive-title {
-	margin: 0;
-	color: #23282d;
-	font-size: 2em;
-}
-
-/* Asset title (used in both list and view) */
-.alm-asset-title {
-	font-size: 1.2em;
-	margin: 0;
-	color: #23282d;
-	transition: color 0.3s ease;
-	line-height: 1.3;
-}
-
-/* Asset thumbnail - base styles */
-.alm-asset-thumbnail {
-	flex-shrink: 0;
-	width: 100px;
-	height: 100px;
-	overflow: hidden;
-	border-radius: 4px;
-	background: #f5f5f5;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.alm-asset-thumbnail img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	display: block;
-	transition: transform 0.3s ease;
-}
-
-.alm-asset-default-thumbnail {
-	opacity: 0.6;
-	object-fit: contain;
-	padding: 10px;
-}
-
-/* Asset taxonomies - base styles */
-.alm-asset-taxonomies {
-	margin-top: 8px;
-	font-size: 0.85em;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
-}
-
-.alm-asset-taxonomy {
-	margin: 0;
-	padding: 0;
-	white-space: nowrap;
-}
-
-.alm-tax-label {
-	font-weight: 600;
-	color: #555;
-	margin-right: 5px;
-}
-
-.alm-tax-value {
-	color: #0073aa;
-}
-
-/* Asset state badges (alm_state) */
-.alm-availability {
-	display: inline-block;
-	padding: 4px 10px;
-	border-radius: 14px;
-	font-size: 0.75em;
-	font-weight: 700;
-	line-height: 1;
-	white-space: nowrap;
-}
-
-/* available → green */
-.alm-state-available {
-	background: #d4edda;
-	color: #155724;
-}
-
-/* on-loan → dark green */
-.alm-state-on-loan {
-	background: #1e7e34;
-	color: #ffffff;
-}
-
-/* maintenance → red */
-.alm-state-maintenance {
-	background: #dc3545;
-	color: #ffffff;
-}
-
-/* retired → dark gray */
-.alm-state-retired {
-	background: #6c757d;
-	color: #ffffff;
-}
-
-/* No results message */
-.alm-no-results {
-	text-align: center;
-	padding: 40px 20px;
-	color: #666;
-	font-size: 1.1em;
-}
-
-/* Error message */
-.alm-error {
-	background: #ffebee;
-	border-left: 4px solid #c62828;
-	padding: 15px;
-	color: #c62828;
-	border-radius: 4px;
-}
-
-/* Search form - used in asset list */
-#alm_asset_search_form {
-	position: relative;
-	width: 100%;
-	margin-bottom: 1em;
-}
-
-.alm-asset-search-form {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-/* wrapper per input + icona + dropdown */
-.alm-search-input-wrap {
-	position: relative;
-	width: 60%;
-}
-
-.alm-asset-search-form input[name="s"] {
-	width: 100%;
-	padding: 8px 8px 8px 34px; /* spazio per lente/spinner */
-	font-size: 1em;
-	box-sizing: border-box;
-}
-
-.alm-asset-search-form button {
-	padding: 8px 16px;
-	font-size: 1em;
-	cursor: pointer;
-}
-
-/* Lens + loading spinner */
-#alm_asset_search_form .alm-search-icon {
-	position: absolute;
-	left: 10px;
-	top: 50%;
-	width: 16px;
-	height: 16px;
-	display: inline-block;
-	pointer-events: none;
-	z-index: 2;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: contain;
-	transform: translateY(-50%);
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-}
-
-#alm_asset_search_form.alm-autocomplete-loading .alm-search-icon {
-	background-image: none;
-	border: 2px solid #666;
-	border-top-color: transparent;
-	border-radius: 50%;
-	box-sizing: border-box;
-	animation: almSpin 0.8s linear infinite;
-}
-
-@keyframes almSpin {
-	to { transform: translateY(-50%) rotate(360deg); }
-}
-
-/* Utility classes */
-.alm-link {
-	color: #0073aa;
-	text-decoration: none;
-}
-
-.alm-link:hover {
-	text-decoration: underline;
-}
-
-.alm-muted {
-	color: #666;
-	margin: 8px 0 0 0;
-}
-
-/* ========================================================================
-   ASSET VIEW STYLES - Single asset detail page (asset-view.php)
-   ======================================================================== */
-
-/* Single asset detail container */
-.alm-asset-single {
-	max-width: 900px;
-}
-
-.alm-asset-detail {
-	background: #fff;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	padding: 30px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.alm-asset-header {
-	margin-bottom: 25px;
-	border-bottom: 2px solid #0073aa;
-	padding-bottom: 20px;
-}
-
-.alm-asset-detail .alm-asset-title {
-	font-size: 2em;
-	margin: 0 0 20px 0;
-}
-
-.alm-asset-detail .alm-asset-thumbnail {
-	max-width: 400px;
-	margin: 0 auto;
-}
-
-.alm-asset-detail .alm-asset-taxonomies {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 15px;
-	margin: 20px 0;
-	padding: 15px;
-	background: #f9f9f9;
-	border-radius: 4px;
-}
-
-.alm-asset-detail .alm-asset-taxonomy {
-	flex: 1 1 auto;
-	min-width: 200px;
-}
-
-.alm-asset-content {
-	margin-top: 25px;
-	line-height: 1.6;
-	color: #444;
-}
-
-.alm-asset-content p {
-	margin-bottom: 15px;
-}
-
-/* Asset view (shortcode) layout */
-.alm-asset-view__title {
-	margin-bottom: 18px;
-}
-
-.alm-asset-view__hero {
-	display: flex;
-	gap: 20px;
-	align-items: flex-start;
-	flex-wrap: wrap;
-	margin-bottom: 20px;
-}
-
-.alm-asset-view__media {
-	flex: 1 1 420px;
-	min-width: 280px;
-}
-
-.alm-asset-view__taxbox {
-	flex: 0 0 320px;
-	max-width: 380px;
-	background: #f9f9f9;
-	border: 1px solid #e6e6e6;
-	border-radius: 8px;
-	padding: 16px;
-}
-
-.alm-asset-section-title {
-	margin: 0 0 12px 0;
-	font-size: 1.1em;
-}
-
-.alm-asset-thumbnail--large {
-	width: 100%;
-	height: auto;
-	max-width: none;
-	margin: 0;
-}
-
-.alm-asset-thumbnail--large img {
-	width: 100%;
-	height: auto;
-	max-height: 520px;
-	object-fit: contain;
-	border-radius: 8px;
-	display: block;
-}
-
-.alm-asset-taxonomies--boxed {}
-
-.alm-asset-tax-row {
-	display: contents;
-}
-
-.alm-asset-tax-row .alm-tax-label {
-	display: grid;
-	grid-template-columns: var(--alm-tax-label-width, 100px) 1fr;
-	align-items: baseline;
-}
-
-.alm-asset-tax-row .alm-tax-value {
-	color: #0073aa;
-}
-
-/* Collapsible sections (details/summary) */
-.alm-collapsible {
-	margin-top: 18px;
-	border: 1px solid #e6e6e6;
-	border-radius: 8px;
-	background: #fff;
-	overflow: hidden;
-}
-
-.alm-collapsible__summary {
-	cursor: pointer;
-	padding: 14px 16px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 12px;
-	background: #f7f7f7;
-	font-weight: 700;
-}
-
-.alm-collapsible__summary::-webkit-details-marker {
-	display: none;
-}
-
-.alm-collapsible[open] .alm-collapsible__summary {
-	border-bottom: 1px solid #e6e6e6;
-}
-
-.alm-collapsible__body {
-	padding: 14px 16px;
-}
-
-.alm-collapsible__hint {
-	font-weight: 400;
-	color: #666;
-}
-
-.alm-asset-acf-list {
-	margin: 0;
-}
-
-.alm-asset-acf-row {
-	display: grid;
-	grid-template-columns: 200px 1fr;
-	gap: 12px;
-	padding: 10px 0;
-	border-bottom: 1px solid #eee;
-}
-
-.alm-asset-acf-row:last-child {
-	border-bottom: none;
-}
-
-.alm-asset-acf-label {
-	font-weight: 700;
-	margin: 0;
-}
-
-.alm-asset-acf-value {
-	margin: 0;
-	color: #333;
-}
-
-.alm-asset-components {
-	margin: 0;
-	padding-left: 18px;
-}
-
-/* Quick meta (Manufacturer/Model) in taxbox */
-.alm-asset-quick-meta {
-	padding: 10px 12px;
-	background: #fff;
-	border: 1px solid #e6e6e6;
-	border-radius: 8px;
-	margin: 0 0 12px 0;
-	display: grid;
-	gap: 8px;
-}
-
-.alm-asset-quick-row {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-/* Badge state inside the taxbox */
-.alm-asset-view__taxbox .alm-availability {
-	margin-left: 8px;
-	vertical-align: middle;
-}
-
-/* ========================================================================
-   ASSET LIST STYLES - Archive and list views (asset-list.php)
-   ======================================================================== */
-
-/* Asset list container */
-.alm-asset-list {
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-	margin: 20px 0;
-}
-
-/* Asset card - horizontal layout */
-.alm-asset-card {
-	background: #fff;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	padding: 15px;
-	transition: all 0.3s ease;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-	display: flex;
-	align-items: flex-start;
-	gap: 15px;
-}
-
-.alm-asset-card:hover {
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-	transform: translateX(4px);
-}
-
-.alm-asset-link {
-	text-decoration: none;
-	color: inherit;
-	display: flex;
-	align-items: flex-start;
-	gap: 15px;
-	flex: 1;
-	min-width: 0;
-}
-
-.alm-asset-link:hover .alm-asset-title {
-	color: #0073aa;
-}
-
-.alm-asset-card:hover .alm-asset-thumbnail img {
-	transform: scale(1.1);
-}
-
-/* Asset content area - right side */
-.alm-asset-content-wrapper {
-	flex: 1;
-	min-width: 0;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-/* ========================================================================
-   RESPONSIVE STYLES
-   ======================================================================== */
-
-/* Tablet e schermi medi (768px - 1024px) */
-@media (max-width: 1024px) {
-	.alm-asset-taxonomies {
-		gap: 8px;
-		font-size: 0.8em;
-	}
-	
-	.alm-asset-taxonomy {
-		min-width: 45%;
-	}
-}
-
-/* Smartphone e schermi piccoli (fino a 768px) */
-@media (max-width: 768px) {
-	/* Common styles responsive */
+	/**
+	* Frontend styles for ALM assets
+	*
+	* Loaded only on asset archive, single, and pages with asset shortcodes.
+	*
+	* @package AssetLendingManager
+	*/
+
+	/* ========================================================================
+		COMMON STYLES - Shared across all asset views
+		======================================================================== */
+
+	/* Container */
 	.alm-container {
-		padding: 15px;
-	}
-
-	/* Asset list responsive */
-	.alm-asset-card {
-		flex-direction: column;
-		align-items: center;
-		padding: 15px;
-	}
-
-	.alm-asset-link {
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		width: 100%;
-	}
-
-	.alm-asset-thumbnail {
-		width: 150px;
-		height: 150px;
-		margin-bottom: 12px;
-	}
-
-	.alm-asset-content-wrapper {
-		align-items: center;
-		width: 100%;
-	}
-
-	.alm-asset-title {
-		font-size: 1.1em;
-		text-align: center;
-	}
-
-	/* Taxonomies: una colonna su mobile */
-	.alm-asset-taxonomies {
-		flex-direction: column;
-		gap: 8px;
-		width: 100%;
-		justify-content: flex-start;
-	}
-
-	.alm-asset-taxonomy {
-		width: 100%;
-		text-align: left;
-		padding: 6px 0;
-		border-bottom: 1px solid #f0f0f0;
-	}
-
-	.alm-asset-taxonomy:last-child {
-		border-bottom: none;
-	}
-
-	/* Search form responsive */
-	.alm-asset-search-form {
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.alm-search-input-wrap {
-		width: 100%;
-	}
-
-	.alm-asset-search-form button {
-		width: 100%;
-		padding: 10px 16px;
-	}
-
-	/* Asset view responsive */
-	.alm-asset-detail {
+		max-width: 1200px;
+		margin: 0 auto;
 		padding: 20px;
 	}
 
-	.alm-asset-detail .alm-asset-title {
-		font-size: 1.5em;
-	}
-
-	.alm-asset-detail .alm-asset-taxonomies {
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.alm-asset-detail .alm-asset-taxonomy {
-		min-width: 100%;
-	}
-
-	.alm-asset-view__taxbox {
-		flex: 1 1 100%;
-		max-width: none;
-	}
-
-	.alm-asset-acf-row {
-		grid-template-columns: 1fr;
-	}
-}
-
-/* Schermi molto piccoli (fino a 480px) */
-@media (max-width: 480px) {
-	.alm-container {
-		padding: 10px;
-	}
-
-	.alm-asset-card {
-		padding: 12px;
-		gap: 10px;
-	}
-
-	.alm-asset-thumbnail {
-		width: 120px;
-		height: 120px;
-	}
-
-	.alm-asset-title {
-		font-size: 1em;
-	}
-
-	.alm-asset-taxonomies {
-		font-size: 0.85em;
-		gap: 6px;
-	}
-
-	.alm-tax-label {
-		display: block;
-		margin-bottom: 2px;
+	/* Archive header */
+	.alm-archive-header {
+		margin-bottom: 30px;
+		border-bottom: 2px solid #0073aa;
+		padding-bottom: 15px;
 	}
 
 	.alm-archive-title {
-		font-size: 1.5em;
-	}
-}
-
-/* Landscape mode per smartphone */
-@media (max-width: 768px) and (orientation: landscape) {
-	.alm-asset-card {
-		flex-direction: row;
+		margin: 0;
+		color: #23282d;
+		font-size: 2em;
 	}
 
-	.alm-asset-link {
-		flex-direction: row;
-		text-align: left;
+	/* Asset title (used in both list and view) */
+	.alm-asset-title {
+		font-size: 1.2em;
+		margin: 0;
+		color: #23282d;
+		transition: color 0.3s ease;
+		line-height: 1.3;
 	}
 
+	/* Asset thumbnail - base styles */
 	.alm-asset-thumbnail {
+		flex-shrink: 0;
 		width: 100px;
 		height: 100px;
-		margin-bottom: 0;
-		margin-right: 15px;
+		overflow: hidden;
+		border-radius: 4px;
+		background: #f5f5f5;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
-	.alm-asset-content-wrapper {
-		align-items: flex-start;
+	.alm-asset-thumbnail img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		transition: transform 0.3s ease;
 	}
 
-	.alm-asset-title {
-		text-align: left;
+	.alm-asset-default-thumbnail {
+		opacity: 0.6;
+		object-fit: contain;
+		padding: 10px;
 	}
 
+	/* Asset taxonomies - base styles */
 	.alm-asset-taxonomies {
-		flex-direction: row;
+		margin-top: 8px;
+		font-size: 0.85em;
+		display: flex;
 		flex-wrap: wrap;
+		gap: 10px;
 	}
 
 	.alm-asset-taxonomy {
-		width: auto;
-		min-width: 45%;
+		margin: 0;
+		padding: 0;
+		white-space: nowrap;
+	}
+
+	.alm-tax-label {
+		font-weight: 600;
+		color: #555;
+		margin-right: 5px;
+	}
+
+	.alm-tax-value {
+		color: #0073aa;
+	}
+
+	/* Asset state badges (alm_state) */
+	.alm-availability {
+		display: inline-block;
+		padding: 4px 10px;
+		border-radius: 14px;
+		font-size: 0.75em;
+		font-weight: 700;
+		line-height: 1;
+		white-space: nowrap;
+	}
+
+	/* available → green */
+	.alm-state-available {
+		background: #d4edda;
+		color: #155724;
+	}
+
+	/* on-loan → dark green */
+	.alm-state-on-loan {
+		background: #1e7e34;
+		color: #ffffff;
+	}
+
+	/* maintenance → red */
+	.alm-state-maintenance {
+		background: #dc3545;
+		color: #ffffff;
+	}
+
+	/* retired → dark gray */
+	.alm-state-retired {
+		background: #6c757d;
+		color: #ffffff;
+	}
+
+	/* No results message */
+	.alm-no-results {
+		text-align: center;
+		padding: 40px 20px;
+		color: #666;
+		font-size: 1.1em;
+	}
+
+	/* Error message */
+	.alm-error {
+		background: #ffebee;
+		border-left: 4px solid #c62828;
+		padding: 15px;
+		color: #c62828;
+		border-radius: 4px;
+	}
+
+	/* Search form - used in asset list */
+	#alm_asset_search_form {
+		position: relative;
+		width: 100%;
+		margin-bottom: 1em;
+	}
+
+	.alm-asset-search-form {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	/* Search row: input + button on same line */
+	.alm-search-row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	/* Force filters to appear below search row */
+	.alm-filters-collapsible {
+		width: 100%;
+	}
+
+	/* wrapper per input + icona + dropdown */
+	.alm-search-input-wrap {
+		position: relative;
+		flex: 1;
+	}
+
+	.alm-asset-search-form input[name="s"] {
+		width: 100%;
+		padding: 8px 8px 8px 34px; /* spazio per lente/spinner */
+		font-size: 1em;
+		box-sizing: border-box;
+	}
+
+	.alm-asset-search-form button {
+		padding: 8px 16px;
+		font-size: 1em;
+		cursor: pointer;
+	}
+
+	/* Lens + loading spinner */
+	#alm_asset_search_form .alm-search-icon {
+		position: absolute;
+		left: 10px;
+		top: 50%;
+		width: 16px;
+		height: 16px;
+		display: inline-block;
+		pointer-events: none;
+		z-index: 2;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: contain;
+		transform: translateY(-50%);
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+	}
+
+	#alm_asset_search_form.alm-autocomplete-loading .alm-search-icon {
+		background-image: none;
+		border: 2px solid #666;
+		border-top-color: transparent;
+		border-radius: 50%;
+		box-sizing: border-box;
+		animation: almSpin 0.8s linear infinite;
+	}
+
+	@keyframes almSpin {
+		to { transform: translateY(-50%) rotate(360deg); }
+	}
+
+	/* Utility classes */
+	.alm-link {
+		color: #0073aa;
+		text-decoration: none;
+	}
+
+	.alm-link:hover {
+		text-decoration: underline;
+	}
+
+	.alm-muted {
+		color: #666;
+		margin: 8px 0 0 0;
+	}
+
+	/* ========================================================================
+		ASSET VIEW STYLES - Single asset detail page (asset-view.php)
+		======================================================================== */
+
+	/* Single asset detail container */
+	.alm-asset-single {
+		max-width: 900px;
+	}
+
+	.alm-asset-detail {
+		background: #fff;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		padding: 30px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.alm-asset-header {
+		margin-bottom: 25px;
+		border-bottom: 2px solid #0073aa;
+		padding-bottom: 20px;
+	}
+
+	.alm-asset-detail .alm-asset-title {
+		font-size: 2em;
+		margin: 0 0 20px 0;
+	}
+
+	.alm-asset-detail .alm-asset-thumbnail {
+		max-width: 400px;
+		margin: 0 auto;
+	}
+
+	.alm-asset-detail .alm-asset-taxonomies {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 15px;
+		margin: 20px 0;
+		padding: 15px;
+		background: #f9f9f9;
+		border-radius: 4px;
+	}
+
+	.alm-asset-detail .alm-asset-taxonomy {
+		flex: 1 1 auto;
+		min-width: 200px;
+	}
+
+	.alm-asset-content {
+		margin-top: 25px;
+		line-height: 1.6;
+		color: #444;
+	}
+
+	.alm-asset-content p {
+		margin-bottom: 15px;
+	}
+
+	/* Asset view (shortcode) layout */
+	.alm-asset-view__title {
+		margin-bottom: 18px;
+	}
+
+	.alm-asset-view__hero {
+		display: flex;
+		gap: 20px;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		margin-bottom: 20px;
+	}
+
+	.alm-asset-view__media {
+		flex: 1 1 420px;
+		min-width: 280px;
+	}
+
+	.alm-asset-view__taxbox {
+		flex: 0 0 320px;
+		max-width: 380px;
+		background: #f9f9f9;
+		border: 1px solid #e6e6e6;
+		border-radius: 8px;
+		padding: 16px;
+	}
+
+	.alm-asset-section-title {
+		margin: 0 0 12px 0;
+		font-size: 1.1em;
+	}
+
+	.alm-asset-thumbnail--large {
+		width: 100%;
+		height: auto;
+		max-width: none;
+		margin: 0;
+	}
+
+	.alm-asset-thumbnail--large img {
+		width: 100%;
+		height: auto;
+		max-height: 520px;
+		object-fit: contain;
+		border-radius: 8px;
+		display: block;
+	}
+
+	.alm-asset-taxonomies--boxed {}
+
+	.alm-asset-tax-row {
+		display: contents;
+	}
+
+	.alm-asset-tax-row .alm-tax-label {
+		display: grid;
+		grid-template-columns: var(--alm-tax-label-width, 100px) 1fr;
+		align-items: baseline;
+	}
+
+	.alm-asset-tax-row .alm-tax-value {
+		color: #0073aa;
+	}
+
+	/* Collapsible sections (details/summary) */
+	.alm-collapsible {
+		margin-top: 18px;
+		border: 1px solid #e6e6e6;
+		border-radius: 8px;
+		background: #fff;
+		overflow: hidden;
+	}
+
+	.alm-collapsible__summary {
+		cursor: pointer;
+		padding: 14px 16px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 12px;
+		background: #f7f7f7;
+		font-weight: 700;
+	}
+
+	.alm-collapsible__summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.alm-collapsible[open] .alm-collapsible__summary {
+		border-bottom: 1px solid #e6e6e6;
+	}
+
+	.alm-collapsible__body {
+		padding: 14px 16px;
+	}
+
+	.alm-collapsible__hint {
+		font-weight: 400;
+		color: #666;
+	}
+
+	.alm-asset-acf-list {
+		margin: 0;
+	}
+
+	.alm-asset-acf-row {
+		display: grid;
+		grid-template-columns: 200px 1fr;
+		gap: 12px;
+		padding: 10px 0;
+		border-bottom: 1px solid #eee;
+	}
+
+	.alm-asset-acf-row:last-child {
 		border-bottom: none;
 	}
-}
+
+	.alm-asset-acf-label {
+		font-weight: 700;
+		margin: 0;
+	}
+
+	.alm-asset-acf-value {
+		margin: 0;
+		color: #333;
+	}
+
+	.alm-asset-components {
+		margin: 0;
+		padding-left: 18px;
+	}
+
+	/* Quick meta (Manufacturer/Model) in taxbox */
+	.alm-asset-quick-meta {
+		padding: 10px 12px;
+		background: #fff;
+		border: 1px solid #e6e6e6;
+		border-radius: 8px;
+		margin: 0 0 12px 0;
+		display: grid;
+		gap: 8px;
+	}
+
+	.alm-asset-quick-row {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	/* Badge state inside the taxbox */
+	.alm-asset-view__taxbox .alm-availability {
+		margin-left: 8px;
+		vertical-align: middle;
+	}
+
+	/* ========================================================================
+		ASSET LIST STYLES - Archive and list views (asset-list.php)
+		======================================================================== */
+
+	/* Asset list container */
+	.alm-asset-list {
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+		margin: 20px 0;
+	}
+
+	/* Asset card - horizontal layout */
+	.alm-asset-card {
+		background: #fff;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		padding: 15px;
+		transition: all 0.3s ease;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+		display: flex;
+		align-items: flex-start;
+		gap: 15px;
+	}
+
+	.alm-asset-card:hover {
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		transform: translateX(4px);
+	}
+
+	.alm-asset-link {
+		text-decoration: none;
+		color: inherit;
+		display: flex;
+		align-items: flex-start;
+		gap: 15px;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.alm-asset-link:hover .alm-asset-title {
+		color: #0073aa;
+	}
+
+	.alm-asset-card:hover .alm-asset-thumbnail img {
+		transform: scale(1.1);
+	}
+
+	/* Asset content area - right side */
+	.alm-asset-content-wrapper {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	/* ========================================================================
+		RESPONSIVE STYLES
+		======================================================================== */
+
+	/* Tablet e schermi medi (768px - 1024px) */
+	@media (max-width: 1024px) {
+		.alm-asset-taxonomies {
+			gap: 8px;
+			font-size: 0.8em;
+		}
+		
+		.alm-asset-taxonomy {
+			min-width: 45%;
+		}
+	}
+
+	/* Smartphone e schermi piccoli (fino a 768px) */
+	@media (max-width: 768px) {
+		/* Common styles responsive */
+		.alm-container {
+			padding: 15px;
+		}
+
+		/* Asset list responsive */
+		.alm-asset-card {
+			flex-direction: column;
+			align-items: center;
+			padding: 15px;
+		}
+
+		.alm-asset-link {
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			width: 100%;
+		}
+
+		.alm-asset-thumbnail {
+			width: 150px;
+			height: 150px;
+			margin-bottom: 12px;
+		}
+
+		.alm-asset-content-wrapper {
+			align-items: center;
+			width: 100%;
+		}
+
+		.alm-asset-title {
+			font-size: 1.1em;
+			text-align: center;
+		}
+
+		/* Taxonomies: una colonna su mobile */
+		.alm-asset-taxonomies {
+			flex-direction: column;
+			gap: 8px;
+			width: 100%;
+			justify-content: flex-start;
+		}
+
+		.alm-asset-taxonomy {
+			width: 100%;
+			text-align: left;
+			padding: 6px 0;
+			border-bottom: 1px solid #f0f0f0;
+		}
+
+		.alm-asset-taxonomy:last-child {
+			border-bottom: none;
+		}
+
+		/* Search form responsive */
+		.alm-search-input-wrap {
+			width: 100%;
+		}
+
+		.alm-search-row {
+			flex-direction: column;
+		}
+		
+		.alm-asset-search-form button {
+			width: 100%;
+			padding: 10px 16px;
+		}
+
+		/* Asset view responsive */
+		.alm-asset-detail {
+			padding: 20px;
+		}
+
+		.alm-asset-detail .alm-asset-title {
+			font-size: 1.5em;
+		}
+
+		.alm-asset-detail .alm-asset-taxonomies {
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.alm-asset-detail .alm-asset-taxonomy {
+			min-width: 100%;
+		}
+
+		.alm-asset-view__taxbox {
+			flex: 1 1 100%;
+			max-width: none;
+		}
+
+		.alm-asset-acf-row {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Schermi molto piccoli (fino a 480px) */
+	@media (max-width: 480px) {
+		.alm-container {
+			padding: 10px;
+		}
+
+		.alm-asset-card {
+			padding: 12px;
+			gap: 10px;
+		}
+
+		.alm-asset-thumbnail {
+			width: 120px;
+			height: 120px;
+		}
+
+		.alm-asset-title {
+			font-size: 1em;
+		}
+
+		.alm-asset-taxonomies {
+			font-size: 0.85em;
+			gap: 6px;
+		}
+
+		.alm-tax-label {
+			display: block;
+			margin-bottom: 2px;
+		}
+
+		.alm-archive-title {
+			font-size: 1.5em;
+		}
+	}
+
+	/* Landscape mode per smartphone */
+	@media (max-width: 768px) and (orientation: landscape) {
+		.alm-asset-card {
+			flex-direction: row;
+		}
+
+		.alm-asset-link {
+			flex-direction: row;
+			text-align: left;
+		}
+
+		.alm-asset-thumbnail {
+			width: 100px;
+			height: 100px;
+			margin-bottom: 0;
+			margin-right: 15px;
+		}
+
+		.alm-asset-content-wrapper {
+			align-items: flex-start;
+		}
+
+		.alm-asset-title {
+			text-align: left;
+		}
+
+		.alm-asset-taxonomies {
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+
+		.alm-asset-taxonomy {
+			width: auto;
+			min-width: 45%;
+			border-bottom: none;
+		}
+	}
+
+	/* Collapsible filters container */
+	.alm-filters-collapsible {
+		margin-top: 12px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background: #f9f9f9;
+	}
+
+	/* Toggle button (summary) */
+	.alm-filters-toggle {
+		cursor: pointer;
+		padding: 10px 15px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-weight: 600;
+		color: #23282d;
+		user-select: none;
+		list-style: none;
+	}
+
+	.alm-filters-toggle::-webkit-details-marker {
+		display: none;
+	}
+
+	.alm-filters-toggle::after {
+		content: '▼';
+		font-size: 0.8em;
+		transition: transform 0.3s ease;
+		color: #666;
+	}
+
+	.alm-filters-collapsible[open] .alm-filters-toggle::after {
+		transform: rotate(180deg);
+	}
+
+	.alm-filters-toggle:hover {
+		background: #f0f0f0;
+	}
+
+	/* Active filters badge */
+	.alm-active-filters-badge {
+		display: inline-block;
+		background: #0073aa;
+		color: #fff;
+		padding: 2px 8px;
+		border-radius: 10px;
+		font-size: 0.85em;
+		font-weight: 700;
+		margin-left: 8px;
+	}
+
+	/* Filters content */
+	.alm-filters-content {
+		padding: 15px;
+		background: #fff;
+		border-top: 1px solid #ddd;
+	}
+
+	/* Grid layout for filters (2x2) */
+	.alm-filters-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.alm-filter-row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+	}
+
+	/* Individual filter field */
+	.alm-filter-field {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.alm-filter-field label {
+		font-weight: 600;
+		font-size: 0.9em;
+		color: #555;
+	}
+
+	.alm-filter-field select {
+		padding: 6px 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		font-size: 0.95em;
+		background: #fff;
+		cursor: pointer;
+	}
+
+	.alm-filter-field select:focus {
+		outline: none;
+		border-color: #0073aa;
+		box-shadow: 0 0 0 1px #0073aa;
+	}
+
+	/* Filter actions (reset button) */
+	.alm-filters-actions {
+		margin-top: 12px;
+		padding-top: 12px;
+		border-top: 1px solid #eee;
+		text-align: right;
+	}
+
+	.alm-reset-filters {
+		display: inline-block;
+		padding: 6px 12px;
+		background: #f0f0f0;
+		color: #555;
+		text-decoration: none;
+		border-radius: 4px;
+		font-size: 0.9em;
+		transition: all 0.3s ease;
+	}
+
+	.alm-reset-filters:hover {
+		background: #e0e0e0;
+		color: #23282d;
+	}
+
+	/* ========================================================================
+		RESPONSIVE STYLES FOR FILTERS
+		======================================================================== */
+
+	/* Tablet and medium screens */
+	@media (max-width: 768px) {
+		.alm-filter-row {
+			grid-template-columns: 1fr;
+			gap: 10px;
+		}
+
+		.alm-filters-content {
+			padding: 12px;
+		}
+	}
+
+	/* Small screens */
+	@media (max-width: 480px) {
+		.alm-filters-toggle {
+			padding: 8px 12px;
+			font-size: 0.9em;
+		}
+
+		.alm-active-filters-badge {
+			font-size: 0.75em;
+			padding: 2px 6px;
+		}
+
+		.alm-filter-field label {
+			font-size: 0.85em;
+		}
+
+		.alm-filter-field select {
+			font-size: 0.9em;
+		}
+	}

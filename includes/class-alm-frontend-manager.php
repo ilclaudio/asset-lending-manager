@@ -315,21 +315,68 @@ class ALM_Frontend_Manager {
 	 * @return void
 	 */
 	protected function render_asset_list_template( $attributes, $search_term = '' ) {
+		$filter_structure = '';
+		$filter_type      = '';
+		$filter_state     = '';
+		$filter_level     = '';
+		if ( isset( $_GET['alm_structure'] ) ) {
+			$filter_structure = sanitize_text_field( wp_unslash( $_GET['alm_structure'] ) );
+		}
+		if ( isset( $_GET['alm_type'] ) ) {
+			$filter_type = sanitize_text_field( wp_unslash( $_GET['alm_type'] ) );
+		}
+		if ( isset( $_GET['alm_state'] ) ) {
+			$filter_state = sanitize_text_field( wp_unslash( $_GET['alm_state'] ) );
+		}
+		if ( isset( $_GET['alm_level'] ) ) {
+			$filter_level = sanitize_text_field( wp_unslash( $_GET['alm_level'] ) );
+		}
+		// Build query args.
+		$query_args = array(
+			'post_type'      => ALM_ASSET_CPT_SLUG,
+			'post_status'    => 'publish',
+			'posts_per_page' => $attributes['posts_per_page'],
+		);
+		// Add search term if present.
 		if ( ! empty( $search_term ) ) {
-			$query_args = array(
-				'post_type'      => ALM_ASSET_CPT_SLUG,
-				'post_status'    => 'publish',
-				's'              => $search_term,
-				'posts_per_page' => $attributes['posts_per_page'],
-			);
-		} else {
-			$query_args = array(
-				'post_type'      => ALM_ASSET_CPT_SLUG,
-				'post_status'    => 'publish',
-				'posts_per_page' => $attributes['posts_per_page'],
+			$query_args['s'] = $search_term;
+		}
+
+		$tax_query = array();
+		if ( ! empty( $filter_structure ) ) {
+			$tax_query[] = array(
+				'taxonomy' => ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+				'field'    => 'slug',
+				'terms'    => $filter_structure,
 			);
 		}
-		$query        = new WP_Query( $query_args );
+		if ( ! empty( $filter_type ) ) {
+			$tax_query[] = array(
+				'taxonomy' => ALM_ASSET_TYPE_TAXONOMY_SLUG,
+				'field'    => 'slug',
+				'terms'    => $filter_type,
+			);
+		}
+		if ( ! empty( $filter_state ) ) {
+			$tax_query[] = array(
+				'taxonomy' => ALM_ASSET_STATE_TAXONOMY_SLUG,
+				'field'    => 'slug',
+				'terms'    => $filter_state,
+			);
+		}
+		if ( ! empty( $filter_level ) ) {
+			$tax_query[] = array(
+				'taxonomy' => ALM_ASSET_LEVEL_TAXONOMY_SLUG,
+				'field'    => 'slug',
+				'terms'    => $filter_level,
+			);
+		}
+		// Add tax_query to query args if we have filters.
+		if ( ! empty( $tax_query ) ) {
+			$query_args['tax_query'] = $tax_query;
+		}
+		// Build and execute query.
+		$query = new WP_Query( $query_args );
 		$assets       = array();
 		$assets_count = 0;
 		if ( $query->have_posts() ) {
