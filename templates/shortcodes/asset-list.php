@@ -58,6 +58,7 @@ if ( ! empty( $filter_level ) ) {
 
 <div id="alm_asset_search_form">
 	<form method="get" class="alm-asset-search-form">
+		<!-- Input search text -->
 		<div class="alm-search-row">
 			<div class="alm-search-input-wrap">
 				<span class="alm-search-icon" aria-hidden="true"></span>
@@ -70,10 +71,8 @@ if ( ! empty( $filter_level ) ) {
 				<div id="alm_asset_autocomplete_dropdown" class="alm-autocomplete-dropdown"></div>
 			</div>
 		</div>
-		<button type="submit">
-			<?php esc_html_e( 'Search', 'asset-lending-manager' ); ?>
-		</button>
 
+		<!-- Advanced Filters -->
 		<details class="alm-filters-collapsible">
 			<summary class="alm-filters-toggle">
 				<?php esc_html_e( 'Advanced Filters', 'asset-lending-manager' ); ?>
@@ -81,7 +80,6 @@ if ( ! empty( $filter_level ) ) {
 					<span class="alm-active-filters-badge"><?php echo (int) $alm_active_filters_count; ?></span>
 				<?php endif; ?>
 			</summary>
-
 			<!-- Taxonomy filters -->
 			<div class="alm-filters-content">
 				<div class="alm-filters-grid">
@@ -129,7 +127,6 @@ if ( ! empty( $filter_level ) ) {
 								<?php endif; ?>
 							</select>
 						</div>
-
 						<div class="alm-filter-field">
 							<label for="alm_filter_level"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?></label>
 							<select name="alm_level" id="alm_filter_level">
@@ -153,6 +150,11 @@ if ( ! empty( $filter_level ) ) {
 				</div>
 			</div>
 		</details>
+
+		<!-- Search Button -->
+		<button type="submit">
+			<?php esc_html_e( 'Search', 'asset-lending-manager' ); ?>
+		</button>
 
 	</form>
 </div>
