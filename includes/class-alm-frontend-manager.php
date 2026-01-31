@@ -168,6 +168,12 @@ class ALM_Frontend_Manager {
 			ALM_VERSION,
 			'all'
 		);
+		wp_enqueue_style(
+			'alm-requests-table',
+			ALM_PLUGIN_URL . 'assets/css/asset-requests-table.css',
+			array(),
+			ALM_VERSION
+		);
 		// Enqueue JS.
 		wp_enqueue_script(
 			'alm-frontend-assets',

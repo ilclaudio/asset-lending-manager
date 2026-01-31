@@ -1,0 +1,146 @@
+/**
+ * Styles for Asset Requests Table
+ * 
+ * @package AssetLendingManager
+ */
+
+/* Tabella richieste */
+.alm-requests-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.alm-requests-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.alm-requests-table th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.alm-requests-table tbody tr {
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.2s ease;
+}
+
+.alm-requests-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.alm-requests-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+/* Colonna messaggio con tooltip */
+.alm-request-message {
+    max-width: 300px;
+}
+
+.alm-message-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
+}
+
+.alm-message-text:hover {
+    color: #0073aa;
+}
+
+/* Colonna richiedente */
+.alm-request-requester {
+    font-weight: 500;
+    min-width: 120px;
+}
+
+/* Colonna data */
+.alm-request-date {
+    white-space: nowrap;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* Action buttons */
+.alm-request-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.alm-button--small {
+    padding: 6px 12px;
+    font-size: 13px;
+    margin-left: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.alm-button--approve {
+    background-color: #28a745;
+    color: white;
+}
+
+.alm-button--approve:hover {
+    background-color: #218838;
+}
+
+.alm-button--reject {
+    background-color: #dc3545;
+    color: white;
+}
+
+.alm-button--reject:hover {
+    background-color: #c82333;
+}
+
+.alm-button--approve:disabled,
+.alm-button--reject:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .alm-requests-table {
+        font-size: 14px;
+    }
+    
+    .alm-requests-table th,
+    .alm-requests-table td {
+        padding: 8px 10px;
+    }
+    
+    .alm-request-message {
+        max-width: 150px;
+    }
+    
+    .alm-button--small {
+        display: block;
+        margin: 5px 0;
+        width: 100%;
+    }
+    
+    .alm-request-actions {
+        text-align: left;
+    }
+}
+
+/* Empty state */
+.alm-requests-table + .alm-muted {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}

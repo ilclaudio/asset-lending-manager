@@ -241,6 +241,16 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	</section>
 
 	<!-- VI section: Loan requests -->
+	<?php
+		if (
+				is_user_logged_in() &&
+				(
+					current_user_can( ALM_EDIT_ASSET ) ||
+					( $alm_loan_manager->get_current_owner( $alm_asset_id ) === $alm_current_user_id )
+				)
+			) {
+			$alm_requests = $alm_loan_manager->get_asset_requests( $alm_asset_id );
+	?>
 	<section class="alm-asset-view__loan-requests" aria-label="<?php esc_attr_e( 'Loan requests', 'asset-lending-manager' ); ?>">
 		<details class="alm-collapsible alm-collapsible--requestlist">
 			<summary class="alm-collapsible__summary">
@@ -253,13 +263,92 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 			</summary>
 
 			<div class="alm-collapsible__body">
-				<p class="alm-muted">
-					<?php esc_html_e( 'No requests to show (section under development).', 'asset-lending-manager' ); ?>
-				</p>
+				<?php if ( ! empty( $alm_requests ) ) : ?>
+					<table class="alm-requests-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Requester', 'asset-lending-manager' ); ?></th>
+								<th><?php esc_html_e( 'Message', 'asset-lending-manager' ); ?></th>
+								<th><?php esc_html_e( 'Date', 'asset-lending-manager' ); ?></th>
+								<th><?php esc_html_e( 'Actions', 'asset-lending-manager' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ( $alm_requests as $alm_request ) : ?>
+								<?php
+								$alm_requester      = get_userdata( $alm_request->requester_id );
+								$alm_requester_name = $alm_requester ? $alm_requester->display_name : __( 'Unknown', 'asset-lending-manager' );
+								$alm_request_date   = mysql2date( 'd/m/Y', $alm_request->request_date );
+								$alm_request_status = $alm_request->status;
+								
+								// Handle long messages
+								$alm_full_message  = esc_html( $alm_request->request_message );
+								$alm_short_message = mb_strlen( $alm_full_message ) > 60
+									? mb_substr( $alm_full_message, 0, 60 ) . '...'
+									: $alm_full_message;
+								
+								// Status label and CSS class
+								$alm_status_labels = array(
+									'pending'  => __( 'Pending', 'asset-lending-manager' ),
+									'approved' => __( 'Approved', 'asset-lending-manager' ),
+									'rejected' => __( 'Rejected', 'asset-lending-manager' ),
+									'canceled' => __( 'Canceled', 'asset-lending-manager' ),
+								);
+								$alm_status_label = isset( $alm_status_labels[ $alm_request_status ] ) ? $alm_status_labels[ $alm_request_status ] : $alm_request_status;
+								$alm_status_class = 'alm-status--' . $alm_request_status;
+								?>
+								<tr class="alm-request-row" data-request-id="<?php echo esc_attr( $alm_request->id ); ?>">
+									<td class="alm-request-requester">
+										<?php echo esc_html( $alm_requester_name ); ?>
+									</td>
+									<td class="alm-request-message">
+										<span class="alm-message-text" title="<?php echo esc_attr( $alm_full_message ); ?>">
+											<?php echo $alm_short_message; ?>
+										</span>
+									</td>
+									<td class="alm-request-date">
+										<?php echo esc_html( $alm_request_date ); ?>
+									</td>
+									<td class="alm-request-actions">
+										<?php if ( 'pending' === $alm_request_status ) : ?>
+											<button 
+												type="button" 
+												class="alm-button alm-button--small alm-button--approve" 
+												data-action="approve" 
+												data-request-id="<?php echo esc_attr( $alm_request->id ); ?>"
+												data-asset-id="<?php echo esc_attr( $alm_asset_id ); ?>"
+											>
+												<?php esc_html_e( 'Approve', 'asset-lending-manager' ); ?>
+											</button>
+											<button 
+												type="button" 
+												class="alm-button alm-button--small alm-button--reject" 
+												data-action="reject" 
+												data-request-id="<?php echo esc_attr( $alm_request->id ); ?>"
+												data-asset-id="<?php echo esc_attr( $alm_asset_id ); ?>"
+											>
+												<?php esc_html_e( 'Reject', 'asset-lending-manager' ); ?>
+											</button>
+										<?php else : ?>
+											<span class="alm-muted">—</span>
+										<?php endif; ?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				<?php else : ?>
+					<p class="alm-muted">
+						<?php esc_html_e( 'No pending requests for this asset.', 'asset-lending-manager' ); ?>
+					</p>
+				<?php endif; ?>
 			</div>
 
 		</details>
 	</section>
+	<?php
+	}
+	?>
 
 	<?php if ( is_user_logged_in() && current_user_can( ALM_EDIT_ASSET ) ) : ?>
 		<!-- VII section: Loan history -->
