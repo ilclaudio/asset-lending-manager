@@ -12,11 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$alm_asset_id = isset( $asset->id ) ? (int) $asset->id : 0;
+$alm_current_user_id = get_current_user_id();
+$alm_asset_id        = isset( $asset->id ) ? (int) $asset->id : 0;
 if ( $alm_asset_id <= 0 ) {
 	return;
 }
-
 
 $alm_asset_fields = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
 /**
@@ -181,30 +181,61 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		</details>
 	</section>
 
-	<!-- V section: Book loan request -->
+	<!-- V section: Loan request form -->
+	<?php
+		$alm_loan_manager = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
+	?>
+
 	<section class="alm-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
-		<details class="alm-collapsible alm-collapsible--requestbutton">
+		<details class="alm-collapsible alm-collapsible--requestbutton" id="alm-loan-request-section">
 			<summary class="alm-collapsible__summary">
 				<span class="alm-collapsible__title">
-					<?php esc_html_e( 'Ask for a loan', 'asset-lending-manager' ); ?>
+					<?php esc_html_e( 'Request loan', 'asset-lending-manager' ); ?>
 				</span>
 				<span class="alm-collapsible__hint" aria-hidden="true">
 					<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 				</span>
 			</summary>
 			<div class="alm-collapsible__body">
+
 				<?php if ( is_user_logged_in() && current_user_can( ALM_VIEW_ASSET ) ) : ?>
-					<button type="button" class="alm-button" disabled="disabled">
-						<?php esc_html_e( 'Send loan request...', 'asset-lending-manager' ); ?>
-					</button>
-					<p class="alm-muted">
-						<?php esc_html_e( 'Features under development.', 'asset-lending-manager' ); ?>
-					</p>
+					<!-- People eligible to apply for the loan -->
+
+					<?php if ( $alm_loan_manager->has_pending_request( $alm_asset_id, $alm_current_user_id ) ) : ?>
+						<p class="alm-muted">
+							<?php esc_html_e( 'You have already requested a loan for this asset.', 'asset-lending-manager' ); ?>
+						</p>
+
+					<?php else : ?>
+						<form id="alm-loan-request-form" class="alm-loan-form">
+							<div class="alm-form-field">
+								<label for="alm-request-message">
+									<?php esc_html_e( 'Message for the current owner:', 'asset-lending-manager' ); ?>
+								</label>
+								<textarea 
+									id="alm-request-message" 
+									name="message" 
+									rows="4" 
+									placeholder="<?php esc_attr_e( 'Write a brief message explaining why you need this asset...', 'asset-lending-manager' ); ?>"
+									required
+								></textarea>
+							</div>
+							<div class="alm-form-actions">
+								<button type="submit" class="alm-button alm-button--primary">
+									<?php esc_html_e( 'Send request', 'asset-lending-manager' ); ?>
+								</button>
+							</div>
+							<div id="alm-loan-request-response" class="alm-response-message" style="display:none;"></div>
+						</form>
+					<?php endif; ?>
+
 				<?php else : ?>
+					<!-- People not eligible to apply for the loan -->
 					<p class="alm-muted">
 						<?php esc_html_e( 'To request a loan, you must log in as a member.', 'asset-lending-manager' ); ?>
 					</p>
 				<?php endif; ?>
+
 			</div>
 		</details>
 	</section>

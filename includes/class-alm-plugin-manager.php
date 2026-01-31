@@ -118,14 +118,14 @@ class ALM_Plugin_Manager {
 	private function init_modules() {
 		if ( empty( $this->modules ) ) {
 			$this->modules = array(
-				new ALM_Settings_Manager(),
-				new ALM_Role_Manager(),
-				new ALM_Asset_Manager(),
-				new ALM_Loan_Manager(),
-				new ALM_Notification_Manager(),
-				new ALM_Frontend_Manager(),
-				new ALM_Admin_Manager(),
-				new ALM_Autocomplete_Manager(),
+				'settings'     => new ALM_Settings_Manager(),
+				'role'         => new ALM_Role_Manager(),
+				'asset'        => new ALM_Asset_Manager(),
+				'loan'         => new ALM_Loan_Manager(),
+				'notification' => new ALM_Notification_Manager(),
+				'frontend'     => new ALM_Frontend_Manager(),
+				'admin'        => new ALM_Admin_Manager(),
+				'autocomplete' => new ALM_Autocomplete_Manager(),
 			);
 		}
 	}
@@ -148,15 +148,15 @@ class ALM_Plugin_Manager {
 	 * Return the modules used by the plugin.
 	 */
 	public function get_modules() {
-		return $this->modules;
+		return array_values( $this->modules );
 	}
 
-	// /**
-	//  * Return a specific module.
-	//  */
-	// public function get_module( $name ) {
-	// 	return $this->modules[ $name ] ?? null;
-	// }
+	/**
+	 * Return a specific module.
+	 */
+	public function get_module( $name ) {
+		return $this->modules[ $name ] ?? null;
+	}
 
 	/**
 	 * Prevent cloning.
