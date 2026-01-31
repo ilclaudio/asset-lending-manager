@@ -37,6 +37,47 @@ class ALM_Installer {
 	}
 
 	/**
+	 * Create database tables needed by the plugin.
+	 * This method is idempotent - safe to call multiple times.
+	 *
+	 * @return void
+	 */
+	public static function create_tables() {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		// Check if table already exists.
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
+			ALM_Logger::debug( 'Table alm_loan_requests already exists, skipping creation.' );
+			return;
+		}
+		$sql = "CREATE TABLE $table_name (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			asset_id bigint(20) unsigned NOT NULL,
+			requester_id bigint(20) unsigned NOT NULL,
+			owner_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			request_date datetime NOT NULL,
+			request_message text,
+			status varchar(20) NOT NULL DEFAULT 'pending',
+			response_date datetime DEFAULT NULL,
+			response_message text,
+			PRIMARY KEY  (id),
+			KEY asset_id (asset_id),
+			KEY requester_id (requester_id),
+			KEY owner_id (owner_id),
+			KEY status (status)
+		) $charset_collate;";
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		dbDelta( $sql );
+		// Verify table was created.
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
+			ALM_Logger::info( 'Table alm_loan_requests created successfully.' );
+		} else {
+			ALM_Logger::error( 'Failed to create table alm_loan_requests' );
+		}
+	}
+
+	/**
 	 * Public entry point.
 	 *
 	 * Ensures that all default taxonomy terms required by ALM
