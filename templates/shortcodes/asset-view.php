@@ -280,14 +280,12 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 								$alm_requester_name = $alm_requester ? $alm_requester->display_name : __( 'Unknown', 'asset-lending-manager' );
 								$alm_request_date   = mysql2date( 'd/m/Y', $alm_request->request_date );
 								$alm_request_status = $alm_request->status;
-								
-								// Handle long messages
+								// Handle long messages.
 								$alm_full_message  = esc_html( $alm_request->request_message );
 								$alm_short_message = mb_strlen( $alm_full_message ) > 60
 									? mb_substr( $alm_full_message, 0, 60 ) . '...'
 									: $alm_full_message;
-								
-								// Status label and CSS class
+								// Status label and CSS class.
 								$alm_status_labels = array(
 									'pending'  => __( 'Pending', 'asset-lending-manager' ),
 									'approved' => __( 'Approved', 'asset-lending-manager' ),
