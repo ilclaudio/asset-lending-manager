@@ -1,12 +1,12 @@
 
-1) AssetView: Taxonomies layout.
-2) AssetView: Component list for KIT.
-3) AssetView: KIT link for component.
-4) Open/Close for all sections.
-5) AssetList: Kit filter.
-6) AssetList: Type filter.
 
-8) Search autocomplete: parameter for title or title+body.
+1) Funzione Rifiuto prestito: Popola storico delle richieste.
+2) Funzione Accetta prestito: Popola Storico delle richieste, cambia owner di tutti i dispositivi, gestione
+3) Assegnamento diretto del dispositivo.
+4) Visualizzazione storico.
+
+
+
 9) Asset list: pagination.
 
 
