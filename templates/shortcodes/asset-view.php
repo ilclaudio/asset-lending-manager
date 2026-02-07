@@ -31,7 +31,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 }
 ?>
 
-<article class="alm-asset-detail alm-asset-view">
+<article class="alm-asset-detail alm-asset-view" data-asset-id="<?php echo esc_attr( $alm_asset_id ); ?>">
 
 	<!-- I section: Title -->
 	<header class="alm-asset-view__title">

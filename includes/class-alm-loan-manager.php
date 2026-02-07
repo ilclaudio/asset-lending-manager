@@ -15,6 +15,11 @@ defined( 'ABSPATH' ) || exit;
 class ALM_Loan_Manager {
 
 	/**
+	 * Maximum length for rejection message.
+	 */
+	const REJECTION_MESSAGE_MAX_LENGTH = 255;
+
+	/**
 	 * Plugin activation hook.
 	 *
 	 * @return void
@@ -32,6 +37,8 @@ class ALM_Loan_Manager {
 	public function register() {
 		// AJAX handler for authenticated users.
 		add_action( 'wp_ajax_alm_submit_loan_request', array( $this, 'ajax_submit_loan_request' ) );
+		add_action( 'wp_ajax_alm_reject_loan_request', array( $this, 'ajax_reject_loan_request' ) );
+		add_action( 'wp_ajax_alm_approve_loan_request', array( $this, 'ajax_approve_loan_request' ) );
 	}
 
 	/**
@@ -110,6 +117,324 @@ class ALM_Loan_Manager {
 	}
 
 	/**
+	 * AJAX handler for loan request rejection.
+	 *
+	 * @return void
+	 */
+	public function ajax_reject_loan_request() {
+		// Verify nonce.
+		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+
+		// Get and validate input.
+		$request_id        = isset( $_POST['request_id'] ) ? absint( $_POST['request_id'] ) : 0;
+		$asset_id          = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$rejection_message = isset( $_POST['rejection_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['rejection_message'] ) ) : '';
+
+		// Validate inputs.
+		if ( $request_id <= 0 ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Invalid request ID.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		if ( $asset_id <= 0 ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Invalid asset ID.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Validate rejection message.
+		if ( empty( $rejection_message ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Rejection message is required.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		if ( mb_strlen( $rejection_message ) > self::REJECTION_MESSAGE_MAX_LENGTH ) {
+			wp_send_json_error(
+				array(
+					'message' => sprintf(
+						__( 'Rejection message must not exceed %d characters.', 'asset-lending-manager' ),
+						self::REJECTION_MESSAGE_MAX_LENGTH
+					),
+				)
+			);
+		}
+
+		// Get loan request from database.
+		global $wpdb;
+		$table_name    = $wpdb->prefix . 'alm_loan_requests';
+		$loan_request  = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM $table_name WHERE id = %d",
+				$request_id
+			)
+		);
+
+		if ( ! $loan_request ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Loan request not found.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Verify asset_id matches.
+		if ( (int) $loan_request->asset_id !== $asset_id ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Asset ID mismatch.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Check user permissions.
+		$current_user_id = get_current_user_id();
+		$can_reject      = $this->can_user_reject_request( $loan_request, $current_user_id );
+
+		if ( ! $can_reject ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You do not have permission to reject this request.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Reject the loan request (atomic operation).
+		$result = $this->reject_loan_request( $loan_request, $rejection_message, $current_user_id );
+
+		if ( ! $result ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Failed to reject loan request.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Log the rejection.
+		ALM_Logger::info(
+			'Loan request rejected',
+			array(
+				'request_id'   => $request_id,
+				'asset_id'     => $asset_id,
+				'requester_id' => $loan_request->requester_id,
+				'rejected_by'  => $current_user_id,
+			)
+		);
+
+		// Send email notification (placeholder).
+		$this->send_rejection_email_notification( $loan_request, $rejection_message );
+
+		wp_send_json_success(
+			array(
+				'message' => __( 'Loan request rejected successfully.', 'asset-lending-manager' ),
+			)
+		);
+	}
+
+	/**
+	 * Check if user can reject a loan request.
+	 *
+	 * @param object $loan_request Loan request object from database.
+	 * @param int    $user_id      User ID.
+	 * @return bool True if user can reject.
+	 */
+	private function can_user_reject_request( $loan_request, $user_id ) {
+		// Administrators and operators can reject any request.
+		if ( current_user_can( ALM_EDIT_ASSET ) ) {
+			return true;
+		}
+
+		// Current owner can reject requests for their assets.
+		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
+			return true;
+		}
+
+		// Check if user is the current assignee of the asset.
+		$current_owner = $this->get_current_owner( $loan_request->asset_id );
+		if ( $current_owner === $user_id && $current_owner > 0 ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Reject a loan request (atomic operation).
+	 *
+	 * This method performs the following operations atomically:
+	 * 1. Insert record into history table
+	 * 2. Delete record from requests table
+	 *
+	 * @param object $loan_request      Loan request object from database.
+	 * @param string $rejection_message Rejection message.
+	 * @param int    $rejected_by       User ID who rejected the request.
+	 * @return bool True on success, false on failure.
+	 */
+	private function reject_loan_request( $loan_request, $rejection_message, $rejected_by ) {
+		global $wpdb;
+
+		// Start transaction.
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			// Insert into history table.
+			$history_inserted = $this->log_history_entry(
+				$loan_request->id,
+				$loan_request->asset_id,
+				$loan_request->requester_id,
+				$loan_request->owner_id,
+				'rejected',
+				$rejection_message,
+				$rejected_by
+			);
+
+			if ( ! $history_inserted ) {
+				throw new Exception( 'Failed to insert history record' );
+			}
+
+			// Delete from requests table.
+			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$deleted    = $wpdb->delete(
+				$table_name,
+				array( 'id' => $loan_request->id ),
+				array( '%d' )
+			);
+
+			if ( false === $deleted ) {
+				throw new Exception( 'Failed to delete loan request' );
+			}
+
+			// Commit transaction.
+			$wpdb->query( 'COMMIT' );
+
+			ALM_Logger::debug(
+				'Loan request rejected successfully',
+				array(
+					'request_id' => $loan_request->id,
+					'asset_id'   => $loan_request->asset_id,
+				)
+			);
+
+			return true;
+
+		} catch ( Exception $e ) {
+			// Rollback transaction on error.
+			$wpdb->query( 'ROLLBACK' );
+
+			ALM_Logger::error(
+				'Failed to reject loan request',
+				array(
+					'request_id' => $loan_request->id,
+					'error'      => $e->getMessage(),
+					'db_error'   => $wpdb->last_error,
+				)
+			);
+
+			return false;
+		}
+	}
+
+	/**
+	 * Log an entry in the loan requests history table.
+	 *
+	 * @param int    $loan_request_id Original loan request ID.
+	 * @param int    $asset_id        Asset ID.
+	 * @param int    $requester_id    Requester user ID.
+	 * @param int    $owner_id        Owner user ID.
+	 * @param string $status          Status (approved, rejected, canceled).
+	 * @param string $message         Status message.
+	 * @param int    $changed_by      User ID who made the change.
+	 * @return bool True on success, false on failure.
+	 */
+	private function log_history_entry( $loan_request_id, $asset_id, $requester_id, $owner_id, $status, $message, $changed_by ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'alm_loan_requests_history';
+
+		$result = $wpdb->insert(
+			$table_name,
+			array(
+				'loan_request_id' => $loan_request_id,
+				'asset_id'        => $asset_id,
+				'requester_id'    => $requester_id,
+				'owner_id'        => $owner_id,
+				'status'          => $status,
+				'message'         => $message,
+				'changed_at'      => current_time( 'mysql' ),
+				'changed_by'      => $changed_by,
+			),
+			array( '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%d' )
+		);
+
+		if ( false === $result ) {
+			ALM_Logger::error(
+				'Failed to insert history entry',
+				array(
+					'loan_request_id' => $loan_request_id,
+					'db_error'        => $wpdb->last_error,
+				)
+			);
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Send email notification for rejected loan request (placeholder).
+	 *
+	 * @param object $loan_request      Loan request object.
+	 * @param string $rejection_message Rejection message.
+	 * @return void
+	 */
+	private function send_rejection_email_notification( $loan_request, $rejection_message ) {
+		$requester   = get_userdata( $loan_request->requester_id );
+		$asset_title = get_the_title( $loan_request->asset_id );
+
+		if ( ! $requester ) {
+			return;
+		}
+
+		// Log email to requester.
+		ALM_Logger::info(
+			'[EMAIL] To requester: Loan request rejected',
+			array(
+				'to'      => $requester->user_email,
+				'subject' => sprintf( 
+					__( 'Your loan request for "%s" has been rejected', 'asset-lending-manager' ),
+					$asset_title
+				),
+				'message' => $rejection_message,
+			)
+		);
+
+		// TODO: Implement actual email sending.
+	}
+
+	/**
+	 * AJAX handler for loan request approval (placeholder for future implementation).
+	 *
+	 * @return void
+	 */
+	public function ajax_approve_loan_request() {
+		// Verify nonce.
+		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+
+		// TODO: Implement approval logic.
+		wp_send_json_error(
+			array(
+				'message' => __( 'Approval functionality not yet implemented.', 'asset-lending-manager' ),
+			)
+		);
+	}
+
+	/**
 	 * Create a loan request in the database.
 	 *
 	 * @param int    $asset_id     Asset ID.
@@ -152,7 +477,7 @@ class ALM_Loan_Manager {
 	 * @param int $asset_id Asset ID.
 	 * @return int Owner user ID or 0 if none.
 	 */
-	private function get_current_owner( $asset_id ) {
+	public function get_current_owner( $asset_id ) {
 		// TODO: Implement owner tracking.
 		// For now, return 0 (available asset).
 		return 0;
@@ -293,5 +618,3 @@ class ALM_Loan_Manager {
 		);
 	}
 }
-
-
