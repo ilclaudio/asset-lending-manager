@@ -187,9 +187,9 @@ class ALM_Frontend_Manager {
 			'alm-frontend-assets',
 			'almFrontend',
 			array(
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'alm_frontend_nonce' ),
-				'loanRequestNonce' => wp_create_nonce( 'alm_loan_request_nonce' ), // AGGIUNGI SOLO QUESTA RIGA
+				'ajaxUrl'          => admin_url( 'admin-ajax.php' ),
+				'nonce'            => wp_create_nonce( 'alm_frontend_nonce' ),
+				'loanRequestNonce' => wp_create_nonce( 'alm_loan_request_nonce' ),
 			)
 		);
 	}
