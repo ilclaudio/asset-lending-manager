@@ -43,6 +43,17 @@ class ALM_Installer {
 	 * @return void
 	 */
 	public static function create_tables() {
+		self::create_loan_requests_table();
+		self::create_loan_requests_history_table();
+	}
+
+	/**
+	 * Create loan requests table.
+	 * This method is idempotent - safe to call multiple times.
+	 *
+	 * @return void
+	 */
+	public static function create_loan_requests_table() {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
 		$table_name = $wpdb->prefix . 'alm_loan_requests';
@@ -74,6 +85,72 @@ class ALM_Installer {
 			ALM_Logger::info( 'Table alm_loan_requests created successfully.' );
 		} else {
 			ALM_Logger::error( 'Failed to create table alm_loan_requests' );
+		}
+	}
+
+	/**
+	 * Drop plugin database tables.
+	 * Called on plugin uninstall.
+	 *
+	 * @return void
+	 */
+	public static function drop_tables() {
+		global $wpdb;
+		$tables = array(
+			$wpdb->prefix . 'alm_loan_requests_history',
+			$wpdb->prefix . 'alm_loan_requests',
+		);
+		foreach ( $tables as $table ) {
+			$wpdb->query( "DROP TABLE IF EXISTS $table" );
+			ALM_Logger::info( "Dropped table $table" );
+		}
+	}
+
+
+	/**
+	 * Create loan requests history table.
+	 * This method is idempotent - safe to call multiple times.
+	 *
+	 * @return void
+	 */
+	public static function create_loan_requests_history_table() {
+		global $wpdb;
+
+		$table_name      = $wpdb->prefix . 'alm_loan_requests_history';
+		$charset_collate = $wpdb->get_charset_collate();
+
+		// Check if table already exists.
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
+			ALM_Logger::debug( 'Table alm_loan_requests_history already exists, skipping creation.' );
+			return;
+		}
+
+		$sql = "CREATE TABLE $table_name (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			loan_request_id bigint(20) unsigned NOT NULL,
+			asset_id bigint(20) unsigned NOT NULL,
+			requester_id bigint(20) unsigned NOT NULL,
+			owner_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			status varchar(20) NOT NULL,
+			message text,
+			changed_at datetime NOT NULL,
+			changed_by bigint(20) unsigned NOT NULL,
+			PRIMARY KEY (id),
+			KEY loan_request_id (loan_request_id),
+			KEY asset_id (asset_id),
+			KEY requester_id (requester_id),
+			KEY owner_id (owner_id),
+			KEY status (status)
+		) $charset_collate;";
+
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		dbDelta( $sql );
+
+		// Verify creation.
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
+			ALM_Logger::info( 'Table alm_loan_requests_history created successfully.' );
+		} else {
+			ALM_Logger::error( 'Failed to create table alm_loan_requests_history.' );
 		}
 	}
 

@@ -11,23 +11,25 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 require_once ALM_PLUGIN_DIR . 'plugin-config.php';
 
-// Remove custom roles.
+// Drop custom roles.
 remove_role( ALM_MEMBER_ROLE );
 remove_role( ALM_OPERATOR_ROLE );
 
+// Drop capabilities.
+foreach ( $alm_roles_to_modify as $alm_role_name ) {
+	$alm_role = get_role( $alm_role_name );
+	if ( $alm_role ) {
+		foreach ( $caps_to_remove as $cap ) {
+			$alm_role->remove_cap( $cap );
+		}
+	}
+}
 
-// Remove capabilities.
-// foreach ( $roles_to_modify as $role_name ) {
-// 		$role = get_role( $role_name );
-// 		if ( $role ) {
-// 				foreach ( $caps_to_remove as $cap ) {
-// 						$role->remove_cap( $cap );
-// 				}
-// 		}
-// }
 
-
-// Remove custom tables.
-// global $wpdb;
-// $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}alm_assets" );
-// $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}alm_logs" );
+/**
+ * Drop plugin database tables.
+ * Called on plugin uninstall.
+ *
+*/
+// require_once plugin_dir_path( __FILE__ ) . 'includes/class-alm-installer.php';
+// ALM_Installer::drop_tables();
