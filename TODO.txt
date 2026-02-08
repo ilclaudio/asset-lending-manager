@@ -1,23 +1,16 @@
 
 
-1) Funzione Rifiuto prestito: Popola storico delle richieste.
+1) Lista Storico
 2) Funzione Accetta prestito: Popola Storico delle richieste, cambia owner di tutti i dispositivi, gestione
-3) Assegnamento diretto del dispositivo.
-4) Visualizzazione storico.
+3) Assegnamento diretto del dispositivo da parte dell'operatore.
+4) Annulla richiesta di prestito da parte di operatore.
 
-
-
-9) Asset list: pagination.
-
+5) Asset list: pagination.
+6) Asset list: vista su cellulare in orizzontale e non in verticale.
 
 10) Roles translation.
-11) Recover unit tests.
 
-12) Create loan and request tables. 
-13) Manage loan request.
-14) Manage loan.
-
-20) Build unit tests.
+20) Recover unit tests.
 21) Integration tests.
 22) Functional tests.
 
