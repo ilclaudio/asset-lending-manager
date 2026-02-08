@@ -20,6 +20,11 @@ class ALM_Loan_Manager {
 	const REJECTION_MESSAGE_MAX_LENGTH = 255;
 
 	/**
+	 * Maximum length for loan request message.
+	 */
+	const SEND_REQUEST_MESSAGE_MAX_LENGTH = 500;
+
+	/**
 	 * Plugin activation hook.
 	 *
 	 * @return void
@@ -60,6 +65,24 @@ class ALM_Loan_Manager {
 		// Get and validate input.
 		$asset_id = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
 		$message  = isset( $_POST['message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['message'] ) ) : '';
+		// Validate message length.
+		if ( empty( $message ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Request message is required.', 'asset-lending-manager' ),
+				)
+			);
+		}
+		if ( mb_strlen( $message ) > self::SEND_REQUEST_MESSAGE_MAX_LENGTH ) {
+			wp_send_json_error(
+				array(
+					'message' => sprintf(
+						__( 'Request message must not exceed %d characters.', 'asset-lending-manager' ),
+						self::SEND_REQUEST_MESSAGE_MAX_LENGTH
+					),
+				)
+			);
+		}
 		if ( $asset_id <= 0 ) {
 			wp_send_json_error(
 				array(
@@ -435,7 +458,7 @@ class ALM_Loan_Manager {
 	}
 
 	/**
-	 * Create a loan request in the database.
+	 * Create a loan request in the database (atomic operation).
 	 *
 	 * @param int    $asset_id     Asset ID.
 	 * @param int    $requester_id Requester user ID.
@@ -445,27 +468,52 @@ class ALM_Loan_Manager {
 	 */
 	private function create_loan_request( $asset_id, $requester_id, $owner_id, $message ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
-		$result     = $wpdb->insert(
-			$table_name,
-			array(
-				'asset_id'        => $asset_id,
-				'requester_id'    => $requester_id,
-				'owner_id'        => $owner_id,
-				'request_date'    => current_time( 'mysql' ),
-				'request_message' => $message,
-				'status'          => 'pending',
-			),
-			array( '%d', '%d', '%d', '%s', '%s', '%s' )
-		);
-		if ( false === $result ) {
-			ALM_Logger::error(
-				'Failed to insert loan request',
-				array( 'db_error' => $wpdb->last_error )
+		// Start transaction.
+		$wpdb->query( 'START TRANSACTION' );
+		try {
+			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$result     = $wpdb->insert(
+				$table_name,
+				array(
+					'asset_id'        => $asset_id,
+					'requester_id'    => $requester_id,
+					'owner_id'        => $owner_id,
+					'request_date'    => current_time( 'mysql' ),
+					'request_message' => $message,
+					'status'          => 'pending',
+				),
+				array( '%d', '%d', '%d', '%s', '%s', '%s' )
 			);
+			if ( false === $result ) {
+				throw new Exception( 'Failed to insert loan request' );
+			}
+			$request_id = $wpdb->insert_id;
+			// Commit transaction.
+			$wpdb->query( 'COMMIT' );
+
+			ALM_Logger::debug(
+				'Loan request created successfully',
+				array(
+					'request_id' => $request_id,
+					'asset_id'   => $asset_id,
+				)
+			);
+			return $request_id;
+		} catch ( Exception $e ) {
+			// Rollback transaction on error.
+			$wpdb->query( 'ROLLBACK' );
+
+			ALM_Logger::error(
+				'Failed to create loan request',
+				array(
+					'asset_id'  => $asset_id,
+					'error'     => $e->getMessage(),
+					'db_error'  => $wpdb->last_error,
+				)
+			);
+
 			return false;
 		}
-		return $wpdb->insert_id;
 	}
 
 	/**
