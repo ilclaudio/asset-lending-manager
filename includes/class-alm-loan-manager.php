@@ -665,4 +665,54 @@ class ALM_Loan_Manager {
 			)
 		);
 	}
+
+	/**
+	 * Get loan history for a specific asset (last 10 entries).
+	 *
+	 * Operators see all entries, members see only entries where they are involved
+	 * (as requester, owner, or changed_by).
+	 *
+	 * @param int $asset_id Asset ID.
+	 * @param int $user_id  User ID for permission filtering (0 = no filter).
+	 * @return array Array of history objects.
+	 */
+	public function get_asset_history( $asset_id, $user_id = 0 ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'alm_loan_requests_history';
+
+		// Check if user is operator (can see all).
+		$is_operator = current_user_can( ALM_EDIT_ASSET );
+
+		if ( $is_operator || $user_id <= 0 ) {
+			// Operators see all entries for this asset.
+			return $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM $table_name 
+					WHERE asset_id = %d 
+					ORDER BY changed_at DESC 
+					LIMIT 10",
+					$asset_id
+				)
+			);
+		}
+
+		// Members see only entries where they are involved.
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM $table_name 
+				WHERE asset_id = %d 
+				AND (
+					requester_id = %d 
+					OR owner_id = %d 
+					OR changed_by = %d
+				)
+				ORDER BY changed_at DESC 
+				LIMIT 10",
+				$asset_id,
+				$user_id,
+				$user_id,
+				$user_id
+			)
+		);
+	}
 }

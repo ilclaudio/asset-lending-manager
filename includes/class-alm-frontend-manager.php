@@ -174,6 +174,12 @@ class ALM_Frontend_Manager {
 			array(),
 			ALM_VERSION
 		);
+		wp_enqueue_style(
+			'alm-history-table',
+			ALM_PLUGIN_URL . 'assets/css/asset-history-table.css',
+			array(),
+			ALM_VERSION
+		);
 		// Enqueue JS.
 		wp_enqueue_script(
 			'alm-frontend-assets',
