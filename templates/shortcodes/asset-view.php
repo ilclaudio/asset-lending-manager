@@ -350,8 +350,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	}
 	?>
 
+	<!-- VII section: Loan history -->
 	<?php if ( is_user_logged_in() && current_user_can( ALM_EDIT_ASSET ) ) : ?>
-		<!-- VII section: Loan history -->
 		<section class="alm-asset-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
 			<details class="alm-collapsible alm-collapsible--history">
 				<summary class="alm-collapsible__summary">
@@ -364,9 +364,98 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 				</summary>
 
 				<div class="alm-collapsible__body">
-					<p class="alm-muted">
-						<?php esc_html_e( 'History not available (section under development).', 'asset-lending-manager' ); ?>
-					</p>
+					<?php
+					// Get loan history for this asset.
+					$alm_history = $alm_loan_manager->get_asset_history( $alm_asset_id, $alm_current_user_id );
+					?>
+
+					<?php if ( ! empty( $alm_history ) ) : ?>
+						<div class="alm-history-limit-notice">
+							<strong><?php esc_html_e( 'Note:', 'asset-lending-manager' ); ?></strong>
+							<?php esc_html_e( 'Showing the last 10 loan history entries for this asset.', 'asset-lending-manager' ); ?>
+						</div>
+
+						<table class="alm-history-table">
+							<thead>
+								<tr>
+									<th><?php esc_html_e( 'Requester', 'asset-lending-manager' ); ?></th>
+									<!-- <th><?php esc_html_e( 'Previous Owner', 'asset-lending-manager' ); ?></th> -->
+									<th><?php esc_html_e( 'New Owner', 'asset-lending-manager' ); ?></th>
+									<th><?php esc_html_e( 'Request Date', 'asset-lending-manager' ); ?></th>
+									<!-- <th><?php esc_html_e( 'Action Date', 'asset-lending-manager' ); ?></th> -->
+									<th><?php esc_html_e( 'Status', 'asset-lending-manager' ); ?></th>
+									<th><?php esc_html_e( 'Message', 'asset-lending-manager' ); ?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach ( $alm_history as $alm_entry ) : ?>
+									<?php
+									// Get user data.
+									$alm_requester      = get_userdata( $alm_entry->requester_id );
+									$alm_requester_name = $alm_requester ? $alm_requester->display_name : __( 'Unknown', 'asset-lending-manager' );
+									$alm_prev_owner      = ( $alm_entry->owner_id > 0 ) ? get_userdata( $alm_entry->owner_id ) : null;
+									$alm_prev_owner_name = $alm_prev_owner ? $alm_prev_owner->display_name : __( 'None', 'asset-lending-manager' );
+									$alm_changed_by      = get_userdata( $alm_entry->changed_by );
+									$alm_changed_by_name = $alm_changed_by ? $alm_changed_by->display_name : __( 'System', 'asset-lending-manager' );
+									// Format dates.
+									$alm_request_date = isset( $alm_entry->changed_at ) ? mysql2date( 'd/m/Y', $alm_entry->changed_at ) : '-';
+									$alm_action_date  = isset( $alm_entry->changed_at ) ? mysql2date( 'd/m/Y H:i', $alm_entry->changed_at ) : '-';
+									// Get status.
+									$alm_entry_status = $alm_entry->status;
+									// Status labels and CSS classes.
+									$alm_status_labels = array(
+										'approved' => __( 'Approved', 'asset-lending-manager' ),
+										'rejected' => __( 'Rejected', 'asset-lending-manager' ),
+										'canceled' => __( 'Canceled', 'asset-lending-manager' ),
+									);
+									$alm_status_label = isset( $alm_status_labels[ $alm_entry_status ] ) ? $alm_status_labels[ $alm_entry_status ] : $alm_entry_status;
+									$alm_status_class = 'alm-status--' . $alm_entry_status;
+
+									// Handle message (truncate for display, full in tooltip).
+									$alm_full_message  = esc_html( $alm_entry->message );
+									$alm_short_message = mb_strlen( $alm_full_message ) > 50
+										? mb_substr( $alm_full_message, 0, 50 ) . '...'
+										: $alm_full_message;
+									?>
+									<tr class="alm-history-row">
+										<td class="alm-history-requester" data-label="<?php esc_attr_e( 'Requester', 'asset-lending-manager' ); ?>">
+											<?php echo esc_html( $alm_requester_name ); ?>
+										</td>
+										<!--
+										<td class="alm-history-prev-owner" data-label="<?php esc_attr_e( 'Previous Owner', 'asset-lending-manager' ); ?>">
+											<?php echo esc_html( $alm_prev_owner_name ); ?>
+										</td>
+										-->
+										<td class="alm-history-new-owner" data-label="<?php esc_attr_e( 'New Owner', 'asset-lending-manager' ); ?>">
+											<?php echo esc_html( $alm_changed_by_name ); ?>
+										</td>
+										<td class="alm-history-request-date" data-label="<?php esc_attr_e( 'Request Date', 'asset-lending-manager' ); ?>">
+											<?php echo esc_html( $alm_request_date ); ?>
+										</td>
+										<!--
+										<td class="alm-history-action-date" data-label="<?php esc_attr_e( 'Action Date', 'asset-lending-manager' ); ?>">
+											<?php echo esc_html( $alm_action_date ); ?>
+										</td>
+										-->
+										<td class="alm-history-status" data-label="<?php esc_attr_e( 'Status', 'asset-lending-manager' ); ?>">
+											<span class="alm-status-badge <?php echo esc_attr( $alm_status_class ); ?>">
+												<?php echo esc_html( $alm_status_label ); ?>
+											</span>
+										</td>
+										<td class="alm-history-message" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
+											<span class="alm-message-text" title="<?php echo esc_attr( $alm_full_message ); ?>">
+												<?php echo $alm_short_message; ?>
+											</span>
+										</td>
+									</tr>
+								<?php endforeach; ?>
+							</tbody>
+						</table>
+					<?php else : ?>
+						<p class="alm-history-empty alm-muted">
+							<?php esc_html_e( 'No loan history available for this asset.', 'asset-lending-manager' ); ?>
+						</p>
+					<?php endif; ?>
 				</div>
 			</details>
 		</section>
