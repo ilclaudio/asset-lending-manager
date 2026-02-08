@@ -216,9 +216,11 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									id="alm-request-message" 
 									name="message" 
 									rows="4" 
+									maxlength="500"
 									placeholder="<?php esc_attr_e( 'Write a brief message explaining why you need this asset...', 'asset-lending-manager' ); ?>"
 									required
 								></textarea>
+								<div class="alm-char-count" id="alm-request-char-count">0 / 500</div>
 							</div>
 							<div class="alm-form-actions">
 								<button type="submit" class="alm-button alm-button--primary">

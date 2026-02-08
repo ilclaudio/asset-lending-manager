@@ -38,8 +38,8 @@
 			this.initAssetFilters();
 			this.initAssetSearch();
 			this.initLoanRequestForm();
-			this.initRequestActions(); // NEW: Handle approve/reject buttons
-			this.showActionResultMessage(); // NEW: Show result message after page reload
+			this.initRequestActions();
+			this.showActionResultMessage();
 		},
 
 		/**
@@ -186,6 +186,23 @@
 
 			console.log('*** Loan request form found, initializing...');
 
+			// Character counter for request message
+			var messageField = document.getElementById('alm-request-message');
+			var charCount = document.getElementById('alm-request-char-count');
+
+			if (messageField && charCount) {
+				messageField.addEventListener('input', function() {
+					var length = messageField.value.length;
+					charCount.textContent = length + ' / 500';
+					
+					if (length >= 500) {
+						charCount.style.color = '#dc3545';
+					} else {
+						charCount.style.color = '#6c757d';
+					}
+				});
+			}
+
 			form.addEventListener('submit', function(e) {
 				e.preventDefault();
 
@@ -203,6 +220,12 @@
 				// Validate message
 				if (!messageField.value.trim()) {
 					ALM_Frontend.showResponse(responseDiv, 'error', 'Please enter a message.');
+					return;
+				}
+
+				// Validate message length (max 500 characters)
+				if (messageField.value.length > 500) {
+					ALM_Frontend.showResponse(responseDiv, 'error', 'Request message must not exceed 500 characters.');
 					return;
 				}
 
@@ -239,30 +262,26 @@
 				})
 				.then(function(data) {
 					if (data.success) {
-						ALM_Frontend.showResponse(responseDiv, 'success', data.data.message);
-						messageField.value = ''; // Clear message
+						console.log('*** Loan request sent successfully, reloading page...');
 						
-						console.log('*** Loan request sent successfully');
-						
-						// Close the form after 2 seconds
-						setTimeout(function() {
-							var section = document.getElementById('alm-loan-request-section');
-							if (section) {
-								section.removeAttribute('open');
-							}
-						}, 2000);
+						// Reload page with success message
+						var currentUrl = window.location.href.split('?')[0];
+						window.location.href = currentUrl + '?alm_action=send_request&alm_status=success';
 					} else {
 						var errorMsg = data.data && data.data.message ? data.data.message : 'Request failed. Please try again.';
 						ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
 						console.error('*** Loan request failed:', errorMsg);
+						
+						// Re-enable submit button only on error
+						submitBtn.disabled = false;
+						submitBtn.textContent = originalBtnText;
 					}
 				})
 				.catch(function(error) {
 					ALM_Frontend.showResponse(responseDiv, 'error', 'Request failed. Please try again.');
 					console.error('*** AJAX error:', error);
-				})
-				.finally(function() {
-					// Re-enable submit button
+					
+					// Re-enable submit button only on error
 					submitBtn.disabled = false;
 					submitBtn.textContent = originalBtnText;
 				});
@@ -274,7 +293,7 @@
 		/**
 		 * Initialize approve/reject request actions.
 		 * 
-		 * NEW: Handle approve and reject buttons in the requests table.
+		 * Handle approve and reject buttons in the requests table.
 		 */
 		initRequestActions: function() {
 			var approveButtons = document.querySelectorAll('.alm-button--approve');
@@ -328,9 +347,10 @@
 		handleRejectRequest: function(btn) {
 			var requestId = btn.getAttribute('data-request-id');
 			var assetId = btn.getAttribute('data-asset-id');
-
-			console.log('*** Reject request:', requestId);
-
+			
+			console.log('*** Reject request with id:', requestId);
+			console.log('*** Asset ID:', assetId);
+			
 			// Show rejection modal
 			this.showRejectionModal(requestId, assetId);
 		},
@@ -342,7 +362,6 @@
 		 * @param {string} assetId Asset ID
 		 */
 		showRejectionModal: function(requestId, assetId) {
-			console.log('*** showRejectionModal:', requestId);
 			// Create modal overlay
 			var modal = document.createElement('div');
 			modal.className = 'alm-modal-overlay';
@@ -417,9 +436,7 @@
 			form.appendChild(charCount);
 			form.appendChild(responseDiv);
 
-			modalBody.appendChild(form);
-
-			// Modal footer
+			// Modal footer (inside form so submit button works)
 			var modalFooter = document.createElement('div');
 			modalFooter.className = 'alm-modal-footer';
 
@@ -438,11 +455,15 @@
 
 			modalFooter.appendChild(cancelBtn);
 			modalFooter.appendChild(submitBtn);
+			
+			// Add footer to form
+			form.appendChild(modalFooter);
+
+			modalBody.appendChild(form);
 
 			// Assemble modal
 			modalContent.appendChild(modalHeader);
 			modalContent.appendChild(modalBody);
-			modalContent.appendChild(modalFooter);
 			modal.appendChild(modalContent);
 
 			// Add to page
@@ -491,102 +512,83 @@
 		 * @param {HTMLElement} modal Modal element
 		 */
 		submitRejectRequest: function(requestId, assetId, message, submitBtn, responseDiv, modal) {
-		console.log('*** submitRejectRequest called');
-		console.log('*** Parameters:', { requestId: requestId, assetId: assetId, messageLength: message.length });
-		console.log('*** window.almFrontend:', window.almFrontend);
-		
-		// Validate message
-		if (!message.trim()) {
-			console.error('*** Validation failed: empty message');
-			this.showResponse(responseDiv, 'error', 'Please enter a rejection reason.');
-			return;
-		}
+			// Validate message
+			if (!message.trim()) {
+				this.showResponse(responseDiv, 'error', 'Please enter a rejection reason.');
+				return;
+			}
 
-		if (message.length > 255) {
-			console.error('*** Validation failed: message too long');
-			this.showResponse(responseDiv, 'error', 'Rejection reason must not exceed 255 characters.');
-			return;
-		}
+			if (message.length > 255) {
+				this.showResponse(responseDiv, 'error', 'Rejection reason must not exceed 255 characters.');
+				return;
+			}
 
-		// Check if almFrontend is available
-		if (typeof window.almFrontend === 'undefined') {
-			console.error('*** window.almFrontend is undefined');
-			this.showResponse(responseDiv, 'error', 'Security token not found. Please reload the page.');
-			return;
-		}
-		
-		if (!window.almFrontend.loanRequestNonce) {
-			console.error('*** window.almFrontend.loanRequestNonce is undefined');
-			console.log('*** Available keys in almFrontend:', Object.keys(window.almFrontend));
-			this.showResponse(responseDiv, 'error', 'Security token not found. Please reload the page.');
-			return;
-		}
-		
-		console.log('*** All validations passed, proceeding with AJAX request');
+			// Check if almFrontend is available
+			if (typeof window.almFrontend === 'undefined' || !window.almFrontend.loanRequestNonce) {
+				this.showResponse(responseDiv, 'error', 'Security token not found. Please reload the page.');
+				return;
+			}
 
-		// Disable submit button
-		var originalBtnText = submitBtn.textContent;
-		submitBtn.disabled = true;
-		submitBtn.textContent = 'Processing...';
-		responseDiv.style.display = 'none';
+			// Disable submit button
+			var originalBtnText = submitBtn.textContent;
+			submitBtn.disabled = true;
+			submitBtn.textContent = 'Processing...';
+			responseDiv.style.display = 'none';
 
-		// Prepare form data
-		var formData = new FormData();
-		formData.append('action', 'alm_reject_loan_request');
-		formData.append('nonce', window.almFrontend.loanRequestNonce);
-		formData.append('request_id', requestId);
-		formData.append('asset_id', assetId);
-		formData.append('rejection_message', message.trim());
+			// Prepare form data
+			var formData = new FormData();
+			formData.append('action', 'alm_reject_loan_request');
+			formData.append('nonce', window.almFrontend.loanRequestNonce);
+			formData.append('request_id', requestId);
+			formData.append('asset_id', assetId);
+			formData.append('rejection_message', message.trim());
 
-		console.log('*** Submitting rejection for request:', requestId);
-		console.log('*** FormData contents:', {
-			action: 'alm_reject_loan_request',
-			request_id: requestId,
-			asset_id: assetId,
-			message_length: message.trim().length
-		});
+			console.log('*** Submitting rejection for request:', requestId);
 
-		// Send AJAX request
-		fetch(window.almFrontend.ajaxUrl, {
-			method: 'POST',
-			body: formData,
-			credentials: 'same-origin'
-		})
-		.then(function(response) {
-			console.log('*** Response received:', response);
-			return response.json();
-		})
-		.then(function(data) {
-			console.log('*** Response data:', data);
-			if (data.success) {
-				console.log('*** Rejection successful, reloading page...');
-				
-				// Close modal
-				ALM_Frontend.closeModal(modal);
-				
-				// Reload page with success message
-				var currentUrl = window.location.href.split('?')[0];
-				window.location.href = currentUrl + '?alm_action=reject&alm_status=success';
-			} else {
-				var errorMsg = data.data && data.data.message ? data.data.message : 'Failed to reject request. Please try again.';
-				ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
-				console.error('*** Rejection failed:', errorMsg);
+			// Send AJAX request
+			fetch(window.almFrontend.ajaxUrl, {
+				method: 'POST',
+				body: formData,
+				credentials: 'same-origin'
+			})
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(data) {
+				if (data.success) {
+					console.log('*** Rejection successful, reloading page...');
+					
+					// Close modal
+					ALM_Frontend.closeModal(modal);
+					
+					// Reload page with success message
+					var currentUrl = window.location.href.split('?')[0];
+					window.location.href = currentUrl + '?alm_action=reject&alm_status=success';
+				} else {
+					var errorMsg = data.data && data.data.message ? data.data.message : 'Failed to reject request. Please try again.';
+					ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
+					console.error('*** Rejection failed:', errorMsg);
+					
+					// Re-enable submit button
+					submitBtn.disabled = false;
+					submitBtn.textContent = originalBtnText;
+				}
+			})
+			.catch(function(error) {
+				ALM_Frontend.showResponse(responseDiv, 'error', 'Request failed. Please try again.');
+				console.error('*** AJAX error:', error);
 				
 				// Re-enable submit button
 				submitBtn.disabled = false;
 				submitBtn.textContent = originalBtnText;
-			}
-		})
-		.catch(function(error) {
-			ALM_Frontend.showResponse(responseDiv, 'error', 'Request failed. Please try again.');
-			console.error('*** AJAX error:', error);
-			
-			// Re-enable submit button
-			submitBtn.disabled = false;
-			submitBtn.textContent = originalBtnText;
-		});
-	},
+			});
+		},
 
+		/**
+		 * Close modal.
+		 * 
+		 * @param {HTMLElement} modal Modal element
+		 */
 		closeModal: function(modal) {
 			if (!modal) {
 				return;
@@ -642,7 +644,7 @@
 		/**
 		 * Show action result message after page reload.
 		 * 
-		 * NEW: Display global message based on URL parameters.
+		 * Display global message based on URL parameters.
 		 */
 		showActionResultMessage: function() {
 			var urlParams = new URLSearchParams(window.location.search);
@@ -664,6 +666,10 @@
 				message = 'Loan request approved successfully.';
 			} else if (action === 'approve' && status === 'error') {
 				message = 'Failed to approve loan request. Please try again.';
+			} else if (action === 'send_request' && status === 'success') {
+				message = 'Loan request sent successfully.';
+			} else if (action === 'send_request' && status === 'error') {
+				message = 'Failed to send loan request. Please try again.';
 			}
 
 			if (message) {

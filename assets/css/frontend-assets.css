@@ -66,6 +66,14 @@
 		padding: 10px;
 	}
 
+	/* Character counter for request form */
+	.alm-char-count {
+		margin-top: 6px;
+		font-size: 13px;
+		color: #6c757d;
+		text-align: right;
+	}
+
 	/* Asset taxonomies - base styles */
 	.alm-asset-taxonomies {
 		margin-top: 8px;
