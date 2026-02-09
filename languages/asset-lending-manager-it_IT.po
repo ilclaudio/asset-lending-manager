@@ -220,6 +220,10 @@ msgstr ""
 msgid "Components"
 msgstr "Componenti"
 
+#: templates/shortcodes/asset-view.php
+msgid "Current owner"
+msgstr "Proprietario corrente"
+
 #: includes/class-alm-acf-asset-adapter.php:30
 msgid "Cost"
 msgstr "Costo"
