@@ -55,12 +55,12 @@ B) REST API for managing entities and workflows from external applications.
 - **ALM_Plugin_Manager**: Bootstraps the plugin and registers core modules and hooks.
 - **ALM_Installer**: Handles activation tasks such as roles, capabilities, and setup routines.
 - **ALM_Capabilities**: Defines and manages custom capabilities used by the plugin roles.
-- **ALM_Settings_Manager**: Registers and manages plugin configuration options.
+- **ALM_Settings_Manager**: Defines plugin configuration structure (email, notifications, loans, frontend, logging). NOTE: config is defined but never read by any module; no admin UI exists yet.
 - **ALM_Role_Manager**: Creates and maintains the custom roles (alm_member, alm_operator).
 - **ALM_Asset_Manager**: Manages assets and kits, including CRUD and taxonomy integration.
 - **ALM_ACF_Asset_Adapter**: Bridges asset data with ACF fields and field groups.
 - **ALM_Loan_Manager**: Handles the loan workflow, requests, approvals, and assignments.
-- **ALM_Notification_Manager**: Sends email notifications for requests and assignment changes.
+- **ALM_Notification_Manager**: STUB — intended to send email notifications but currently an empty class (17 lines). All email "sending" in `ALM_Loan_Manager` only logs to `ALM_Logger`.
 - **ALM_Frontend_Manager**: Renders frontend views like asset lists and detail pages.
 - **ALM_Admin_Manager**: Provides admin UI pages and back-office functionality.
 - **ALM_Autocomplete_Manager**: Provides autocomplete data sources for frontend/admin inputs.
@@ -117,6 +117,9 @@ B) REST API for managing entities and workflows from external applications.
 - `{$wpdb->prefix}alm_loan_requests` columns: `id`, `asset_id`, `requester_id`, `owner_id`, `request_date`, `request_message`, `status`, `response_date`, `response_message`.
 - `{$wpdb->prefix}alm_loan_requests_history` columns: `id`, `loan_request_id`, `asset_id`, `requester_id`, `owner_id`, `status`, `message`, `changed_at`, `changed_by`.
 
+## Verified Post Meta Fields
+- `_alm_current_owner` (int, user ID): Stored on `alm_asset` posts. Tracks the current assignee of an asset. Set by `ALM_Loan_Manager::set_asset_owner()` during loan approval. Returns `0` if the asset has never been assigned.
+
 ## Verified Permissions
 - Roles: `alm_member`, `alm_operator`.
 - Domain capabilities: `alm_view_assets`, `alm_view_asset`, `alm_edit_asset`.
@@ -140,10 +143,25 @@ B) REST API for managing entities and workflows from external applications.
 - Levels: DEBUG, INFO, WARNING, ERROR.
 
 ## Verified Limitations in Code
-- `ALM_Loan_Manager::ajax_approve_loan_request()` returns a "not yet implemented" error.
-- `ALM_Loan_Manager::get_current_owner()` always returns `0`.
-- Email notifications are logged only; actual sending is not implemented.
-- `uninstall.php` references `$alm_roles_to_modify` and `$caps_to_remove` which are not defined, and table drop calls are commented out.
+- `ALM_Notification_Manager` is an empty stub (17 lines). Email notifications are logged only; actual sending is not implemented.
+- `ALM_Settings_Manager` defines a full config structure (email, notifications, loans, frontend, logging) but no module reads from it and there is no admin UI to manage settings.
+- `ALM_ACF_Asset_Adapter::define_custom_field_labels()` is dead code (never called).
+- `admin/plugin-main-page.php` is a stub — it only displays a placeholder message.
+- `frontend-assets.js` contains hardcoded English strings (e.g., "Sending...", "Confirm Approval") that are not wrapped in a translation mechanism.
+
+## Known Bugs (Prioritized)
+
+### CRITICAL — Plugin cannot function correctly
+1. **DB tables never created on activation.** `ALM_Plugin_Manager::activate()` does not call `ALM_Installer::create_tables()`. The `alm_loan_requests` and `alm_loan_requests_history` tables are never created, so the entire loan workflow fails on a fresh install. Fix: call `ALM_Installer::create_tables()` inside `ALM_Plugin_Manager::activate()`.
+2. **`uninstall.php` crashes.** It references undefined variables `$alm_roles_to_modify` and `$caps_to_remove`, causing PHP warnings/errors on uninstall. The `ALM_Installer::drop_tables()` call is also commented out.
+
+### HIGH — Security issues
+3. **Autocomplete REST endpoint is open to anonymous users.** In `ALM_Autocomplete_Manager`, the permission callback is `__return_true`, the nonce verification is commented out, and the capability check is commented out. Fix: restore permission callback to check `ALM_VIEW_ASSETS`.
+4. **Debug `error_log()` left in production code.** `class-alm-autocomplete-manager.php` line ~98 logs the nonce value to the error log.
+
+### MEDIUM — Missing functionality
+5. **`send_approval_email_notification()` is referenced in `approve_loan_request()` but the method does not exist.** If email code is ever uncommented, this will cause a fatal error.
+6. **Hardcoded email address.** `class-alm-loan-manager.php` line ~687 uses `'operators@example.com'` instead of reading from `ALM_Settings_Manager`.
 
 ## Documentation
 - `README.md`
@@ -199,19 +217,60 @@ DEV: https://github.com/ilclaudio/asset-lending-manager/tree/dev
 - ACF
 - Composer (dev)
 
+## Implementation Status
+
+### Fully Working
+- Asset CPT registration, taxonomies, and default terms.
+- ACF field group registration (13 fields).
+- Role creation (`alm_member`, `alm_operator`) and capability assignment.
+- Asset archive page with filters (structure, type, state, level, free text).
+- Asset detail page with ACF fields, taxonomy badges, and file downloads.
+- Loan request submission (AJAX, with nonce, capability check, duplicate detection).
+- Loan request rejection (AJAX, with transaction, history logging).
+- Loan request approval (AJAX, full implementation with kit component propagation, concurrent request cancellation, owner/state updates, history logging).
+- Autocomplete search (REST endpoint — but has security issues, see Known Bugs).
+- Admin menu, tools page (reload default terms).
+- Member redirect away from dashboard.
+- Login/logout redirects to `/asset/`.
+- Frontend JS: lightbox, modals, form validation, focus trapping, XSS protection (vanilla JS, no jQuery).
+- Logging via `ALM_Logger` (writes to WP error log when `WP_DEBUG` is true).
+
+### Stub / Not Implemented
+- `ALM_Notification_Manager`: empty class, no email sending logic.
+- `ALM_Settings_Manager`: config structure defined but never read by any module; no admin settings page.
+- `admin/plugin-main-page.php`: placeholder only.
+- `CHANGELOG.md`: empty.
+
+### Partially Implemented
+- `uninstall.php`: role removal works, capability cleanup and table drop are broken.
+- Loan history: `get_asset_history()` method exists and works, but history is not displayed in any frontend template.
+- Internationalization: PHP strings use `__()` / `esc_html__()`, but JS strings are hardcoded in English.
+
 ## Known Issues / TODO
 - See `TODO.txt`.
 - `CHANGELOG.md` is empty.
 
-## Current Gaps
-- Loan history list is missing.
-- Accept loan flow needs to populate history and update assignees.
-- Direct assignment by operator is missing.
-- Operator cancel request is missing.
+## Current Gaps (Prioritized)
+
+### Must Fix (Blocking)
+- DB tables never created on activation (see Known Bugs #1).
+- `uninstall.php` is broken (see Known Bugs #2).
+- Autocomplete endpoint security (see Known Bugs #3).
+
+### High Priority — Core Features Missing
+- Email notification sending not implemented (`ALM_Notification_Manager` is a stub).
+- Loan history list: `get_asset_history()` exists but no template displays it.
+- Direct assignment of an asset to a member by an operator (no UI or AJAX handler).
+- Operator cancel loan request (no AJAX handler).
+- Admin settings page for `ALM_Settings_Manager` (email addresses, notification toggles, loan limits).
+
+### Medium Priority — UX and Quality
 - Asset list pagination is missing.
 - Asset list mobile layout needs improvements.
-- Role labels translation is missing.
-- Unit/integration/functional tests need recovery.
+- JS hardcoded English strings need a translation mechanism (wp_localize_script).
+- `admin/plugin-main-page.php` is a placeholder — needs a real dashboard or can be removed.
+- Unit/integration/functional tests need recovery and expansion.
+- `CHANGELOG.md` is empty.
 
 ## Code Style
 ### Guidelines
