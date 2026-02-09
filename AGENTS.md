@@ -280,7 +280,9 @@ Explain the code you write and the inner workings of WordPress, describing stand
 While developing this project, I want to learn everything needed to become an expert developer of WordPress core, themes, and plugins.
 
 Some rules to follow:
-- Use tabs, not spaces, and place comments in English at the beginning of each file and before every function.
+- All code, comments, variable names, function names, class names, constants, and documentation files must be written in English.
+- Follow the WordPress Coding Standards (PHP, HTML, CSS, JavaScript) as defined at https://developer.wordpress.org/coding-standards/.
+- Use tabs, not spaces, and place comments at the beginning of each file and before every function.
 - Comments must end with a period ".".
 - Use WordPress naming conventions for classes, files, variables, constants, and functions.
 - Align the assignments as required by WP rules, e.g.:
@@ -304,6 +306,9 @@ In any case, be concise but precise in your responses.
 When you have doubts about what to do, ask before writing code and propose alternatives.
 Always suggest the next step in order to quickly achieve the requested goal.
 Suggest code refactorings whenever you consider them appropriate.
+
+### Keeping Documentation in Sync
+When code changes affect the plugin's architecture, modules, hooks, endpoints, data model, known bugs, implementation status, or current gaps, update `AGENTS.md` accordingly. If the change also affects quick-reference info (commands, code style rules, critical bugs), update `CLAUDE.md` as well. These files must always reflect the actual state of the codebase.
 
 ## CHANGELOG AND TODO
 - `CHANGELOG.md`
