@@ -8,15 +8,11 @@ It is a plugin (ALM – Asset Lending Manager) that implements features allowing
 These objects (resources) are assigned on loan to association members, who manage and maintain them until they are requested by another member, who then takes them over.
 
 The managed objects are generically called “resources” (assets) and are of two types:
-
-Components: simple items such as eyepieces, mounts, filters, books, etc.
-
-Kits: a collection of components such as telescopes equipped with eyepieces and mounts, book collections, etc.
+- Components: simple items such as eyepieces, mounts, filters, books, etc.
+- Kits: a collection of components such as telescopes equipped with eyepieces and mounts, book collections, etc.
 
 A kit cannot contain other kits.
 The roles defined in the system are: member and operator.
-
-
 
 ## Architecture Notes
 In this codebase, a plugin usable on the WordPress CMS is defined.
@@ -26,96 +22,52 @@ The package for all files is: @package AssetLendingManager.
 Within the plugin, an asset content type (alm_asset) is defined via ACF, which can be of type component or kit.
 
 Taxonomies are also defined to classify the various assets:
+- Structure (alm_structure): kit, component.
+- Type (alm_type): accessory, binoculars, filter, generic, book, mount, ocular, telescope, e.g.
+- State (alm_state): available, maintenance, on-loan, retired.
+- Level (alm_level): advanced, base, intermediate.
 
-	- Structure (alm_structure): kit, component.
+## Main system features
+1. Association members have a WordPress site account with the role “member” (alm_member) or “operator” (alm_operator).
+2. alm_member users can view the list of assets and asset detail pages; request the loan of an asset; accept or reject a loan request for an asset currently assigned to them; browse the asset list with filters by free text, structure, type, state, and level.
+3. alm_operator users can do everything alm_member users can, plus: create assets; edit and manage assets; cancel loan requests for all users; approve loan requests for all users; directly assign an asset to a member; change the state of an asset; manage plugin configuration parameters.
+4. The loan request and approval workflow takes place between members and operators.
+5. In the AAGG WordPress front-end, there will be a section that allows viewing the association’s assets. Only members will be able to request asset assignment; anonymous users will not.
+6. From the WordPress back office, system operators can add, remove, review, and edit all technical records of assets (components and kits).
+7. There is an asset list that members can browse using filters (e.g., type, kit, name, etc.).
+8. Each asset has a descriptive detail page (fields to be defined; it will certainly include: id, name, description, photo, technical sheet, external code, internal code, maintenance status, kit, state, etc.).
+9. Kits of kits cannot be created.
+10. From the asset detail page, a member or an operator can request a loan.
+11. A loan request sends three emails: to the requester, the current assignee, and a system email address.
+12. The current assignee can approve or deny the loan request. This action triggers notification emails as in step 11.
+13. The requester and the assignee agree offline on the asset handover details.
+14. Once the handover has taken place, the previous assignee or the system administrator updates the current assignee of the asset. This operation triggers email notifications as in step 11.
+15. The system stores the complete assignment history.
+16. The operator can view the full assignment history for all devices.
+17. A member can only view history entries that involve them as requester or assignee.
 
-	- Type (alm_type): accessory, binoculars, filter, generic, book, mount, ocular, telescope, e.g.
-
-	- State (alm_state): available, maintenance, on-loan, retired.
-
-	- Level (alm_level): advanced, base, intermediate.
-
-
-
-## Main system features:
-	i) Association members have a WordPress site account with the role “member” (alm_member) or “operator” (alm_operator).
-
-	ii) alm_member users can:
-
-	 - view the list of assets and the asset detail pages,
-
-	- request the loan of an asset,
-
-	 - accept or reject a loan request for an asset currently assigned to them.
-
-	 - The asset list must be paginated and provide advanced filters allowing filtering by: free text, structure, type, state, and level.
-
-	iii) alm_operator users can do everything alm_member users can, plus additional features:
-
-		- create assets,
-
-		 - edit and manage assets,
-
-		- cancel loan requests for all users,
-
-		- approve loan requests for all users,
-
-		- directly assign an asset to a member,
-
-		- change the state of an asset,
-
-		- manage plugin configuration parameters.
-
-	iv) The loan request and approval workflow takes place between members and operators.
-
-	v) In the AAGG WordPress front-end, there will be a section that allows viewing the association’s assets. Only members will be able to request asset assignment; anonymous users will not.
-
-	vi) From the WordPress back office, system operators can add, remove, review, and edit all technical records of assets (components and kits).
-
-	vii) There is an asset list that members can browse using filters (e.g., type, kit, name, etc.).
-
-	viii) Each asset has a descriptive detail page (fields to be defined; it will certainly include: id, name, description, photo, technical sheet, external code, internal code, maintenance status, kit, state, etc.).
-
-	ix) Kits of kits cannot be created.
-
-	x) From the asset detail page, a member or an operator can request a loan.
-
-	xi) A loan request sends three emails: to the requester, the current assignee, and a system email address.
-
-	xii) The current assignee can approve or deny the loan request. This action triggers notification emails as in step xi.
-
-	xiii) The requester and the assignee agree offline on the asset handover details.
-
-	xiv) Once the handover has taken place, the previous assignee or the system administrator updates the current assignee of the asset. This operation triggers email notifications as in step xi.
-
-	xv) The system stores the complete assignment history.
-
-	xvi) The operator can view the full assignment history for all devices.
-
-	xvii) A member can only view history entries that involve them as requester or assignee.
-
-
-
-## Possible future extensions:
+## Possible future extensions
 A) Export of assets, loans, and loan requests to CSV.
 B) REST API for managing entities and workflows from external applications.
 
-
-
-## System Modules:
- - ALM_Settings_Manager:
- - ALM_Role_Manager:
- - ALM_Asset_Manager:
- - ALM_Loan_Manager:
- - ALM_Notification_Manager:
- - ALM_Frontend_Manager:
- - ALM_Admin_Manager:
- - ALM_Autocomplete_Manager:
-
+## System Modules
+- **ALM_Plugin_Manager**: Bootstraps the plugin and registers core modules and hooks.
+- **ALM_Installer**: Handles activation tasks such as roles, capabilities, and setup routines.
+- **ALM_Capabilities**: Defines and manages custom capabilities used by the plugin roles.
+- **ALM_Settings_Manager**: Registers and manages plugin configuration options.
+- **ALM_Role_Manager**: Creates and maintains the custom roles (alm_member, alm_operator).
+- **ALM_Asset_Manager**: Manages assets and kits, including CRUD and taxonomy integration.
+- **ALM_ACF_Asset_Adapter**: Bridges asset data with ACF fields and field groups.
+- **ALM_Loan_Manager**: Handles the loan workflow, requests, approvals, and assignments.
+- **ALM_Notification_Manager**: Sends email notifications for requests and assignment changes.
+- **ALM_Frontend_Manager**: Renders frontend views like asset lists and detail pages.
+- **ALM_Admin_Manager**: Provides admin UI pages and back-office functionality.
+- **ALM_Autocomplete_Manager**: Provides autocomplete data sources for frontend/admin inputs.
+- **ALM_Logger**: Logs plugin events and diagnostics for debugging and auditing.
 
 ## Documentation
-This is the file with the [Documentation](https://github.com/ilclaudio/asset-lending-manager/tree/dev/README.md).
-
+- `README.md`
+- `readme.txt`
 
 ## Key Directories
 - `admin/`: Templates for the pages of the back-office and code used only in the WordPress back-office.
@@ -123,24 +75,63 @@ This is the file with the [Documentation](https://github.com/ilclaudio/asset-len
 - `includes/`: The main classes of the modules used by this plugin.
 - `languages/`: The files with the label translations.
 - `SETUP/`: A backup of the ACF fields definition.
+- `templates/`: Frontend templates.
 - `tests/`: The unit tests and the integration tests.
 
-
-
-## Main files:
-- `assets-lending-manager.php`: Entry point of the plugin, it creates the singleton ALM_Plugin_Manager that registers and activates all the components of the system.
+## Main files
+- `asset-lending-manager.php`: Entry point of the plugin, it creates the singleton ALM_Plugin_Manager that registers and activates all the components of the system.
 - `plugin-config.php`: Constants used by the modules of the plugin.
-- `phpcs.xml.dist`: The rules used by PHPCS to check the code syntax and the WordPress codig rules.
+- `phpcs.xml.dist`: The rules used by PHPCS to check the code syntax and the WordPress coding rules.
 - `composer.json`: The JSON file that contains the needed libraries and the development tools needed by a developer.
+- `README.md`: Developer documentation.
+- `readme.txt`: WordPress plugin readme.
+- `TODO.txt`: Current backlog.
+- `CHANGELOG.md`: Change history (currently empty).
+- `uninstall.php`: Uninstall hooks.
 - `LICENSE`: The license file of this product.
 - `AGENTS.md`: This file.
 - `phpunit.xml`: Entry point for the unit tests included in the "tests/unit" folder.
 - `phpunit-integration.xml`: Entry point for the integration tests included in the "tests/integration" folder.
 
-
 ## Project Repository
-DEV: 
+DEV: (fill when public or add internal URL)
 
+## Setup
+- Install WordPress.
+- Install and activate ACF (used for `alm_asset` fields).
+- Import field groups from `SETUP/` if needed.
+- Run `composer install`.
+
+## Commands
+- `composer lint`
+- `composer lint:fix`
+- `composer test`
+- `composer test:unit`
+- `composer test:integration`
+- `composer test:all`
+
+## Testing
+- Unit tests: `composer test:unit`
+- Integration tests: `composer test:integration`
+
+## Dependencies
+- WordPress
+- ACF
+- Composer (dev)
+
+## Known Issues / TODO
+- See `TODO.txt`.
+- `CHANGELOG.md` is empty.
+
+## Current Gaps
+- Loan history list is missing.
+- Accept loan flow needs to populate history and update assignees.
+- Direct assignment by operator is missing.
+- Operator cancel request is missing.
+- Asset list pagination is missing.
+- Asset list mobile layout needs improvements.
+- Role labels translation is missing.
+- Unit/integration/functional tests need recovery.
 
 ## Code Style
 ### Guidelines
@@ -150,17 +141,15 @@ Explain the code you write and the inner workings of WordPress, describing stand
 While developing this project, I want to learn everything needed to become an expert developer of WordPress core, themes, and plugins.
 
 Some rules to follow:
-
-  * Use tabs, not spaces, and place comments in English at the beginning of each file and before every function.
-  * Comments must end with a period ".".
-  * Use WordPress naming conventions for classes, files, variables, constants, and functions.
-  * Align the assignments as required by WP reules, e.g.:
+- Use tabs, not spaces, and place comments in English at the beginning of each file and before every function.
+- Comments must end with a period ".".
+- Use WordPress naming conventions for classes, files, variables, constants, and functions.
+- Align the assignments as required by WP rules, e.g.:
 ```
 $tipo_risorsa     = dli_get_post_main_category( $post, RT_TYPE_TAXONOMY );
 $archive_page_obj = dli_get_page_by_post_type( TECHNICAL_RESOURCE_POST_TYPE );
 $archive_page     = $archive_page_obj ? get_permalink( $archive_page_obj->ID ) : '';
 ```
-
 
 Pay particular attention to the following aspects when writing code:
 - Absence of bugs.
@@ -177,16 +166,6 @@ When you have doubts about what to do, ask before writing code and propose alter
 Always suggest the next step in order to quickly achieve the requested goal.
 Suggest code refactorings whenever you consider them appropriate.
 
-
 ## CHANGELOG AND TODO
-This is the file with the [ChangeLog and TODO list](https://github.com/ilclaudio/asset-lending-manager/tree/dev/CHANGELOG.md).
-
-
-## Setup
-## Commands
-## Testing
-## Build / Assets
-## Deployment
-## Dependencies
-## Configuration
-## Known Issues
+- `CHANGELOG.md`
+- `TODO.txt`
