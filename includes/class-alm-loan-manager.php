@@ -25,6 +25,13 @@ class ALM_Loan_Manager {
 	const SEND_REQUEST_MESSAGE_MAX_LENGTH = 500;
 
 	/**
+	 * User ID for automatic system operations.
+	 * 
+	 * TODO: Make this configurable via Settings Manager in future versions.
+	 */
+	const AUTOMATIC_OPERATIONS_OPERATOR_ID = 1;
+
+	/**
 	 * Plugin activation hook.
 	 *
 	 * @return void
@@ -441,7 +448,7 @@ class ALM_Loan_Manager {
 	}
 
 	/**
-	 * AJAX handler for loan request approval (placeholder for future implementation).
+	 * AJAX handler for loan request approval.
 	 *
 	 * @return void
 	 */
@@ -449,10 +456,94 @@ class ALM_Loan_Manager {
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
 
-		// TODO: Implement approval logic.
-		wp_send_json_error(
+		// Get and validate input.
+		$request_id = isset( $_POST['request_id'] ) ? absint( $_POST['request_id'] ) : 0;
+		$asset_id   = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+
+		// Validate inputs.
+		if ( $request_id <= 0 ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Invalid request ID.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		if ( $asset_id <= 0 ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Invalid asset ID.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Get loan request from database.
+		global $wpdb;
+		$table_name   = $wpdb->prefix . 'alm_loan_requests';
+		$loan_request = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM $table_name WHERE id = %d",
+				$request_id
+			)
+		);
+
+		if ( ! $loan_request ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Loan request not found.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Verify asset_id matches.
+		if ( (int) $loan_request->asset_id !== $asset_id ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Asset ID mismatch.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Check user permissions.
+		$current_user_id = get_current_user_id();
+		$can_approve     = $this->can_user_approve_request( $loan_request, $current_user_id );
+
+		if ( ! $can_approve ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You do not have permission to approve this request.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Approve the loan request (atomic operation).
+		$result = $this->approve_loan_request( $loan_request, $current_user_id );
+
+		if ( ! $result['success'] ) {
+			wp_send_json_error(
+				array(
+					'message' => $result['message'],
+				)
+			);
+		}
+
+		// Log the approval.
+		ALM_Logger::info(
+			'Loan request approved',
 			array(
-				'message' => __( 'Approval functionality not yet implemented.', 'asset-lending-manager' ),
+				'request_id'   => $request_id,
+				'asset_id'     => $asset_id,
+				'requester_id' => $loan_request->requester_id,
+				'approved_by'  => $current_user_id,
+			)
+		);
+
+		// Send email notification (placeholder).
+		$this->send_approval_email_notification( $loan_request );
+
+		wp_send_json_success(
+			array(
+				'message' => __( 'Loan request approved successfully. The page will reload.', 'asset-lending-manager' ),
 			)
 		);
 	}
@@ -519,16 +610,12 @@ class ALM_Loan_Manager {
 	/**
 	 * Get the current owner of an asset.
 	 *
-	 * For now returns 0 (no owner tracking yet).
-	 * Future: check ACF field 'current_owner' or loan history.
-	 *
 	 * @param int $asset_id Asset ID.
 	 * @return int Owner user ID or 0 if none.
 	 */
 	public function get_current_owner( $asset_id ) {
-		// TODO: Implement owner tracking.
-		// For now, return 0 (available asset).
-		return 0;
+		$owner_id = get_post_meta( $asset_id, '_alm_current_owner', true );
+		return $owner_id ? (int) $owner_id : 0;
 	}
 
 	/**
@@ -714,5 +801,436 @@ class ALM_Loan_Manager {
 				$user_id
 			)
 		);
+	}
+
+	/**
+	 * Check if user can approve a loan request.
+	 *
+	 * @param object $loan_request Loan request object from database.
+	 * @param int    $user_id      User ID.
+	 * @return bool True if user can approve.
+	 */
+	private function can_user_approve_request( $loan_request, $user_id ) {
+		// Administrators and operators can approve any request.
+		if ( current_user_can( ALM_EDIT_ASSET ) ) {
+			return true;
+		}
+
+		// Current owner can approve requests for their assets.
+		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
+			return true;
+		}
+
+		// Check if user is the current assignee of the asset.
+		$current_owner = $this->get_current_owner( $loan_request->asset_id );
+		if ( $current_owner === $user_id && $current_owner > 0 ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Approve a loan request (atomic operation with full kit support).
+	 *
+	 * This method performs the following operations atomically:
+	 * 1. Validate request is pending
+	 * 2. Change owner of main asset
+	 * 3. Change state of main asset to "on-loan"
+	 * 4. If kit: propagate owner and state to all components
+	 * 5. Cancel concurrent requests for the same asset
+	 * 6. Cancel requests for components if this is a kit
+	 * 7. Update request status to approved
+	 * 8. Insert record into history table
+	 *
+	 * @param object $loan_request Loan request object from database.
+	 * @param int    $approved_by  User ID who approved the request.
+	 * @return array ['success' => bool, 'message' => string]
+	 */
+	private function approve_loan_request( $loan_request, $approved_by ) {
+		global $wpdb;
+
+		// Start transaction.
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			// 1. Validate request status.
+			if ( 'pending' !== $loan_request->status ) {
+				throw new Exception( __( 'Request is not pending.', 'asset-lending-manager' ) );
+			}
+
+			$asset_id     = (int) $loan_request->asset_id;
+			$requester_id = (int) $loan_request->requester_id;
+			$previous_owner_id = (int) $loan_request->owner_id;
+
+			// Verify asset exists.
+			$asset = get_post( $asset_id );
+			if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+				throw new Exception( __( 'Asset not found.', 'asset-lending-manager' ) );
+			}
+
+			// 2. Check if asset is already on loan (conflict prevention).
+			$current_state = $this->get_asset_state_slug( $asset_id );
+			if ( 'on-loan' === $current_state ) {
+				throw new Exception( __( 'Asset is already on loan.', 'asset-lending-manager' ) );
+			}
+
+			// 3. Change owner of main asset.
+			$this->set_asset_owner( $asset_id, $requester_id );
+
+			// 4. Change state of main asset to "on-loan".
+			$this->set_asset_state( $asset_id, 'on-loan' );
+
+			// 5. If asset is a kit, propagate to components.
+			$is_kit = $this->is_asset_kit( $asset_id );
+			$component_ids = array();
+
+			if ( $is_kit ) {
+				$component_ids = $this->get_kit_components( $asset_id );
+
+				if ( ! empty( $component_ids ) ) {
+					// Check if any component is already on loan.
+					foreach ( $component_ids as $component_id ) {
+						$component_state = $this->get_asset_state_slug( $component_id );
+						if ( 'on-loan' === $component_state ) {
+							$component_title = get_the_title( $component_id );
+							throw new Exception(
+								sprintf(
+									__( 'Component "%s" is already on loan and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
+									$component_title
+								)
+							);
+						}
+					}
+
+					// Update all components.
+					foreach ( $component_ids as $component_id ) {
+						$this->set_asset_owner( $component_id, $requester_id );
+						$this->set_asset_state( $component_id, 'on-loan' );
+					}
+				}
+			}
+
+			// 6. Cancel concurrent requests for the same asset.
+			$this->cancel_concurrent_requests(
+				$asset_id,
+				$loan_request->id,
+				__( 'Request automatically canceled: asset approved for another user.', 'asset-lending-manager' )
+			);
+
+			// 7. If kit, cancel requests for all components.
+			if ( $is_kit && ! empty( $component_ids ) ) {
+				foreach ( $component_ids as $component_id ) {
+					$this->cancel_concurrent_requests(
+						$component_id,
+						0, // Cancel all requests for this component.
+						sprintf(
+							__( 'Request canceled: component assigned as part of kit "%s".', 'asset-lending-manager' ),
+							get_the_title( $asset_id )
+						)
+					);
+				}
+			}
+
+			// 8. Update request status to approved and delete from requests table.
+			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$deleted    = $wpdb->delete(
+				$table_name,
+				array( 'id' => $loan_request->id ),
+				array( '%d' )
+			);
+
+			if ( false === $deleted ) {
+				throw new Exception( __( 'Failed to update request status.', 'asset-lending-manager' ) );
+			}
+
+			// 9. Insert record into history table.
+			$history_logged = $this->log_history_entry(
+				$loan_request->id,
+				$asset_id,
+				$requester_id,
+				$previous_owner_id,
+				'approved',
+				$loan_request->request_message,
+				$approved_by
+			);
+
+			if ( ! $history_logged ) {
+				throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+			}
+
+			// Commit transaction.
+			$wpdb->query( 'COMMIT' );
+
+			ALM_Logger::info(
+				'Loan request approved successfully',
+				array(
+					'request_id'   => $loan_request->id,
+					'asset_id'     => $asset_id,
+					'requester_id' => $requester_id,
+					'is_kit'       => $is_kit,
+					'components'   => $component_ids,
+				)
+			);
+
+			return array(
+				'success' => true,
+				'message' => __( 'Loan request approved successfully.', 'asset-lending-manager' ),
+			);
+
+		} catch ( Exception $e ) {
+			// Rollback transaction on error.
+			$wpdb->query( 'ROLLBACK' );
+
+			ALM_Logger::error(
+				'Failed to approve loan request',
+				array(
+					'request_id' => $loan_request->id,
+					'error'      => $e->getMessage(),
+					'db_error'   => $wpdb->last_error,
+				)
+			);
+
+			return array(
+				'success' => false,
+				'message' => $e->getMessage(),
+			);
+		}
+	}
+
+	/**
+	 * Set the owner of an asset.
+	 *
+	 * @param int $asset_id Asset ID.
+	 * @param int $user_id  User ID (0 = no owner).
+	 * @return bool True on success, false on failure.
+	 */
+	private function set_asset_owner( $asset_id, $user_id ) {
+		$result = update_post_meta( $asset_id, '_alm_current_owner', $user_id );
+		
+		if ( false === $result ) {
+			throw new Exception(
+				sprintf(
+					__( 'Failed to set owner for asset ID %d.', 'asset-lending-manager' ),
+					$asset_id
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Set the state of an asset.
+	 *
+	 * @param int    $asset_id   Asset ID.
+	 * @param string $state_slug State slug (e.g., 'available', 'on-loan', 'maintenance').
+	 * @return bool True on success, false on failure.
+	 */
+	private function set_asset_state( $asset_id, $state_slug ) {
+		$term = get_term_by( 'slug', $state_slug, ALM_ASSET_STATE_TAXONOMY_SLUG );
+
+		if ( ! $term ) {
+			throw new Exception(
+				sprintf(
+					__( 'Invalid state slug: %s', 'asset-lending-manager' ),
+					$state_slug
+				)
+			);
+		}
+
+		$result = wp_set_object_terms( $asset_id, $term->term_id, ALM_ASSET_STATE_TAXONOMY_SLUG );
+
+		if ( is_wp_error( $result ) ) {
+			throw new Exception(
+				sprintf(
+					__( 'Failed to set state for asset ID %d: %s', 'asset-lending-manager' ),
+					$asset_id,
+					$result->get_error_message()
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get the state slug of an asset.
+	 *
+	 * @param int $asset_id Asset ID.
+	 * @return string State slug or empty string if not set.
+	 */
+	private function get_asset_state_slug( $asset_id ) {
+		$terms = get_the_terms( $asset_id, ALM_ASSET_STATE_TAXONOMY_SLUG );
+
+		if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+			return $terms[0]->slug;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Check if an asset is a kit.
+	 *
+	 * @param int $asset_id Asset ID.
+	 * @return bool True if asset is a kit, false otherwise.
+	 */
+	private function is_asset_kit( $asset_id ) {
+		return has_term( ALM_ASSET_KIT_SLUG, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id );
+	}
+
+	/**
+	 * Get component IDs of a kit.
+	 *
+	 * @param int $asset_id Kit asset ID.
+	 * @return array Array of component post IDs.
+	 */
+	private function get_kit_components( $asset_id ) {
+		if ( ! function_exists( 'get_field' ) ) {
+			return array();
+		}
+
+		$components = get_field( 'components', $asset_id );
+
+		if ( ! is_array( $components ) || empty( $components ) ) {
+			return array();
+		}
+
+		// Extract IDs from post objects.
+		$component_ids = array();
+		foreach ( $components as $component ) {
+			if ( is_object( $component ) && isset( $component->ID ) ) {
+				$component_ids[] = (int) $component->ID;
+			} elseif ( is_numeric( $component ) ) {
+				$component_ids[] = (int) $component;
+			}
+		}
+
+		return $component_ids;
+	}
+
+	/**
+	 * Cancel concurrent requests for an asset.
+	 *
+	 * @param int    $asset_id           Asset ID.
+	 * @param int    $exclude_request_id Request ID to exclude (0 = cancel all).
+	 * @param string $cancel_message     Cancellation message.
+	 * @return int Number of requests canceled.
+	 */
+	private function cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_message ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'alm_loan_requests';
+
+		// Get all pending requests for this asset (excluding the approved one).
+		if ( $exclude_request_id > 0 ) {
+			$requests = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM $table_name 
+					WHERE asset_id = %d 
+					AND id != %d 
+					AND status = 'pending'",
+					$asset_id,
+					$exclude_request_id
+				)
+			);
+		} else {
+			$requests = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM $table_name 
+					WHERE asset_id = %d 
+					AND status = 'pending'",
+					$asset_id
+				)
+			);
+		}
+
+		if ( empty( $requests ) ) {
+			return 0;
+		}
+
+		$canceled_count = 0;
+
+		foreach ( $requests as $request ) {
+			// Log history entry for canceled request.
+			$history_logged = $this->log_history_entry(
+				$request->id,
+				$request->asset_id,
+				$request->requester_id,
+				$request->owner_id,
+				'canceled',
+				$cancel_message,
+				self::AUTOMATIC_OPERATIONS_OPERATOR_ID
+			);
+
+			if ( ! $history_logged ) {
+				throw new Exception(
+					sprintf(
+						__( 'Failed to log cancellation for request ID %d.', 'asset-lending-manager' ),
+						$request->id
+					)
+				);
+			}
+
+			// Delete request from table.
+			$deleted = $wpdb->delete(
+				$table_name,
+				array( 'id' => $request->id ),
+				array( '%d' )
+			);
+
+			if ( false === $deleted ) {
+				throw new Exception(
+					sprintf(
+						__( 'Failed to delete request ID %d.', 'asset-lending-manager' ),
+						$request->id
+					)
+				);
+			}
+
+			$canceled_count++;
+
+			// Log notification.
+			ALM_Logger::info(
+				'Request automatically canceled',
+				array(
+					'request_id'   => $request->id,
+					'asset_id'     => $request->asset_id,
+					'requester_id' => $request->requester_id,
+					'reason'       => $cancel_message,
+				)
+			);
+		}
+
+		return $canceled_count;
+	}
+
+	/**
+	 * Send email notification for approved loan request (placeholder).
+	 *
+	 * @param object $loan_request Loan request object.
+	 * @return void
+	 */
+	private function send_approval_email_notification( $loan_request ) {
+		$requester   = get_userdata( $loan_request->requester_id );
+		$asset_title = get_the_title( $loan_request->asset_id );
+
+		if ( ! $requester ) {
+			return;
+		}
+
+		// Log email to requester.
+		ALM_Logger::info(
+			'[EMAIL] To requester: Loan request approved',
+			array(
+				'to'      => $requester->user_email,
+				'subject' => sprintf(
+					__( 'Your loan request for "%s" has been approved', 'asset-lending-manager' ),
+					$asset_title
+				),
+			)
+		);
+
+		// TODO: Implement actual email sending.
 	}
 }

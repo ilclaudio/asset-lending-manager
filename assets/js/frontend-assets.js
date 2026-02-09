@@ -333,10 +333,199 @@
 			var requestId = btn.getAttribute('data-request-id');
 			var assetId = btn.getAttribute('data-asset-id');
 
-			console.log('*** Approve request:', requestId);
+			if (!requestId || !assetId) {
+				console.error('Missing request ID or asset ID');
+				return;
+			}
 
-			// TODO: Implement approval logic
-			alert('Approval functionality not yet implemented.');
+			console.log('*** Approve button clicked for request:', requestId);
+
+			// Show confirmation modal
+			ALM_Frontend.showConfirmModal(
+				'Confirm Approval',
+				'Are you sure you want to approve this loan request?',
+				function() {
+					// On confirm
+					ALM_Frontend.submitApprovalRequest(btn, requestId, assetId);
+				}
+			);
+		},
+
+		/**
+		 * Show confirmation modal.
+		 * 
+		 * @param {string} title Modal title
+		 * @param {string} message Modal message
+		 * @param {Function} onConfirm Callback on confirm
+		 */
+		showConfirmModal: function(title, message, onConfirm) {
+			// Create modal overlay
+			var overlay = document.createElement('div');
+			overlay.className = 'alm-modal-overlay alm-confirm-modal';
+
+			// Create modal content
+			var content = document.createElement('div');
+			content.className = 'alm-modal-content';
+
+			// Modal header
+			var header = document.createElement('div');
+			header.className = 'alm-modal-header';
+			header.innerHTML = '<h2>' + this.escapeHtml(title) + '</h2>';
+
+			// Modal body
+			var body = document.createElement('div');
+			body.className = 'alm-modal-body';
+			body.innerHTML = '<p>' + this.escapeHtml(message) + '</p>';
+
+			// Modal footer
+			var footer = document.createElement('div');
+			footer.className = 'alm-modal-footer';
+
+			var cancelBtn = document.createElement('button');
+			cancelBtn.type = 'button';
+			cancelBtn.className = 'alm-button alm-button--secondary';
+			cancelBtn.textContent = 'Cancel';
+
+			var confirmBtn = document.createElement('button');
+			confirmBtn.type = 'button';
+			confirmBtn.className = 'alm-button alm-button--primary';
+			confirmBtn.textContent = 'Confirm';
+
+			footer.appendChild(cancelBtn);
+			footer.appendChild(confirmBtn);
+
+			// Assemble modal
+			content.appendChild(header);
+			content.appendChild(body);
+			content.appendChild(footer);
+			overlay.appendChild(content);
+			document.body.appendChild(overlay);
+
+			// Show modal with animation
+			setTimeout(function() {
+				overlay.classList.add('active');
+			}, 10);
+
+			// Handle cancel
+			var closeModal = function() {
+				overlay.classList.remove('active');
+				setTimeout(function() {
+					if (overlay && overlay.parentNode) {
+						overlay.parentNode.removeChild(overlay);
+					}
+				}, 300);
+			};
+
+			cancelBtn.addEventListener('click', closeModal);
+
+			// Close on overlay click (outside modal)
+			overlay.addEventListener('click', function(e) {
+				if (e.target === overlay) {
+					closeModal();
+				}
+			});
+
+			// Handle confirm
+			confirmBtn.addEventListener('click', function() {
+				// Disable button to prevent double-click
+				confirmBtn.disabled = true;
+				confirmBtn.textContent = 'Processing...';
+				cancelBtn.disabled = true;
+
+				closeModal();
+				
+				if (typeof onConfirm === 'function') {
+					onConfirm();
+				}
+			});
+		},
+
+		/**
+		 * Submit approval request via AJAX.
+		 * 
+		 * @param {HTMLElement} btn Button element
+		 * @param {string} requestId Request ID
+		 * @param {string} assetId Asset ID
+		 */
+		submitApprovalRequest: function(btn, requestId, assetId) {
+			// Check if almFrontend is available
+			if (typeof window.almFrontend === 'undefined' || !window.almFrontend.loanRequestNonce) {
+				alert('Security token not found. Please reload the page.');
+				console.error('almFrontend.loanRequestNonce is undefined');
+				return;
+			}
+
+			// Disable button to prevent double submission
+			var originalBtnText = btn.textContent;
+			btn.disabled = true;
+			btn.textContent = 'Approving...';
+
+			// Disable all other action buttons in the same row
+			var row = btn.closest('tr');
+			if (row) {
+				var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+				actionBtns.forEach(function(actionBtn) {
+					actionBtn.disabled = true;
+				});
+			}
+
+			// Prepare form data
+			var formData = new FormData();
+			formData.append('action', 'alm_approve_loan_request');
+			formData.append('nonce', window.almFrontend.loanRequestNonce);
+			formData.append('request_id', requestId);
+			formData.append('asset_id', assetId);
+
+			console.log('*** Sending approval request:', requestId);
+
+			// Send AJAX request
+			fetch(window.almFrontend.ajaxUrl, {
+				method: 'POST',
+				body: formData,
+				credentials: 'same-origin'
+			})
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(data) {
+				if (data.success) {
+					console.log('*** Approval successful, reloading page...');
+					
+					// Reload page with success message
+					var currentUrl = window.location.href.split('?')[0];
+					window.location.href = currentUrl + '?alm_action=approve&alm_status=success';
+				} else {
+					var errorMsg = data.data && data.data.message ? data.data.message : 'Approval failed. Please try again.';
+					alert(errorMsg);
+					console.error('*** Approval failed:', errorMsg);
+					
+					// Re-enable buttons on error
+					btn.disabled = false;
+					btn.textContent = originalBtnText;
+					
+					if (row) {
+						var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+						actionBtns.forEach(function(actionBtn) {
+							actionBtn.disabled = false;
+						});
+					}
+				}
+			})
+			.catch(function(error) {
+				alert('Approval request failed. Please try again.');
+				console.error('*** AJAX error:', error);
+				
+				// Re-enable buttons on error
+				btn.disabled = false;
+				btn.textContent = originalBtnText;
+				
+				if (row) {
+					var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+					actionBtns.forEach(function(actionBtn) {
+						actionBtn.disabled = false;
+					});
+				}
+			});
 		},
 
 		/**
