@@ -48,6 +48,7 @@ Taxonomies are also defined to classify the various assets:
 
 ## Possible future extensions
 A) Export of assets, loans, and loan requests to CSV.
+
 B) REST API for managing entities and workflows from external applications.
 
 ## System Modules
@@ -64,6 +65,85 @@ B) REST API for managing entities and workflows from external applications.
 - **ALM_Admin_Manager**: Provides admin UI pages and back-office functionality.
 - **ALM_Autocomplete_Manager**: Provides autocomplete data sources for frontend/admin inputs.
 - **ALM_Logger**: Logs plugin events and diagnostics for debugging and auditing.
+
+## Verified Entry Points
+- `asset-lending-manager.php` loads core classes, registers activation/deactivation hooks, and boots the plugin on `plugins_loaded` via `alm_init_plugin()`.
+- `ALM_Plugin_Manager::init()` registers admin menu entries and hooks for tools and taxonomy menu behavior.
+
+## Verified Hooks and Endpoints
+- `admin_menu` -> `ALM_Plugin_Manager::register_alm_custom_menu()`.
+- `parent_file` -> `ALM_Plugin_Manager::keep_alm_taxonomy_menu_open()`.
+- `admin_post_alm_reload_default_terms` -> `ALM_Plugin_Manager::handle_reload_default_terms()`.
+- `init` -> `ALM_Asset_Manager::register_post_type()` and `ALM_Asset_Manager::register_taxonomies()`.
+- `acf/include_fields` -> `ALM_ACF_Asset_Adapter::register_asset_fields()`.
+- `wp_ajax_alm_submit_loan_request` -> `ALM_Loan_Manager::ajax_submit_loan_request()`.
+- `wp_ajax_alm_reject_loan_request` -> `ALM_Loan_Manager::ajax_reject_loan_request()`.
+- `wp_ajax_alm_approve_loan_request` -> `ALM_Loan_Manager::ajax_approve_loan_request()`.
+- `template_include` -> `ALM_Frontend_Manager::load_asset_template()`.
+- `alm_locate_template` filter is applied inside `ALM_Frontend_Manager::locate_template()`.
+- `wp_enqueue_scripts` -> `ALM_Frontend_Manager::enqueue_frontend_assets()` and `ALM_Autocomplete_Manager::enqueue_assets()`.
+- `login_redirect` -> `ALM_Frontend_Manager::redirect_login_by_role()`.
+- `logout_redirect` -> `ALM_Frontend_Manager::redirect_logout_by_role()`.
+- `admin_init` -> `ALM_Admin_Manager::redirect_restricted_users()`.
+- `admin_menu` -> `ALM_Admin_Manager::remove_menus()`.
+- `admin_enqueue_scripts` -> `ALM_Admin_Manager::enqueue_admin_assets()`.
+- REST route `POST /wp-json/alm/v1/assets/autocomplete` -> `ALM_Autocomplete_Manager::handle_autocomplete()`.
+
+## Verified Data Model
+- Custom Post Type: `alm_asset` with rewrite slug `asset`.
+- Taxonomy slugs: `alm_structure`, `alm_type`, `alm_state`, `alm_level`.
+- Default terms are created by `ALM_Installer::create_default_terms()`.
+- Asset structure terms: `component`, `kit`.
+- Asset type terms: `telescope`, `ocular`, `refractor`, `optical-tube`, `binoculars`, `tripod`, `filter`, `accessory`, `book`, `magazine`, `mount`, `generic`.
+- Asset state terms: `on-loan`, `available`, `maintenance`, `retired`.
+- Asset level terms: `basic`, `intermediate`, `advanced`.
+
+## Verified ACF Fields (Asset)
+- `manufacturer`
+- `model`
+- `data_acquisto`
+- `cost`
+- `dimensions`
+- `weight`
+- `location`
+- `components`
+- `user_manual`
+- `technical_data_sheet`
+- `serial_number`
+- `external_code`
+- `notes`
+
+## Verified Database Tables
+- `{$wpdb->prefix}alm_loan_requests` columns: `id`, `asset_id`, `requester_id`, `owner_id`, `request_date`, `request_message`, `status`, `response_date`, `response_message`.
+- `{$wpdb->prefix}alm_loan_requests_history` columns: `id`, `loan_request_id`, `asset_id`, `requester_id`, `owner_id`, `status`, `message`, `changed_at`, `changed_by`.
+
+## Verified Permissions
+- Roles: `alm_member`, `alm_operator`.
+- Domain capabilities: `alm_view_assets`, `alm_view_asset`, `alm_edit_asset`.
+- CPT capabilities are defined in `ALM_Capabilities::get_asset_cpt_caps()`.
+- On activation, administrators and operators receive all ALM capabilities; members receive `alm_view_assets` and `alm_view_asset`.
+
+## Verified Templates and Shortcodes
+- Templates: `templates/archive-alm_asset.php`, `templates/single-alm_asset.php`, `templates/shortcodes/asset-list.php`, `templates/shortcodes/asset-view.php`.
+- Shortcodes: `[alm_asset_list]`, `[alm_asset_view]`.
+
+## Verified Assets Enqueued
+- Frontend CSS: `assets/css/frontend-assets.css`, `assets/css/asset-requests-table.css`, `assets/css/asset-history-table.css`.
+- Frontend JS: `assets/js/frontend-assets.js`.
+- Admin CSS: `assets/css/admin-assets.css`.
+- Admin JS: `assets/js/admin-assets.js`.
+- Autocomplete CSS: `assets/css/alm-asset-autocomplete.css`.
+- Autocomplete JS: `assets/js/alm-asset-autocomplete.js`.
+
+## Verified Logging
+- `ALM_Logger` writes to the WordPress error log only when `WP_DEBUG` is true.
+- Levels: DEBUG, INFO, WARNING, ERROR.
+
+## Verified Limitations in Code
+- `ALM_Loan_Manager::ajax_approve_loan_request()` returns a "not yet implemented" error.
+- `ALM_Loan_Manager::get_current_owner()` always returns `0`.
+- Email notifications are logged only; actual sending is not implemented.
+- `uninstall.php` references `$alm_roles_to_modify` and `$caps_to_remove` which are not defined, and table drop calls are commented out.
 
 ## Documentation
 - `README.md`
@@ -94,7 +174,7 @@ B) REST API for managing entities and workflows from external applications.
 - `phpunit-integration.xml`: Entry point for the integration tests included in the "tests/integration" folder.
 
 ## Project Repository
-DEV: (fill when public or add internal URL)
+DEV: https://github.com/ilclaudio/asset-lending-manager/tree/dev
 
 ## Setup
 - Install WordPress.
