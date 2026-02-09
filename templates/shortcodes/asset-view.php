@@ -18,7 +18,14 @@ if ( $alm_asset_id <= 0 ) {
 	return;
 }
 
-$alm_asset_fields = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
+$alm_asset_fields  = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
+$alm_loan_manager  = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
+$alm_owner_id      = $alm_loan_manager->get_current_owner( $alm_asset_id );
+$alm_owner_name    = '';
+if ( $alm_owner_id > 0 ) {
+	$alm_owner_data = get_userdata( $alm_owner_id );
+	$alm_owner_name = $alm_owner_data ? $alm_owner_data->display_name : '';
+}
 /**
  * Big image for detail (do not change list thumbnail).
  */
@@ -129,6 +136,16 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 			<div class="alm-collapsible__body">
 				<?php if ( ! empty( $alm_asset_fields ) ) : ?>
 					<dl class="alm-asset-acf-list">
+						<?php if ( is_user_logged_in() && ! empty( $alm_owner_name ) ) : ?>
+							<div class="alm-asset-acf-row alm-acf-current-owner">
+								<dt class="alm-asset-acf-label">
+									<?php esc_html_e( 'Current owner', 'asset-lending-manager' ); ?>
+								</dt>
+								<dd class="alm-asset-acf-value">
+									<?php echo esc_html( $alm_owner_name ); ?>
+								</dd>
+							</div>
+						<?php endif; ?>
 						<?php foreach ( $alm_asset_fields as $alm_asset_row ) : ?>
 							<?php if ( $alm_asset_row['value'] ): ?>
 								<div class="alm-asset-acf-row alm-acf-<?php echo esc_attr( $alm_asset_row['name'] ); ?>">
@@ -182,9 +199,6 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	</section>
 
 	<!-- V section: Loan request form -->
-	<?php
-		$alm_loan_manager = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
-	?>
 
 	<section class="alm-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
 		<details class="alm-collapsible alm-collapsible--requestbutton" id="alm-loan-request-section">

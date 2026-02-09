@@ -295,6 +295,7 @@ $archive_page     = $archive_page_obj ? get_permalink( $archive_page_obj->ID ) :
 Pay particular attention to the following aspects when writing code:
 - Absence of bugs.
 - Absence of vulnerabilities: maximum security.
+- GDPR compliance: personal data (names, emails, user IDs) must only be displayed to authenticated users with appropriate capabilities. Avoid exposing personal information to anonymous visitors.
 - Responsive pages (mobile-first design).
 - Page accessibility (this point is very important).
 - Compliance with WordPress best practices.

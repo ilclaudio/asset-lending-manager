@@ -60,6 +60,7 @@ return [
 		'Component "%s" is already on loan and cannot be assigned as part of this kit.'                    => 'Il componente "%s" è già in prestito e non può essere assegnato come parte di questo kit.',
 		'Components'                                                                                      => 'Componenti',
 		'Cost'                                                                                            => 'Costo',
+		'Current owner'                                                                                   => 'Proprietario corrente',
 		'Date'                                                                                            => 'Data',
 		'Default terms loaded successfully.'                                                               => 'Termini predefiniti caricati correttamente.',
 		'Dimensions'                                                                                      => 'Dimensioni',
