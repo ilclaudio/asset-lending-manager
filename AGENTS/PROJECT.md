@@ -29,7 +29,7 @@ The roles defined in the system are: member and operator.
   11. A loan request sends three emails: to the requester, the current assignee, and a system email address.
   12. The current assignee can approve or deny the loan request. This action triggers notification emails as in step 11.
   13. The requester and the assignee agree offline on the asset handover details.
-  14. Once the handover has taken place, the previous assignee or the system administrator updates the current assignee of the asset. This operation triggers email notifications as in step 11.
+  14. Once the handover has taken place, the previous assignee or the system administrator updates the current assignee of the asset. This operation triggers email notifications as in step 
   15. The system stores the complete assignment history.
   16. The operator can view the full assignment history for all devices.
   17. A member can only view history entries that involve them as requester or assignee.
@@ -40,7 +40,7 @@ The roles defined in the system are: member and operator.
 The DOC folder exists but is not yet populated. Official documentation will be added there as the project matures.
 
 
-## Changelog and TODO List
+## Changelog
 
 The project maintains a version history in `CHANGELOG.md` (currently at v0.1.0). Active issue tracking is in `AGENTS/ISSUES_TODO.md`.
 

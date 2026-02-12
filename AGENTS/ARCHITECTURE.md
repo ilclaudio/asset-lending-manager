@@ -149,19 +149,15 @@ This means all modules must be explicitly required in the entry point file. Ther
 
 ## Setup and Configuration
 
-Detailed setup instructions are available in the main documentation (see PROJECT.md for links).
+See `PROJECT.md` for the project overview and `README.md` for developer setup instructions. The DOC folder is reserved for future documentation.
 
 ## Commands
-- `composer lint`
-- `composer lint:fix`
-- `composer test`
-- `composer test:unit`
-- `composer test:integration`
-- `composer test:all`
-
-## Testing
-- Unit tests: `composer test:unit`
-- Integration tests: `composer test:integration`
+- `composer lint` — Check PHP code style.
+- `composer lint:fix` — Auto-fix PHP code style issues.
+- `composer test` — Run the default test suite.
+- `composer test:unit` — Run unit tests only.
+- `composer test:integration` — Run integration tests only.
+- `composer test:all` — Run all tests.
 
 ## Known Issues
 For a complete list of issues and bugs, see `ISSUES_TODO.md`.
