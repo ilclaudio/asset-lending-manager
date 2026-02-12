@@ -34,7 +34,6 @@ When scanning, reviewing, or analyzing the codebase, **always skip** these direc
 
 - `vendor/` — third-party PHP dependencies (managed by Composer)
 - `node_modules/` — third-party JS dependencies (managed by npm)
-- `assets/bootstrap-italia/` — external UI framework, not project code
 
 These directories contain external code that is not maintained by this project. Never report issues, suggest refactorings, or apply fixes to files inside them.
 
@@ -84,7 +83,7 @@ Use `WISH_LIST.md` instead of `ISSUES_TODO.md` when:
 Use this template when adding issues:
 
 ```markdown
-### [PRIORITY] Short descriptive title
+### [Priority] Short descriptive title
 - **Status:** Open
 - **Date:** YYYY-MM-DD
 - **Description:** Detailed description of the problem
@@ -273,11 +272,12 @@ When reviewing or modifying code:
 
 ## Learning and Explanation
 
-When explaining code or WordPress internals:
+Act as an expert PHP and WordPress developer. When writing or explaining code:
+- Explain the code you write and the inner workings of WordPress, describing standard practices as we move forward
+- Help the user learn everything needed to become an expert developer of WordPress core, themes, and plugins
 - Describe standard practices and why they exist
 - Explain the "why" behind recommendations
 - Reference official documentation when relevant
-- Help the user become a better developer
 - Share WordPress best practices and conventions
 
 ## Collaboration Expectations

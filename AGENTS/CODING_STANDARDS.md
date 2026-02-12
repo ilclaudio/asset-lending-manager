@@ -2,13 +2,7 @@
 
 ## General Guidelines
 
-For this project act as an expert PHP and WordPress developer.
-
 Write code in compliance with the official WordPress plugin and theme guidelines.
-
-Explain the code you write and the inner workings of WordPress, describing standard practices as we move forward.
-
-While developing this project, I want to learn everything needed to become an expert developer of WordPress core, themes, and plugins.
 
 ## Code Quality Priorities
 
@@ -217,7 +211,7 @@ $results = $wpdb->get_results(
 ```php
 function my_theme_enqueue_scripts() {
 	wp_enqueue_style( 'my-style', get_template_directory_uri() . '/style.css', array(), '1.0.0' );
-	wp_enqueue_script( 'my-script', get_template_directory_uri() . '/script.js', array( 'jquery' ), '1.0.0', true );
+	wp_enqueue_script( 'my-script', get_template_directory_uri() . '/script.js', array(), '1.0.0', true );
 }
 add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_scripts' );
 ```
@@ -226,16 +220,16 @@ add_action( 'wp_enqueue_scripts', 'my_theme_enqueue_scripts' );
 
 **Make all strings translatable:**
 ```php
-__( 'Text to translate', 'text-domain' );
-_e( 'Text to translate and echo', 'text-domain' );
-esc_html__( 'Text to translate and escape', 'text-domain' );
-esc_html_e( 'Text to translate, escape and echo', 'text-domain' );
+__( 'Text to translate', 'asset-lending-manager' );
+_e( 'Text to translate and echo', 'asset-lending-manager' );
+esc_html__( 'Text to translate and escape', 'asset-lending-manager' );
+esc_html_e( 'Text to translate, escape and echo', 'asset-lending-manager' );
 ```
 
 **Use sprintf for dynamic strings:**
 ```php
 /* translators: %s: post title */
-$message = sprintf( __( 'Post "%s" was updated', 'text-domain' ), $post_title );
+$message = sprintf( __( 'Post "%s" was updated', 'asset-lending-manager' ), $post_title );
 ```
 
 ### Testing
@@ -244,15 +238,7 @@ $message = sprintf( __( 'Post "%s" was updated', 'text-domain' ), $post_title );
 
 **Add PHPUnit tests** for complex logic and utility functions.
 
-**Run code style checks** before committing:
-```bash
-composer lint
-```
-
-**Auto-fix style issues** when possible:
-```bash
-composer lint:fix
-```
+For available test and lint commands, see `ARCHITECTURE.md` § "Commands".
 
 ### JavaScript Conventions
 
