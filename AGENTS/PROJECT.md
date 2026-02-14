@@ -29,7 +29,7 @@ Domain: astronomy association equipment and publications.
 
 ## Product Workflow (Target)
 1. Member browses assets and requests a loan.
-2. Current assignee (or operator) approves/rejects.
+2. Current assignee approves/rejects (operators can monitor requests in read-only mode when not current assignee).
 3. Physical handover happens offline.
 4. System records ownership transition and full history.
 

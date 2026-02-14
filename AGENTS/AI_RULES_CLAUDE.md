@@ -4,8 +4,8 @@ Claude Code-specific entry point.
 
 ## Session Start
 1. Read this file first.
-2. Follow the canonical reading order in `AGENTS/AGENTS_README.md`.
-3. Apply workflow rules from `AGENTS/AI_BEHAVIOR.md`.
+2. Follow workflow rules and reading order in `AGENTS/AI_BEHAVIOR.md`.
+3. Use `AGENTS/AGENTS_README.md` only as file-purpose index.
 
 ## Claude Notes
 - Use shell checks for code validation when possible.
