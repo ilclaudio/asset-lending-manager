@@ -870,6 +870,33 @@ class ALM_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
+			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$asset_id   = (int) $loan_request->asset_id;
+
+			// Lock all pending requests for this asset to serialize concurrent approvals.
+			$wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT id FROM $table_name
+					WHERE asset_id = %d
+					FOR UPDATE",
+					$asset_id
+				)
+			);
+
+			// Re-read and lock the target request row inside the transaction.
+			$loan_request = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT * FROM $table_name
+					WHERE id = %d
+					FOR UPDATE",
+					$loan_request->id
+				)
+			);
+
+			if ( ! $loan_request ) {
+				throw new Exception( __( 'Loan request not found.', 'asset-lending-manager' ) );
+			}
+
 			// 1. Validate request status.
 			if ( 'pending' !== $loan_request->status ) {
 				throw new Exception( __( 'Request is not pending.', 'asset-lending-manager' ) );
@@ -949,7 +976,6 @@ class ALM_Loan_Manager {
 			}
 
 			// 8. Update request status to approved and delete from requests table.
-			$table_name = $wpdb->prefix . 'alm_loan_requests';
 			$deleted    = $wpdb->delete(
 				$table_name,
 				array( 'id' => $loan_request->id ),
