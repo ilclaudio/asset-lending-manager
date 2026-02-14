@@ -10,17 +10,8 @@ After reading this file, read the files with detailed collaboration rules listed
 ## Session Start
 
 1. Read this file first (it is specific for Claude Code).
-2. In the AGENTS folder, read the files common to all AI agents:
-	``` AI_RULES_CLAUDE.md (entry point)
-			↓
-			├─→ AGENTS_README.md (index and usage guide)
-			├─→ PROJECT.md (what we're building)
-			├─→ ARCHITECTURE.md (how it's structured)
-			├─→ CODING_STANDARDS.md (how to write code)
-			├─→ AI_BEHAVIOR.md (how to work)
-			└─→ ISSUES_TODO.md (what needs doing)
-	```
-3. Apply the behavior and workflow rules from `AGENTS/AI_BEHAVIOR.md`.
+2. Follow the canonical reading order in `AGENTS/AGENTS_README.md`.
+3. Apply behavior and workflow rules from `AGENTS/AI_BEHAVIOR.md`.
 
 
 ## Claude-Specific Settings
