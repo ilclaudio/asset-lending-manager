@@ -109,6 +109,14 @@ class ALM_Loan_Manager {
 		$requester_id = get_current_user_id();
 		// Get current owner (if any).
 		$owner_id = $this->get_current_owner( $asset_id );
+		// Current owner cannot request a loan for the same asset.
+		if ( $owner_id > 0 && $requester_id === $owner_id ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You already own this asset and cannot request it.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Check if user already has a pending request for this asset.
 		if ( $this->has_pending_request( $asset_id, $requester_id ) ) {
 			wp_send_json_error(
@@ -284,11 +292,6 @@ class ALM_Loan_Manager {
 	 * @return bool True if user can reject.
 	 */
 	private function can_user_reject_request( $loan_request, $user_id ) {
-		// Administrators and operators can reject any request.
-		if ( current_user_can( ALM_EDIT_ASSET ) ) {
-			return true;
-		}
-
 		// Current owner can reject requests for their assets.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;
@@ -827,11 +830,6 @@ class ALM_Loan_Manager {
 	 * @return bool True if user can approve.
 	 */
 	private function can_user_approve_request( $loan_request, $user_id ) {
-		// Administrators and operators can approve any request.
-		if ( current_user_can( ALM_EDIT_ASSET ) ) {
-			return true;
-		}
-
 		// Current owner can approve requests for their assets.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;

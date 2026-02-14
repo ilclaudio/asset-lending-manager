@@ -22,6 +22,8 @@ $alm_asset_fields  = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id )
 $alm_loan_manager  = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
 $alm_owner_id      = $alm_loan_manager->get_current_owner( $alm_asset_id );
 $alm_owner_name    = '';
+$alm_is_current_owner = is_user_logged_in() && $alm_owner_id > 0 && ( $alm_current_user_id === (int) $alm_owner_id );
+$alm_is_operator      = is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
 if ( $alm_owner_id > 0 ) {
 	$alm_owner_data = get_userdata( $alm_owner_id );
 	$alm_owner_name = $alm_owner_data ? $alm_owner_data->display_name : '';
@@ -79,31 +81,31 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 			<div class="alm-asset-taxonomies alm-asset-taxonomies--boxed">
 				<div class="alm-asset-tax-row">
 					<span class="alm-tax-label">
-						<?php echo esc_attr_e( 'Structure', 'asset-lending-manager' ); ?>
+						<?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="alm-tax-value">
-						<?php echo esc_attr( $alm_structure ); ?>
+						<?php echo esc_html( $alm_structure ); ?>
 					</span>
 				</div>
 				<div class="alm-asset-tax-row">
 					<span class="alm-tax-label">
-						<?php echo esc_attr_e( 'Type', 'asset-lending-manager' ); ?>
+						<?php esc_html_e( 'Type', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="alm-tax-value">
-						<?php echo esc_attr( $alm_type ); ?>
+						<?php echo esc_html( $alm_type ); ?>
 					</span>
 				</div>
 				<div class="alm-asset-tax-row">
 					<span class="alm-tax-label">
-						<?php echo esc_attr_e( 'Level', 'asset-lending-manager' ); ?>
+						<?php esc_html_e( 'Level', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="alm-tax-value">
-						<?php echo esc_attr( $alm_level ); ?>
+						<?php echo esc_html( $alm_level ); ?>
 					</span>
 				</div>
 				<div class="alm-asset-tax-row">
 					<span class="alm-tax-label">
-						<?php echo esc_attr_e( 'State', 'asset-lending-manager' ); ?>
+						<?php esc_html_e( 'State', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="alm-tax-value">
 						<span class="alm-availability <?php echo esc_attr( $alm_state_css_class ); ?>">
@@ -199,70 +201,71 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	</section>
 
 	<!-- V section: Loan request form -->
+	<?php if ( ! $alm_is_current_owner ) : ?>
+		<section class="alm-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
+			<details class="alm-collapsible alm-collapsible--requestbutton" id="alm-loan-request-section">
+				<summary class="alm-collapsible__summary">
+					<span class="alm-collapsible__title">
+						<?php esc_html_e( 'Request loan', 'asset-lending-manager' ); ?>
+					</span>
+					<span class="alm-collapsible__hint" aria-hidden="true">
+						<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
+					</span>
+				</summary>
+				<div class="alm-collapsible__body">
 
-	<section class="alm-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
-		<details class="alm-collapsible alm-collapsible--requestbutton" id="alm-loan-request-section">
-			<summary class="alm-collapsible__summary">
-				<span class="alm-collapsible__title">
-					<?php esc_html_e( 'Request loan', 'asset-lending-manager' ); ?>
-				</span>
-				<span class="alm-collapsible__hint" aria-hidden="true">
-					<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
-				</span>
-			</summary>
-			<div class="alm-collapsible__body">
+					<?php if ( is_user_logged_in() && current_user_can( ALM_VIEW_ASSET ) ) : ?>
+						<!-- People eligible to apply for the loan -->
 
-				<?php if ( is_user_logged_in() && current_user_can( ALM_VIEW_ASSET ) ) : ?>
-					<!-- People eligible to apply for the loan -->
+						<?php if ( $alm_loan_manager->has_pending_request( $alm_asset_id, $alm_current_user_id ) ) : ?>
+							<p class="alm-muted">
+								<?php esc_html_e( 'You have already requested a loan for this asset.', 'asset-lending-manager' ); ?>
+							</p>
 
-					<?php if ( $alm_loan_manager->has_pending_request( $alm_asset_id, $alm_current_user_id ) ) : ?>
-						<p class="alm-muted">
-							<?php esc_html_e( 'You have already requested a loan for this asset.', 'asset-lending-manager' ); ?>
-						</p>
+						<?php else : ?>
+							<form id="alm-loan-request-form" class="alm-loan-form">
+								<?php wp_nonce_field( 'alm_loan_request_nonce', 'nonce' ); ?>
+								<div class="alm-form-field">
+									<label for="alm-request-message">
+										<?php esc_html_e( 'Message for the current owner:', 'asset-lending-manager' ); ?>
+									</label>
+									<textarea
+										id="alm-request-message"
+										name="message"
+										rows="4"
+										maxlength="500"
+										placeholder="<?php esc_attr_e( 'Write a brief message explaining why you need this asset...', 'asset-lending-manager' ); ?>"
+										required
+									></textarea>
+									<div class="alm-char-count" id="alm-request-char-count">0 / 500</div>
+								</div>
+								<div class="alm-form-actions">
+									<button type="submit" class="alm-button alm-button--primary">
+										<?php esc_html_e( 'Send request', 'asset-lending-manager' ); ?>
+									</button>
+								</div>
+								<div id="alm-loan-request-response" class="alm-response-message" style="display:none;"></div>
+							</form>
+						<?php endif; ?>
 
 					<?php else : ?>
-						<form id="alm-loan-request-form" class="alm-loan-form">
-							<?php wp_nonce_field( 'alm_loan_request_nonce', 'nonce' ); ?>
-							<div class="alm-form-field">
-								<label for="alm-request-message">
-									<?php esc_html_e( 'Message for the current owner:', 'asset-lending-manager' ); ?>
-								</label>
-								<textarea 
-									id="alm-request-message" 
-									name="message" 
-									rows="4" 
-									maxlength="500"
-									placeholder="<?php esc_attr_e( 'Write a brief message explaining why you need this asset...', 'asset-lending-manager' ); ?>"
-									required
-								></textarea>
-								<div class="alm-char-count" id="alm-request-char-count">0 / 500</div>
-							</div>
-							<div class="alm-form-actions">
-								<button type="submit" class="alm-button alm-button--primary">
-									<?php esc_html_e( 'Send request', 'asset-lending-manager' ); ?>
-								</button>
-							</div>
-							<div id="alm-loan-request-response" class="alm-response-message" style="display:none;"></div>
-						</form>
+						<!-- People not eligible to apply for the loan -->
+						<p class="alm-muted">
+							<?php esc_html_e( 'To request a loan, you must log in as a member.', 'asset-lending-manager' ); ?>
+						</p>
 					<?php endif; ?>
 
-				<?php else : ?>
-					<!-- People not eligible to apply for the loan -->
-					<p class="alm-muted">
-						<?php esc_html_e( 'To request a loan, you must log in as a member.', 'asset-lending-manager' ); ?>
-					</p>
-				<?php endif; ?>
-
-			</div>
-		</details>
-	</section>
+				</div>
+			</details>
+		</section>
+	<?php endif; ?>
 
 	<!-- VI section: Loan requests -->
 	<?php
 		if (
 				is_user_logged_in() &&
 				(
-					current_user_can( ALM_EDIT_ASSET ) ||
+					$alm_is_operator ||
 					( $alm_loan_manager->get_current_owner( $alm_asset_id ) === $alm_current_user_id )
 				)
 			) {
@@ -325,7 +328,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										<?php echo esc_html( $alm_request_date ); ?>
 									</td>
 									<td class="alm-request-actions">
-										<?php if ( 'pending' === $alm_request_status ) : ?>
+										<?php if ( 'pending' === $alm_request_status && $alm_is_current_owner ) : ?>
 											<button 
 												type="button" 
 												class="alm-button alm-button--small alm-button--approve" 
