@@ -674,12 +674,20 @@ class ALM_Loan_Manager {
 		$requester   = get_userdata( $requester_id );
 		$asset_title = get_the_title( $asset_id );
 
+		if ( ! $requester ) {
+			ALM_Logger::error(
+				'Cannot log email notification: requester not found.',
+				array( 'requester_id' => $requester_id )
+			);
+			return;
+		}
+
 		// Log notification to requester.
 		ALM_Logger::info(
 			'[EMAIL] To requester: Loan request confirmation',
 			array(
 				'to'      => $requester->user_email,
-				'subject' => sprintf( 
+				'subject' => sprintf(
 					__( 'Your loan request for "%s"', 'asset-lending-manager' ),
 					$asset_title
 				),
@@ -689,17 +697,19 @@ class ALM_Loan_Manager {
 		// Log notification to owner (if exists).
 		if ( $owner_id > 0 ) {
 			$owner = get_userdata( $owner_id );
-			ALM_Logger::info(
-				'[EMAIL] To owner: New loan request received',
-				array(
-					'to'      => $owner->user_email,
-					'subject' => sprintf(
-						__( 'Loan request for your asset "%s"', 'asset-lending-manager' ),
-						$asset_title
-					),
-					'from' => $requester->display_name,
-				)
-			);
+			if ( $owner ) {
+				ALM_Logger::info(
+					'[EMAIL] To owner: New loan request received',
+					array(
+						'to'      => $owner->user_email,
+						'subject' => sprintf(
+							__( 'Loan request for your asset "%s"', 'asset-lending-manager' ),
+							$asset_title
+						),
+						'from' => $requester->display_name,
+					)
+				);
+			}
 		}
 
 		// Log notification to system operators.
