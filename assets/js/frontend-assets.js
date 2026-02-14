@@ -229,13 +229,6 @@
 					return;
 				}
 
-				// Check if almFrontend is available
-				if (typeof window.almFrontend === 'undefined' || !window.almFrontend.loanRequestNonce) {
-					ALM_Frontend.showResponse(responseDiv, 'error', 'Security token not found. Please reload the page.');
-					console.error('almFrontend.loanRequestNonce is undefined');
-					return;
-				}
-
 				// Disable submit button
 				var originalBtnText = submitBtn.textContent;
 				submitBtn.disabled = true;
@@ -243,11 +236,22 @@
 				responseDiv.style.display = 'none';
 
 				// Prepare form data
-				var formData = new FormData();
+				var formData = new FormData(form);
 				formData.append('action', 'alm_submit_loan_request');
-				formData.append('nonce', window.almFrontend.loanRequestNonce);
 				formData.append('asset_id', assetId);
 				formData.append('message', messageField.value.trim());
+
+				// Fallback: keep compatibility when nonce field is not present in DOM.
+				if (!formData.get('nonce')) {
+					if (typeof window.almFrontend !== 'undefined' && window.almFrontend.loanRequestNonce) {
+						formData.append('nonce', window.almFrontend.loanRequestNonce);
+					} else {
+						ALM_Frontend.showResponse(responseDiv, 'error', 'Security token not found. Please reload the page.');
+						submitBtn.disabled = false;
+						submitBtn.textContent = originalBtnText;
+						return;
+					}
+				}
 
 				console.log('*** Sending loan request for asset:', assetId);
 
