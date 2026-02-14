@@ -56,7 +56,7 @@ class ALM_Logger {
 		if ( ! empty( $context ) ) {
 			$entry .= ' ' . wp_json_encode( $context );
 		}
-		error_log( $entry ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( $entry );
 	}
 
 	/**
