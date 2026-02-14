@@ -1,30 +1,13 @@
-# AI_RULES_CLAUDE.md - Claude Code Configuration
+# AI_RULES_CLAUDE.md
 
-
-## Purpose
-
-This file contains **Claude-Code** specific instructions only.
-After reading this file, read the files with detailed collaboration rules listed in the following section.
-
+Claude Code-specific entry point.
 
 ## Session Start
-
-1. Read this file first (it is specific for Claude Code).
+1. Read this file first.
 2. Follow the canonical reading order in `AGENTS/AGENTS_README.md`.
-3. Apply behavior and workflow rules from `AGENTS/AI_BEHAVIOR.md`.
+3. Apply workflow rules from `AGENTS/AI_BEHAVIOR.md`.
 
-
-## Claude-Specific Settings
-
-### Tools and Preferences
-
-- Create files directly when requested.
-- Follow WordPress naming conventions and directory structure.
-- Use shell tooling for code checks where appropriate.
-- Run `composer lint` before finalizing code changes when possible (after dev dependencies are installed and PHPCS rules are available).
-- Use available MCP servers when relevant and within boundaries.
-
-
-## Canonical References
-
-See `AGENTS/AGENTS_README.md` for the full file index and descriptions.
+## Claude Notes
+- Use shell checks for code validation when possible.
+- Run `composer lint` before finalizing code changes when dependencies are available.
+- Keep naming and structure aligned with WordPress conventions.

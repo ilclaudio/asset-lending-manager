@@ -33,3 +33,15 @@ Canonical index for AI documentation in this project.
 - If architecture/runtime changes: update `ARCHITECTURE.md`.
 - If coding constraints change: update `CODING_STANDARDS.md`.
 - If backlog changes: update `ISSUES_TODO.md` and, when closed, move to `ISSUES_RESOLVED.md`.
+
+## Practical Update Matrix
+- New feature implemented:
+  Update `PROJECT.md` (scope/capability), `ARCHITECTURE.md` (runtime/data model), and related issue status.
+- Bug fixed:
+  Move/update issue in `ISSUES_RESOLVED.md`; update `ARCHITECTURE.md` only if runtime behavior changed.
+- Refactor without behavior changes:
+  Update docs only if architecture/conventions actually changed; otherwise only issue tracking.
+- Coding rule/tooling change:
+  Update `CODING_STANDARDS.md` and cross-references in `AI_BEHAVIOR.md` if process impact exists.
+- New/removed AGENTS file:
+  Update `AGENTS_README.md` canonical sources, reading order, and file map.

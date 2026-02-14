@@ -1,36 +1,13 @@
-# AI_RULES_CHATGPT.md - ChatGPT/Codex Configuration
+# AI_RULES_CHATGPT.md
 
-
-## Purpose
-
-This file contains **ChatGPT/Codex** specific instructions only.
-After reading this file, read the files with detailed collaboration rules listed in the following section.
-
+ChatGPT/Codex-specific entry point.
 
 ## Session Start
-
-1. Read this file first (it is specific for ChatGPT).
+1. Read this file first.
 2. Follow the canonical reading order in `AGENTS/AGENTS_README.md`.
-3. Apply behavior and workflow rules from `AGENTS/AI_BEHAVIOR.md`.
-   
+3. Apply workflow rules from `AGENTS/AI_BEHAVIOR.md`.
 
-## ChatGPT-Specific Settings
-
-### Code Interpreter Preferences
-
-- Read and analyze files when requested.
-- Generate code files with proper structure.
-- Follow WordPress naming conventions and directory structure.
-- Use code interpreter for complex analysis when useful.
-
-### ChatGPT-Specific Tips
-
-- Keep multi-turn context by referencing previous decisions.
-- Break large tasks into clear sub-steps, but complete one objective at a time.
-- Summarize milestones after meaningful progress.
-
-
-## Canonical References
-
-See `AGENTS/AGENTS_README.md` for the full file index and descriptions.
-
+## ChatGPT Notes
+- Use local file analysis/shell checks when useful.
+- Preserve multi-turn context and previous decisions.
+- Break large tasks into clear steps and report milestones.
