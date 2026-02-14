@@ -188,22 +188,22 @@ if ( ! empty( $filter_level ) ) {
 							<div class="alm-asset-taxonomies">
 								<!-- Tax: Structure -->
 								<div class="alm-asset-taxonomy">
-									<span class="alm-tax-label"><?php echo esc_attr( __( 'Structure', 'asset-lending-manager' ) ); ?>:</span>
+									<span class="alm-tax-label"><?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?>:</span>
 									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_asset->alm_structure ) ); ?></span>
 								</div>
 								<!-- Tax: Type -->
 								<div class="alm-asset-taxonomy">
-									<span class="alm-tax-label"><?php echo esc_attr( __( 'Type', 'asset-lending-manager' ) ); ?>:</span>
+									<span class="alm-tax-label"><?php esc_html_e( 'Type', 'asset-lending-manager' ); ?>:</span>
 									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_asset->alm_type ) ); ?></span>
 								</div>
 								<!-- Tax: State -->
 								<div class="alm-asset-taxonomy">
-									<span class="alm-tax-label"><?php echo esc_attr( __( 'State', 'asset-lending-manager' ) ); ?>:</span>
+									<span class="alm-tax-label"><?php esc_html_e( 'State', 'asset-lending-manager' ); ?>:</span>
 									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_asset->alm_state ) ); ?></span>
 								</div>
 								<!-- Tax: Level -->
 								<div class="alm-asset-taxonomy">
-									<span class="alm-tax-label"><?php echo esc_attr( __( 'Level', 'asset-lending-manager' ) ); ?>:</span>
+									<span class="alm-tax-label"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?>:</span>
 									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_asset->alm_level ) ); ?></span>
 								</div>
 							</div>
