@@ -1,55 +1,13 @@
+Pre-user-testing TODO (must complete before broad user testing)
 
-
-1) Lista Storico
-2) Funzione Accetta prestito: Popola Storico delle richieste, cambia owner di tutti i dispositivi, gestione
-3) Assegnamento diretto del dispositivo da parte dell'operatore.
-4) Annulla richiesta di prestito da parte di operatore.
-
-5) Asset list: pagination.
-6) Asset list: vista su cellulare in orizzontale e non in verticale.
-
-10) Roles translation.
-
-20) Recover unit tests.
-21) Integration tests.
-22) Functional tests.
-
-
-
-- ??? // ALM_Asset_Manager dipende da ACF_Adapter
-// Meglio passarlo nel costruttore:
-public function __construct(ALM_ACF_Asset_Adapter $adapter = null) {
-    $this->acf_adapter = $adapter ?? new ALM_ACF_Asset_Adapter();
-}
-
-- 2. Script per trasformare Checkbox in Radio Button
-Aggiungi questo codice nel tuo file functions.php o nel file principale del tuo plugin. Questo script cerca il box della tua tassonomia e trasforma tutti gli input checkbox in radio.
-
-PHP
-
-/**
- * Trasforma le checkbox della tassonomia Asset Level in Radio Button
- */
-add_action('admin_footer', function() {
-    $screen = get_current_screen();
-    
-    // Esegui lo script solo nella pagina di modifica del tuo CPT
-    // Sostituisci ALM_ASSET_CPT_SLUG con la tua stringa se non è definita qui
-    if ( $screen->post_type !== 'asset' ) return; 
-
-    ?>
-    <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            // ID del meta box: di solito è 'taxonomy-{slug}'
-            // Sostituisci 'asset_level' con il valore della tua costante ALM_ASSET_LEVEL_TAXONOMY_SLUG
-            var taxonomyName = 'asset_level'; 
-            var $container = $('#' + taxonomyName + 'div, #' + taxonomyName + 'checklist');
-
-            $container.find('input[type="checkbox"]').each(function() {
-                $(this).attr('type', 'radio');
-                $(this).attr('name', 'tax_input[' + taxonomyName + '][]');
-            });
-        });
-    </script>
-    <?php
-});
+1. Complete "Loan closure flow (return/check-in) for assets and kits" [High, Feature].
+2. Complete "Direct assignment by operator to member/operator" [High, Feature].
+3. Complete "Real notification delivery for loan workflow events" [High, Feature].
+4. Complete "Minimum operator settings UI for runtime configuration" [High, Feature].
+5. Complete "Security hardening for autocomplete endpoint access" [Medium, Feature].
+6. Complete "REST autocomplete handler logs nonce in plaintext" [Low, Security].
+7. Complete "Role-based UAT checklist for core lending flows" [High, Documentation].
+8. Execute role-based UAT and record pass/fail for alm_member and alm_operator paths.
+9. Complete "Member dashboard for \"My requests\" and \"My active loans\"" [Medium, Feature].
+10. Complete "Asset list pagination" [Low, Feature].
+11. Complete "Better mobile list view" [Low, Feature].

@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-02-15
+Last update: 2026-02-14
 
 ---
 
@@ -11,7 +11,7 @@ Last update: 2026-02-15
 - **Category:** Security
 - **Description:** `handle_autocomplete()` writes the received nonce to PHP error log.
 - **Expected behavior:** Remove nonce logging and keep security token values out of logs.
-- **Notes:** `includes/class-alm-autocomplete-manager.php`
+- **Notes:** The autocomplete endpoint is intended to remain public for frontend usage; treat it as public read-only surface and harden it (minimal response data, strict input validation, result limits, optional rate limiting/caching, no sensitive token logging). `includes/class-alm-autocomplete-manager.php`
 
 ---
 
@@ -101,6 +101,46 @@ Last update: 2026-02-15
 - **Expected behavior:** Add secure admin flow with reason, transactional update (owner/state), kit propagation, and history/audit logging.
 - **Notes:** Restrict action to operators/admin; keep requests section read-only for non-owner operators.
 
+### [High] Loan closure flow (return/check-in) for assets and kits
+- **Status:** Open
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Current workflow supports request/approve/reject, but there is no explicit return/check-in flow to close an active loan.
+- **Expected behavior:** Add operator/owner-driven return flow that sets state back to `available`, clears or updates current owner correctly, propagates to kit components, and writes auditable history entries.
+- **Notes:** Required for realistic end-to-end user testing of the lending lifecycle.
+
+### [High] Real notification delivery for loan workflow events
+- **Status:** Open
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Notification logic is mostly placeholder/logging and does not send real emails to requester/owner/operators.
+- **Expected behavior:** Implement production-ready notifications for request submitted, request approved/rejected/canceled, and loan closure, using configurable sender/recipient settings.
+- **Notes:** Required for user testing because actors otherwise miss workflow events.
+
+### [High] Minimum operator settings UI for runtime configuration
+- **Status:** Open
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Settings structure exists but is not exposed via complete admin UI and is not fully consumed at runtime.
+- **Expected behavior:** Provide a minimal settings page to configure notification sender/system email and core workflow toggles used by runtime modules.
+- **Notes:** Required before broad user testing to avoid hardcoded operational behavior.
+
+### [Medium] Member dashboard for "My requests" and "My active loans"
+- **Status:** Open
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Members can request assets from detail pages but lack a consolidated personal view of pending/approved/canceled requests and active assignments.
+- **Expected behavior:** Add frontend area (shortcode/template) with filters and statuses for personal requests and currently assigned assets.
+- **Notes:** Improves usability and reduces support friction during testing.
+
+### [Medium] Security hardening for autocomplete endpoint access
+- **Status:** Open
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Autocomplete endpoint is currently public and still includes debug-oriented token handling behavior.
+- **Expected behavior:** Keep endpoint public for anonymous frontend search, but enforce public-endpoint hardening: no sensitive logging, strict input validation, rate limiting and/or caching, and responses limited to publish-safe fields only.
+- **Notes:** Endpoint openness is acceptable for UX requirements; security posture must match a public read-only API.
+
 ### [Low] Asset list pagination
 - **Status:** Open
 - **Date:** 2026-02-12
@@ -116,6 +156,14 @@ Last update: 2026-02-15
 - **Description:** Current list rendering can be hard to scan on small screens.
 - **Expected behavior:** Improve mobile layout (horizontal scroll or card view).
 - **Notes:** Validate all list contexts.
+
+### [Low] Extend loan history visibility for involved members
+- **Status:** Open
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Loan history is currently surfaced in UI only for operators, even though backend filtering already supports user-scoped history access.
+- **Expected behavior:** Show history entries relevant to involved members (requester/owner/actor) in a safe, filtered frontend section.
+- **Notes:** Useful for transparency during user validation.
 
 ### [Low] CSV export for assets/loans/requests
 - **Status:** Idea
@@ -136,4 +184,11 @@ Last update: 2026-02-15
 ---
 
 ## Documentation
-_No open documentation issues._
+
+### [High] Role-based UAT checklist for core lending flows
+- **Status:** Open
+- **Date:** 2026-02-14
+- **Category:** Documentation
+- **Description:** There is no explicit user acceptance test checklist/report that validates core workflows for `alm_member` and `alm_operator` across happy paths and error paths.
+- **Expected behavior:** Create and maintain a concise UAT checklist with pass/fail evidence for core flows (request, approve, reject, return/closure, permission checks, error handling) before opening broader user testing.
+- **Notes:** Go/No-Go prerequisite for test phase rollout.
