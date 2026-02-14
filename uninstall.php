@@ -40,7 +40,7 @@ $alm_tables = array(
 );
 
 foreach ( $alm_tables as $alm_table ) {
-	$wpdb->query( "DROP TABLE IF EXISTS `$alm_table`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+	$wpdb->query( "DROP TABLE IF EXISTS `$alm_table`" );
 }
 
 // Remove plugin options.
