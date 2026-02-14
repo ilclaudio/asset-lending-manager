@@ -4,6 +4,23 @@
 
 Operational rules for AI assistants working on this codebase.
 
+## Canonical Sources
+- Reading order and process rules: this file.
+- Open issues and priorities: `AGENTS/ISSUES_TODO.md`.
+- Issue archive: `AGENTS/ISSUES_RESOLVED.md`.
+- Coding rules and JS policy: `AGENTS/CODING_STANDARDS.md`.
+- Runtime architecture map: `AGENTS/ARCHITECTURE.md`.
+- Product scope: `AGENTS/PROJECT.md`.
+- VCS workflow: `AGENTS/GIT_WORKFLOW.md` (apply only for git tasks).
+
+## Session Reading Order
+1. `AGENTS/AI_RULES_CHATGPT.md` or `AGENTS/AI_RULES_CLAUDE.md` (agent-specific entry point)
+2. `AGENTS/AI_BEHAVIOR.md`
+3. `AGENTS/PROJECT.md`
+4. `AGENTS/ARCHITECTURE.md`
+5. `AGENTS/CODING_STANDARDS.md`
+6. `AGENTS/ISSUES_TODO.md`
+
 ## Execution Rules
 - Be concise, precise, and action-oriented.
 - Work one objective at a time, end-to-end.
@@ -76,6 +93,25 @@ Before closing a task, verify:
 - Code follows `CODING_STANDARDS.md`.
 - Relevant AGENTS docs were updated.
 - Issue tracking is consistent.
+
+## AGENTS Update Rules
+- If behavior/process changes: update `AI_BEHAVIOR.md`.
+- If architecture/runtime changes: update `ARCHITECTURE.md`.
+- If coding constraints change: update `CODING_STANDARDS.md`.
+- If backlog changes: update `ISSUES_TODO.md` and, when closed, move to `ISSUES_RESOLVED.md`.
+- If AGENTS file list changes: update `AGENTS_README.md` file map.
+
+## Practical Update Matrix
+- New feature implemented:
+  Update `PROJECT.md` (scope/capability), `ARCHITECTURE.md` (runtime/data model), and related issue status.
+- Bug fixed:
+  Move/update issue in `ISSUES_RESOLVED.md`; update `ARCHITECTURE.md` only if runtime behavior changed.
+- Refactor without behavior changes:
+  Update docs only if architecture/conventions actually changed; otherwise only issue tracking.
+- Coding rule/tooling change:
+  Update `CODING_STANDARDS.md` and this file if process impact exists.
+- New/removed AGENTS file:
+  Update `AGENTS_README.md` file map.
 
 ## Batch and Mass Updates
 
