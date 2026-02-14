@@ -154,6 +154,14 @@ class ALM_Loan_Manager {
 	public function ajax_reject_loan_request() {
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+		// Fail-fast capability check.
+		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You do not have permission to reject loan requests.', 'asset-lending-manager' ),
+				)
+			);
+		}
 
 		// Get and validate input.
 		$request_id        = isset( $_POST['request_id'] ) ? absint( $_POST['request_id'] ) : 0;
@@ -455,6 +463,14 @@ class ALM_Loan_Manager {
 	public function ajax_approve_loan_request() {
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+		// Fail-fast capability check.
+		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You do not have permission to approve loan requests.', 'asset-lending-manager' ),
+				)
+			);
+		}
 
 		// Get and validate input.
 		$request_id = isset( $_POST['request_id'] ) ? absint( $_POST['request_id'] ) : 0;
