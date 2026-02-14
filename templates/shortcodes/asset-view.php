@@ -62,7 +62,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		$alm_structure   = isset( $asset->alm_structure ) ? implode( ', ', $asset->alm_structure ) : '-';
 		$alm_type        = isset( $asset->alm_type ) ? implode( ', ', $asset->alm_type ) : '-';
 		$alm_level       = isset( $asset->alm_level ) ? implode( ', ', $asset->alm_level ) : '-';
-		$alm_state_terms = get_the_terms( $asset_id, 'alm_state' );
+		$alm_state_terms = get_the_terms( $alm_asset_id, 'alm_state' );
 		$alm_state_slug  = '';
 		$alm_state_label = '';
 		if ( ! is_wp_error( $alm_state_terms ) && ! empty( $alm_state_terms ) ) {
