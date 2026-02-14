@@ -222,6 +222,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 
 					<?php else : ?>
 						<form id="alm-loan-request-form" class="alm-loan-form">
+							<?php wp_nonce_field( 'alm_loan_request_nonce', 'nonce' ); ?>
 							<div class="alm-form-field">
 								<label for="alm-request-message">
 									<?php esc_html_e( 'Message for the current owner:', 'asset-lending-manager' ); ?>
