@@ -51,7 +51,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		<div class="alm-asset-view__media">
 			<?php if ( $alm_detail_image_html ) : ?>
 				<div class="alm-asset-thumbnail alm-asset-thumbnail--large">
-					<?php echo $alm_detail_image_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<?php echo wp_kses_post( $alm_detail_image_html ); ?>
 				</div>
 			<?php endif; ?>
 		</div>
@@ -118,7 +118,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	<!-- III section: Asset description -->
 	<section class="alm-asset-view__content" aria-label="<?php esc_attr_e( 'Full description', 'asset-lending-manager' ); ?>">
 		<div class="alm-asset-content">
-			<?php echo $asset->content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo wp_kses_post( $asset->content ); ?>
 		</div>
 	</section>
 
@@ -150,7 +150,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							<?php if ( $alm_asset_row['value'] ): ?>
 								<div class="alm-asset-acf-row alm-acf-<?php echo esc_attr( $alm_asset_row['name'] ); ?>">
 									<dt class="alm-asset-acf-label">
-										<?php echo esc_attr_e( $alm_asset_row['label'], 'asset-lending-manager' ); ?>
+										<?php echo esc_html( (string) $alm_asset_row['label'] ); ?>
 									</dt>
 									<dd class="alm-asset-acf-value">
 										<?php
@@ -298,7 +298,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 								$alm_request_date   = mysql2date( 'd/m/Y', $alm_request->request_date );
 								$alm_request_status = $alm_request->status;
 								// Handle long messages.
-								$alm_full_message  = esc_html( $alm_request->request_message );
+								$alm_full_message  = sanitize_text_field( (string) $alm_request->request_message );
 								$alm_short_message = mb_strlen( $alm_full_message ) > 60
 									? mb_substr( $alm_full_message, 0, 60 ) . '...'
 									: $alm_full_message;
@@ -318,7 +318,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									</td>
 									<td class="alm-request-message">
 										<span class="alm-message-text" title="<?php echo esc_attr( $alm_full_message ); ?>">
-											<?php echo $alm_short_message; ?>
+											<?php echo esc_html( $alm_short_message ); ?>
 										</span>
 									</td>
 									<td class="alm-request-date">
@@ -427,7 +427,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									$alm_status_class = 'alm-status--' . $alm_entry_status;
 
 									// Handle message (truncate for display, full in tooltip).
-									$alm_full_message  = esc_html( $alm_entry->message );
+									$alm_full_message  = sanitize_text_field( (string) $alm_entry->message );
 									$alm_short_message = mb_strlen( $alm_full_message ) > 50
 										? mb_substr( $alm_full_message, 0, 50 ) . '...'
 										: $alm_full_message;
@@ -459,7 +459,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										</td>
 										<td class="alm-history-message" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
 											<span class="alm-message-text" title="<?php echo esc_attr( $alm_full_message ); ?>">
-												<?php echo $alm_short_message; ?>
+												<?php echo esc_html( $alm_short_message ); ?>
 											</span>
 										</td>
 									</tr>

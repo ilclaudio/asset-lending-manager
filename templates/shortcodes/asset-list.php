@@ -180,7 +180,7 @@ if ( ! empty( $filter_level ) ) {
 					<a href="<?php echo esc_url( $alm_asset->permalink ); ?>" class="alm-asset-link">
 						<?php if ( $alm_asset->thumbnail ) : ?>
 							<div class="alm-asset-thumbnail">
-								<?php echo $alm_asset->thumbnail; ?>
+								<?php echo wp_kses_post( $alm_asset->thumbnail ); ?>
 							</div>
 						<?php endif; ?>
 						<div class="alm-asset-content-wrapper">
