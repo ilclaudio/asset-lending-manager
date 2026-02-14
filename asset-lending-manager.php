@@ -55,4 +55,3 @@ function alm_init_plugin() {
 }
 
 add_action( 'plugins_loaded', 'alm_init_plugin' );
-
