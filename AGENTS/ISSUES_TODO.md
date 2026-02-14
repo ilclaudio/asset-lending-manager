@@ -17,14 +17,6 @@ Last update: 2026-02-15
 
 ## Bug
 
-### [Medium] Null pointer risks in loan notification methods
-- **Status:** Open
-- **Date:** 2026-02-12
-- **Category:** Bug
-- **Description:** `get_userdata()` results are dereferenced without robust null checks.
-- **Expected behavior:** Validate user objects before property access.
-- **Notes:** `includes/class-alm-loan-manager.php`
-
 ### [Low] wp_redirect() used instead of wp_safe_redirect()
 - **Status:** Open
 - **Date:** 2026-02-15

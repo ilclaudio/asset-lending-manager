@@ -86,3 +86,12 @@ Last update: 2026-02-15
 - **Resolution date:** 2026-02-15
 - **Fix summary:** Added `wp_unslash()` wrapper before `sanitize_title()` in `get_asset_id_from_context()`.
 - **Notes:** `includes/class-alm-frontend-manager.php`, line 309.
+
+### [Medium] Null pointer risks in loan notification methods
+- **Status:** Resolved
+- **Date:** 2026-02-12
+- **Category:** Bug
+- **Description:** `get_userdata()` results dereferenced without null checks in `log_email_notification()`.
+- **Resolution date:** 2026-02-15
+- **Fix summary:** Added early return with error log when requester is not found; wrapped owner notification in null check.
+- **Notes:** `includes/class-alm-loan-manager.php`
