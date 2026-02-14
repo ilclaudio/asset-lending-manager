@@ -306,7 +306,7 @@ class ALM_Frontend_Manager {
 		}
 		// Priority 2: Slug from query string.
 		if ( isset( $_GET['asset'] ) && ! empty( $_GET['asset'] ) ) {
-			$query_slug = sanitize_title( $_GET['asset'] );
+			$query_slug = sanitize_title( wp_unslash( $_GET['asset'] ) );
 			$asset     = get_page_by_path( $query_slug, OBJECT, ALM_ASSET_CPT_SLUG );
 			if ( $asset ) {
 				return $asset->ID;

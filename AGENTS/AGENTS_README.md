@@ -10,4 +10,5 @@ This directory provides AI-oriented directives and project context to support de
 - `AI_BEHAVIOR.md`: workflow rules and issue management.
 - `ISSUES_TODO.md`: active backlog.
 - `ISSUES_RESOLVED.md`: resolved issue archive.
-- `AI_RULES_CHATGPT.md` / `AI_RULES_CLAUDE.md`: minimal agent-specific instructions.
+- `GIT_WORKFLOW.md`: branch, commit, and PR conventions.
+- `AI_RULES_CHATGPT.md` / `AI_RULES_CLAUDE.md`: agent-specific entry points and instructions.

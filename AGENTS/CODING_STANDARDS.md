@@ -5,11 +5,6 @@
 Coding rules for this project.
 Write code according to official WordPress standards and project-specific conventions.
 
-## Learning Support Requirement
-
-When useful, explain the theory behind choices (WordPress internals, security, architecture, standards), especially if the user shows knowledge gaps or asks for deeper understanding.
-Keep explanations practical and tied to the current code.
-
 ## Quality Priorities
 
 - Correctness and robustness.

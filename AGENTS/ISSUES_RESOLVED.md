@@ -1,8 +1,5 @@
 # ISSUES_RESOLVED
-Last update: 2026-02-14
-
-## Statistics
-- Total Resolved: 7
+Last update: 2026-02-15
 
 ## Entry Format
 ```markdown
@@ -80,3 +77,12 @@ Last update: 2026-02-14
 - **Resolution date:** 2026-02-14
 - **Fix summary:** Added transaction-scoped lock and re-read (`SELECT ... FOR UPDATE`) for target request and related asset requests before state transition.
 - **Notes:** `includes/class-alm-loan-manager.php`
+
+### [Medium] Missing wp_unslash() on $_GET['asset'] before sanitization
+- **Status:** Resolved
+- **Date:** 2026-02-15
+- **Category:** Bug
+- **Description:** `$_GET['asset']` passed to `sanitize_title()` without `wp_unslash()` first, inconsistent with the rest of the file.
+- **Resolution date:** 2026-02-15
+- **Fix summary:** Added `wp_unslash()` wrapper before `sanitize_title()` in `get_asset_id_from_context()`.
+- **Notes:** `includes/class-alm-frontend-manager.php`, line 309.

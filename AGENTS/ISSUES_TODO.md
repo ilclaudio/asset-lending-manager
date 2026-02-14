@@ -1,10 +1,5 @@
 # ISSUES TODO
-Last update: 2026-02-14
-
-## Statistics
-- Total Open: 13
-- By Priority: Critical 0 | High 1 | Medium 3 | Low 9
-- By Category: Security 1 | Bug 2 | Refactoring 4 | CodeStyle 0 | Performance 0 | Accessibility 1 | Feature 5 | Documentation 0
+Last update: 2026-02-15
 
 ---
 
@@ -29,6 +24,14 @@ Last update: 2026-02-14
 - **Description:** `get_userdata()` results are dereferenced without robust null checks.
 - **Expected behavior:** Validate user objects before property access.
 - **Notes:** `includes/class-alm-loan-manager.php`
+
+### [Low] wp_redirect() used instead of wp_safe_redirect()
+- **Status:** Open
+- **Date:** 2026-02-15
+- **Category:** Bug
+- **Description:** `redirect_restricted_users()` calls `wp_redirect( home_url() )`. While `home_url()` is normally safe, `wp_safe_redirect()` is the WordPress-recommended function for internal redirects as it validates the destination against the allowed hosts list.
+- **Expected behavior:** Replace `wp_redirect()` with `wp_safe_redirect()`.
+- **Notes:** `includes/class-alm-admin-manager.php`, line 60.
 
 ### [Low] Plugin main admin page title is not rendered
 - **Status:** Open
@@ -65,6 +68,14 @@ Last update: 2026-02-14
 - **Description:** Many debug logs expose runtime details and clutter browser console.
 - **Expected behavior:** Remove logs or gate them behind explicit debug flag.
 - **Notes:** `assets/js/frontend-assets.js`, `assets/js/admin-assets.js`
+
+### [Low] jQuery declared as script dependency but vanilla JS policy applies
+- **Status:** Open
+- **Date:** 2026-02-15
+- **Category:** Refactoring
+- **Description:** `wp_enqueue_script()` calls for `alm-frontend-assets`, `alm-admin-assets`, and `alm-asset-autocomplete` all declare `array( 'jquery' )` as dependency. CODING_STANDARDS mandates vanilla JS only. If jQuery is not actually used in the JS files, this forces unnecessary loading.
+- **Expected behavior:** Audit JS files for jQuery usage; if none, remove the dependency. If jQuery is used, either refactor to vanilla JS or document the exception.
+- **Notes:** `includes/class-alm-frontend-manager.php:187`, `includes/class-alm-admin-manager.php:112`, `includes/class-alm-autocomplete-manager.php:38`.
 
 ### [Low] Hardcoded operator user ID for automatic operations
 - **Status:** Open

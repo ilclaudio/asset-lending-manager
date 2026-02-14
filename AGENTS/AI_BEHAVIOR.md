@@ -13,14 +13,6 @@ Operational rules for AI assistants working on this codebase.
 - Product scope: `AGENTS/PROJECT.md`.
 - VCS workflow: `AGENTS/GIT_WORKFLOW.md` (apply only for git tasks).
 
-## Session Reading Order
-1. `AGENTS/AI_RULES_CHATGPT.md` or `AGENTS/AI_RULES_CLAUDE.md` (agent-specific entry point)
-2. `AGENTS/AI_BEHAVIOR.md`
-3. `AGENTS/PROJECT.md`
-4. `AGENTS/ARCHITECTURE.md`
-5. `AGENTS/CODING_STANDARDS.md`
-6. `AGENTS/ISSUES_TODO.md`
-
 ## Execution Rules
 - Be concise, precise, and action-oriented.
 - Work one objective at a time, end-to-end.
@@ -28,12 +20,16 @@ Operational rules for AI assistants working on this codebase.
 - After meaningful progress, summarize what changed and what remains.
 - Keep quality gates active: security, accessibility, maintainability.
 
+## Learning Support
+
+When useful, explain the theory behind choices (WordPress internals, security, architecture, standards), especially if the user shows knowledge gaps or asks for deeper understanding.
+Keep explanations practical and tied to the current code.
+
 ## Excluded Directories
 
 Always ignore these folders for review/refactoring/fixes:
 - `vendor/`
 - `node_modules/`
-- `assets/bootstrap-italia/`
 
 ## Issue Management
 
@@ -78,8 +74,7 @@ Feature ideas not implementation-ready still go to category `Feature` with statu
 When an issue is resolved:
 1. Move it from `ISSUES_TODO.md` to `ISSUES_RESOLVED.md`.
 2. Add `Resolution date` and `Fix summary`.
-3. Keep issue statistics aligned.
-4. Add commit/PR references when available.
+3. Add commit/PR references when available.
 
 ## Documentation Update Rules
 
