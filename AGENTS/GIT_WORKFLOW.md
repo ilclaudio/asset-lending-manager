@@ -6,11 +6,13 @@ Use these rules only when the task includes branch/commit/PR work.
 
 - Base branch: `main`.
 - Never commit directly to `main`.
-- Use branch name format: `feature/<camelCaseName>`.
+- Branch name format: `<prefix>/<camelCaseName>`.
+- Prefixes: `feature/`, `bugfix/`, `refactor/`, `docs/`.
 - Examples:
   - `feature/addSpinoff`
-  - `feature/manageSections`
-  - `feature/fixContactForm`
+  - `bugfix/fixContactForm`
+  - `refactor/centralizeRendering`
+  - `docs/updateArchitecture`
 
 ## Commits
 

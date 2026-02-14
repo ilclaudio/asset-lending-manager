@@ -19,8 +19,5 @@ composer.lock
 .phpunit.result.cache
 
 # Custom directives
-node_modules
-assets/css/compiled
-assets/bootstrap-italia/css/bootstrap-italia-custom.min.css
 # AGENTS/ISSUES_TODO.md
 # AGENTS/ISSUES_RESOLVED.md
