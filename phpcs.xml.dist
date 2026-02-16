@@ -24,11 +24,10 @@
 	</rule>
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
-		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="alm"/>
-				<element value="ALM"/>
+				<element value="alm_"/>
+				<element value="ALM_"/>
 			</property>
 		</properties>
 	</rule>
