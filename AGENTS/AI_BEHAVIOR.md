@@ -19,6 +19,7 @@ Operational rules for AI assistants working on this codebase.
 - Ask clarifying questions only when ambiguity blocks implementation.
 - After meaningful progress, summarize what changed and what remains.
 - Keep quality gates active: security, accessibility, maintainability.
+- During PHPCS remediation, never weaken rules in `phpcs.xml.dist` to silence unresolved findings. If a finding cannot be fixed safely in code, report it in the output and ask the user whether to add/update an entry in `AGENTS/ISSUES_TODO.md`.
 
 ## Learning Support
 
@@ -30,6 +31,20 @@ Keep explanations practical and tied to the current code.
 Always ignore these folders for review/refactoring/fixes:
 - `vendor/`
 - `node_modules/`
+
+## Repository Scope Boundaries
+
+- Modify files only inside this plugin repository: `wp-content/plugins/asset-lending-manager/`.
+- Never modify files outside this repository (for example user/system files, editor extension files, or any path under `.vscode/` not owned by this repo).
+- Never modify external WordPress components such as:
+  - other plugins under `wp-content/plugins/`
+  - themes under `wp-content/themes/`
+  - WordPress core files under `wp-admin/`, `wp-includes/`, or root bootstrap files
+- Treat third-party/library directories as read-only unless the user explicitly asks for a direct library patch:
+  - `vendor/`
+  - `node_modules/`
+  - `assets/bootstrap-italia/`
+- Before staging/commit, verify with `git status --short` that all changed files are inside the allowed repository scope.
 
 ## Issue Management
 
@@ -88,6 +103,27 @@ Before closing a task, verify:
 - Code follows `CODING_STANDARDS.md`.
 - Relevant AGENTS docs were updated.
 - Issue tracking is consistent.
+
+## Security Review Checklist (Minimum)
+
+For every bug-fix/feature/refactor touching runtime code, verify at least:
+- Input sanitization for external data (`$_GET`, `$_POST`, REST params, options payloads, remote data).
+- Context-aware output escaping in templates and admin views (`esc_html`, `esc_attr`, `esc_url`, `wp_kses*`).
+- Nonce verification and capability checks for state-changing/admin actions.
+- Safe query building (`$wpdb->prepare()`, validated query args for `WP_Query`/tax/meta filters).
+- Dependency and integration hygiene: no secrets hardcoded, remote calls validated, unsafe transport disabled.
+- Basic accessibility sanity on changed markup (valid structure, labels/aria, keyboard reachability where relevant).
+
+If any checklist item fails and is out of scope to fix immediately, add/update an issue in `ISSUES_TODO.md`.
+
+## Definition of Done
+
+Before marking work complete:
+- Run `npm run lint:php` when environment/dependencies are available.
+- Re-check changed templates/components for escaping and structural validity.
+- Update issue tracking (`ISSUES_TODO.md` / `ISSUES_RESOLVED.md`) when applicable.
+- Update AGENTS docs affected by the change (`PROJECT.md`, `ARCHITECTURE.md`, `CODING_STANDARDS.md`, `AI_BEHAVIOR.md`, `AGENTS_README.md` as needed).
+- Report a concise summary of what changed, what was verified, and any remaining risks.
 
 ## AGENTS Update Rules
 - If behavior/process changes: update `AI_BEHAVIOR.md`.
