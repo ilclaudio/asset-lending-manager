@@ -861,20 +861,108 @@ class ALM_Loan_Manager {
 	}
 
 	/**
+	 * Execute ownership transfer for an asset.
+	 *
+	 * Shared core used by approve_loan_request() and direct_assign_asset().
+	 * Performs in order:
+	 * 1. Assign new owner to the main asset.
+	 * 2. Set state to "on-loan" for the main asset.
+	 * 3. Detect if asset is a kit and load component IDs.
+	 * 4. Optionally check that components are not already on-loan (conflict guard).
+	 * 5. Propagate owner and state to all kit components.
+	 * 6. Cancel concurrent requests for the main asset.
+	 * 7. Cancel concurrent requests for each kit component.
+	 *
+	 * Must be called inside an open database transaction.
+	 *
+	 * @param int    $asset_id                  Asset ID.
+	 * @param int    $new_owner_id              New owner user ID.
+	 * @param int    $exclude_request_id        Request ID to exclude from cancellation (0 = cancel all).
+	 * @param string $cancel_reason             Cancellation message for concurrent requests on the main asset.
+	 * @param bool   $check_component_conflicts Whether to throw if a kit component is already on-loan.
+	 * @throws Exception When any operation fails.
+	 * @return int[] Component IDs processed (empty array if asset is not a kit).
+	 */
+	private function execute_ownership_transfer(
+		$asset_id,
+		$new_owner_id,
+		$exclude_request_id,
+		$cancel_reason,
+		$check_component_conflicts = true
+	) {
+		// 1. Assign new owner.
+		$this->set_asset_owner( $asset_id, $new_owner_id );
+
+		// 2. Set state to on-loan.
+		$this->set_asset_state( $asset_id, 'on-loan' );
+
+		// 3. Detect kit and load components.
+		$is_kit        = $this->is_asset_kit( $asset_id );
+		$component_ids = array();
+
+		if ( $is_kit ) {
+			$component_ids = $this->get_kit_components( $asset_id );
+
+			if ( ! empty( $component_ids ) ) {
+				// 4. Optional conflict guard: block if any component is already on-loan.
+				if ( $check_component_conflicts ) {
+					foreach ( $component_ids as $component_id ) {
+						$component_state = $this->get_asset_state_slug( $component_id );
+						if ( 'on-loan' === $component_state ) {
+							$component_title = get_the_title( $component_id );
+							throw new Exception(
+								sprintf(
+									__( 'Component "%s" is already on loan and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
+									$component_title
+								)
+							);
+						}
+					}
+				}
+
+				// 5. Propagate owner and state to all components.
+				foreach ( $component_ids as $component_id ) {
+					$this->set_asset_owner( $component_id, $new_owner_id );
+					$this->set_asset_state( $component_id, 'on-loan' );
+				}
+			}
+		}
+
+		// 6. Cancel concurrent requests for the main asset.
+		$this->cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_reason );
+
+		// 7. Cancel concurrent requests for kit components.
+		if ( $is_kit && ! empty( $component_ids ) ) {
+			$kit_title = get_the_title( $asset_id );
+			foreach ( $component_ids as $component_id ) {
+				$this->cancel_concurrent_requests(
+					$component_id,
+					0,
+					sprintf(
+						/* translators: %s: kit asset title */
+						__( 'Request canceled: component assigned as part of kit "%s".', 'asset-lending-manager' ),
+						$kit_title
+					)
+				);
+			}
+		}
+
+		return $component_ids;
+	}
+
+	/**
 	 * Approve a loan request (atomic operation with full kit support).
 	 *
 	 * This method performs the following operations atomically:
-	 * 1. Validate request is pending
-	 * 2. Change owner of main asset
-	 * 3. Change state of main asset to "on-loan"
-	 * 4. If kit: propagate owner and state to all components
-	 * 5. Cancel concurrent requests for the same asset
-	 * 6. Cancel requests for components if this is a kit
-	 * 7. Update request status to approved
-	 * 8. Insert record into history table
+	 * 1. Validate request is still pending (with row-level lock).
+	 * 2. Check asset is not already on-loan.
+	 * 3-7. Delegate ownership transfer to execute_ownership_transfer().
+	 * 8. Delete approved request from requests table.
+	 * 9. Insert record into history table.
 	 *
 	 * @param object $loan_request Loan request object from database.
 	 * @param int    $approved_by  User ID who approved the request.
+	 * @throws Exception When a transactional operation fails (caught internally).
 	 * @return array ['success' => bool, 'message' => string]
 	 */
 	private function approve_loan_request( $loan_request, $approved_by ) {
@@ -932,62 +1020,14 @@ class ALM_Loan_Manager {
 				throw new Exception( __( 'Asset is already on loan.', 'asset-lending-manager' ) );
 			}
 
-			// 3. Change owner of main asset.
-			$this->set_asset_owner( $asset_id, $requester_id );
-
-			// 4. Change state of main asset to "on-loan".
-			$this->set_asset_state( $asset_id, 'on-loan' );
-
-			// 5. If asset is a kit, propagate to components.
-			$is_kit        = $this->is_asset_kit( $asset_id );
-			$component_ids = array();
-
-			if ( $is_kit ) {
-				$component_ids = $this->get_kit_components( $asset_id );
-
-				if ( ! empty( $component_ids ) ) {
-					// Check if any component is already on loan.
-					foreach ( $component_ids as $component_id ) {
-						$component_state = $this->get_asset_state_slug( $component_id );
-						if ( 'on-loan' === $component_state ) {
-							$component_title = get_the_title( $component_id );
-							throw new Exception(
-								sprintf(
-									__( 'Component "%s" is already on loan and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
-									$component_title
-								)
-							);
-						}
-					}
-
-					// Update all components.
-					foreach ( $component_ids as $component_id ) {
-						$this->set_asset_owner( $component_id, $requester_id );
-						$this->set_asset_state( $component_id, 'on-loan' );
-					}
-				}
-			}
-
-			// 6. Cancel concurrent requests for the same asset.
-			$this->cancel_concurrent_requests(
+			// 3–7. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
+			$component_ids = $this->execute_ownership_transfer(
 				$asset_id,
+				$requester_id,
 				$loan_request->id,
-				__( 'Request automatically canceled: asset approved for another user.', 'asset-lending-manager' )
+				__( 'Request automatically canceled: asset approved for another user.', 'asset-lending-manager' ),
+				true
 			);
-
-			// 7. If kit, cancel requests for all components.
-			if ( $is_kit && ! empty( $component_ids ) ) {
-				foreach ( $component_ids as $component_id ) {
-					$this->cancel_concurrent_requests(
-						$component_id,
-						0, // Cancel all requests for this component.
-						sprintf(
-							__( 'Request canceled: component assigned as part of kit "%s".', 'asset-lending-manager' ),
-							get_the_title( $asset_id )
-						)
-					);
-				}
-			}
 
 			// 8. Update request status to approved and delete from requests table.
 			$deleted = $wpdb->delete(
@@ -1024,7 +1064,7 @@ class ALM_Loan_Manager {
 					'request_id'   => $loan_request->id,
 					'asset_id'     => $asset_id,
 					'requester_id' => $requester_id,
-					'is_kit'       => $is_kit,
+					'is_kit'       => ! empty( $component_ids ),
 					'components'   => $component_ids,
 				)
 			);
@@ -1399,46 +1439,14 @@ class ALM_Loan_Manager {
 			// 2. Record previous owner before overwriting.
 			$previous_owner_id = $this->get_current_owner( $asset_id );
 
-			// 3. Change owner of main asset.
-			$this->set_asset_owner( $asset_id, $assignee_id );
-
-			// 4. Change state of main asset to "on-loan".
-			$this->set_asset_state( $asset_id, 'on-loan' );
-
-			// 5. If kit: propagate owner and state to components (no on-loan conflict check).
-			$is_kit        = $this->is_asset_kit( $asset_id );
-			$component_ids = array();
-
-			if ( $is_kit ) {
-				$component_ids = $this->get_kit_components( $asset_id );
-
-				foreach ( $component_ids as $component_id ) {
-					$this->set_asset_owner( $component_id, $assignee_id );
-					$this->set_asset_state( $component_id, 'on-loan' );
-				}
-			}
-
-			// 6. Cancel all pending requests for this asset.
-			$this->cancel_concurrent_requests(
+			// 3–7. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
+			$component_ids = $this->execute_ownership_transfer(
 				$asset_id,
+				$assignee_id,
 				0,
-				__( 'Request canceled: asset directly assigned by operator.', 'asset-lending-manager' )
+				__( 'Request canceled: asset directly assigned by operator.', 'asset-lending-manager' ),
+				false
 			);
-
-			// 7. Cancel requests for kit components.
-			if ( $is_kit && ! empty( $component_ids ) ) {
-				foreach ( $component_ids as $component_id ) {
-					$this->cancel_concurrent_requests(
-						$component_id,
-						0,
-						sprintf(
-							/* translators: %s: kit asset title */
-							__( 'Request canceled: component directly assigned as part of kit "%s".', 'asset-lending-manager' ),
-							get_the_title( $asset_id )
-						)
-					);
-				}
-			}
 
 			// 8. Log history entry (loan_request_id = 0 for direct assignments).
 			$history_logged = $this->log_history_entry(
@@ -1463,7 +1471,7 @@ class ALM_Loan_Manager {
 				array(
 					'asset_id'    => $asset_id,
 					'assignee_id' => $assignee_id,
-					'is_kit'      => $is_kit,
+					'is_kit'      => ! empty( $component_ids ),
 					'components'  => $component_ids,
 				)
 			);
