@@ -38,7 +38,10 @@ composer.lock
 nbproject
 Thumbs.db
 
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+
 
 # Custom directives
-.vscode/*
-# !.vscode/settings.json
