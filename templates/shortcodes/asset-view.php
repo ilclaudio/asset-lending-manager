@@ -18,10 +18,10 @@ if ( $alm_asset_id <= 0 ) {
 	return;
 }
 
-$alm_asset_fields  = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
-$alm_loan_manager  = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
-$alm_owner_id      = $alm_loan_manager->get_current_owner( $alm_asset_id );
-$alm_owner_name    = '';
+$alm_asset_fields     = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
+$alm_loan_manager     = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
+$alm_owner_id         = $alm_loan_manager->get_current_owner( $alm_asset_id );
+$alm_owner_name       = '';
 $alm_is_current_owner = is_user_logged_in() && $alm_owner_id > 0 && ( $alm_current_user_id === (int) $alm_owner_id );
 $alm_is_operator      = is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
 if ( $alm_owner_id > 0 ) {
@@ -149,7 +149,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							</div>
 						<?php endif; ?>
 						<?php foreach ( $alm_asset_fields as $alm_asset_row ) : ?>
-							<?php if ( $alm_asset_row['value'] ): ?>
+							<?php if ( $alm_asset_row['value'] ) : ?>
 								<div class="alm-asset-acf-row alm-acf-<?php echo esc_attr( $alm_asset_row['name'] ); ?>">
 									<dt class="alm-asset-acf-label">
 										<?php echo esc_html( (string) $alm_asset_row['label'] ); ?>
@@ -262,28 +262,28 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 
 	<!-- VI section: Loan requests -->
 	<?php
-		if (
+	if (
 				is_user_logged_in() &&
 				(
 					$alm_is_operator ||
 					( $alm_loan_manager->get_current_owner( $alm_asset_id ) === $alm_current_user_id )
 				)
 			) {
-			$alm_requests = $alm_loan_manager->get_asset_requests( $alm_asset_id );
-	?>
+		$alm_requests = $alm_loan_manager->get_asset_requests( $alm_asset_id );
+		?>
 	<section class="alm-asset-view__loan-requests" aria-label="<?php esc_attr_e( 'Loan requests', 'asset-lending-manager' ); ?>">
 		<details class="alm-collapsible alm-collapsible--requestlist">
 			<summary class="alm-collapsible__summary">
 				<span class="alm-collapsible__title">
-					<?php esc_html_e( 'Loan requests', 'asset-lending-manager' ); ?>
+				<?php esc_html_e( 'Loan requests', 'asset-lending-manager' ); ?>
 				</span>
 				<span class="alm-collapsible__hint" aria-hidden="true">
-					<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
+				<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 				</span>
 			</summary>
 
 			<div class="alm-collapsible__body">
-				<?php if ( ! empty( $alm_requests ) ) : ?>
+			<?php if ( ! empty( $alm_requests ) ) : ?>
 					<table class="alm-requests-table">
 						<thead>
 							<tr>
@@ -307,13 +307,14 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									: $alm_full_message;
 								// Status label and CSS class.
 								$alm_status_labels = array(
-									'pending'  => __( 'Pending', 'asset-lending-manager' ),
-									'approved' => __( 'Approved', 'asset-lending-manager' ),
-									'rejected' => __( 'Rejected', 'asset-lending-manager' ),
-									'canceled' => __( 'Canceled', 'asset-lending-manager' ),
+									'pending'       => __( 'Pending', 'asset-lending-manager' ),
+									'approved'      => __( 'Approved', 'asset-lending-manager' ),
+									'rejected'      => __( 'Rejected', 'asset-lending-manager' ),
+									'canceled'      => __( 'Canceled', 'asset-lending-manager' ),
+									'direct_assign' => __( 'Direct assignment', 'asset-lending-manager' ),
 								);
-								$alm_status_label = isset( $alm_status_labels[ $alm_request_status ] ) ? $alm_status_labels[ $alm_request_status ] : $alm_request_status;
-								$alm_status_class = 'alm-status--' . $alm_request_status;
+								$alm_status_label  = isset( $alm_status_labels[ $alm_request_status ] ) ? $alm_status_labels[ $alm_request_status ] : $alm_request_status;
+								$alm_status_class  = 'alm-status--' . $alm_request_status;
 								?>
 								<tr class="alm-request-row" data-request-id="<?php echo esc_attr( $alm_request->id ); ?>">
 									<td class="alm-request-requester">
@@ -364,9 +365,72 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 
 		</details>
 	</section>
-	<?php
+		<?php
 	}
 	?>
+
+	<!-- VIII section: Direct assignment (operator only) -->
+	<?php if ( $alm_is_operator ) : ?>
+	<section class="alm-asset-view__direct-assign" aria-label="<?php esc_attr_e( 'Direct assignment', 'asset-lending-manager' ); ?>">
+		<details class="alm-collapsible alm-collapsible--directassign">
+			<summary class="alm-collapsible__summary">
+				<span class="alm-collapsible__title">
+					<?php esc_html_e( 'Direct assignment', 'asset-lending-manager' ); ?>
+				</span>
+				<span class="alm-collapsible__hint" aria-hidden="true">
+					<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
+				</span>
+			</summary>
+			<div class="alm-collapsible__body">
+				<form id="alm-direct-assign-form" class="alm-loan-form">
+					<?php wp_nonce_field( 'alm_direct_assign_nonce', 'alm_direct_assign_nonce_field' ); ?>
+
+					<div class="alm-form-field">
+						<label for="alm-direct-assign-user-input">
+							<?php esc_html_e( 'Assign to user:', 'asset-lending-manager' ); ?>
+						</label>
+						<div class="alm-autocomplete-wrap" style="position:relative;">
+							<input
+								type="text"
+								id="alm-direct-assign-user-input"
+								autocomplete="off"
+								placeholder="<?php esc_attr_e( 'Search member or operator...', 'asset-lending-manager' ); ?>"
+							/>
+							<input
+								type="hidden"
+								id="alm-direct-assign-user-id"
+								name="assignee_id"
+								value=""
+							/>
+						</div>
+					</div>
+
+					<div class="alm-form-field">
+						<label for="alm-direct-assign-reason">
+							<?php esc_html_e( 'Reason:', 'asset-lending-manager' ); ?>
+						</label>
+						<textarea
+							id="alm-direct-assign-reason"
+							name="reason"
+							rows="3"
+							maxlength="500"
+							placeholder="<?php esc_attr_e( 'Explain the reason for this assignment...', 'asset-lending-manager' ); ?>"
+							required
+						></textarea>
+						<div class="alm-char-count" id="alm-direct-assign-char-count">0 / 500</div>
+					</div>
+
+					<div class="alm-form-actions">
+						<button type="submit" class="alm-button alm-button--primary">
+							<?php esc_html_e( 'Assign asset', 'asset-lending-manager' ); ?>
+						</button>
+					</div>
+					<div id="alm-direct-assign-response" class="alm-response-message" style="display:none;"></div>
+				</form>
+			</div>
+		</details>
+	</section>
+	<?php endif; ?>
 
 	<!-- VII section: Loan history -->
 	<?php if ( is_user_logged_in() && current_user_can( ALM_EDIT_ASSET ) ) : ?>
@@ -409,8 +473,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 								<?php foreach ( $alm_history as $alm_entry ) : ?>
 									<?php
 									// Get user data.
-									$alm_requester      = get_userdata( $alm_entry->requester_id );
-									$alm_requester_name = $alm_requester ? $alm_requester->display_name : __( 'Unknown', 'asset-lending-manager' );
+									$alm_requester       = get_userdata( $alm_entry->requester_id );
+									$alm_requester_name  = $alm_requester ? $alm_requester->display_name : __( 'Unknown', 'asset-lending-manager' );
 									$alm_prev_owner      = ( $alm_entry->owner_id > 0 ) ? get_userdata( $alm_entry->owner_id ) : null;
 									$alm_prev_owner_name = $alm_prev_owner ? $alm_prev_owner->display_name : __( 'None', 'asset-lending-manager' );
 									$alm_changed_by      = get_userdata( $alm_entry->changed_by );
@@ -426,8 +490,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										'rejected' => __( 'Rejected', 'asset-lending-manager' ),
 										'canceled' => __( 'Canceled', 'asset-lending-manager' ),
 									);
-									$alm_status_label = isset( $alm_status_labels[ $alm_entry_status ] ) ? $alm_status_labels[ $alm_entry_status ] : $alm_entry_status;
-									$alm_status_class = 'alm-status--' . $alm_entry_status;
+									$alm_status_label  = isset( $alm_status_labels[ $alm_entry_status ] ) ? $alm_status_labels[ $alm_entry_status ] : $alm_entry_status;
+									$alm_status_class  = 'alm-status--' . $alm_entry_status;
 
 									// Handle message (truncate for display, full in tooltip).
 									$alm_full_message  = sanitize_text_field( (string) $alm_entry->message );

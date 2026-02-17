@@ -93,14 +93,6 @@ Last update: 2026-02-14
 
 ## Feature
 
-### [High] Direct assignment by operator to member/operator
-- **Status:** Open
-- **Date:** 2026-02-14
-- **Category:** Feature
-- **Description:** Operators need to assign assets directly to a target user without passing through loan request flow.
-- **Expected behavior:** Add secure admin flow with reason, transactional update (owner/state), kit propagation, and history/audit logging.
-- **Notes:** Restrict action to operators/admin; keep requests section read-only for non-owner operators.
-
 ### [High] Loan closure flow (return/check-in) for assets and kits
 - **Status:** Open
 - **Date:** 2026-02-14

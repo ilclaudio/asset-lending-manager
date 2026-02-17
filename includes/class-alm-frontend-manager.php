@@ -193,9 +193,28 @@ class ALM_Frontend_Manager {
 			'alm-frontend-assets',
 			'almFrontend',
 			array(
-				'ajaxUrl'          => admin_url( 'admin-ajax.php' ),
-				'nonce'            => wp_create_nonce( 'alm_frontend_nonce' ),
-				'loanRequestNonce' => wp_create_nonce( 'alm_loan_request_nonce' ),
+				'ajaxUrl'           => admin_url( 'admin-ajax.php' ),
+				'nonce'             => wp_create_nonce( 'alm_frontend_nonce' ),
+				'loanRequestNonce'  => wp_create_nonce( 'alm_loan_request_nonce' ),
+				'directAssignNonce' => wp_create_nonce( 'alm_direct_assign_nonce' ),
+			)
+		);
+
+		// Enqueue user autocomplete assets (used by the direct assignment form for operators).
+		wp_enqueue_script(
+			'alm-user-autocomplete',
+			ALM_PLUGIN_URL . 'assets/js/alm-user-autocomplete.js',
+			array(),
+			ALM_VERSION,
+			true
+		);
+		wp_localize_script(
+			'alm-user-autocomplete',
+			'almUserAutocomplete',
+			array(
+				'restUrl'   => esc_url( rest_url( 'alm/v1/users/autocomplete' ) ),
+				'restNonce' => wp_create_nonce( 'wp_rest' ),
+				'minChars'  => 3,
 			)
 		);
 	}
@@ -307,7 +326,7 @@ class ALM_Frontend_Manager {
 		// Priority 2: Slug from query string.
 		if ( isset( $_GET['asset'] ) && ! empty( $_GET['asset'] ) ) {
 			$query_slug = sanitize_title( wp_unslash( $_GET['asset'] ) );
-			$asset     = get_page_by_path( $query_slug, OBJECT, ALM_ASSET_CPT_SLUG );
+			$asset      = get_page_by_path( $query_slug, OBJECT, ALM_ASSET_CPT_SLUG );
 			if ( $asset ) {
 				return $asset->ID;
 			}
@@ -389,13 +408,13 @@ class ALM_Frontend_Manager {
 			$query_args['tax_query'] = $tax_query;
 		}
 		// Build and execute query.
-		$query = new WP_Query( $query_args );
+		$query        = new WP_Query( $query_args );
 		$assets       = array();
 		$assets_count = 0;
 		if ( $query->have_posts() ) {
 			foreach ( $query->posts as $post ) {
 				$assets_count = (int) $query->found_posts;
-				$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
+				$wrapper      = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
 				if ( $wrapper ) {
 					$assets[] = $wrapper;
 				}

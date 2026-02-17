@@ -48,11 +48,13 @@ Core hooks/endpoints used across modules:
 - `init`: asset post type and taxonomies registration.
 - `acf/include_fields`: ACF field group registration.
 - `wp_ajax_alm_submit_loan_request`, `wp_ajax_alm_approve_loan_request`, `wp_ajax_alm_reject_loan_request`: loan workflow actions.
+- `wp_ajax_alm_direct_assign_asset`: direct asset assignment by operator (requires `ALM_EDIT_ASSET`).
 - `template_include`: frontend template override for ALM asset views.
 - `wp_enqueue_scripts`: frontend and autocomplete assets.
 - `admin_init`, `admin_menu`, `admin_enqueue_scripts`: admin restrictions/menu/assets.
 - `admin_post_alm_reload_default_terms`: admin action to restore default terms.
-- REST `POST /wp-json/alm/v1/assets/autocomplete`: asset autocomplete endpoint.
+- REST `POST /wp-json/alm/v1/assets/autocomplete`: asset autocomplete endpoint (public).
+- REST `POST /wp-json/alm/v1/users/autocomplete`: ALM user autocomplete (requires `ALM_EDIT_ASSET`).
 - Auth UX hooks: `login_redirect`, `logout_redirect`.
 
 ## Data Model
@@ -81,6 +83,8 @@ Core hooks/endpoints used across modules:
 ### Database Tables
 - `{$wpdb->prefix}alm_loan_requests`: `id`, `asset_id`, `requester_id`, `owner_id`, `request_date`, `request_message`, `status`, `response_date`, `response_message`.
 - `{$wpdb->prefix}alm_loan_requests_history`: `id`, `loan_request_id`, `asset_id`, `requester_id`, `owner_id`, `status`, `message`, `changed_at`, `changed_by`.
+  - `status` known values: `approved`, `rejected`, `canceled`, `direct_assign`.
+  - For `direct_assign` entries: `loan_request_id = 0` (no originating request), `requester_id` = new owner (assignee), `owner_id` = previous owner.
 
 ### Post Meta
 - `_alm_current_owner` (int user ID): current assignee for an asset.

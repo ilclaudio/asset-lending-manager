@@ -70,13 +70,34 @@ class ALM_Autocomplete_Manager {
 				'callback'            => array( $this, 'handle_autocomplete' ),
 				'permission_callback' => '__return_true',
 				// 'permission_callback' => function() {
-				// 	return current_user_can( ALM_VIEW_ASSETS );
+				// return current_user_can( ALM_VIEW_ASSETS );
 				// },
 				'args'                => array(
 					'term' => array(
 						'required'          => true,
 						'sanitize_callback' => 'sanitize_text_field',
-						'validate_callback' => function( $param ) {
+						'validate_callback' => function ( $param ) {
+							return is_string( $param ) && strlen( $param ) >= 3;
+						},
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			'alm/v1',
+			'/users/autocomplete',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'handle_users_autocomplete' ),
+				'permission_callback' => function () {
+					return is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
+				},
+				'args'                => array(
+					'term' => array(
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_text_field',
+						'validate_callback' => function ( $param ) {
 							return is_string( $param ) && strlen( $param ) >= 3;
 						},
 					),
@@ -100,22 +121,22 @@ class ALM_Autocomplete_Manager {
 		// Check nonce.
 		// $nonce = $request->get_param( 'nonce' );
 		// if ( ! wp_verify_nonce( $nonce, 'alm_autocomplete_nonce' ) ) {
-		// 	return new WP_REST_Response(
-		// 		array( 'error' => __( 'Invalid security token.', 'asset-lending-manager' ) ),
-		// 		403
-		// 	);
+		// return new WP_REST_Response(
+		// array( 'error' => __( 'Invalid security token.', 'asset-lending-manager' ) ),
+		// 403
+		// );
 		// }
 
 		// // Check capability.
 		// if ( ! current_user_can( ALM_VIEW_ASSETS ) ) {
-		// 	return new WP_REST_Response(
-		// 		array( 'error' => __( 'Insufficient permissions.', 'asset-lending-manager' ) ),
-		// 		403
-		// 	);
+		// return new WP_REST_Response(
+		// array( 'error' => __( 'Insufficient permissions.', 'asset-lending-manager' ) ),
+		// 403
+		// );
 		// }
 
 		// Read search term.
-		$term  = $request->get_param( 'term' ) ?? '';
+		$term = $request->get_param( 'term' ) ?? '';
 		$term = $term ? trim( wp_unslash( $term ) ) : '';
 		// Require at least 3 characters.
 		if ( strlen( $term ) < 3 ) {
@@ -129,8 +150,8 @@ class ALM_Autocomplete_Manager {
 			's'              => $term,
 			'posts_per_page' => ALM_AUTOCOMPLETE_MAX_RESULTS,
 		);
-		$query   = new WP_Query( $query_args );
-		$results = array();
+		$query      = new WP_Query( $query_args );
+		$results    = array();
 		if ( $query->have_posts() ) {
 			foreach ( $query->posts as $post ) {
 				$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
@@ -148,6 +169,50 @@ class ALM_Autocomplete_Manager {
 			}
 		}
 		wp_reset_postdata();
+		return rest_ensure_response( $results );
+	}
+
+	/**
+	 * Handle user autocomplete request via POST.
+	 *
+	 * Returns ALM users (members and operators) matching the search term.
+	 * Protected endpoint: requires operator capability.
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 * @return WP_REST_Response
+	 */
+	public function handle_users_autocomplete( WP_REST_Request $request ) {
+		$term = $request->get_param( 'term' ) ?? '';
+		$term = trim( wp_unslash( (string) $term ) );
+
+		if ( strlen( $term ) < 3 ) {
+			return rest_ensure_response( array() );
+		}
+
+		$users = get_users(
+			array(
+				'role__in' => array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ),
+				'search'   => '*' . $term . '*',
+				'number'   => ALM_AUTOCOMPLETE_MAX_RESULTS,
+				'orderby'  => 'display_name',
+				'order'    => 'ASC',
+			)
+		);
+
+		$results = array();
+		foreach ( $users as $user ) {
+			$user_roles = (array) $user->roles;
+			$role_label = in_array( ALM_OPERATOR_ROLE, $user_roles, true )
+				? __( 'Operator', 'asset-lending-manager' )
+				: __( 'Member', 'asset-lending-manager' );
+
+			$results[] = array(
+				'id'           => $user->ID,
+				'display_name' => $user->display_name,
+				'role'         => $role_label,
+			);
+		}
+
 		return rest_ensure_response( $results );
 	}
 }

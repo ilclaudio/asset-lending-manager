@@ -39,6 +39,7 @@
 			this.initAssetSearch();
 			this.initLoanRequestForm();
 			this.initRequestActions();
+			this.initDirectAssignForm();
 			this.showActionResultMessage();
 		},
 
@@ -295,8 +296,112 @@
 		},
 
 		/**
+		 * Initialize direct assignment form (operator only).
+		 *
+		 * Handles form submission, input validation, and AJAX call for the
+		 * direct asset assignment feature.
+		 */
+		initDirectAssignForm: function() {
+			var form = document.getElementById('alm-direct-assign-form');
+
+			if (!form) {
+				return;
+			}
+
+			// Character counter for reason field.
+			var reasonField = document.getElementById('alm-direct-assign-reason');
+			var charCount   = document.getElementById('alm-direct-assign-char-count');
+
+			if (reasonField && charCount) {
+				reasonField.addEventListener('input', function() {
+					var length = reasonField.value.length;
+					charCount.textContent = length + ' / 500';
+					charCount.style.color = length >= 500 ? '#dc3545' : '#6c757d';
+				});
+			}
+
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+
+				var submitBtn    = form.querySelector('button[type="submit"]');
+				var responseDiv  = document.getElementById('alm-direct-assign-response');
+				var assigneeId   = document.getElementById('alm-direct-assign-user-id');
+				var reasonField  = document.getElementById('alm-direct-assign-reason');
+
+				var assetId = ALM_Frontend.getAssetIdFromPage();
+				if (!assetId) {
+					ALM_Frontend.showResponse(responseDiv, 'error', 'Asset ID not found.');
+					return;
+				}
+
+				// Validate assignee selection.
+				if (!assigneeId || !assigneeId.value || parseInt(assigneeId.value, 10) <= 0) {
+					ALM_Frontend.showResponse(responseDiv, 'error', 'Please select a user from the list.');
+					return;
+				}
+
+				// Validate reason.
+				if (!reasonField || !reasonField.value.trim()) {
+					ALM_Frontend.showResponse(responseDiv, 'error', 'Please enter the assignment reason.');
+					return;
+				}
+
+				if (reasonField.value.length > 500) {
+					ALM_Frontend.showResponse(responseDiv, 'error', 'Reason must not exceed 500 characters.');
+					return;
+				}
+
+				// Verify nonce is available.
+				if (typeof window.almFrontend === 'undefined' || !window.almFrontend.directAssignNonce) {
+					ALM_Frontend.showResponse(responseDiv, 'error', 'Security token not found. Please reload the page.');
+					return;
+				}
+
+				// Disable submit button.
+				var originalBtnText = submitBtn.textContent;
+				submitBtn.disabled  = true;
+				submitBtn.textContent = 'Assigning...';
+				responseDiv.style.display = 'none';
+
+				// Prepare form data.
+				var formData = new FormData();
+				formData.append('action',      'alm_direct_assign_asset');
+				formData.append('nonce',       window.almFrontend.directAssignNonce);
+				formData.append('asset_id',    assetId);
+				formData.append('assignee_id', assigneeId.value);
+				formData.append('reason',      reasonField.value.trim());
+
+				fetch(window.almFrontend.ajaxUrl, {
+					method:      'POST',
+					body:        formData,
+					credentials: 'same-origin'
+				})
+				.then(function(response) {
+					return response.json();
+				})
+				.then(function(data) {
+					if (data.success) {
+						var currentUrl = window.location.href.split('?')[0];
+						window.location.href = currentUrl + '?alm_action=direct_assign&alm_status=success';
+					} else {
+						var errorMsg = data.data && data.data.message ? data.data.message : 'Assignment failed. Please try again.';
+						ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
+						submitBtn.disabled    = false;
+						submitBtn.textContent = originalBtnText;
+					}
+				})
+				.catch(function(error) {
+					ALM_Frontend.showResponse(responseDiv, 'error', 'Request failed. Please try again.');
+					console.error('*** Direct assign AJAX error:', error);
+					submitBtn.disabled    = false;
+					submitBtn.textContent = originalBtnText;
+				});
+			});
+		},
+
+		/**
 		 * Initialize approve/reject request actions.
-		 * 
+		 *
 		 * Handle approve and reject buttons in the requests table.
 		 */
 		initRequestActions: function() {
@@ -863,6 +968,10 @@
 				message = 'Loan request sent successfully.';
 			} else if (action === 'send_request' && status === 'error') {
 				message = 'Failed to send loan request. Please try again.';
+			} else if (action === 'direct_assign' && status === 'success') {
+				message = 'Asset assigned successfully.';
+			} else if (action === 'direct_assign' && status === 'error') {
+				message = 'Failed to assign asset. Please try again.';
 			}
 
 			if (message) {

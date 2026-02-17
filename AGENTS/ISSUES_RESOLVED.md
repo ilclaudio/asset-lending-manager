@@ -1,5 +1,5 @@
 # ISSUES_RESOLVED
-Last update: 2026-02-15
+Last update: 2026-02-17
 
 ## Entry Format
 ```markdown
@@ -12,6 +12,17 @@ Last update: 2026-02-15
 - **Fix summary:** What changed and why
 - **Notes:** Optional commit/PR/doc references
 ```
+
+---
+
+### [High] Direct assignment by operator to member/operator
+- **Status:** Resolved
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Operators needed to assign assets directly to a target user without passing through the loan request flow.
+- **Resolution date:** 2026-02-17
+- **Fix summary:** Added `wp_ajax_alm_direct_assign_asset` AJAX handler in `ALM_Loan_Manager` with full transactional support (owner update, state transition, kit propagation, concurrent request cancellation, audit history). Added protected REST endpoint `POST /wp-json/alm/v1/users/autocomplete` in `ALM_Autocomplete_Manager`. Added frontend section VIII in `asset-view.php` (operator-only collapsible form with user autocomplete). Added `alm-user-autocomplete.js` with keyboard-accessible autocomplete widget. New history status value `direct_assign` with dedicated CSS badge.
+- **Notes:** `includes/class-alm-loan-manager.php`, `includes/class-alm-autocomplete-manager.php`, `includes/class-alm-frontend-manager.php`, `templates/shortcodes/asset-view.php`, `assets/js/frontend-assets.js`, `assets/js/alm-user-autocomplete.js`, `assets/css/asset-history-table.css`.
 
 ---
 
