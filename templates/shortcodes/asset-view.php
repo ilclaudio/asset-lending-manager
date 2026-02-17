@@ -460,9 +460,9 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 						<table class="alm-history-table">
 							<thead>
 								<tr>
-									<th><?php esc_html_e( 'Requester', 'asset-lending-manager' ); ?></th>
+									<th><?php esc_html_e( 'Recipient', 'asset-lending-manager' ); ?></th>
 									<!-- <th><?php esc_html_e( 'Previous Owner', 'asset-lending-manager' ); ?></th> -->
-									<th><?php esc_html_e( 'New Owner', 'asset-lending-manager' ); ?></th>
+									<th><?php esc_html_e( 'Changed by', 'asset-lending-manager' ); ?></th>
 									<th><?php esc_html_e( 'Request Date', 'asset-lending-manager' ); ?></th>
 									<!-- <th><?php esc_html_e( 'Action Date', 'asset-lending-manager' ); ?></th> -->
 									<th><?php esc_html_e( 'Status', 'asset-lending-manager' ); ?></th>
@@ -486,9 +486,10 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									$alm_entry_status = $alm_entry->status;
 									// Status labels and CSS classes.
 									$alm_status_labels = array(
-										'approved' => __( 'Approved', 'asset-lending-manager' ),
-										'rejected' => __( 'Rejected', 'asset-lending-manager' ),
-										'canceled' => __( 'Canceled', 'asset-lending-manager' ),
+										'approved'      => __( 'Approved', 'asset-lending-manager' ),
+										'rejected'      => __( 'Rejected', 'asset-lending-manager' ),
+										'canceled'      => __( 'Canceled', 'asset-lending-manager' ),
+										'direct_assign' => __( 'Direct assignment', 'asset-lending-manager' ),
 									);
 									$alm_status_label  = isset( $alm_status_labels[ $alm_entry_status ] ) ? $alm_status_labels[ $alm_entry_status ] : $alm_entry_status;
 									$alm_status_class  = 'alm-status--' . $alm_entry_status;
@@ -500,7 +501,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										: $alm_full_message;
 									?>
 									<tr class="alm-history-row">
-										<td class="alm-history-requester" data-label="<?php esc_attr_e( 'Requester', 'asset-lending-manager' ); ?>">
+										<td class="alm-history-requester" data-label="<?php esc_attr_e( 'Recipient', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $alm_requester_name ); ?>
 										</td>
 										<!--
@@ -508,7 +509,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 											<?php echo esc_html( $alm_prev_owner_name ); ?>
 										</td>
 										-->
-										<td class="alm-history-new-owner" data-label="<?php esc_attr_e( 'New Owner', 'asset-lending-manager' ); ?>">
+										<td class="alm-history-changed-by" data-label="<?php esc_attr_e( 'Changed by', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $alm_changed_by_name ); ?>
 										</td>
 										<td class="alm-history-request-date" data-label="<?php esc_attr_e( 'Request Date', 'asset-lending-manager' ); ?>">
