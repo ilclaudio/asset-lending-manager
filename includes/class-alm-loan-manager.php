@@ -904,18 +904,23 @@ class ALM_Loan_Manager {
 			$component_ids = $this->get_kit_components( $asset_id );
 
 			if ( ! empty( $component_ids ) ) {
-				// 4. Optional conflict guard: block if any component is already on-loan.
+				// 4. Optional conflict guard: block if a component is on-loan to a different owner.
+				// Allows hand-off when the kit (and its components) is already on-loan to the approver.
 				if ( $check_component_conflicts ) {
+					$current_kit_owner = $this->get_current_owner( $asset_id );
 					foreach ( $component_ids as $component_id ) {
 						$component_state = $this->get_asset_state_slug( $component_id );
 						if ( 'on-loan' === $component_state ) {
-							$component_title = get_the_title( $component_id );
-							throw new Exception(
-								sprintf(
-									__( 'Component "%s" is already on loan and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
-									$component_title
-								)
-							);
+							$component_owner = $this->get_current_owner( $component_id );
+							if ( $component_owner !== $current_kit_owner ) {
+								$component_title = get_the_title( $component_id );
+								throw new Exception(
+									sprintf(
+										__( 'Component "%s" is already on loan and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
+										$component_title
+									)
+								);
+							}
 						}
 					}
 				}
@@ -955,10 +960,9 @@ class ALM_Loan_Manager {
 	 *
 	 * This method performs the following operations atomically:
 	 * 1. Validate request is still pending (with row-level lock).
-	 * 2. Check asset is not already on-loan.
-	 * 3-7. Delegate ownership transfer to execute_ownership_transfer().
-	 * 8. Delete approved request from requests table.
-	 * 9. Insert record into history table.
+	 * 2-6. Delegate ownership transfer to execute_ownership_transfer().
+	 * 7. Delete approved request from requests table.
+	 * 8. Insert record into history table.
 	 *
 	 * @param object $loan_request Loan request object from database.
 	 * @param int    $approved_by  User ID who approved the request.
@@ -1014,13 +1018,7 @@ class ALM_Loan_Manager {
 				throw new Exception( __( 'Asset not found.', 'asset-lending-manager' ) );
 			}
 
-			// 2. Check if asset is already on loan (conflict prevention).
-			$current_state = $this->get_asset_state_slug( $asset_id );
-			if ( 'on-loan' === $current_state ) {
-				throw new Exception( __( 'Asset is already on loan.', 'asset-lending-manager' ) );
-			}
-
-			// 3–7. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
+			// 2–6. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
 			$component_ids = $this->execute_ownership_transfer(
 				$asset_id,
 				$requester_id,
