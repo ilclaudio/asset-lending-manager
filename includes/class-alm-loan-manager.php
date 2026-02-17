@@ -25,8 +25,13 @@ class ALM_Loan_Manager {
 	const SEND_REQUEST_MESSAGE_MAX_LENGTH = 500;
 
 	/**
+	 * Maximum length for direct assignment reason.
+	 */
+	const DIRECT_ASSIGN_REASON_MAX_LENGTH = 500;
+
+	/**
 	 * User ID for automatic system operations.
-	 * 
+	 *
 	 * TODO: Make this configurable via Settings Manager in future versions.
 	 */
 	const AUTOMATIC_OPERATIONS_OPERATOR_ID = 1;
@@ -51,6 +56,7 @@ class ALM_Loan_Manager {
 		add_action( 'wp_ajax_alm_submit_loan_request', array( $this, 'ajax_submit_loan_request' ) );
 		add_action( 'wp_ajax_alm_reject_loan_request', array( $this, 'ajax_reject_loan_request' ) );
 		add_action( 'wp_ajax_alm_approve_loan_request', array( $this, 'ajax_approve_loan_request' ) );
+		add_action( 'wp_ajax_alm_direct_assign_asset', array( $this, 'ajax_direct_assign_asset' ) );
 	}
 
 	/**
@@ -130,7 +136,7 @@ class ALM_Loan_Manager {
 		if ( ! $request_id ) {
 			wp_send_json_error(
 				array(
-					'message' => __( 'Failed to create loan request.', 'asset-lending-manager' )
+					'message' => __( 'Failed to create loan request.', 'asset-lending-manager' ),
 				)
 			);
 		}
@@ -148,7 +154,7 @@ class ALM_Loan_Manager {
 		$this->log_email_notification( $requester_id, $owner_id, $asset_id, $message );
 		wp_send_json_success(
 			array(
-				'message' => __( 'Loan request sent successfully!', 'asset-lending-manager' ),
+				'message'    => __( 'Loan request sent successfully!', 'asset-lending-manager' ),
 				'request_id' => $request_id,
 			)
 		);
@@ -215,8 +221,8 @@ class ALM_Loan_Manager {
 
 		// Get loan request from database.
 		global $wpdb;
-		$table_name    = $wpdb->prefix . 'alm_loan_requests';
-		$loan_request  = $wpdb->get_row(
+		$table_name   = $wpdb->prefix . 'alm_loan_requests';
+		$loan_request = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM $table_name WHERE id = %d",
 				$request_id
@@ -447,7 +453,7 @@ class ALM_Loan_Manager {
 			'[EMAIL] To requester: Loan request rejected',
 			array(
 				'to'      => $requester->user_email,
-				'subject' => sprintf( 
+				'subject' => sprintf(
 					__( 'Your loan request for "%s" has been rejected', 'asset-lending-manager' ),
 					$asset_title
 				),
@@ -616,9 +622,9 @@ class ALM_Loan_Manager {
 			ALM_Logger::error(
 				'Failed to create loan request',
 				array(
-					'asset_id'  => $asset_id,
-					'error'     => $e->getMessage(),
-					'db_error'  => $wpdb->last_error,
+					'asset_id' => $asset_id,
+					'error'    => $e->getMessage(),
+					'db_error' => $wpdb->last_error,
 				)
 			);
 
@@ -706,7 +712,7 @@ class ALM_Loan_Manager {
 							__( 'Loan request for your asset "%s"', 'asset-lending-manager' ),
 							$asset_title
 						),
-						'from' => $requester->display_name,
+						'from'    => $requester->display_name,
 					)
 				);
 			}
@@ -717,7 +723,7 @@ class ALM_Loan_Manager {
 		ALM_Logger::info(
 			'[EMAIL] To operators: New loan request',
 			array(
-				'to' => $operators_email,
+				'to'      => $operators_email,
 				'subject' => sprintf(
 					__( 'New loan request for "%s"', 'asset-lending-manager' ),
 					$asset_title
@@ -910,8 +916,8 @@ class ALM_Loan_Manager {
 				throw new Exception( __( 'Request is not pending.', 'asset-lending-manager' ) );
 			}
 
-			$asset_id     = (int) $loan_request->asset_id;
-			$requester_id = (int) $loan_request->requester_id;
+			$asset_id          = (int) $loan_request->asset_id;
+			$requester_id      = (int) $loan_request->requester_id;
 			$previous_owner_id = (int) $loan_request->owner_id;
 
 			// Verify asset exists.
@@ -933,7 +939,7 @@ class ALM_Loan_Manager {
 			$this->set_asset_state( $asset_id, 'on-loan' );
 
 			// 5. If asset is a kit, propagate to components.
-			$is_kit = $this->is_asset_kit( $asset_id );
+			$is_kit        = $this->is_asset_kit( $asset_id );
 			$component_ids = array();
 
 			if ( $is_kit ) {
@@ -984,7 +990,7 @@ class ALM_Loan_Manager {
 			}
 
 			// 8. Update request status to approved and delete from requests table.
-			$deleted    = $wpdb->delete(
+			$deleted = $wpdb->delete(
 				$table_name,
 				array( 'id' => $loan_request->id ),
 				array( '%d' )
@@ -1057,7 +1063,7 @@ class ALM_Loan_Manager {
 	 */
 	private function set_asset_owner( $asset_id, $user_id ) {
 		$result = update_post_meta( $asset_id, '_alm_current_owner', $user_id );
-		
+
 		if ( false === $result ) {
 			throw new Exception(
 				sprintf(
@@ -1094,7 +1100,7 @@ class ALM_Loan_Manager {
 		if ( is_wp_error( $result ) ) {
 			throw new Exception(
 				sprintf(
-					__( 'Failed to set state for asset ID %d: %s', 'asset-lending-manager' ),
+					__( 'Failed to set state for asset ID %1$d: %2$s', 'asset-lending-manager' ),
 					$asset_id,
 					$result->get_error_message()
 				)
@@ -1238,7 +1244,7 @@ class ALM_Loan_Manager {
 				);
 			}
 
-			$canceled_count++;
+			++$canceled_count;
 
 			// Log notification.
 			ALM_Logger::info(
@@ -1253,6 +1259,267 @@ class ALM_Loan_Manager {
 		}
 
 		return $canceled_count;
+	}
+
+	/**
+	 * AJAX handler for direct asset assignment by operator.
+	 *
+	 * @return void
+	 */
+	public function ajax_direct_assign_asset() {
+		// Verify nonce.
+		check_ajax_referer( 'alm_direct_assign_nonce', 'nonce' );
+
+		// Operator-only capability check.
+		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You do not have permission to assign assets.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		// Get and validate input.
+		$asset_id    = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$assignee_id = isset( $_POST['assignee_id'] ) ? absint( $_POST['assignee_id'] ) : 0;
+		$reason      = isset( $_POST['reason'] ) ? sanitize_textarea_field( wp_unslash( $_POST['reason'] ) ) : '';
+
+		if ( $asset_id <= 0 ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid asset ID.', 'asset-lending-manager' ) ) );
+		}
+
+		if ( $assignee_id <= 0 ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid assignee ID.', 'asset-lending-manager' ) ) );
+		}
+
+		if ( empty( $reason ) ) {
+			wp_send_json_error( array( 'message' => __( 'Assignment reason is required.', 'asset-lending-manager' ) ) );
+		}
+
+		if ( mb_strlen( $reason ) > self::DIRECT_ASSIGN_REASON_MAX_LENGTH ) {
+			wp_send_json_error(
+				array(
+					'message' => sprintf(
+						/* translators: %d: maximum number of characters allowed */
+						__( 'Assignment reason must not exceed %d characters.', 'asset-lending-manager' ),
+						self::DIRECT_ASSIGN_REASON_MAX_LENGTH
+					),
+				)
+			);
+		}
+
+		// Verify asset exists.
+		$asset = get_post( $asset_id );
+		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+		}
+
+		// Verify assignee exists and has an ALM role.
+		$assignee = get_userdata( $assignee_id );
+		if ( ! $assignee ) {
+			wp_send_json_error( array( 'message' => __( 'Assignee user not found.', 'asset-lending-manager' ) ) );
+		}
+
+		$assignee_roles = (array) $assignee->roles;
+		if (
+			! in_array( ALM_MEMBER_ROLE, $assignee_roles, true ) &&
+			! in_array( ALM_OPERATOR_ROLE, $assignee_roles, true )
+		) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Assignee must be a member or operator.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
+		$current_user_id = get_current_user_id();
+
+		// Perform the assignment.
+		$result = $this->direct_assign_asset( $asset_id, $assignee_id, $reason, $current_user_id );
+
+		if ( ! $result['success'] ) {
+			wp_send_json_error( array( 'message' => $result['message'] ) );
+		}
+
+		// Log the assignment.
+		ALM_Logger::info(
+			'Asset directly assigned',
+			array(
+				'asset_id'    => $asset_id,
+				'assignee_id' => $assignee_id,
+				'assigned_by' => $current_user_id,
+			)
+		);
+
+		// Email notification placeholder.
+		$this->send_direct_assign_email_notification( $asset_id, $assignee, $current_user_id, $reason );
+
+		wp_send_json_success(
+			array(
+				'message' => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
+			)
+		);
+	}
+
+	/**
+	 * Perform a direct asset assignment (atomic operation).
+	 *
+	 * Operators can assign any non-retired asset, overriding any current owner.
+	 * Components of a kit are updated without conflict checks.
+	 *
+	 * Operations:
+	 * 1. Reject retired assets.
+	 * 2. Change owner of main asset.
+	 * 3. Change state of main asset to "on-loan".
+	 * 4. If kit: propagate owner and state to all components (no conflict checks).
+	 * 5. Cancel all concurrent requests for the asset.
+	 * 6. Cancel requests for components if kit.
+	 * 7. Insert history entry with status "direct_assign".
+	 *
+	 * @param int    $asset_id    Asset ID.
+	 * @param int    $assignee_id Target user ID.
+	 * @param string $reason      Assignment reason.
+	 * @param int    $actor_id    Operator user ID performing the assignment.
+	 * @throws Exception When a transactional operation fails.
+	 * @return array ['success' => bool, 'message' => string]
+	 */
+	private function direct_assign_asset( $asset_id, $assignee_id, $reason, $actor_id ) {
+		global $wpdb;
+
+		// Start transaction.
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			// 1. Reject retired assets.
+			$current_state = $this->get_asset_state_slug( $asset_id );
+			if ( 'retired' === $current_state ) {
+				throw new Exception( __( 'Cannot assign a retired asset.', 'asset-lending-manager' ) );
+			}
+
+			// 2. Record previous owner before overwriting.
+			$previous_owner_id = $this->get_current_owner( $asset_id );
+
+			// 3. Change owner of main asset.
+			$this->set_asset_owner( $asset_id, $assignee_id );
+
+			// 4. Change state of main asset to "on-loan".
+			$this->set_asset_state( $asset_id, 'on-loan' );
+
+			// 5. If kit: propagate owner and state to components (no on-loan conflict check).
+			$is_kit        = $this->is_asset_kit( $asset_id );
+			$component_ids = array();
+
+			if ( $is_kit ) {
+				$component_ids = $this->get_kit_components( $asset_id );
+
+				foreach ( $component_ids as $component_id ) {
+					$this->set_asset_owner( $component_id, $assignee_id );
+					$this->set_asset_state( $component_id, 'on-loan' );
+				}
+			}
+
+			// 6. Cancel all pending requests for this asset.
+			$this->cancel_concurrent_requests(
+				$asset_id,
+				0,
+				__( 'Request canceled: asset directly assigned by operator.', 'asset-lending-manager' )
+			);
+
+			// 7. Cancel requests for kit components.
+			if ( $is_kit && ! empty( $component_ids ) ) {
+				foreach ( $component_ids as $component_id ) {
+					$this->cancel_concurrent_requests(
+						$component_id,
+						0,
+						sprintf(
+							/* translators: %s: kit asset title */
+							__( 'Request canceled: component directly assigned as part of kit "%s".', 'asset-lending-manager' ),
+							get_the_title( $asset_id )
+						)
+					);
+				}
+			}
+
+			// 8. Log history entry (loan_request_id = 0 for direct assignments).
+			$history_logged = $this->log_history_entry(
+				0,
+				$asset_id,
+				$assignee_id,
+				$previous_owner_id,
+				'direct_assign',
+				$reason,
+				$actor_id
+			);
+
+			if ( ! $history_logged ) {
+				throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+			}
+
+			// Commit transaction.
+			$wpdb->query( 'COMMIT' );
+
+			ALM_Logger::info(
+				'Direct assignment completed successfully',
+				array(
+					'asset_id'    => $asset_id,
+					'assignee_id' => $assignee_id,
+					'is_kit'      => $is_kit,
+					'components'  => $component_ids,
+				)
+			);
+
+			return array(
+				'success' => true,
+				'message' => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
+			);
+
+		} catch ( Exception $e ) {
+			// Rollback transaction on error.
+			$wpdb->query( 'ROLLBACK' );
+
+			ALM_Logger::error(
+				'Failed to complete direct assignment',
+				array(
+					'asset_id' => $asset_id,
+					'error'    => $e->getMessage(),
+					'db_error' => $wpdb->last_error,
+				)
+			);
+
+			return array(
+				'success' => false,
+				'message' => $e->getMessage(),
+			);
+		}
+	}
+
+	/**
+	 * Send email notification for direct asset assignment (placeholder).
+	 *
+	 * @param int     $asset_id    Asset ID.
+	 * @param WP_User $assignee    Assignee user object.
+	 * @param int     $assigned_by Operator user ID.
+	 * @param string  $reason      Assignment reason.
+	 * @return void
+	 */
+	private function send_direct_assign_email_notification( $asset_id, $assignee, $assigned_by, $reason ) {
+		$asset_title = get_the_title( $asset_id );
+
+		// Log email to assignee.
+		ALM_Logger::info(
+			'[EMAIL] To assignee: Asset directly assigned',
+			array(
+				'to'      => $assignee->user_email,
+				'subject' => sprintf(
+					/* translators: %s: asset title */
+					__( 'Asset "%s" has been assigned to you', 'asset-lending-manager' ),
+					$asset_title
+				),
+				'reason'  => $reason,
+			)
+		);
+
+		// TODO: Implement actual email sending.
 	}
 
 	/**

@@ -1,6 +1,6 @@
 /**
  * Styles for Asset Loan History Table
- * 
+ *
  * @package AssetLendingManager
  */
 
@@ -106,6 +106,11 @@
 	color: #856404;
 }
 
+.alm-status-badge.alm-status--direct_assign {
+	background-color: #cfe2ff;
+	color: #084298;
+}
+
 /* Colonna messaggio con tooltip */
 .alm-history-message {
 	max-width: 250px;
@@ -171,12 +176,12 @@
 	.alm-history-table {
 		font-size: 14px;
 	}
-	
+
 	.alm-history-table th,
 	.alm-history-table td {
 		padding: 10px 12px;
 	}
-	
+
 	.alm-history-message {
 		max-width: 180px;
 	}
@@ -189,7 +194,7 @@
 		white-space: nowrap;
 		-webkit-overflow-scrolling: touch;
 	}
-	
+
 	.alm-history-table thead,
 	.alm-history-table tbody,
 	.alm-history-table tr,
@@ -197,11 +202,11 @@
 	.alm-history-table td {
 		display: block;
 	}
-	
+
 	.alm-history-table thead {
 		display: none;
 	}
-	
+
 	.alm-history-table tr {
 		margin-bottom: 15px;
 		border: 1px solid #dee2e6;
@@ -209,7 +214,7 @@
 		padding: 10px;
 		background: #fff;
 	}
-	
+
 	.alm-history-table td {
 		text-align: right;
 		padding: 8px 10px;
@@ -217,11 +222,11 @@
 		position: relative;
 		padding-left: 50%;
 	}
-	
+
 	.alm-history-table td:last-child {
 		border-bottom: none;
 	}
-	
+
 	.alm-history-table td::before {
 		content: attr(data-label);
 		position: absolute;
@@ -232,19 +237,19 @@
 		color: #6c757d;
 		letter-spacing: 0.5px;
 	}
-	
+
 	.alm-history-message {
 		max-width: 100%;
 	}
-	
+
 	.alm-message-text {
 		white-space: normal;
 	}
-	
+
 	.alm-history-status {
 		text-align: right;
 	}
-	
+
 	.alm-history-request-date,
 	.alm-history-action-date {
 		white-space: normal;
@@ -255,12 +260,12 @@
 	.alm-history-table td {
 		font-size: 13px;
 	}
-	
+
 	.alm-status-badge {
 		font-size: 11px;
 		padding: 3px 8px;
 	}
-	
+
 	.alm-history-limit-notice {
 		font-size: 13px;
 		padding: 8px 12px;
