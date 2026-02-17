@@ -1,5 +1,5 @@
 # ISSUES_RESOLVED
-Last update: 2026-02-17
+Last update: 2026-02-17 (session 2)
 
 ## Entry Format
 ```markdown
@@ -12,6 +12,35 @@ Last update: 2026-02-17
 - **Fix summary:** What changed and why
 - **Notes:** Optional commit/PR/doc references
 ```
+
+---
+
+### [Medium] Refactoring: duplicated ownership transfer logic in approve and direct_assign
+- **Status:** Resolved
+- **Date:** 2026-02-17
+- **Category:** Refactoring
+- **Description:** `approve_loan_request()` and `direct_assign_asset()` shared ~40 lines of identical ownership transfer logic (set owner, set state, kit propagation, cancel concurrent requests).
+- **Resolution date:** 2026-02-17
+- **Fix summary:** Extracted shared logic into private method `execute_ownership_transfer()`. Two callers differ only in `$exclude_request_id` (loan ID vs 0) and `$check_component_conflicts` (true for approve, false for direct_assign).
+- **Notes:** `includes/class-alm-loan-manager.php`
+
+### [Medium] Bug: approve_loan_request() blocked hand-off between members
+- **Status:** Resolved
+- **Date:** 2026-02-17
+- **Category:** Bug
+- **Description:** When an asset was `on-loan`, the approval flow threw "Asset is already on loan" even when the current owner (the borrower) was approving a request from another member, which is a legitimate hand-off operation.
+- **Resolution date:** 2026-02-17
+- **Fix summary:** Removed the blanket `on-loan` block from `approve_loan_request()` — `can_user_approve_request()` already guarantees the approver is the current owner. Also refined the kit component conflict check in `execute_ownership_transfer()` to only block when a component is on-loan to a user *different* from the current kit owner, allowing kit hand-offs without false positives.
+- **Notes:** `includes/class-alm-loan-manager.php`
+
+### [Low] Bug: wrong column labels and missing status in loan history table
+- **Status:** Resolved
+- **Date:** 2026-02-17
+- **Category:** Bug
+- **Description:** History table columns were labeled "Requester" (showing the recipient/assignee) and "New Owner" (showing the operator who acted). The `direct_assign` status was also missing from the labels map, displaying the raw slug instead of a human-readable label.
+- **Resolution date:** 2026-02-17
+- **Fix summary:** Renamed headers to "Recipient" and "Changed by" to match actual data semantics. Added `direct_assign => 'Direct assignment'` to status labels. Renamed CSS class `.alm-history-new-owner` to `.alm-history-changed-by`.
+- **Notes:** `templates/shortcodes/asset-view.php`, `assets/css/asset-history-table.css`
 
 ---
 
