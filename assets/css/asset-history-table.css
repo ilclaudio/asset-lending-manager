@@ -53,8 +53,8 @@
 	min-width: 120px;
 }
 
-/* Colonna nuovo assegnatario */
-.alm-history-new-owner {
+/* Colonna operatore che ha eseguito l'azione */
+.alm-history-changed-by {
 	min-width: 120px;
 	font-weight: 500;
 }
