@@ -1,5 +1,5 @@
 # ISSUES_RESOLVED
-Last update: 2026-02-17 (session 2)
+Last update: 2026-02-18
 
 ## Entry Format
 ```markdown
@@ -12,6 +12,26 @@ Last update: 2026-02-17 (session 2)
 - **Fix summary:** What changed and why
 - **Notes:** Optional commit/PR/doc references
 ```
+
+---
+
+### [Low] assets_count assigned inside foreach loop
+- **Status:** Resolved
+- **Date:** 2026-02-18
+- **Category:** Bug
+- **Description:** In `render_asset_list_template()`, `$assets_count = (int) $query->found_posts` was assigned inside the `foreach` loop, causing a redundant reassignment on every iteration.
+- **Resolution date:** 2026-02-18
+- **Fix summary:** Moved `$assets_count` assignment outside the `foreach`, immediately after the `have_posts()` check.
+- **Notes:** `includes/class-alm-frontend-manager.php`
+
+### [Low] jQuery declared as script dependency but vanilla JS policy applies
+- **Status:** Resolved
+- **Date:** 2026-02-15
+- **Category:** Refactoring
+- **Description:** `wp_enqueue_script()` calls for `alm-frontend-assets`, `alm-admin-assets`, and `alm-asset-autocomplete` declared `array( 'jquery' )` as dependency despite vanilla JS implementation.
+- **Resolution date:** 2026-02-18
+- **Fix summary:** Removed `jquery` dependency from all three script enqueues and refactored `assets/js/admin-assets.js` to vanilla JavaScript.
+- **Notes:** `includes/class-alm-frontend-manager.php`, `includes/class-alm-admin-manager.php`, `includes/class-alm-autocomplete-manager.php`, `assets/js/admin-assets.js`; commits `46e6454`, `e0d1a57`.
 
 ---
 
