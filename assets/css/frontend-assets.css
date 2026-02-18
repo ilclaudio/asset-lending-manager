@@ -835,6 +835,54 @@
 	}
 
 	/* ========================================================================
+		PAGINATION
+		======================================================================== */
+
+	.alm-pagination {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 4px;
+		margin-top: 24px;
+	}
+
+	.alm-pagination .page-numbers {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 36px;
+		height: 36px;
+		padding: 0 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background: #fff;
+		color: #0073aa;
+		text-decoration: none;
+		font-size: 0.95em;
+		transition: background 0.2s ease, border-color 0.2s ease;
+	}
+
+	.alm-pagination .page-numbers:hover {
+		background: #f0f0f0;
+		border-color: #0073aa;
+	}
+
+	.alm-pagination .page-numbers.current {
+		background: #0073aa;
+		border-color: #0073aa;
+		color: #fff;
+		font-weight: 600;
+		cursor: default;
+	}
+
+	.alm-pagination .page-numbers.dots {
+		border-color: transparent;
+		background: transparent;
+		color: #555;
+		cursor: default;
+	}
+
+	/* ========================================================================
 		RESPONSIVE STYLES FOR FILTERS
 		======================================================================== */
 

@@ -189,7 +189,7 @@ if ( $filter_owner > 0 ) {
 
 		<!-- Form actions: Reset filters + Search -->
 		<div class="alm-form-actions">
-			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'alm_structure', 'alm_type', 'alm_state', 'alm_level', 'alm_owner', 'alm_my_assets' ) ) ); ?>" class="alm-reset-filters">
+			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'alm_structure', 'alm_type', 'alm_state', 'alm_level', 'alm_owner', 'alm_my_assets', 'alm_paged' ) ) ); ?>" class="alm-reset-filters">
 				<?php esc_html_e( 'Reset Filters', 'asset-lending-manager' ); ?>
 			</a>
 			<button type="submit">
@@ -260,6 +260,25 @@ if ( $filter_owner > 0 ) {
 				</article>
 			<?php endforeach; ?>
 		</div>
+
+	<?php if ( $total_pages > 1 ) : ?>
+		<nav class="alm-pagination" aria-label="<?php esc_attr_e( 'Asset list pagination', 'asset-lending-manager' ); ?>">
+			<?php
+			echo wp_kses_post(
+				paginate_links(
+					array(
+						'base'      => add_query_arg( 'alm_paged', '%#%' ),
+						'format'    => '',
+						'current'   => $current_page,
+						'total'     => $total_pages,
+						'prev_text' => '&laquo;',
+						'next_text' => '&raquo;',
+					)
+				)
+			);
+			?>
+		</nav>
+	<?php endif; ?>
 
 	<?php else : ?>
 

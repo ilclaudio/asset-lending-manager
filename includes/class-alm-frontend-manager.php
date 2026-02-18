@@ -251,7 +251,7 @@ class ALM_Frontend_Manager {
 		// Parse shortcode attributes (for future extensions like filters).
 		$attributes = shortcode_atts(
 			array(
-				'posts_per_page' => -1,
+				'per_page' => ALM_ASSET_LIST_PER_PAGE,
 			),
 			$attributes,
 			'alm_asset_list'
@@ -385,11 +385,16 @@ class ALM_Frontend_Manager {
 				$filter_owner     = get_current_user_id();
 			}
 		}
+		// Pagination.
+		$per_page     = max( 1, (int) $attributes['per_page'] );
+		$current_page = isset( $_GET['alm_paged'] ) ? max( 1, absint( $_GET['alm_paged'] ) ) : 1;
+
 		// Build query args.
 		$query_args = array(
 			'post_type'      => ALM_ASSET_CPT_SLUG,
 			'post_status'    => 'publish',
-			'posts_per_page' => $attributes['posts_per_page'],
+			'posts_per_page' => $per_page,
+			'paged'          => $current_page,
 		);
 		// Add search term if present.
 		if ( ! empty( $search_term ) ) {
@@ -444,10 +449,12 @@ class ALM_Frontend_Manager {
 		$query        = new WP_Query( $query_args );
 		$assets       = array();
 		$assets_count = 0;
+		$total_pages  = 0;
 		if ( $query->have_posts() ) {
+			$assets_count = (int) $query->found_posts;
+			$total_pages  = (int) $query->max_num_pages;
 			foreach ( $query->posts as $post ) {
-				$assets_count = (int) $query->found_posts;
-				$wrapper      = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
+				$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
 				if ( $wrapper ) {
 					$assets[] = $wrapper;
 				}

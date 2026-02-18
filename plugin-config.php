@@ -53,3 +53,6 @@ define( 'ALM_OPERATOR_ROLE', 'alm_operator' );
 // Autocomplete.
 define( 'ALM_AUTOCOMPLETE_MAX_RESULTS', 5 );
 define( 'ALM_AUTOCOMPLETE_DESC_LENGTH', 20 );
+
+// Asset list.
+define( 'ALM_ASSET_LIST_PER_PAGE', 12 );
