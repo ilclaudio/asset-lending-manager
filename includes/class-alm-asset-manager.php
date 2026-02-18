@@ -213,7 +213,6 @@ class ALM_Asset_Manager {
 				),
 			)
 		);
-
 	}
 
 	/**
@@ -233,6 +232,7 @@ class ALM_Asset_Manager {
 		$wrapper->id        = $asset->ID;
 		$wrapper->title     = get_the_title( $asset );
 		$wrapper->permalink = get_permalink( $asset );
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WordPress filter.
 		$wrapper->content   = apply_filters( 'the_content', $asset->post_content );
 		// Manage the asset image.
 		$thumbnail_size = 'thumbnail';
@@ -299,6 +299,21 @@ class ALM_Asset_Manager {
 			'notes',
 			'components',
 		);
+		$translated_labels = array(
+			'manufacturer'       => __( 'Manufacturer', 'asset-lending-manager' ),
+			'model'              => __( 'Model', 'asset-lending-manager' ),
+			'data_acquisto'      => __( 'Purchase date', 'asset-lending-manager' ),
+			'cost'               => __( 'Cost', 'asset-lending-manager' ),
+			'dimensions'         => __( 'Dimensions', 'asset-lending-manager' ),
+			'weight'             => __( 'Weight', 'asset-lending-manager' ),
+			'location'           => __( 'Location', 'asset-lending-manager' ),
+			'user_manual'        => __( 'User manual', 'asset-lending-manager' ),
+			'technical_data_sheet' => __( 'Technical data sheet', 'asset-lending-manager' ),
+			'serial_number'      => __( 'Serial number', 'asset-lending-manager' ),
+			'external_code'      => __( 'External code', 'asset-lending-manager' ),
+			'notes'              => __( 'Notes', 'asset-lending-manager' ),
+			'components'         => __( 'Components', 'asset-lending-manager' ),
+		);
 		$field_objects = array();
 		// $manufacturer_value = (string) get_field( 'manufacturer', $asset_id );
 		// Get all the custom fields for this asset.
@@ -315,7 +330,9 @@ class ALM_Asset_Manager {
 					continue;
 				}
 				$field = $field_objects[ $field_name ];
-				$label = isset( $field['label'] ) ? (string) $field['label'] : $field_name;
+				$label = isset( $translated_labels[ $field_name ] )
+					? $translated_labels[ $field_name ]
+					: ( isset( $field['label'] ) ? (string) $field['label'] : $field_name );
 				$value = $field['value'] ?? null;
 				// Normalize empty values.
 				$is_empty = ( null === $value || '' === $value || ( is_array( $value ) && empty( $value ) ) );
