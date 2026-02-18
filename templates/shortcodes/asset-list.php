@@ -247,6 +247,13 @@ if ( $filter_owner > 0 ) {
 									<span class="alm-tax-label"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?>:</span>
 									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_asset->alm_level ) ); ?></span>
 								</div>
+								<!-- Owner -->
+								<?php if ( $alm_asset->owner_name ) : ?>
+									<div class="alm-asset-taxonomy">
+										<span class="alm-tax-label"><?php esc_html_e( 'Owner', 'asset-lending-manager' ); ?>:</span>
+										<span class="alm-tax-value"><?php echo esc_html( $alm_asset->owner_name ); ?></span>
+									</div>
+								<?php endif; ?>
 							</div>
 						</div>
 					</a>
