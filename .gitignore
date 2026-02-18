@@ -45,3 +45,5 @@ Thumbs.db
 
 
 # Custom directives
+# AI tool temporary directories
+.codex-tmp/
