@@ -106,13 +106,18 @@ class ALM_Admin_Manager {
 		);
 
 		// Enqueue JS.
-		wp_enqueue_script(
-			'alm-admin-assets',
-			ALM_PLUGIN_URL . 'assets/js/admin-assets.js',
-			array( 'jquery' ),
-			ALM_VERSION,
-			true
-		);
+			wp_enqueue_script(
+				'alm-admin-assets',
+				ALM_PLUGIN_URL . 'assets/js/admin-assets.js',
+				array( 'jquery', 'wp-i18n' ),
+				ALM_VERSION,
+				true
+			);
+			wp_set_script_translations(
+				'alm-admin-assets',
+				ALM_TEXT_DOMAIN,
+				ALM_PLUGIN_DIR . 'languages'
+			);
 
 		// Pass data from PHP to JavaScript (useful for AJAX).
 		wp_localize_script(

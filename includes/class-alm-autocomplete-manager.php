@@ -35,7 +35,7 @@ class ALM_Autocomplete_Manager {
 		wp_enqueue_script(
 			'alm-asset-autocomplete',
 			ALM_PLUGIN_URL . 'assets/js/alm-asset-autocomplete.js',
-			array( 'jquery' ),
+			array(),
 			ALM_VERSION,
 			true
 		);

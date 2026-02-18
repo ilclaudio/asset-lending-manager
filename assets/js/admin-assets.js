@@ -8,6 +8,9 @@
 
 (function($) {
 	'use strict';
+	var __ = (window.wp && window.wp.i18n && window.wp.i18n.__) ? window.wp.i18n.__ : function(text) {
+		return text;
+	};
 
 	/**
 	 * Initialize when DOM is ready.
@@ -77,9 +80,9 @@
 				var postId = $actions.closest('tr').attr('id').replace('post-', '');
 				
 				// Example: Add a "View Frontend" link.
-				var viewLink = '<span class="alm-view-frontend"> | ' +
-					'<a href="' + ALM_Admin.getAssetPermalink(postId) + '" target="_blank">' +
-					'View on Frontend</a></span>';
+					var viewLink = '<span class="alm-view-frontend"> | ' +
+						'<a href="' + ALM_Admin.getAssetPermalink(postId) + '" target="_blank">' +
+						__( 'View on Frontend', 'asset-lending-manager' ) + '</a></span>';
 				
 				$actions.append(viewLink);
 			});
@@ -116,21 +119,21 @@
 				// Check if title is filled.
 				var title = $('#title').val().trim();
 				if (!title) {
-					errors.push('Asset name is required.');
+						errors.push( __( 'Asset name is required.', 'asset-lending-manager' ) );
 					isValid = false;
 				}
 
 				// Check if asset type is selected.
 				var assetType = $('input[name="tax_input[alm_type][]"]:checked').length;
 				if (assetType === 0) {
-					errors.push('Please select a asset type.');
+						errors.push( __( 'Please select a asset type.', 'asset-lending-manager' ) );
 					isValid = false;
 				}
 
 				// Show errors if any.
 				if (!isValid) {
 					e.preventDefault();
-					alert('Please fix the following errors:\n\n' + errors.join('\n'));
+						alert( __( 'Please fix the following errors:\n\n', 'asset-lending-manager' ) + errors.join('\n') );
 					return false;
 				}
 			});

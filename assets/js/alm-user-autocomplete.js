@@ -9,6 +9,9 @@
 
 (function() {
 	'use strict';
+	var __ = (window.wp && window.wp.i18n && window.wp.i18n.__) ? window.wp.i18n.__ : function(text) {
+		return text;
+	};
 
 	/**
 	 * Initialize a user autocomplete widget on a given set of DOM elements.
@@ -38,7 +41,7 @@
 			dropdown.id        = config.dropdownId;
 			dropdown.className = 'alm-autocomplete-dropdown';
 			dropdown.setAttribute('role', 'listbox');
-			dropdown.setAttribute('aria-label', 'User suggestions');
+			dropdown.setAttribute('aria-label', __( 'User suggestions', 'asset-lending-manager' ));
 			input.parentNode.appendChild(dropdown);
 		}
 
