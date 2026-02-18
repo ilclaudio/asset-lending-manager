@@ -184,19 +184,18 @@ if ( $filter_owner > 0 ) {
 						</div>
 					<?php endif; ?>
 				</div>
-				<!-- Reset filters button -->
-				<div class="alm-filters-actions">
-					<a href="<?php echo esc_url( remove_query_arg( array( 's', 'alm_structure', 'alm_type', 'alm_state', 'alm_level', 'alm_owner', 'alm_my_assets' ) ) ); ?>" class="alm-reset-filters">
-						<?php esc_html_e( 'Reset Filters', 'asset-lending-manager' ); ?>
-					</a>
 				</div>
-			</div>
 		</details>
 
-		<!-- Search Button -->
-		<button type="submit">
-			<?php esc_html_e( 'Search', 'asset-lending-manager' ); ?>
-		</button>
+		<!-- Form actions: Reset filters + Search -->
+		<div class="alm-form-actions">
+			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'alm_structure', 'alm_type', 'alm_state', 'alm_level', 'alm_owner', 'alm_my_assets' ) ) ); ?>" class="alm-reset-filters">
+				<?php esc_html_e( 'Reset Filters', 'asset-lending-manager' ); ?>
+			</a>
+			<button type="submit">
+				<?php esc_html_e( 'Search', 'asset-lending-manager' ); ?>
+			</button>
+		</div>
 
 	</form>
 </div>
