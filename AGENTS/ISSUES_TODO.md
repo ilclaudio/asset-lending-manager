@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-02-17
+Last update: 2026-02-18
 
 ---
 
@@ -16,6 +16,22 @@ Last update: 2026-02-17
 ---
 
 ## Bug
+
+### [Low] assets_count assigned inside foreach loop
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Bug
+- **Description:** In `render_asset_list_template()`, `$assets_count = (int) $query->found_posts` is assigned inside the `foreach` loop, causing a redundant reassignment on every iteration.
+- **Expected behavior:** Move the assignment outside the loop, directly after the `have_posts()` check.
+- **Notes:** `includes/class-alm-frontend-manager.php:416`
+
+### [Low] Taxonomy filter values not validated as term slugs
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Bug
+- **Description:** Filter values read from `$_GET['alm_structure']`, `$_GET['alm_type']`, `$_GET['alm_state']`, `$_GET['alm_level']` are sanitized with `sanitize_text_field()` but not validated against actual taxonomy term slugs. An arbitrary string triggers a useless DB query. `sanitize_title()` is the correct sanitizer for slug-type inputs.
+- **Expected behavior:** Replace `sanitize_text_field()` with `sanitize_title()` for all four filter GET parameters.
+- **Notes:** `includes/class-alm-frontend-manager.php:354-365`
 
 ### [Low] wp_redirect() used instead of wp_safe_redirect()
 - **Status:** Open
@@ -52,6 +68,14 @@ Last update: 2026-02-17
 - **Description:** Settings structure exists but is not wired to modules or admin UI.
 - **Expected behavior:** Wire settings into runtime usage or remove dead configuration paths.
 - **Notes:** `includes/class-alm-settings-manager.php`
+
+### [Low] Missing explicit relation in multi-filter tax_query
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Refactoring
+- **Description:** When multiple taxonomy filters are active, the `tax_query` array in `render_asset_list_template()` does not declare an explicit `relation` key. WordPress defaults to `AND`, which is the correct behavior, but the intent is not self-documented in code.
+- **Expected behavior:** Add `'relation' => 'AND'` to `$tax_query` before populating the clauses.
+- **Notes:** `includes/class-alm-frontend-manager.php:377`
 
 ### [Low] Excessive debug console logs in JS
 - **Status:** Open
