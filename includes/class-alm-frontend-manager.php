@@ -461,6 +461,7 @@ class ALM_Frontend_Manager {
 			}
 		}
 		wp_reset_postdata();
+		$alm_current_search = $search_term;
 		include ALM_PLUGIN_DIR . 'templates/shortcodes/asset-list.php';
 	}
 
