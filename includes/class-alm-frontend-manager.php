@@ -181,13 +181,18 @@ class ALM_Frontend_Manager {
 			ALM_VERSION
 		);
 		// Enqueue JS.
-		wp_enqueue_script(
-			'alm-frontend-assets',
-			ALM_PLUGIN_URL . 'assets/js/frontend-assets.js',
-			array( 'jquery' ),
-			ALM_VERSION,
-			true
-		);
+			wp_enqueue_script(
+				'alm-frontend-assets',
+				ALM_PLUGIN_URL . 'assets/js/frontend-assets.js',
+				array( 'wp-i18n' ),
+				ALM_VERSION,
+				true
+			);
+			wp_set_script_translations(
+				'alm-frontend-assets',
+				ALM_TEXT_DOMAIN,
+				ALM_PLUGIN_DIR . 'languages'
+			);
 		// Pass data from PHP to JavaScript (useful for AJAX).
 		wp_localize_script(
 			'alm-frontend-assets',
@@ -201,13 +206,18 @@ class ALM_Frontend_Manager {
 		);
 
 		// Enqueue user autocomplete assets (used by the direct assignment form for operators).
-		wp_enqueue_script(
-			'alm-user-autocomplete',
-			ALM_PLUGIN_URL . 'assets/js/alm-user-autocomplete.js',
-			array(),
-			ALM_VERSION,
-			true
-		);
+			wp_enqueue_script(
+				'alm-user-autocomplete',
+				ALM_PLUGIN_URL . 'assets/js/alm-user-autocomplete.js',
+				array( 'wp-i18n' ),
+				ALM_VERSION,
+				true
+			);
+			wp_set_script_translations(
+				'alm-user-autocomplete',
+				ALM_TEXT_DOMAIN,
+				ALM_PLUGIN_DIR . 'languages'
+			);
 		wp_localize_script(
 			'alm-user-autocomplete',
 			'almUserAutocomplete',
