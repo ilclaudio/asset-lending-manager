@@ -53,6 +53,9 @@ if ( ! empty( $filter_state ) ) {
 if ( ! empty( $filter_level ) ) {
 	$alm_active_filters_count++;
 }
+if ( $filter_owner > 0 ) {
+	$alm_active_filters_count++;
+}
 
 ?>
 
@@ -141,10 +144,49 @@ if ( ! empty( $filter_level ) ) {
 							</select>
 						</div>
 					</div>
+					<!-- Row 3: Owner -->
+					<?php if ( current_user_can( ALM_EDIT_ASSET ) ) : ?>
+						<div class="alm-filter-row">
+							<div class="alm-filter-field">
+								<label for="alm-owner-filter-input"><?php esc_html_e( 'Owner', 'asset-lending-manager' ); ?></label>
+								<div class="alm-autocomplete-wrap">
+									<span class="alm-search-icon" aria-hidden="true"></span>
+									<input
+										type="text"
+										id="alm-owner-filter-input"
+										autocomplete="off"
+										placeholder="<?php esc_attr_e( 'Search user...', 'asset-lending-manager' ); ?>"
+										value="<?php echo esc_attr( $filter_owner_name ); ?>"
+									/>
+									<div id="alm-owner-filter-dropdown" class="alm-autocomplete-dropdown"></div>
+									<input
+										type="hidden"
+										name="alm_owner"
+										id="alm-owner-filter-id"
+										value="<?php echo esc_attr( $filter_owner > 0 ? $filter_owner : '' ); ?>"
+									/>
+								</div>
+							</div>
+						</div>
+					<?php elseif ( is_user_logged_in() ) : ?>
+						<div class="alm-filter-row">
+							<div class="alm-filter-field">
+								<label class="alm-checkbox-label">
+									<input
+										type="checkbox"
+										name="alm_my_assets"
+										value="1"
+										<?php checked( $filter_my_assets, true ); ?>
+									/>
+									<?php esc_html_e( 'Show only my assets', 'asset-lending-manager' ); ?>
+								</label>
+							</div>
+						</div>
+					<?php endif; ?>
 				</div>
 				<!-- Reset filters button -->
 				<div class="alm-filters-actions">
-					<a href="<?php echo esc_url( remove_query_arg( array( 's', 'alm_structure', 'alm_type', 'alm_state', 'alm_level' ) ) ); ?>" class="alm-reset-filters">
+					<a href="<?php echo esc_url( remove_query_arg( array( 's', 'alm_structure', 'alm_type', 'alm_state', 'alm_level', 'alm_owner', 'alm_my_assets' ) ) ); ?>" class="alm-reset-filters">
 						<?php esc_html_e( 'Reset Filters', 'asset-lending-manager' ); ?>
 					</a>
 				</div>

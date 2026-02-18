@@ -363,6 +363,28 @@ class ALM_Frontend_Manager {
 		if ( isset( $_GET['alm_level'] ) ) {
 			$filter_level = sanitize_text_field( wp_unslash( $_GET['alm_level'] ) );
 		}
+		// Read owner filter (operator: by user ID; member: "my assets" checkbox).
+		$filter_owner      = 0;
+		$filter_owner_name = '';
+		$filter_my_assets  = false;
+		if ( current_user_can( ALM_EDIT_ASSET ) ) {
+			if ( isset( $_GET['alm_owner'] ) ) {
+				$filter_owner = absint( wp_unslash( $_GET['alm_owner'] ) );
+				if ( $filter_owner > 0 ) {
+					$owner_data = get_userdata( $filter_owner );
+					if ( $owner_data ) {
+						$filter_owner_name = $owner_data->display_name;
+					} else {
+						$filter_owner = 0; // Invalid user ID — reset.
+					}
+				}
+			}
+		} elseif ( is_user_logged_in() ) {
+			if ( isset( $_GET['alm_my_assets'] ) && '1' === $_GET['alm_my_assets'] ) {
+				$filter_my_assets = true;
+				$filter_owner     = get_current_user_id();
+			}
+		}
 		// Build query args.
 		$query_args = array(
 			'post_type'      => ALM_ASSET_CPT_SLUG,
@@ -406,6 +428,17 @@ class ALM_Frontend_Manager {
 		// Add tax_query to query args if we have filters.
 		if ( ! empty( $tax_query ) ) {
 			$query_args['tax_query'] = $tax_query;
+		}
+		// Add meta_query to filter by owner if set.
+		if ( $filter_owner > 0 ) {
+			$query_args['meta_query'] = array(
+				array(
+					'key'     => '_alm_current_owner',
+					'value'   => $filter_owner,
+					'compare' => '=',
+					'type'    => 'NUMERIC',
+				),
+			);
 		}
 		// Build and execute query.
 		$query        = new WP_Query( $query_args );
