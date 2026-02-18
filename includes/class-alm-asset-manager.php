@@ -263,6 +263,12 @@ class ALM_Asset_Manager {
 			}
 		}
 
+		// Load current owner.
+		$owner_id           = (int) get_post_meta( $asset->ID, '_alm_current_owner', true );
+		$wrapper->owner_id  = $owner_id;
+		$owner_data         = $owner_id > 0 ? get_userdata( $owner_id ) : false;
+		$wrapper->owner_name = $owner_data ? $owner_data->display_name : '';
+
 		return $wrapper;
 	}
 
