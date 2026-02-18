@@ -389,7 +389,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 						<label for="alm-direct-assign-user-input">
 							<?php esc_html_e( 'Assign to user:', 'asset-lending-manager' ); ?>
 						</label>
-						<div class="alm-autocomplete-wrap" style="position:relative;">
+						<div class="alm-autocomplete-wrap">
+							<span class="alm-search-icon" aria-hidden="true"></span>
 							<input
 								type="text"
 								id="alm-direct-assign-user-input"

@@ -1,8 +1,8 @@
 /**
- * User autocomplete for ALM direct assignment form.
+ * User autocomplete widget for ALM.
  *
- * Provides an accessible autocomplete widget for the user search input
- * in the direct assignment section (operator-only).
+ * Provides a reusable, accessible autocomplete widget for user search inputs.
+ * Used by the direct assignment form (operator-only) and the owner filter in the asset list.
  *
  * @package AssetLendingManager
  */
@@ -10,28 +10,32 @@
 (function() {
 	'use strict';
 
-	document.addEventListener('DOMContentLoaded', function() {
-		var input     = document.getElementById('alm-direct-assign-user-input');
-		var hiddenId  = document.getElementById('alm-direct-assign-user-id');
+	/**
+	 * Initialize a user autocomplete widget on a given set of DOM elements.
+	 *
+	 * @param {Object} config
+	 * @param {string} config.inputId    ID of the visible text input.
+	 * @param {string} config.hiddenId   ID of the hidden input that stores the selected user ID.
+	 * @param {string} config.dropdownId ID of the dropdown container element.
+	 */
+	window.almInitUserAutocomplete = function(config) {
+		var input    = document.getElementById(config.inputId);
+		var hiddenId = document.getElementById(config.hiddenId);
 
 		if (!input || !hiddenId) {
 			return;
 		}
 
-		// Bail early if localized data is missing (non-operator pages).
-		if (typeof window.almUserAutocomplete === 'undefined') {
-			return;
-		}
-
-		var minChars = window.almUserAutocomplete.minChars || 3;
+		var wrapEl        = input.parentNode;
+		var minChars      = window.almUserAutocomplete.minChars || 3;
 		var debounceTimer = null;
 		var activeIndex   = -1;
 
 		// Create or find the dropdown container.
-		var dropdown = document.getElementById('alm-user-autocomplete-dropdown');
+		var dropdown = document.getElementById(config.dropdownId);
 		if (!dropdown) {
 			dropdown = document.createElement('div');
-			dropdown.id        = 'alm-user-autocomplete-dropdown';
+			dropdown.id        = config.dropdownId;
 			dropdown.className = 'alm-autocomplete-dropdown';
 			dropdown.setAttribute('role', 'listbox');
 			dropdown.setAttribute('aria-label', 'User suggestions');
@@ -42,7 +46,7 @@
 		input.setAttribute('role', 'combobox');
 		input.setAttribute('aria-autocomplete', 'list');
 		input.setAttribute('aria-expanded', 'false');
-		input.setAttribute('aria-controls', 'alm-user-autocomplete-dropdown');
+		input.setAttribute('aria-controls', config.dropdownId);
 		input.setAttribute('aria-haspopup', 'listbox');
 
 		/**
@@ -59,7 +63,7 @@
 				return;
 			}
 
-			users.forEach(function(user, index) {
+			users.forEach(function(user) {
 				var item = document.createElement('div');
 				item.className = 'alm-autocomplete-item';
 				item.setAttribute('role', 'option');
@@ -160,7 +164,7 @@
 		 * @param {string} term Search term.
 		 */
 		function fetchUsers(term) {
-			input.classList.add('alm-autocomplete-loading');
+			wrapEl.classList.add('alm-autocomplete-loading');
 
 			var params = new URLSearchParams();
 			params.append('term', term);
@@ -169,8 +173,8 @@
 			fetch(window.almUserAutocomplete.restUrl, {
 				method:  'POST',
 				headers: {
-					'Content-Type':  'application/x-www-form-urlencoded;charset=UTF-8',
-					'X-WP-Nonce':    window.almUserAutocomplete.restNonce,
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+					'X-WP-Nonce':   window.almUserAutocomplete.restNonce,
 				},
 				body:        params.toString(),
 				credentials: 'same-origin',
@@ -185,7 +189,7 @@
 				hideDropdown();
 			})
 			.finally(function() {
-				input.classList.remove('alm-autocomplete-loading');
+				wrapEl.classList.remove('alm-autocomplete-loading');
 			});
 		}
 
@@ -209,7 +213,7 @@
 
 		// Keyboard navigation.
 		input.addEventListener('keydown', function(e) {
-			var items = dropdown.querySelectorAll('.alm-autocomplete-item');
+			var items  = dropdown.querySelectorAll('.alm-autocomplete-item');
 			var isOpen = dropdown.style.display === 'block';
 
 			if (e.key === 'ArrowDown') {
@@ -246,6 +250,27 @@
 		// Close dropdown on input blur (allow mousedown on item to fire first).
 		input.addEventListener('blur', function() {
 			setTimeout(hideDropdown, 150);
+		});
+	};
+
+	document.addEventListener('DOMContentLoaded', function() {
+		// Bail early if localized data is missing (non-operator pages).
+		if (typeof window.almUserAutocomplete === 'undefined') {
+			return;
+		}
+
+		// Initialize the direct assignment form widget (asset detail page).
+		window.almInitUserAutocomplete({
+			inputId:    'alm-direct-assign-user-input',
+			hiddenId:   'alm-direct-assign-user-id',
+			dropdownId: 'alm-user-autocomplete-dropdown',
+		});
+
+		// Initialize the owner filter widget (asset list page).
+		window.almInitUserAutocomplete({
+			inputId:    'alm-owner-filter-input',
+			hiddenId:   'alm-owner-filter-id',
+			dropdownId: 'alm-owner-filter-dropdown',
 		});
 	});
 }());
