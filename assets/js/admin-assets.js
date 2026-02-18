@@ -1,42 +1,30 @@
 /**
- * Admin JavaScript for ALM assets
+ * Admin JavaScript for ALM assets.
  *
  * Loaded only on ALM admin pages (asset edit, list, taxonomies, custom pages).
  *
  * @package AssetLendingManager
  */
 
-(function($) {
+(function() {
 	'use strict';
+
 	var __ = (window.wp && window.wp.i18n && window.wp.i18n.__) ? window.wp.i18n.__ : function(text) {
 		return text;
 	};
 
-	/**
-	 * Initialize when DOM is ready.
-	 */
-	$(document).ready(function() {
-		ALM_Admin.init();
-	});
-
-	/**
-	 * ALM Admin object.
-	 */
 	var ALM_Admin = {
-
 		/**
 		 * Initialize admin functionality.
 		 */
 		init: function() {
 			console.log('ALM Admin initialized');
-			
-			// Access to data passed from PHP via wp_localize_script.
-			if (typeof almAdmin !== 'undefined') {
-				console.log('AJAX URL:', almAdmin.ajaxUrl);
-				console.log('Nonce:', almAdmin.nonce);
+
+			if (typeof window.almAdmin !== 'undefined') {
+				console.log('AJAX URL:', window.almAdmin.ajaxUrl);
+				console.log('Nonce:', window.almAdmin.nonce);
 			}
 
-			// Initialize components.
 			this.initAssetStatusBadges();
 			this.initQuickActions();
 			this.initFormValidation();
@@ -46,27 +34,35 @@
 		 * Add status badges to asset list table.
 		 */
 		initAssetStatusBadges: function() {
-			// Add visual status indicators in the assets list.
-			$('.post-type-alm_asset .wp-list-table tbody tr').each(function() {
-				var $row = $(this);
-				var $stateCell = $row.find('.column-taxonomy-alm_state');
-				
-				if ($stateCell.length) {
-					var stateText = $stateCell.text().trim().toLowerCase();
-					var badgeClass = '';
-					
-					if (stateText.includes('available') || stateText.includes('disponibile')) {
-						badgeClass = 'available';
-					} else if (stateText.includes('loaned') || stateText.includes('prestato')) {
-						badgeClass = 'loaned';
-					} else if (stateText.includes('maintenance') || stateText.includes('manutenzione')) {
-						badgeClass = 'maintenance';
-					}
-					
-					if (badgeClass) {
-						$stateCell.wrapInner('<span class="alm-status-badge ' + badgeClass + '"></span>');
-					}
+			var rows = document.querySelectorAll('.post-type-alm_asset .wp-list-table tbody tr');
+
+			rows.forEach(function(row) {
+				var stateCell = row.querySelector('.column-taxonomy-alm_state');
+				if (!stateCell) {
+					return;
 				}
+
+				var stateText = stateCell.textContent.trim().toLowerCase();
+				var badgeClass = '';
+
+				if (stateText.includes('available') || stateText.includes('disponibile')) {
+					badgeClass = 'available';
+				} else if (stateText.includes('loaned') || stateText.includes('prestato')) {
+					badgeClass = 'loaned';
+				} else if (stateText.includes('maintenance') || stateText.includes('manutenzione')) {
+					badgeClass = 'maintenance';
+				}
+
+				if (!badgeClass || stateCell.querySelector('.alm-status-badge')) {
+					return;
+				}
+
+				var wrapper = document.createElement('span');
+				wrapper.className = 'alm-status-badge ' + badgeClass;
+				while (stateCell.firstChild) {
+					wrapper.appendChild(stateCell.firstChild);
+				}
+				stateCell.appendChild(wrapper);
 			});
 		},
 
@@ -74,31 +70,31 @@
 		 * Initialize quick actions for assets.
 		 */
 		initQuickActions: function() {
-			// Add custom quick actions to asset rows.
-			$('.post-type-alm_asset .row-actions').each(function() {
-				var $actions = $(this);
-				var postId = $actions.closest('tr').attr('id').replace('post-', '');
-				
-				// Example: Add a "View Frontend" link.
-					var viewLink = '<span class="alm-view-frontend"> | ' +
-						'<a href="' + ALM_Admin.getAssetPermalink(postId) + '" target="_blank">' +
-						__( 'View on Frontend', 'asset-lending-manager' ) + '</a></span>';
-				
-				$actions.append(viewLink);
+			var actionsRows = document.querySelectorAll('.post-type-alm_asset .row-actions');
+
+			actionsRows.forEach(function(actions) {
+				var row = actions.closest('tr');
+				if (!row || !row.id) {
+					return;
+				}
+
+				var postId = row.id.replace('post-', '');
+				var viewLabel = __( 'View on Frontend', 'asset-lending-manager' );
+				var viewLink = '<span class="alm-view-frontend"> | ' +
+					'<a href="' + ALM_Admin.getAssetPermalink(postId) + '" target="_blank">' +
+					viewLabel + '</a></span>';
+
+				actions.insertAdjacentHTML('beforeend', viewLink);
 			});
 		},
 
 		/**
 		 * Get asset permalink (placeholder - would need actual data).
-		 * 
-		 * @param {number} postId Asset post ID.
+		 *
+		 * @param {number|string} postId Asset post ID.
 		 * @return {string} Asset permalink.
 		 */
 		getAssetPermalink: function(postId) {
-			// This is a placeholder. In a real implementation, you would:
-			// 1. Store permalinks in data attributes
-			// 2. Use AJAX to fetch the permalink
-			// 3. Use REST API
 			return '/?p=' + postId;
 		},
 
@@ -106,79 +102,93 @@
 		 * Initialize form validation for asset edit.
 		 */
 		initFormValidation: function() {
-			// Only on asset edit page.
-			if (!$('body').hasClass('post-type-alm_asset') || !$('body').hasClass('post-php')) {
+			var body = document.body;
+			if (!body.classList.contains('post-type-alm_asset') || !body.classList.contains('post-php')) {
 				return;
 			}
 
-			// Example: Validate required fields before publish.
-			$('#publish').on('click', function(e) {
+			var publishButton = document.getElementById('publish');
+			if (!publishButton) {
+				return;
+			}
+
+			publishButton.addEventListener('click', function(e) {
 				var isValid = true;
 				var errors = [];
 
-				// Check if title is filled.
-				var title = $('#title').val().trim();
+				var titleField = document.getElementById('title');
+				var title = titleField ? titleField.value.trim() : '';
 				if (!title) {
-						errors.push( __( 'Asset name is required.', 'asset-lending-manager' ) );
+					errors.push( __( 'Asset name is required.', 'asset-lending-manager' ) );
 					isValid = false;
 				}
 
-				// Check if asset type is selected.
-				var assetType = $('input[name="tax_input[alm_type][]"]:checked').length;
-				if (assetType === 0) {
-						errors.push( __( 'Please select a asset type.', 'asset-lending-manager' ) );
+				var assetType = document.querySelectorAll('input[name="tax_input[alm_type][]"]:checked').length;
+				if (0 === assetType) {
+					errors.push( __( 'Please select a asset type.', 'asset-lending-manager' ) );
 					isValid = false;
 				}
 
-				// Show errors if any.
 				if (!isValid) {
 					e.preventDefault();
-						alert( __( 'Please fix the following errors:\n\n', 'asset-lending-manager' ) + errors.join('\n') );
-					return false;
+					alert( __( 'Please fix the following errors:\n\n', 'asset-lending-manager' ) + errors.join('\n') );
 				}
 			});
 		},
 
 		/**
 		 * Show loading spinner.
-		 * 
-		 * @param {jQuery} $element Element to show spinner next to.
+		 *
+		 * @param {HTMLElement} element Element to show spinner next to.
 		 */
-		showSpinner: function($element) {
-			if ($element.find('.alm-spinner').length === 0) {
-				$element.append('<span class="alm-spinner"></span>');
+		showSpinner: function(element) {
+			if (!element || element.querySelector('.alm-spinner')) {
+				return;
 			}
+			var spinner = document.createElement('span');
+			spinner.className = 'alm-spinner';
+			element.appendChild(spinner);
 		},
 
 		/**
 		 * Hide loading spinner.
-		 * 
-		 * @param {jQuery} $element Element to remove spinner from.
+		 *
+		 * @param {HTMLElement} element Element to remove spinner from.
 		 */
-		hideSpinner: function($element) {
-			$element.find('.alm-spinner').remove();
+		hideSpinner: function(element) {
+			if (!element) {
+				return;
+			}
+			var spinner = element.querySelector('.alm-spinner');
+			if (spinner) {
+				spinner.remove();
+			}
 		},
 
 		/**
 		 * Show admin notice.
-		 * 
+		 *
 		 * @param {string} message Notice message.
-		 * @param {string} type Notice type: 'success', 'error', 'warning'.
+		 * @param {string} type Notice type: success|error|warning.
 		 */
 		showNotice: function(message, type) {
-			type = type || 'success';
-			
-			var $notice = $('<div class="alm-notice ' + type + '">' + message + '</div>');
-			$('.wrap h1').after($notice);
-			
-			// Auto-hide after 5 seconds.
-			setTimeout(function() {
-				$notice.fadeOut(300, function() {
-					$(this).remove();
-				});
-			}, 5000);
-		}
+			var noticeType = type || 'success';
+			var notice = document.createElement('div');
+			notice.className = 'alm-notice ' + noticeType;
+			notice.textContent = message;
 
+			var heading = document.querySelector('.wrap h1');
+			if (heading && heading.parentNode) {
+				heading.parentNode.insertBefore(notice, heading.nextSibling);
+			}
+
+			setTimeout(function() {
+				notice.remove();
+			}, 5000);
+		},
 	};
 
-})(jQuery);
+	document.addEventListener('DOMContentLoaded', function() {
+		ALM_Admin.init();
+	});
+})();
