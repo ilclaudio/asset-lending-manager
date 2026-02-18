@@ -56,3 +56,15 @@ define( 'ALM_AUTOCOMPLETE_DESC_LENGTH', 20 );
 
 // Asset list.
 define( 'ALM_ASSET_LIST_PER_PAGE', 12 );
+
+// Loan statuses.
+define(
+	'ALM_LOAN_STATUS_LABELS',
+	array(
+		'pending'       => 'Pending',
+		'approved'      => 'Approved',
+		'rejected'      => 'Rejected',
+		'canceled'      => 'Canceled',
+		'direct_assign' => 'Direct assignment',
+	)
+);

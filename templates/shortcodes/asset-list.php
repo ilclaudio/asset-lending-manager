@@ -1,39 +1,46 @@
 <?php
 /**
- * Template for asset list shortcode
+ * Template for asset list shortcode.
  *
- * Available variables:
- * - $assets: Array of asset wrapper objects from ALM_Asset_Manager::get_asset_wrapper()
+ * Variables injected from render_asset_list_template():
+ * - $assets:             array    Asset wrapper objects (ALM_Asset_Manager::get_asset_wrapper()).
+ * - $assets_count:       int      Total number of matching assets (all pages).
+ * - $current_page:       int      Current pagination page number.
+ * - $total_pages:        int      Total number of pagination pages.
+ * - $alm_current_search: string  Current search term (sanitized).
+ * - $filter_structure:   string  Active structure taxonomy filter slug.
+ * - $filter_type:        string  Active type taxonomy filter slug.
+ * - $filter_state:       string  Active state taxonomy filter slug.
+ * - $filter_level:       string  Active level taxonomy filter slug.
+ * - $filter_owner:       int     Active owner user ID (0 if none).
+ * - $filter_owner_name:  string  Display name of the active owner filter user.
+ * - $filter_my_assets:   bool    True if member's "show only my assets" is active.
  *
  * @package AssetLendingManager
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$alm_current_search = '';
-if ( isset( $_GET['s'] ) ) {
-	$alm_current_search = sanitize_text_field( wp_unslash( $_GET['s'] ) );
-}
-// ========== Get taxonomy terms for filters ========== \\
+// Get taxonomy terms for filters.
 $alm_terms_structure = get_terms(
 	array(
 		'taxonomy'   => ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
-$alm_terms_type = get_terms(
+$alm_terms_type      = get_terms(
 	array(
 		'taxonomy'   => ALM_ASSET_TYPE_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
-$alm_terms_state = get_terms(
+$alm_terms_state     = get_terms(
 	array(
 		'taxonomy'   => ALM_ASSET_STATE_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
-$alm_terms_level = get_terms(
+$alm_terms_level     = get_terms(
 	array(
 		'taxonomy'   => ALM_ASSET_LEVEL_TAXONOMY_SLUG,
 		'hide_empty' => true,
@@ -42,19 +49,19 @@ $alm_terms_level = get_terms(
 // Count active filters.
 $alm_active_filters_count = 0;
 if ( ! empty( $filter_structure ) ) {
-	$alm_active_filters_count++;
+	++$alm_active_filters_count;
 }
 if ( ! empty( $filter_type ) ) {
-	$alm_active_filters_count++;
+	++$alm_active_filters_count;
 }
 if ( ! empty( $filter_state ) ) {
-	$alm_active_filters_count++;
+	++$alm_active_filters_count;
 }
 if ( ! empty( $filter_level ) ) {
-	$alm_active_filters_count++;
+	++$alm_active_filters_count;
 }
 if ( $filter_owner > 0 ) {
-	$alm_active_filters_count++;
+	++$alm_active_filters_count;
 }
 
 ?>
@@ -92,26 +99,26 @@ if ( $filter_owner > 0 ) {
 							<label for="alm_filter_structure"><?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?></label>
 							<select name="alm_structure" id="alm_filter_structure">
 								<option value=""><?php esc_html_e( 'All structures', 'asset-lending-manager' ); ?></option>
-								<?php if ( ! is_wp_error( $alm_terms_structure ) && ! empty( $alm_terms_structure ) ) : ?>
-									<?php foreach ( $alm_terms_structure as $term ) : ?>
-										<option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( $filter_structure, $term->slug ); ?>>
-											<?php echo esc_html( $term->name ); ?>
-										</option>
-									<?php endforeach; ?>
-								<?php endif; ?>
+									<?php if ( ! is_wp_error( $alm_terms_structure ) && ! empty( $alm_terms_structure ) ) : ?>
+										<?php foreach ( $alm_terms_structure as $alm_term ) : ?>
+											<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_structure, $alm_term->slug ); ?>>
+												<?php echo esc_html( $alm_term->name ); ?>
+											</option>
+										<?php endforeach; ?>
+									<?php endif; ?>
 							</select>
 						</div>
 						<div class="alm-filter-field">
 							<label for="alm_filter_type"><?php esc_html_e( 'Type', 'asset-lending-manager' ); ?></label>
 							<select name="alm_type" id="alm_filter_type">
 								<option value=""><?php esc_html_e( 'All types', 'asset-lending-manager' ); ?></option>
-								<?php if ( ! is_wp_error( $alm_terms_type ) && ! empty( $alm_terms_type ) ) : ?>
-									<?php foreach ( $alm_terms_type as $term ) : ?>
-										<option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( $filter_type, $term->slug ); ?>>
-											<?php echo esc_html( $term->name ); ?>
-										</option>
-									<?php endforeach; ?>
-								<?php endif; ?>
+									<?php if ( ! is_wp_error( $alm_terms_type ) && ! empty( $alm_terms_type ) ) : ?>
+										<?php foreach ( $alm_terms_type as $alm_term ) : ?>
+											<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_type, $alm_term->slug ); ?>>
+												<?php echo esc_html( $alm_term->name ); ?>
+											</option>
+										<?php endforeach; ?>
+									<?php endif; ?>
 							</select>
 						</div>
 					</div>
@@ -121,26 +128,26 @@ if ( $filter_owner > 0 ) {
 							<label for="alm_filter_state"><?php esc_html_e( 'State', 'asset-lending-manager' ); ?></label>
 							<select name="alm_state" id="alm_filter_state">
 								<option value=""><?php esc_html_e( 'All states', 'asset-lending-manager' ); ?></option>
-								<?php if ( ! is_wp_error( $alm_terms_state ) && ! empty( $alm_terms_state ) ) : ?>
-									<?php foreach ( $alm_terms_state as $term ) : ?>
-										<option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( $filter_state, $term->slug ); ?>>
-											<?php echo esc_html( $term->name ); ?>
-										</option>
-									<?php endforeach; ?>
-								<?php endif; ?>
+									<?php if ( ! is_wp_error( $alm_terms_state ) && ! empty( $alm_terms_state ) ) : ?>
+										<?php foreach ( $alm_terms_state as $alm_term ) : ?>
+											<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_state, $alm_term->slug ); ?>>
+												<?php echo esc_html( $alm_term->name ); ?>
+											</option>
+										<?php endforeach; ?>
+									<?php endif; ?>
 							</select>
 						</div>
 						<div class="alm-filter-field">
 							<label for="alm_filter_level"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?></label>
 							<select name="alm_level" id="alm_filter_level">
 								<option value=""><?php esc_html_e( 'All levels', 'asset-lending-manager' ); ?></option>
-								<?php if ( ! is_wp_error( $alm_terms_level ) && ! empty( $alm_terms_level ) ) : ?>
-									<?php foreach ( $alm_terms_level as $term ) : ?>
-										<option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( $filter_level, $term->slug ); ?>>
-											<?php echo esc_html( $term->name ); ?>
-										</option>
-									<?php endforeach; ?>
-								<?php endif; ?>
+									<?php if ( ! is_wp_error( $alm_terms_level ) && ! empty( $alm_terms_level ) ) : ?>
+										<?php foreach ( $alm_terms_level as $alm_term ) : ?>
+											<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_level, $alm_term->slug ); ?>>
+												<?php echo esc_html( $alm_term->name ); ?>
+											</option>
+										<?php endforeach; ?>
+									<?php endif; ?>
 							</select>
 						</div>
 					</div>
@@ -184,7 +191,7 @@ if ( $filter_owner > 0 ) {
 						</div>
 					<?php endif; ?>
 				</div>
-				</div>
+			</div>
 		</details>
 
 		<!-- Form actions: Reset filters + Search -->
@@ -206,6 +213,7 @@ if ( $filter_owner > 0 ) {
 		<p class="alm-asset-search-count">
 			<?php
 			printf(
+				/* translators: %d: Number of assets found. */
 				esc_html__( 'Assets found: %d', 'asset-lending-manager' ),
 				(int) $assets_count
 			);
@@ -219,11 +227,9 @@ if ( $filter_owner > 0 ) {
 			<?php foreach ( $assets as $alm_asset ) : ?>
 				<article class="alm-asset-card">
 					<a href="<?php echo esc_url( $alm_asset->permalink ); ?>" class="alm-asset-link">
-						<?php if ( $alm_asset->thumbnail ) : ?>
-							<div class="alm-asset-thumbnail">
-								<?php echo wp_kses_post( $alm_asset->thumbnail ); ?>
-							</div>
-						<?php endif; ?>
+						<div class="alm-asset-thumbnail">
+							<?php echo wp_kses_post( $alm_asset->thumbnail ); ?>
+						</div>
 						<div class="alm-asset-content-wrapper">
 							<h2 class="alm-asset-title"><?php echo esc_html( $alm_asset->title ); ?></h2>
 							<div class="alm-asset-taxonomies">
@@ -261,31 +267,32 @@ if ( $filter_owner > 0 ) {
 			<?php endforeach; ?>
 		</div>
 
-	<?php if ( $total_pages > 1 ) : ?>
-		<nav class="alm-pagination" aria-label="<?php esc_attr_e( 'Asset list pagination', 'asset-lending-manager' ); ?>">
-			<?php
-			echo wp_kses_post(
-				paginate_links(
-					array(
-						'base'      => add_query_arg( 'alm_paged', '%#%' ),
-						'format'    => '',
-						'current'   => $current_page,
-						'total'     => $total_pages,
-						'prev_text' => '&laquo;',
-						'next_text' => '&raquo;',
-					)
-				)
-			);
-			?>
-		</nav>
-	<?php endif; ?>
+			<?php if ( $total_pages > 1 ) : ?>
+				<nav class="alm-pagination" aria-label="<?php esc_attr_e( 'Asset list pagination', 'asset-lending-manager' ); ?>">
+					<?php
+					echo wp_kses_post(
+						paginate_links(
+							array(
+								'base'      => add_query_arg( 'alm_paged', '%#%' ),
+								'format'    => '',
+								'current'   => $current_page,
+								'total'     => $total_pages,
+								'prev_text' => '&laquo;',
+								'next_text' => '&raquo;',
+							)
+						)
+					);
+					?>
+				</nav>
+			<?php endif; ?>
 
-	<?php else : ?>
+		<?php else : ?>
 
-		<p class="alm-no-results">
+			<p class="alm-no-results">
 			<?php
 			if ( ! empty( $alm_current_search ) ) {
 				printf(
+					/* translators: %s: Search term entered by the user. */
 					esc_html__( 'No results found for "%s".', 'asset-lending-manager' ),
 					esc_html( $alm_current_search )
 				);
@@ -293,7 +300,7 @@ if ( $filter_owner > 0 ) {
 				esc_html_e( 'No assets found.', 'asset-lending-manager' );
 			}
 			?>
-		</p>
+			</p>
 
 	<?php endif; ?>
 </div>
