@@ -105,11 +105,11 @@ class ALM_Admin_Manager {
 			'all'
 		);
 
-		// Enqueue JS.
+			// Enqueue JS.
 			wp_enqueue_script(
 				'alm-admin-assets',
 				ALM_PLUGIN_URL . 'assets/js/admin-assets.js',
-				array( 'jquery', 'wp-i18n' ),
+				array( 'wp-i18n' ),
 				ALM_VERSION,
 				true
 			);
