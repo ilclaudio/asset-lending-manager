@@ -17,14 +17,6 @@ Last update: 2026-02-18
 
 ## Bug
 
-### [Low] assets_count assigned inside foreach loop
-- **Status:** Open
-- **Date:** 2026-02-18
-- **Category:** Bug
-- **Description:** In `render_asset_list_template()`, `$assets_count = (int) $query->found_posts` is assigned inside the `foreach` loop, causing a redundant reassignment on every iteration.
-- **Expected behavior:** Move the assignment outside the loop, directly after the `have_posts()` check.
-- **Notes:** `includes/class-alm-frontend-manager.php:416`
-
 ### [Low] Taxonomy filter values not validated as term slugs
 - **Status:** Open
 - **Date:** 2026-02-18
@@ -85,14 +77,6 @@ Last update: 2026-02-18
 - **Expected behavior:** Remove logs or gate them behind explicit debug flag.
 - **Notes:** `assets/js/frontend-assets.js`, `assets/js/admin-assets.js`
 
-### [Low] jQuery declared as script dependency but vanilla JS policy applies
-- **Status:** Open
-- **Date:** 2026-02-15
-- **Category:** Refactoring
-- **Description:** `wp_enqueue_script()` calls for `alm-frontend-assets`, `alm-admin-assets`, and `alm-asset-autocomplete` all declare `array( 'jquery' )` as dependency. CODING_STANDARDS mandates vanilla JS only. If jQuery is not actually used in the JS files, this forces unnecessary loading.
-- **Expected behavior:** Audit JS files for jQuery usage; if none, remove the dependency. If jQuery is used, either refactor to vanilla JS or document the exception.
-- **Notes:** `includes/class-alm-frontend-manager.php:187`, `includes/class-alm-admin-manager.php:112`, `includes/class-alm-autocomplete-manager.php:38`.
-
 ### [Low] Hardcoded operator user ID for automatic operations
 - **Status:** Open
 - **Date:** 2026-02-12
@@ -100,6 +84,58 @@ Last update: 2026-02-18
 - **Description:** Automatic operations use fixed user ID `1`, unsafe across installations.
 - **Expected behavior:** Make configurable or use context-aware actor resolution.
 - **Notes:** `includes/class-alm-loan-manager.php`
+
+---
+
+## Performance
+
+### [High] Autocomplete assets are enqueued on every frontend page
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** `ALM_Autocomplete_Manager::enqueue_assets()` runs on `wp_enqueue_scripts` without page checks, loading autocomplete JS/CSS and localized REST data on pages that do not use ALM search.
+- **Expected behavior:** Enqueue autocomplete assets only on ALM pages (archive/single/shortcode contexts) or only when the related DOM/search UI is present.
+- **Notes:** `includes/class-alm-autocomplete-manager.php:26`, `includes/class-alm-autocomplete-manager.php:34`
+
+### [High] Asset list rendering has N+1 queries per item through wrapper hydration
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** In list rendering, each post is passed to `ALM_Asset_Manager::get_asset_wrapper()`, which loads terms for 4 taxonomies, owner meta, and user data per item. On larger pages this multiplies DB/cache work and slows initial render.
+- **Expected behavior:** Bulk-prime/cache required data (terms/meta/users) or build a lightweight list-view model that avoids per-item full wrapper hydration.
+- **Notes:** `includes/class-alm-frontend-manager.php:459`, `includes/class-alm-frontend-manager.php:467`, `includes/class-alm-asset-manager.php:257`, `includes/class-alm-asset-manager.php:267`
+
+### [High] Asset detail tables perform repeated user lookups inside loops
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** Loan requests and history tables call `get_userdata()` inside foreach loops for each row. This creates repeated user lookups during page generation and scales poorly with more entries.
+- **Expected behavior:** Resolve all involved user IDs once (prefetch map) and render rows using the preloaded dictionary.
+- **Notes:** `templates/shortcodes/asset-view.php:301`, `templates/shortcodes/asset-view.php:303`, `templates/shortcodes/asset-view.php:474`, `templates/shortcodes/asset-view.php:477`, `templates/shortcodes/asset-view.php:479`
+
+### [High] Taxonomy filter term lists are queried on every list render without caching
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** The list template performs 4 separate `get_terms()` calls on each request to build filter dropdowns. On high traffic this adds avoidable taxonomy query overhead.
+- **Expected behavior:** Cache filter term datasets (object cache/transient) and invalidate on term changes, or build them once in controller with shared cached helpers.
+- **Notes:** `templates/shortcodes/asset-list.php:25`, `templates/shortcodes/asset-list.php:31`, `templates/shortcodes/asset-list.php:37`, `templates/shortcodes/asset-list.php:43`
+
+### [High] Reverse kit lookup uses expensive meta LIKE query in asset detail
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** To detect kit membership, `get_asset_custom_fields()` runs a `WP_Query` with `meta_query` `LIKE` against serialized component data. This pattern is expensive and non-scalable for larger datasets.
+- **Expected behavior:** Replace reverse `LIKE` lookup with normalized relation storage (e.g., dedicated relation meta/table) or maintain a direct parent-kit reference index.
+- **Notes:** `includes/class-alm-asset-manager.php:350`, `includes/class-alm-asset-manager.php:355`, `includes/class-alm-asset-manager.php:363`
+
+### [High] Loan tables miss composite indexes for real query patterns
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** Runtime queries filter by multiple columns and sort by date (`asset_id + status + request_date`, `asset_id + changed_at`) but table schemas define only single-column indexes, causing less efficient plans as data grows.
+- **Expected behavior:** Add composite indexes aligned with read patterns and include safe migration path for existing installs.
+- **Notes:** `includes/class-alm-loan-manager.php:748`, `includes/class-alm-loan-manager.php:812`, `includes/class-alm-installer.php:75`, `includes/class-alm-installer.php:138`
 
 ---
 
@@ -140,6 +176,14 @@ Last update: 2026-02-18
 - **Description:** Settings structure exists but is not exposed via complete admin UI and is not fully consumed at runtime.
 - **Expected behavior:** Provide a minimal settings page to configure notification sender/system email and core workflow toggles used by runtime modules.
 - **Notes:** Required before broad user testing to avoid hardcoded operational behavior.
+
+### [High] Frontend styles must not override site typography
+- **Status:** Open
+- **Date:** 2026-02-18
+- **Category:** Feature
+- **Description:** Plugin styles currently force a custom font family and can override the active theme typography in site pages.
+- **Expected behavior:** Remove hardcoded `font-family` declarations (or inherit from theme) so plugin frontend UI uses the site's default typography.
+- **Notes:** Keep only spacing/color/layout styles that are plugin-specific.
 
 ### [Medium] Member dashboard for "My requests" and "My active loans"
 - **Status:** Open
