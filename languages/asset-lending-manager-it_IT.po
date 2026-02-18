@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-02-17 22:46+0000\n"
+"PO-Revision-Date: 2026-02-18 20:18+0000\n"
 "Last-Translator: \n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -23,8 +23,8 @@ msgstr "AAGG"
 msgid "Accessory"
 msgstr "Accessorio"
 
-#: templates/shortcodes/asset-view.php:467
-#: templates/shortcodes/asset-view.php:519
+#: templates/shortcodes/asset-view.php:468
+#: templates/shortcodes/asset-view.php:520
 msgid "Action Date"
 msgstr "Data azione"
 
@@ -53,23 +53,23 @@ msgstr "Campi aggiuntivi"
 msgid "Advanced"
 msgstr "Avanzato"
 
-#: templates/shortcodes/asset-list.php:78
+#: templates/shortcodes/asset-list.php:88
 msgid "Advanced Filters"
 msgstr "Filtri Avanzati"
 
-#: templates/shortcodes/asset-list.php:133
+#: templates/shortcodes/asset-list.php:143
 msgid "All levels"
 msgstr "Tutti i livelli"
 
-#: templates/shortcodes/asset-list.php:120
+#: templates/shortcodes/asset-list.php:130
 msgid "All states"
 msgstr "Tutti gli stati"
 
-#: templates/shortcodes/asset-list.php:91
+#: templates/shortcodes/asset-list.php:101
 msgid "All structures"
 msgstr "Tutte le strutture"
 
-#: templates/shortcodes/asset-list.php:104
+#: templates/shortcodes/asset-list.php:114
 msgid "All types"
 msgstr "Tutti i tipi"
 
@@ -92,7 +92,7 @@ msgid "Approve"
 msgstr "Approva"
 
 #: templates/shortcodes/asset-view.php:311
-#: templates/shortcodes/asset-view.php:489
+#: templates/shortcodes/asset-view.php:490
 msgid "Approved"
 msgstr "Approvato"
 
@@ -131,8 +131,12 @@ msgstr "Livello risorsa"
 msgid "Asset Levels"
 msgstr "Livelli risorse"
 
+#: templates/shortcodes/asset-list.php:270
+msgid "Asset list pagination"
+msgstr "Paginazione della lista delle risorse"
+
 #: includes/class-alm-frontend-manager.php:295
-#: includes/class-alm-frontend-manager.php:438
+#: includes/class-alm-frontend-manager.php:479
 #: includes/class-alm-loan-manager.php:111
 #: includes/class-alm-loan-manager.php:1018
 #: includes/class-alm-loan-manager.php:1352
@@ -186,11 +190,11 @@ msgstr "Tipi risorsa"
 msgid "Assets"
 msgstr "Risorse"
 
-#: templates/shortcodes/asset-list.php:168
+#: templates/shortcodes/asset-list.php:216
 msgid "Assets found: %d"
 msgstr "Risorse trovate: %d"
 
-#: templates/shortcodes/asset-view.php:425
+#: templates/shortcodes/asset-view.php:426
 msgid "Assign asset"
 msgstr "Assegna risorsa"
 
@@ -232,7 +236,7 @@ msgid "Book"
 msgstr "Libro"
 
 #: templates/shortcodes/asset-view.php:313
-#: templates/shortcodes/asset-view.php:491
+#: templates/shortcodes/asset-view.php:492
 msgid "Canceled"
 msgstr "Annullato"
 
@@ -240,8 +244,8 @@ msgstr "Annullato"
 msgid "Cannot assign a retired asset."
 msgstr "Impossibile assegnare una risorsa ritirata."
 
-#: templates/shortcodes/asset-view.php:465
-#: templates/shortcodes/asset-view.php:512
+#: templates/shortcodes/asset-view.php:466
+#: templates/shortcodes/asset-view.php:513
 msgid "Changed by"
 msgstr "Eseguito da"
 
@@ -285,7 +289,7 @@ msgstr "Dimensioni"
 #: templates/shortcodes/asset-view.php:314
 #: templates/shortcodes/asset-view.php:374
 #: templates/shortcodes/asset-view.php:378
-#: templates/shortcodes/asset-view.php:492
+#: templates/shortcodes/asset-view.php:493
 msgid "Direct assignment"
 msgstr "Assegnamento diretto"
 
@@ -293,7 +297,7 @@ msgstr "Assegnamento diretto"
 msgid "Edit Asset"
 msgstr "Modifica risorsa"
 
-#: templates/shortcodes/asset-view.php:417
+#: templates/shortcodes/asset-view.php:418
 msgid "Explain the reason for this assignment..."
 msgstr "Spiega il motivo di questo assegnamento..."
 
@@ -385,14 +389,14 @@ msgstr "Slug dello stato non valido: %s"
 msgid "Kit"
 msgstr "Kit"
 
-#: templates/shortcodes/asset-list.php:131
-#: templates/shortcodes/asset-list.php:206
+#: templates/shortcodes/asset-list.php:141
+#: templates/shortcodes/asset-list.php:252
 #: templates/shortcodes/asset-view.php:100
 msgid "Level"
 msgstr "Livello"
 
-#: templates/shortcodes/asset-view.php:437
-#: templates/shortcodes/asset-view.php:441
+#: templates/shortcodes/asset-view.php:438
+#: templates/shortcodes/asset-view.php:442
 msgid "Loan history"
 msgstr "Storico dei prestiti"
 
@@ -468,8 +472,8 @@ msgid "Membership kit"
 msgstr "Kit di appartenenza"
 
 #: templates/shortcodes/asset-view.php:291
-#: templates/shortcodes/asset-view.php:469
-#: templates/shortcodes/asset-view.php:528
+#: templates/shortcodes/asset-view.php:470
+#: templates/shortcodes/asset-view.php:529
 msgid "Message"
 msgstr "Messaggio"
 
@@ -506,11 +510,11 @@ msgstr "Nessuna risorsa trovata"
 msgid "No assets found in Trash"
 msgstr "Nessuna risorsa nel cestino"
 
-#: templates/shortcodes/asset-list.php:226
+#: templates/shortcodes/asset-list.php:298
 msgid "No assets found."
 msgstr "Nessuna risorsa trovata."
 
-#: templates/shortcodes/asset-view.php:539
+#: templates/shortcodes/asset-view.php:540
 msgid "No loan history available for this asset."
 msgstr "Nessuno storico prestiti disponibile per questa risorsa."
 
@@ -518,16 +522,16 @@ msgstr "Nessuno storico prestiti disponibile per questa risorsa."
 msgid "No pending requests for this asset."
 msgstr "Nessuna richiesta in sospeso per questa risorsa."
 
-#: templates/shortcodes/asset-list.php:222
+#: templates/shortcodes/asset-list.php:294
 #, php-format
 msgid "No results found for \"%s\"."
 msgstr "Nessun risultato per \"%s\"."
 
-#: templates/shortcodes/asset-view.php:479
+#: templates/shortcodes/asset-view.php:480
 msgid "None"
 msgstr "Nessuno"
 
-#: templates/shortcodes/asset-view.php:456
+#: templates/shortcodes/asset-view.php:457
 msgid "Note:"
 msgstr "Nota:"
 
@@ -547,7 +551,7 @@ msgstr "In prestito"
 #: templates/shortcodes/asset-view.php:212
 #: templates/shortcodes/asset-view.php:281
 #: templates/shortcodes/asset-view.php:381
-#: templates/shortcodes/asset-view.php:444
+#: templates/shortcodes/asset-view.php:445
 msgid "Open/Close"
 msgstr "Apri/chiudi"
 
@@ -560,12 +564,17 @@ msgstr "Operatore"
 msgid "Optical Tube"
 msgstr "Tubo ottico"
 
+#: templates/shortcodes/asset-list.php:158
+#: templates/shortcodes/asset-list.php:258
+msgid "Owner"
+msgstr "Proprietario attuale"
+
 #: templates/shortcodes/asset-view.php:310
 msgid "Pending"
 msgstr "In attesa"
 
-#: templates/shortcodes/asset-view.php:464
-#: templates/shortcodes/asset-view.php:508
+#: templates/shortcodes/asset-view.php:465
+#: templates/shortcodes/asset-view.php:509
 msgid "Previous Owner"
 msgstr "Proprietario precedente"
 
@@ -577,12 +586,12 @@ msgstr "Data acquisto"
 msgid "Read details"
 msgstr "Leggi i dettagli"
 
-#: templates/shortcodes/asset-view.php:410
+#: templates/shortcodes/asset-view.php:411
 msgid "Reason:"
 msgstr "Motivo:"
 
-#: templates/shortcodes/asset-view.php:463
-#: templates/shortcodes/asset-view.php:504
+#: templates/shortcodes/asset-view.php:464
+#: templates/shortcodes/asset-view.php:505
 msgid "Recipient"
 msgstr "Destinatario"
 
@@ -595,7 +604,7 @@ msgid "Reject"
 msgstr "Rifiuta"
 
 #: templates/shortcodes/asset-view.php:312
-#: templates/shortcodes/asset-view.php:490
+#: templates/shortcodes/asset-view.php:491
 msgid "Rejected"
 msgstr "Rifiutato"
 
@@ -626,8 +635,8 @@ msgstr "Richiesta annullata: risorsa assegnata direttamente dall'operatore."
 msgid "Request canceled: component assigned as part of kit \"%s\"."
 msgstr "Richiesta annullata: componente assegnato come parte del kit \"%s\"."
 
-#: templates/shortcodes/asset-view.php:466
-#: templates/shortcodes/asset-view.php:515
+#: templates/shortcodes/asset-view.php:467
+#: templates/shortcodes/asset-view.php:516
 msgid "Request Date"
 msgstr "Data richiesta"
 
@@ -651,7 +660,7 @@ msgstr "Il messaggio della richiesta non deve superare i %d caratteri."
 msgid "Requester"
 msgstr "Richiedente"
 
-#: templates/shortcodes/asset-list.php:148
+#: templates/shortcodes/asset-list.php:200
 msgid "Reset Filters"
 msgstr "Rimuovi Filtri"
 
@@ -659,7 +668,7 @@ msgstr "Rimuovi Filtri"
 msgid "Retired"
 msgstr "Ritirato"
 
-#: templates/shortcodes/asset-list.php:156
+#: templates/shortcodes/asset-list.php:203
 msgid "Search"
 msgstr "Cerca"
 
@@ -667,13 +676,17 @@ msgstr "Cerca"
 msgid "Search Assets"
 msgstr "Cerca risorse"
 
-#: templates/shortcodes/asset-list.php:69
+#: templates/shortcodes/asset-list.php:79
 msgid "Search assets..."
 msgstr "Cerca le risorse..."
 
-#: templates/shortcodes/asset-view.php:397
+#: templates/shortcodes/asset-view.php:398
 msgid "Search member or operator..."
 msgstr "Cerca socio o operatore..."
+
+#: templates/shortcodes/asset-list.php:165
+msgid "Search user..."
+msgstr "Cerca l'utente..."
 
 #: templates/shortcodes/asset-view.php:244
 msgid "Send request"
@@ -683,29 +696,33 @@ msgstr "Invia richiesta"
 msgid "Serial number"
 msgstr "Numero seriale"
 
-#: templates/shortcodes/asset-view.php:457
+#: templates/shortcodes/asset-list.php:188
+msgid "Show only my assets"
+msgstr "Mostra solo le mie risorse"
+
+#: templates/shortcodes/asset-view.php:458
 msgid "Showing the last 10 loan history entries for this asset."
 msgstr ""
 "Vengono mostrate le ultime 10 voci dello storico prestiti per questa risorsa."
 
-#: templates/shortcodes/asset-list.php:118
-#: templates/shortcodes/asset-list.php:201
+#: templates/shortcodes/asset-list.php:128
+#: templates/shortcodes/asset-list.php:247
 #: templates/shortcodes/asset-view.php:108
 msgid "State"
 msgstr "Stato"
 
-#: templates/shortcodes/asset-view.php:468
-#: templates/shortcodes/asset-view.php:523
+#: templates/shortcodes/asset-view.php:469
+#: templates/shortcodes/asset-view.php:524
 msgid "Status"
 msgstr "Stato"
 
-#: templates/shortcodes/asset-list.php:89
-#: templates/shortcodes/asset-list.php:191
+#: templates/shortcodes/asset-list.php:99
+#: templates/shortcodes/asset-list.php:237
 #: templates/shortcodes/asset-view.php:84
 msgid "Structure"
 msgstr "Struttura"
 
-#: templates/shortcodes/asset-view.php:481
+#: templates/shortcodes/asset-view.php:482
 msgid "System"
 msgstr "Sistema"
 
@@ -734,8 +751,8 @@ msgstr "Strumenti"
 msgid "Tripod"
 msgstr "Treppiede"
 
-#: templates/shortcodes/asset-list.php:102
-#: templates/shortcodes/asset-list.php:196
+#: templates/shortcodes/asset-list.php:112
+#: templates/shortcodes/asset-list.php:242
 #: templates/shortcodes/asset-view.php:92
 msgid "Type"
 msgstr "Tipo"
@@ -745,7 +762,7 @@ msgid "Unauthorized action."
 msgstr "Azione non autorizzata."
 
 #: templates/shortcodes/asset-view.php:300
-#: templates/shortcodes/asset-view.php:477
+#: templates/shortcodes/asset-view.php:478
 msgid "Unknown"
 msgstr "Sconosciuto"
 
