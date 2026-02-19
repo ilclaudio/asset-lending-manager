@@ -81,14 +81,6 @@ Last update: 2026-02-19
 
 ## Performance
 
-### [High] Asset list rendering has N+1 queries per item through wrapper hydration
-- **Status:** Open
-- **Date:** 2026-02-18
-- **Category:** Performance
-- **Description:** In list rendering, each post is passed to `ALM_Asset_Manager::get_asset_wrapper()`, which loads terms for 4 taxonomies, owner meta, and user data per item. On larger pages this multiplies DB/cache work and slows initial render.
-- **Expected behavior:** Bulk-prime/cache required data (terms/meta/users) or build a lightweight list-view model that avoids per-item full wrapper hydration.
-- **Notes:** `includes/class-alm-frontend-manager.php:459`, `includes/class-alm-frontend-manager.php:467`, `includes/class-alm-asset-manager.php:257`, `includes/class-alm-asset-manager.php:267`
-
 ### [High] Asset detail tables perform repeated user lookups inside loops
 - **Status:** Open
 - **Date:** 2026-02-18
