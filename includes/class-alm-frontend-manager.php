@@ -463,6 +463,18 @@ class ALM_Frontend_Manager {
 		if ( $query->have_posts() ) {
 			$assets_count = (int) $query->found_posts;
 			$total_pages  = (int) $query->max_num_pages;
+
+			// Prime the user cache for all asset owners in a single query.
+			// Post meta is already cached by WP_Query; collect owner IDs from cache
+			// and bulk-load user records so get_userdata() inside the loop is a cache hit.
+			$owner_ids = array_filter( array_map(
+				fn( $p ) => (int) get_post_meta( $p->ID, '_alm_current_owner', true ),
+				$query->posts
+			) );
+			if ( ! empty( $owner_ids ) ) {
+				cache_users( array_unique( $owner_ids ) );
+			}
+
 			foreach ( $query->posts as $post ) {
 				$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
 				if ( $wrapper ) {

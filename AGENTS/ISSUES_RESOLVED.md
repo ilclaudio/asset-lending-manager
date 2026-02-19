@@ -1,5 +1,5 @@
 # ISSUES_RESOLVED
-Last update: 2026-02-18
+Last update: 2026-02-19
 
 ## Entry Format
 ```markdown
@@ -23,6 +23,17 @@ Last update: 2026-02-18
 - **Resolution date:** 2026-02-19
 - **Fix summary:** Added private `is_alm_page()` method to `ALM_Autocomplete_Manager` that checks for archive, single, and shortcode pages. Added early return guard at the top of `enqueue_assets()`.
 - **Notes:** `includes/class-alm-autocomplete-manager.php`
+
+---
+
+### [High] Asset list rendering has N+1 user queries through wrapper hydration
+- **Status:** Resolved
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** `get_asset_wrapper()` called `get_userdata()` for each asset in the list loop. With N assets this produced N separate user DB queries for owner data.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Added `cache_users()` call before the foreach in `render_asset_list_template()`. Owner IDs are collected from the already-cached post meta (pre-loaded by `WP_Query`) and bulk-loaded into the user object cache in a single query. Subsequent `get_userdata()` calls inside the loop are cache hits.
+- **Notes:** `includes/class-alm-frontend-manager.php`
 
 ---
 
