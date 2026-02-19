@@ -29,14 +29,6 @@ Last update: 2026-02-19
 
 ## Refactoring
 
-### [Medium] ALM_Notification_Manager is an empty stub
-- **Status:** Open
-- **Date:** 2026-02-09
-- **Category:** Refactoring
-- **Description:** Notification manager is non-functional; notification logic is mostly logging-only.
-- **Expected behavior:** Implement sending logic or clearly mark as planned and decouple placeholders.
-- **Notes:** `includes/class-alm-notification-manager.php`
-
 ### [Medium] Settings manager config is defined but not consumed
 - **Status:** Open
 - **Date:** 2026-02-09
@@ -105,14 +97,6 @@ Last update: 2026-02-19
 - **Expected behavior:** Add operator/owner-driven return flow that sets state back to `available`, clears or updates current owner correctly, propagates to kit components, and writes auditable history entries.
 - **Notes:** Required for realistic end-to-end user testing of the lending lifecycle.
 
-### [High] Real notification delivery for loan workflow events
-- **Status:** Open
-- **Date:** 2026-02-14
-- **Category:** Feature
-- **Description:** Notification logic is mostly placeholder/logging and does not send real emails to requester/owner/operators.
-- **Expected behavior:** Implement production-ready notifications for request submitted, request approved/rejected/canceled, and loan closure, using configurable sender/recipient settings.
-- **Notes:** Required for user testing because actors otherwise miss workflow events.
-
 ### [High] Minimum operator settings UI for runtime configuration
 - **Status:** Open
 - **Date:** 2026-02-14
@@ -120,14 +104,6 @@ Last update: 2026-02-19
 - **Description:** Settings structure exists but is not exposed via complete admin UI and is not fully consumed at runtime.
 - **Expected behavior:** Provide a minimal settings page to configure notification sender/system email and core workflow toggles used by runtime modules.
 - **Notes:** Required before broad user testing to avoid hardcoded operational behavior.
-
-### [High] Frontend styles must not override site typography
-- **Status:** Open
-- **Date:** 2026-02-18
-- **Category:** Feature
-- **Description:** Plugin styles currently force a custom font family and can override the active theme typography in site pages.
-- **Expected behavior:** Remove hardcoded `font-family` declarations (or inherit from theme) so plugin frontend UI uses the site's default typography.
-- **Notes:** Keep only spacing/color/layout styles that are plugin-specific.
 
 ### [Medium] Member dashboard for "My requests" and "My active loans"
 - **Status:** Open
@@ -145,14 +121,6 @@ Last update: 2026-02-19
 - **Expected behavior:** Keep endpoint public for anonymous frontend search, but enforce public-endpoint hardening: no sensitive logging, strict input validation, rate limiting and/or caching, and responses limited to publish-safe fields only.
 - **Notes:** Endpoint openness is acceptable for UX requirements; security posture must match a public read-only API.
 
-### [Low] Asset list pagination
-- **Status:** Open
-- **Date:** 2026-02-12
-- **Category:** Feature
-- **Description:** Large lists degrade usability and performance.
-- **Expected behavior:** Add pagination for list/archive views.
-- **Notes:** Use WP pagination APIs.
-
 ### [Low] Better mobile list view
 - **Status:** Open
 - **Date:** 2026-02-12
@@ -160,14 +128,6 @@ Last update: 2026-02-19
 - **Description:** Current list rendering can be hard to scan on small screens.
 - **Expected behavior:** Improve mobile layout (horizontal scroll or card view).
 - **Notes:** Validate all list contexts.
-
-### [Low] Extend loan history visibility for involved members
-- **Status:** Open
-- **Date:** 2026-02-14
-- **Category:** Feature
-- **Description:** Loan history is currently surfaced in UI only for operators, even though backend filtering already supports user-scoped history access.
-- **Expected behavior:** Show history entries relevant to involved members (requester/owner/actor) in a safe, filtered frontend section.
-- **Notes:** Useful for transparency during user validation.
 
 ### [Low] CSV export for assets/loans/requests
 - **Status:** Idea

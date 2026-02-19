@@ -150,8 +150,8 @@ class ALM_Loan_Manager {
 				'owner_id'     => $owner_id,
 			)
 		);
-		// @TODO: Send email notifications (future implementation).
-		$this->log_email_notification( $requester_id, $owner_id, $asset_id, $message );
+		// Fire loan request submitted action so ALM_Notification_Manager can send emails.
+		do_action( 'alm_loan_request_submitted', $requester_id, $owner_id, $asset_id, $message );
 		wp_send_json_success(
 			array(
 				'message'    => __( 'Loan request sent successfully!', 'asset-lending-manager' ),
@@ -280,8 +280,8 @@ class ALM_Loan_Manager {
 			)
 		);
 
-		// Send email notification (placeholder).
-		$this->send_rejection_email_notification( $loan_request, $rejection_message );
+		// Fire loan request rejected action so ALM_Notification_Manager can send emails.
+		do_action( 'alm_loan_request_rejected', $loan_request, $rejection_message );
 
 		wp_send_json_success(
 			array(
@@ -434,37 +434,6 @@ class ALM_Loan_Manager {
 	}
 
 	/**
-	 * Send email notification for rejected loan request (placeholder).
-	 *
-	 * @param object $loan_request      Loan request object.
-	 * @param string $rejection_message Rejection message.
-	 * @return void
-	 */
-	private function send_rejection_email_notification( $loan_request, $rejection_message ) {
-		$requester   = get_userdata( $loan_request->requester_id );
-		$asset_title = get_the_title( $loan_request->asset_id );
-
-		if ( ! $requester ) {
-			return;
-		}
-
-		// Log email to requester.
-		ALM_Logger::info(
-			'[EMAIL] To requester: Loan request rejected',
-			array(
-				'to'      => $requester->user_email,
-				'subject' => sprintf(
-					__( 'Your loan request for "%s" has been rejected', 'asset-lending-manager' ),
-					$asset_title
-				),
-				'message' => $rejection_message,
-			)
-		);
-
-		// TODO: Implement actual email sending.
-	}
-
-	/**
 	 * AJAX handler for loan request approval.
 	 *
 	 * @return void
@@ -563,8 +532,8 @@ class ALM_Loan_Manager {
 			)
 		);
 
-		// Send email notification (placeholder).
-		$this->send_approval_email_notification( $loan_request );
+		// Fire loan request approved action so ALM_Notification_Manager can send emails.
+		do_action( 'alm_loan_request_approved', $loan_request );
 
 		wp_send_json_success(
 			array(
@@ -665,71 +634,6 @@ class ALM_Loan_Manager {
 			)
 		);
 		return $count > 0;
-	}
-
-	/**
-	 * Log email notification (placeholder for future implementation).
-	 *
-	 * @param int    $requester_id Requester user ID.
-	 * @param int    $owner_id     Owner user ID.
-	 * @param int    $asset_id     Asset ID.
-	 * @param string $message      Request message.
-	 * @return void
-	 */
-	private function log_email_notification( $requester_id, $owner_id, $asset_id, $message ) {
-		$requester   = get_userdata( $requester_id );
-		$asset_title = get_the_title( $asset_id );
-
-		if ( ! $requester ) {
-			ALM_Logger::error(
-				'Cannot log email notification: requester not found.',
-				array( 'requester_id' => $requester_id )
-			);
-			return;
-		}
-
-		// Log notification to requester.
-		ALM_Logger::info(
-			'[EMAIL] To requester: Loan request confirmation',
-			array(
-				'to'      => $requester->user_email,
-				'subject' => sprintf(
-					__( 'Your loan request for "%s"', 'asset-lending-manager' ),
-					$asset_title
-				),
-			)
-		);
-
-		// Log notification to owner (if exists).
-		if ( $owner_id > 0 ) {
-			$owner = get_userdata( $owner_id );
-			if ( $owner ) {
-				ALM_Logger::info(
-					'[EMAIL] To owner: New loan request received',
-					array(
-						'to'      => $owner->user_email,
-						'subject' => sprintf(
-							__( 'Loan request for your asset "%s"', 'asset-lending-manager' ),
-							$asset_title
-						),
-						'from'    => $requester->display_name,
-					)
-				);
-			}
-		}
-
-		// Log notification to system operators.
-		$operators_email = 'operators@example.com';
-		ALM_Logger::info(
-			'[EMAIL] To operators: New loan request',
-			array(
-				'to'      => $operators_email,
-				'subject' => sprintf(
-					__( 'New loan request for "%s"', 'asset-lending-manager' ),
-					$asset_title
-				),
-			)
-		);
 	}
 
 	/**
@@ -1284,7 +1188,6 @@ class ALM_Loan_Manager {
 
 			++$canceled_count;
 
-			// Log notification.
 			ALM_Logger::info(
 				'Request automatically canceled',
 				array(
@@ -1294,6 +1197,10 @@ class ALM_Loan_Manager {
 					'reason'       => $cancel_message,
 				)
 			);
+
+			// Fire loan request canceled action so ALM_Notification_Manager
+			// can notify the requester that their request was automatically canceled.
+			do_action( 'alm_loan_request_canceled', (int) $request->requester_id, (int) $request->asset_id );
 		}
 
 		return $canceled_count;
@@ -1389,8 +1296,9 @@ class ALM_Loan_Manager {
 			)
 		);
 
-		// Email notification placeholder.
-		$this->send_direct_assign_email_notification( $asset_id, $assignee, $current_user_id, $reason );
+		// Fire direct assign action so ALM_Notification_Manager can send emails.
+		// Pass $assignee->ID (int) rather than the WP_User object for consistency with other actions.
+		do_action( 'alm_direct_assign', $asset_id, $assignee->ID, $current_user_id, $reason );
 
 		wp_send_json_success(
 			array(
@@ -1499,61 +1407,4 @@ class ALM_Loan_Manager {
 		}
 	}
 
-	/**
-	 * Send email notification for direct asset assignment (placeholder).
-	 *
-	 * @param int     $asset_id    Asset ID.
-	 * @param WP_User $assignee    Assignee user object.
-	 * @param int     $assigned_by Operator user ID.
-	 * @param string  $reason      Assignment reason.
-	 * @return void
-	 */
-	private function send_direct_assign_email_notification( $asset_id, $assignee, $assigned_by, $reason ) {
-		$asset_title = get_the_title( $asset_id );
-
-		// Log email to assignee.
-		ALM_Logger::info(
-			'[EMAIL] To assignee: Asset directly assigned',
-			array(
-				'to'      => $assignee->user_email,
-				'subject' => sprintf(
-					/* translators: %s: asset title */
-					__( 'Asset "%s" has been assigned to you', 'asset-lending-manager' ),
-					$asset_title
-				),
-				'reason'  => $reason,
-			)
-		);
-
-		// TODO: Implement actual email sending.
-	}
-
-	/**
-	 * Send email notification for approved loan request (placeholder).
-	 *
-	 * @param object $loan_request Loan request object.
-	 * @return void
-	 */
-	private function send_approval_email_notification( $loan_request ) {
-		$requester   = get_userdata( $loan_request->requester_id );
-		$asset_title = get_the_title( $loan_request->asset_id );
-
-		if ( ! $requester ) {
-			return;
-		}
-
-		// Log email to requester.
-		ALM_Logger::info(
-			'[EMAIL] To requester: Loan request approved',
-			array(
-				'to'      => $requester->user_email,
-				'subject' => sprintf(
-					__( 'Your loan request for "%s" has been approved', 'asset-lending-manager' ),
-					$asset_title
-				),
-			)
-		);
-
-		// TODO: Implement actual email sending.
-	}
 }

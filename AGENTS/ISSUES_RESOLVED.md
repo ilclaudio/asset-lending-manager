@@ -15,6 +15,26 @@ Last update: 2026-02-19
 
 ---
 
+### [High] Real notification delivery for loan workflow events
+- **Status:** Resolved
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Notification logic was placeholder/logging only. No emails were sent to requester, owner, or operators on any loan workflow event.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Implemented `ALM_Notification_Manager` with `wp_mail()` for all events: request submitted (to requester + owner + optional system address), approved, rejected, automatically canceled, and direct assign. `ALM_Loan_Manager` stub methods removed; replaced with `do_action()` calls for each event. Sender and template configuration added as constants in `plugin-config.php` (`ALM_EMAIL_FROM_NAME`, `ALM_EMAIL_FROM_ADDRESS`, `ALM_EMAIL_SYSTEM_ADDRESS`, subject/body template constants). Templates are translatable via `__()` at runtime.
+- **Notes:** `plugin-config.php`, `includes/class-alm-notification-manager.php`, `includes/class-alm-loan-manager.php`
+
+### [Medium] ALM_Notification_Manager is an empty stub
+- **Status:** Resolved
+- **Date:** 2026-02-09
+- **Category:** Refactoring
+- **Description:** Notification manager was non-functional; notification logic lived as private stubs in ALM_Loan_Manager.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Fully implemented ALM_Notification_Manager. Loan manager now fires custom WP actions (`alm_loan_request_submitted`, `alm_loan_request_approved`, `alm_loan_request_rejected`, `alm_loan_request_canceled`, `alm_direct_assign`); notification manager hooks into them. Four private stub methods removed from ALM_Loan_Manager.
+- **Notes:** `includes/class-alm-notification-manager.php`, `includes/class-alm-loan-manager.php`
+
+---
+
 ### [High] Autocomplete assets enqueued on every frontend page
 - **Status:** Resolved
 - **Date:** 2026-02-18
