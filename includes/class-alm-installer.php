@@ -56,13 +56,10 @@ class ALM_Installer {
 	public static function create_loan_requests_table() {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
-		// Check if table already exists.
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
-			ALM_Logger::debug( 'Table alm_loan_requests already exists, skipping creation.' );
-			return;
-		}
-		$sql = "CREATE TABLE $table_name (
+		$table_name      = $wpdb->prefix . 'alm_loan_requests';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
+		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
+		$sql          = "CREATE TABLE $table_name (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			asset_id bigint(20) unsigned NOT NULL,
 			requester_id bigint(20) unsigned NOT NULL,
@@ -76,13 +73,21 @@ class ALM_Installer {
 			KEY asset_id (asset_id),
 			KEY requester_id (requester_id),
 			KEY owner_id (owner_id),
-			KEY status (status)
+			KEY status (status),
+			KEY asset_status_request_date (asset_id, status, request_date),
+			KEY requester_request_date (requester_id, request_date),
+			KEY requester_status_request_date (requester_id, status, request_date)
 		) $charset_collate;";
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
-		// Verify table was created.
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
-			ALM_Logger::info( 'Table alm_loan_requests created successfully.' );
+		// Verify table was created or updated.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
+			if ( $table_exists ) {
+				ALM_Logger::info( 'Table alm_loan_requests schema verified/updated successfully.' );
+			} else {
+				ALM_Logger::info( 'Table alm_loan_requests created successfully.' );
+			}
 		} else {
 			ALM_Logger::error( 'Failed to create table alm_loan_requests' );
 		}
@@ -101,6 +106,7 @@ class ALM_Installer {
 			$wpdb->prefix . 'alm_loan_requests',
 		);
 		foreach ( $tables as $table ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name identifier cannot be a prepared value.
 			$wpdb->query( "DROP TABLE IF EXISTS $table" );
 			ALM_Logger::info( "Dropped table $table" );
 		}
@@ -119,11 +125,8 @@ class ALM_Installer {
 		$table_name      = $wpdb->prefix . 'alm_loan_requests_history';
 		$charset_collate = $wpdb->get_charset_collate();
 
-		// Check if table already exists.
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
-			ALM_Logger::debug( 'Table alm_loan_requests_history already exists, skipping creation.' );
-			return;
-		}
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
+		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
 
 		$sql = "CREATE TABLE $table_name (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -140,15 +143,22 @@ class ALM_Installer {
 			KEY asset_id (asset_id),
 			KEY requester_id (requester_id),
 			KEY owner_id (owner_id),
-			KEY status (status)
+			KEY changed_by (changed_by),
+			KEY status (status),
+			KEY asset_changed_at (asset_id, changed_at)
 		) $charset_collate;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 
-		// Verify creation.
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
-			ALM_Logger::info( 'Table alm_loan_requests_history created successfully.' );
+		// Verify creation or schema update.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
+			if ( $table_exists ) {
+				ALM_Logger::info( 'Table alm_loan_requests_history schema verified/updated successfully.' );
+			} else {
+				ALM_Logger::info( 'Table alm_loan_requests_history created successfully.' );
+			}
 		} else {
 			ALM_Logger::error( 'Failed to create table alm_loan_requests_history.' );
 		}

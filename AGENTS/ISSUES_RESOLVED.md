@@ -37,6 +37,28 @@ Last update: 2026-02-19
 
 ---
 
+### [High] Asset detail tables perform repeated user lookups inside loops
+- **Status:** Resolved
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** Loan requests and history tables called `get_userdata()` inside foreach loops for each row, producing repeated lookups as row count grows.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Added user ID prefetch in `asset-view.php` for both loan requests and history sections. The template now collects unique user IDs, primes cache with `cache_users()`, builds a user ID to display-name map once, and renders rows from the preloaded dictionary instead of calling `get_userdata()` per row.
+- **Notes:** `templates/shortcodes/asset-view.php`
+
+---
+
+### [High] Loan tables miss composite indexes for real query patterns
+- **Status:** Resolved
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** Runtime queries filter by multiple columns and sort by date (`asset_id + status + request_date`, `asset_id + changed_at`) but table schemas defined only single-column indexes.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Added composite indexes to installer table schemas: `asset_status_request_date`, `requester_request_date`, `requester_status_request_date` on `alm_loan_requests` and `asset_changed_at` on `alm_loan_requests_history`; also added `changed_by` index. Updated installer flow to always run `dbDelta()` so existing tables receive index migrations instead of being skipped when already present.
+- **Notes:** `includes/class-alm-installer.php`
+
+---
+
 ### [Low] Taxonomy filter values not validated as term slugs
 - **Status:** Resolved
 - **Date:** 2026-02-18

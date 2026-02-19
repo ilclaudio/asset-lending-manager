@@ -270,7 +270,26 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 					( (int) $alm_owner_id === (int) $alm_current_user_id )
 				)
 			) {
-		$alm_requests = $alm_loan_manager->get_asset_requests( $alm_asset_id );
+		$alm_requests        = $alm_loan_manager->get_asset_requests( $alm_asset_id );
+		$alm_requester_names = array();
+		$alm_requester_ids   = array();
+
+		foreach ( $alm_requests as $alm_request ) {
+			$alm_requester_id = absint( $alm_request->requester_id );
+			if ( $alm_requester_id > 0 ) {
+				$alm_requester_ids[] = $alm_requester_id;
+			}
+		}
+		$alm_requester_ids = array_unique( $alm_requester_ids );
+		if ( ! empty( $alm_requester_ids ) ) {
+			cache_users( $alm_requester_ids );
+			foreach ( $alm_requester_ids as $alm_requester_id ) {
+				$alm_requester_data = get_userdata( $alm_requester_id );
+				if ( $alm_requester_data ) {
+					$alm_requester_names[ $alm_requester_id ] = $alm_requester_data->display_name;
+				}
+			}
+		}
 		?>
 	<section class="alm-asset-view__loan-requests" aria-label="<?php esc_attr_e( 'Loan requests', 'asset-lending-manager' ); ?>">
 		<details class="alm-collapsible alm-collapsible--requestlist">
@@ -300,8 +319,10 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 						<tbody>
 							<?php foreach ( $alm_requests as $alm_request ) : ?>
 								<?php
-								$alm_requester      = get_userdata( $alm_request->requester_id );
-								$alm_requester_name = $alm_requester ? $alm_requester->display_name : __( 'Unknown', 'asset-lending-manager' );
+								$alm_requester_id   = absint( $alm_request->requester_id );
+								$alm_requester_name = isset( $alm_requester_names[ $alm_requester_id ] )
+									? $alm_requester_names[ $alm_requester_id ]
+									: __( 'Unknown', 'asset-lending-manager' );
 								$alm_request_date   = mysql2date( 'd/m/Y', $alm_request->request_date );
 								$alm_request_status = $alm_request->status;
 								// Handle long messages.
@@ -448,7 +469,31 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 				<div class="alm-collapsible__body">
 					<?php
 					// Get loan history for this asset.
-					$alm_history = $alm_loan_manager->get_asset_history( $alm_asset_id, $alm_current_user_id );
+					$alm_history            = $alm_loan_manager->get_asset_history( $alm_asset_id, $alm_current_user_id );
+					$alm_history_user_names = array();
+					$alm_history_user_ids   = array();
+
+					foreach ( $alm_history as $alm_entry ) {
+						$alm_requester_id = absint( $alm_entry->requester_id );
+						$alm_changed_by   = absint( $alm_entry->changed_by );
+
+						if ( $alm_requester_id > 0 ) {
+							$alm_history_user_ids[] = $alm_requester_id;
+						}
+						if ( $alm_changed_by > 0 ) {
+							$alm_history_user_ids[] = $alm_changed_by;
+						}
+					}
+					$alm_history_user_ids = array_unique( $alm_history_user_ids );
+					if ( ! empty( $alm_history_user_ids ) ) {
+						cache_users( $alm_history_user_ids );
+						foreach ( $alm_history_user_ids as $alm_history_user_id ) {
+							$alm_history_user_data = get_userdata( $alm_history_user_id );
+							if ( $alm_history_user_data ) {
+								$alm_history_user_names[ $alm_history_user_id ] = $alm_history_user_data->display_name;
+							}
+						}
+					}
 					?>
 
 					<?php if ( ! empty( $alm_history ) ) : ?>
@@ -473,11 +518,14 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							<tbody>
 								<?php foreach ( $alm_history as $alm_entry ) : ?>
 									<?php
-									// Get user data.
-									$alm_requester       = get_userdata( $alm_entry->requester_id );
-									$alm_requester_name  = $alm_requester ? $alm_requester->display_name : __( 'Unknown', 'asset-lending-manager' );
-									$alm_changed_by      = get_userdata( $alm_entry->changed_by );
-									$alm_changed_by_name = $alm_changed_by ? $alm_changed_by->display_name : __( 'System', 'asset-lending-manager' );
+										$alm_requester_id    = absint( $alm_entry->requester_id );
+										$alm_changed_by_id   = absint( $alm_entry->changed_by );
+										$alm_requester_name  = isset( $alm_history_user_names[ $alm_requester_id ] )
+											? $alm_history_user_names[ $alm_requester_id ]
+											: __( 'Unknown', 'asset-lending-manager' );
+										$alm_changed_by_name = isset( $alm_history_user_names[ $alm_changed_by_id ] )
+											? $alm_history_user_names[ $alm_changed_by_id ]
+											: __( 'System', 'asset-lending-manager' );
 									// Format dates.
 									$alm_request_date = isset( $alm_entry->changed_at ) ? mysql2date( 'd/m/Y', $alm_entry->changed_at ) : '-';
 									// Get status.
