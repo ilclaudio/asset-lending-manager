@@ -65,14 +65,6 @@ Last update: 2026-02-19
 
 ## Performance
 
-### [High] Asset detail tables perform repeated user lookups inside loops
-- **Status:** Open
-- **Date:** 2026-02-18
-- **Category:** Performance
-- **Description:** Loan requests and history tables call `get_userdata()` inside foreach loops for each row. This creates repeated user lookups during page generation and scales poorly with more entries.
-- **Expected behavior:** Resolve all involved user IDs once (prefetch map) and render rows using the preloaded dictionary.
-- **Notes:** `templates/shortcodes/asset-view.php:301`, `templates/shortcodes/asset-view.php:303`, `templates/shortcodes/asset-view.php:474`, `templates/shortcodes/asset-view.php:477`, `templates/shortcodes/asset-view.php:479`
-
 ### [High] Taxonomy filter term lists are queried on every list render without caching
 - **Status:** Open
 - **Date:** 2026-02-18
@@ -88,14 +80,6 @@ Last update: 2026-02-19
 - **Description:** To detect kit membership, `get_asset_custom_fields()` runs a `WP_Query` with `meta_query` `LIKE` against serialized component data. This pattern is expensive and non-scalable for larger datasets.
 - **Expected behavior:** Replace reverse `LIKE` lookup with normalized relation storage (e.g., dedicated relation meta/table) or maintain a direct parent-kit reference index.
 - **Notes:** `includes/class-alm-asset-manager.php:350`, `includes/class-alm-asset-manager.php:355`, `includes/class-alm-asset-manager.php:363`
-
-### [High] Loan tables miss composite indexes for real query patterns
-- **Status:** Open
-- **Date:** 2026-02-18
-- **Category:** Performance
-- **Description:** Runtime queries filter by multiple columns and sort by date (`asset_id + status + request_date`, `asset_id + changed_at`) but table schemas define only single-column indexes, causing less efficient plans as data grows.
-- **Expected behavior:** Add composite indexes aligned with read patterns and include safe migration path for existing installs.
-- **Notes:** `includes/class-alm-loan-manager.php:748`, `includes/class-alm-loan-manager.php:812`, `includes/class-alm-installer.php:75`, `includes/class-alm-installer.php:138`
 
 ---
 
