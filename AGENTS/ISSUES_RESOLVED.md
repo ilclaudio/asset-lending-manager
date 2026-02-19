@@ -15,6 +15,28 @@ Last update: 2026-02-18
 
 ---
 
+### [High] Autocomplete assets enqueued on every frontend page
+- **Status:** Resolved
+- **Date:** 2026-02-18
+- **Category:** Performance
+- **Description:** `ALM_Autocomplete_Manager::enqueue_assets()` ran on `wp_enqueue_scripts` without page checks, loading autocomplete JS/CSS and localized REST data on all frontend pages.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Added private `is_alm_page()` method to `ALM_Autocomplete_Manager` that checks for archive, single, and shortcode pages. Added early return guard at the top of `enqueue_assets()`.
+- **Notes:** `includes/class-alm-autocomplete-manager.php`
+
+---
+
+### [Low] Plugin main admin page title is not rendered
+- **Status:** Resolved
+- **Date:** 2026-02-14
+- **Category:** Bug
+- **Description:** Template called `esc_html__()` without `echo`, so the `<h2>` heading was empty.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Replaced `esc_html__()` with `esc_html_e()` in `admin/plugin-main-page.php:7`.
+- **Notes:** `admin/plugin-main-page.php`
+
+---
+
 ### [Low] assets_count assigned inside foreach loop
 - **Status:** Resolved
 - **Date:** 2026-02-18

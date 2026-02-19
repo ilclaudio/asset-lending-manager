@@ -29,9 +29,16 @@ class ALM_Autocomplete_Manager {
 	/**
 	 * Enqueue autocomplete scripts.
 	 *
+	 * Loads assets only on ALM pages (archive, single, or shortcode pages)
+	 * to avoid unnecessary JS/CSS on unrelated frontend pages.
+	 *
 	 * @return void
 	 */
 	public function enqueue_assets() {
+		if ( ! $this->is_alm_page() ) {
+			return;
+		}
+
 		wp_enqueue_script(
 			'alm-asset-autocomplete',
 			ALM_PLUGIN_URL . 'assets/js/alm-asset-autocomplete.js',
@@ -104,6 +111,27 @@ class ALM_Autocomplete_Manager {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Check whether the current page is an ALM page.
+	 *
+	 * Returns true for asset archive, single asset, and pages containing
+	 * the alm_asset_list or alm_asset_view shortcodes.
+	 *
+	 * @return bool
+	 */
+	private function is_alm_page() {
+		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) || is_singular( ALM_ASSET_CPT_SLUG ) ) {
+			return true;
+		}
+
+		global $post;
+		if ( $post && ( has_shortcode( $post->post_content, 'alm_asset_list' ) || has_shortcode( $post->post_content, 'alm_asset_view' ) ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

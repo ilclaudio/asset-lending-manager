@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-02-18
+Last update: 2026-02-19
 
 ---
 
@@ -32,14 +32,6 @@ Last update: 2026-02-18
 - **Description:** `redirect_restricted_users()` calls `wp_redirect( home_url() )`. While `home_url()` is normally safe, `wp_safe_redirect()` is the WordPress-recommended function for internal redirects as it validates the destination against the allowed hosts list.
 - **Expected behavior:** Replace `wp_redirect()` with `wp_safe_redirect()`.
 - **Notes:** `includes/class-alm-admin-manager.php`, line 60.
-
-### [Low] Plugin main admin page title is not rendered
-- **Status:** Open
-- **Date:** 2026-02-14
-- **Category:** Bug
-- **Description:** Template calls `esc_html__()` without `echo`, so the page heading is empty.
-- **Expected behavior:** Print the translated title with `esc_html_e()` or `echo esc_html__()`.
-- **Notes:** `admin/plugin-main-page.php`
 
 ---
 
@@ -88,14 +80,6 @@ Last update: 2026-02-18
 ---
 
 ## Performance
-
-### [High] Autocomplete assets are enqueued on every frontend page
-- **Status:** Open
-- **Date:** 2026-02-18
-- **Category:** Performance
-- **Description:** `ALM_Autocomplete_Manager::enqueue_assets()` runs on `wp_enqueue_scripts` without page checks, loading autocomplete JS/CSS and localized REST data on pages that do not use ALM search.
-- **Expected behavior:** Enqueue autocomplete assets only on ALM pages (archive/single/shortcode contexts) or only when the related DOM/search UI is present.
-- **Notes:** `includes/class-alm-autocomplete-manager.php:26`, `includes/class-alm-autocomplete-manager.php:34`
 
 ### [High] Asset list rendering has N+1 queries per item through wrapper hydration
 - **Status:** Open
