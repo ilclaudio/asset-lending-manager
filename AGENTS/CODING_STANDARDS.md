@@ -1,9 +1,11 @@
 # CODING_STANDARDS.md
 
+
 ## Purpose
 
 Coding rules for this project.
 Write code according to official WordPress standards and project-specific conventions.
+
 
 ## Quality Priorities
 
@@ -13,12 +15,14 @@ Write code according to official WordPress standards and project-specific conven
 - Readability and maintainability.
 - Compliance with WordPress Coding Standards.
 
+
 ## Core PHP/WordPress Rules
 
 ### Formatting and documentation
 
 - Use tabs for indentation.
-- Comments and docblocks must be in English.
+- New comments and docblocks must be in English.
+- Legacy comments/docblocks in other languages can remain temporarily; when touching nearby code, prefer incremental migration to English.
 - Add a file header docblock.
 - Add function docblocks with params/return.
 
@@ -52,6 +56,7 @@ Write code according to official WordPress standards and project-specific conven
 - Use `$wpdb->prepare()` for dynamic SQL.
 - Enqueue scripts/styles with WordPress enqueue APIs.
 
+
 ## Frontend Standards (HTML, CSS, JS)
 
 Official references:
@@ -76,12 +81,14 @@ Official references:
 
 ### JavaScript
 
-- Write Vanilla JavaScript only.
-- Do not introduce jQuery or other JavaScript frameworks/libraries unless the user explicitly requests and approves them.
+- For new features/refactors, prefer Vanilla JavaScript.
+- Existing jQuery-based areas are considered legacy and can be maintained when editing those files.
+- Do not introduce new jQuery usage in new modules unless explicitly approved by the user.
 - Use tabs, semicolons, and braces consistently.
 - Prefer `const`/`let` over `var`.
 - Use single quotes and descriptive camelCase names.
 - Keep lines readable.
+
 
 ## Internationalization (i18n)
 
@@ -89,10 +96,11 @@ Official references:
 - Use the proper escaping i18n helpers (`esc_html__`, `esc_html_e`, etc.).
 - Use translator comments for formatted strings.
 
+
 ## Testing and Checks
 
 - Write testable code (small units, clear dependencies).
 - Add tests for non-trivial logic when practical.
 - Run:
-  - `composer lint`
-  - `composer lint:fix` (when needed)
+  - `composer run lint:php`
+  - `composer run lint:php:fix` (when needed)
