@@ -37,6 +37,26 @@ Last update: 2026-02-19
 
 ---
 
+### [Low] Taxonomy filter values not validated as term slugs
+- **Status:** Resolved
+- **Date:** 2026-02-18
+- **Category:** Bug
+- **Description:** Filter values read from `$_GET['alm_structure']`, `$_GET['alm_type']`, `$_GET['alm_state']`, `$_GET['alm_level']` were sanitized with `sanitize_text_field()` but not constrained to slug format.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Replaced `sanitize_text_field()` with `sanitize_title()` for all taxonomy filter query args so values are normalized as slugs before building `tax_query`.
+- **Notes:** `includes/class-alm-frontend-manager.php`
+
+### [Low] Missing explicit relation in multi-filter tax_query
+- **Status:** Resolved
+- **Date:** 2026-02-18
+- **Category:** Refactoring
+- **Description:** `render_asset_list_template()` relied on implicit `AND` behavior in `tax_query` without declaring it explicitly.
+- **Resolution date:** 2026-02-19
+- **Fix summary:** Added explicit `'relation' => 'AND'` when building taxonomy filters to self-document intent and keep query semantics explicit.
+- **Notes:** `includes/class-alm-frontend-manager.php`
+
+---
+
 ### [Low] Plugin main admin page title is not rendered
 - **Status:** Resolved
 - **Date:** 2026-02-14

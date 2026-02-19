@@ -67,10 +67,10 @@ class ALM_Frontend_Manager {
 	/**
 	 * Redirect operators and members after login.
 	 *
-	 * @param [type] $redirect_to
-	 * @param [type] $requested
-	 * @param [type] $user
-	 * @return void
+	 * @param string                 $redirect_to The redirect destination URL.
+	 * @param string                 $requested   The requested redirect URL.
+	 * @param WP_User|WP_Error|mixed $user        Authenticated user object or error.
+	 * @return string
 	 */
 	public function redirect_login_by_role( $redirect_to, $requested, $user ) {
 		if ( ! $user instanceof WP_User ) {
@@ -90,10 +90,10 @@ class ALM_Frontend_Manager {
 	/**
 	 * Redirect operators and members after logout.
 	 *
-	 * @param [type] $redirect_to
-	 * @param [type] $requested
-	 * @param [type] $user
-	 * @return void
+	 * @param string                 $redirect_to The redirect destination URL.
+	 * @param string                 $requested   The requested redirect URL.
+	 * @param WP_User|WP_Error|mixed $user        Current user object or error.
+	 * @return string
 	 */
 	public function redirect_logout_by_role( $redirect_to, $requested, $user ) {
 		if ( ! $user instanceof WP_User ) {
@@ -113,11 +113,11 @@ class ALM_Frontend_Manager {
 	/**
 	 * Locate a template, allowing theme override with plugin fallback.
 	 *
-	 * @param string $template_name Template file name.
-	 * @param string $default       Default template resolved by WordPress.
+	 * @param string $template_name     Template file name.
+	 * @param string $default_template  Default template resolved by WordPress.
 	 * @return string
 	 */
-	protected function locate_template( $template_name, $default ) {
+	protected function locate_template( $template_name, $default_template ) {
 		// 1) Try to locate the template in the theme (child theme first, then parent).
 		$theme_template = locate_template( $template_name );
 		// 2) Allow override via filter (can replace or confirm the template path).
@@ -125,14 +125,14 @@ class ALM_Frontend_Manager {
 			'alm_locate_template',
 			$theme_template,
 			$template_name,
-			$default
+			$default_template
 		);
 		// 3) If the filter returned a valid template path, use it.
-		if ( is_string( $template ) && $template !== '' && file_exists( $template ) ) {
+		if ( is_string( $template ) && '' !== $template && file_exists( $template ) ) {
 			return $template;
 		}
 		// 4) If the theme template exists and the filter did not return a valid path, use it.
-		if ( is_string( $theme_template ) && $theme_template !== '' && file_exists( $theme_template ) ) {
+		if ( is_string( $theme_template ) && '' !== $theme_template && file_exists( $theme_template ) ) {
 			return $theme_template;
 		}
 		// 5) Fallback to the plugin template.
@@ -142,7 +142,7 @@ class ALM_Frontend_Manager {
 		}
 
 		// 6) Final fallback for safety
-		return $default;
+		return $default_template;
 	}
 
 	/**
@@ -250,6 +250,54 @@ class ALM_Frontend_Manager {
 	}
 
 	/**
+	 * Get a sanitized query-string value for read-only frontend filters.
+	 *
+	 * @param string $key Query-string key.
+	 * @return string
+	 */
+	private function get_sanitized_query_text( $key ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only frontend filter/query parsing.
+		if ( ! isset( $_GET[ $key ] ) ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only frontend filter/query parsing.
+		return sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
+	}
+
+	/**
+	 * Get a sanitized slug from query string for read-only frontend filters.
+	 *
+	 * @param string $key Query-string key.
+	 * @return string
+	 */
+	private function get_sanitized_query_slug( $key ) {
+		$query_value = $this->get_sanitized_query_text( $key );
+
+		if ( '' === $query_value ) {
+			return '';
+		}
+
+		return sanitize_title( $query_value );
+	}
+
+	/**
+	 * Get a positive integer from query string for read-only frontend filters.
+	 *
+	 * @param string $key Query-string key.
+	 * @return int
+	 */
+	private function get_sanitized_query_absint( $key ) {
+		$query_value = $this->get_sanitized_query_text( $key );
+
+		if ( '' === $query_value ) {
+			return 0;
+		}
+
+		return absint( $query_value );
+	}
+
+	/**
 	 * Shortcode handler for asset list.
 	 *
 	 * Usage: [alm_asset_list]
@@ -267,10 +315,7 @@ class ALM_Frontend_Manager {
 			'alm_asset_list'
 		);
 		// Read and sanitize search parameter.
-		$search_term = '';
-		if ( isset( $_GET['s'] ) ) {
-			$search_term = sanitize_text_field( wp_unslash( $_GET['s'] ) );
-		}
+		$search_term = $this->get_sanitized_query_text( 's' );
 		// Start output buffering.
 		ob_start();
 		// Render the asset list template.
@@ -334,9 +379,9 @@ class ALM_Frontend_Manager {
 			}
 		}
 		// Priority 2: Slug from query string.
-		if ( isset( $_GET['asset'] ) && ! empty( $_GET['asset'] ) ) {
-			$query_slug = sanitize_title( wp_unslash( $_GET['asset'] ) );
-			$asset      = get_page_by_path( $query_slug, OBJECT, ALM_ASSET_CPT_SLUG );
+		$query_slug = $this->get_sanitized_query_slug( 'asset' );
+		if ( '' !== $query_slug ) {
+			$asset = get_page_by_path( $query_slug, OBJECT, ALM_ASSET_CPT_SLUG );
 			if ( $asset ) {
 				return $asset->ID;
 			}
@@ -361,43 +406,33 @@ class ALM_Frontend_Manager {
 		$filter_type      = '';
 		$filter_state     = '';
 		$filter_level     = '';
-		if ( isset( $_GET['alm_structure'] ) ) {
-			$filter_structure = sanitize_text_field( wp_unslash( $_GET['alm_structure'] ) );
-		}
-		if ( isset( $_GET['alm_type'] ) ) {
-			$filter_type = sanitize_text_field( wp_unslash( $_GET['alm_type'] ) );
-		}
-		if ( isset( $_GET['alm_state'] ) ) {
-			$filter_state = sanitize_text_field( wp_unslash( $_GET['alm_state'] ) );
-		}
-		if ( isset( $_GET['alm_level'] ) ) {
-			$filter_level = sanitize_text_field( wp_unslash( $_GET['alm_level'] ) );
-		}
+		$filter_structure = $this->get_sanitized_query_slug( 'alm_structure' );
+		$filter_type      = $this->get_sanitized_query_slug( 'alm_type' );
+		$filter_state     = $this->get_sanitized_query_slug( 'alm_state' );
+		$filter_level     = $this->get_sanitized_query_slug( 'alm_level' );
 		// Read owner filter (operator: by user ID; member: "my assets" checkbox).
 		$filter_owner      = 0;
 		$filter_owner_name = '';
 		$filter_my_assets  = false;
 		if ( current_user_can( ALM_EDIT_ASSET ) ) {
-			if ( isset( $_GET['alm_owner'] ) ) {
-				$filter_owner = absint( wp_unslash( $_GET['alm_owner'] ) );
-				if ( $filter_owner > 0 ) {
-					$owner_data = get_userdata( $filter_owner );
-					if ( $owner_data ) {
-						$filter_owner_name = $owner_data->display_name;
-					} else {
-						$filter_owner = 0; // Invalid user ID — reset.
-					}
+			$filter_owner = $this->get_sanitized_query_absint( 'alm_owner' );
+			if ( $filter_owner > 0 ) {
+				$owner_data = get_userdata( $filter_owner );
+				if ( $owner_data ) {
+					$filter_owner_name = $owner_data->display_name;
+				} else {
+					$filter_owner = 0; // Invalid user ID — reset.
 				}
 			}
 		} elseif ( is_user_logged_in() ) {
-			if ( isset( $_GET['alm_my_assets'] ) && '1' === $_GET['alm_my_assets'] ) {
+			if ( '1' === $this->get_sanitized_query_text( 'alm_my_assets' ) ) {
 				$filter_my_assets = true;
 				$filter_owner     = get_current_user_id();
 			}
 		}
 		// Pagination.
 		$per_page     = max( 1, (int) $attributes['per_page'] );
-		$current_page = isset( $_GET['alm_paged'] ) ? max( 1, absint( $_GET['alm_paged'] ) ) : 1;
+		$current_page = max( 1, $this->get_sanitized_query_absint( 'alm_paged' ) );
 
 		// Build query args.
 		$query_args = array(
@@ -411,7 +446,9 @@ class ALM_Frontend_Manager {
 			$query_args['s'] = $search_term;
 		}
 
-		$tax_query = array();
+		$tax_query = array(
+			'relation' => 'AND',
+		);
 		if ( ! empty( $filter_structure ) ) {
 			$tax_query[] = array(
 				'taxonomy' => ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
@@ -441,11 +478,13 @@ class ALM_Frontend_Manager {
 			);
 		}
 		// Add tax_query to query args if we have filters.
-		if ( ! empty( $tax_query ) ) {
+		if ( count( $tax_query ) > 1 ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required dynamic taxonomy filters for list UI.
 			$query_args['tax_query'] = $tax_query;
 		}
 		// Add meta_query to filter by owner if set.
 		if ( $filter_owner > 0 ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required owner filter based on current assignment meta.
 			$query_args['meta_query'] = array(
 				array(
 					'key'     => '_alm_current_owner',
@@ -467,10 +506,12 @@ class ALM_Frontend_Manager {
 			// Prime the user cache for all asset owners in a single query.
 			// Post meta is already cached by WP_Query; collect owner IDs from cache
 			// and bulk-load user records so get_userdata() inside the loop is a cache hit.
-			$owner_ids = array_filter( array_map(
-				fn( $p ) => (int) get_post_meta( $p->ID, '_alm_current_owner', true ),
-				$query->posts
-			) );
+			$owner_ids = array_filter(
+				array_map(
+					static fn( $p ) => (int) get_post_meta( $p->ID, '_alm_current_owner', true ),
+					$query->posts
+				)
+			);
 			if ( ! empty( $owner_ids ) ) {
 				cache_users( array_unique( $owner_ids ) );
 			}
