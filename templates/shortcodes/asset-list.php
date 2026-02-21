@@ -75,10 +75,21 @@ if ( $filter_owner > 0 ) {
 				<input
 					type="search"
 					name="s"
+					id="alm-search-input"
+					aria-label="<?php esc_attr_e( 'Search assets', 'asset-lending-manager' ); ?>"
+					aria-autocomplete="list"
+					aria-expanded="false"
+					aria-controls="alm_asset_autocomplete_dropdown"
 					value="<?php echo esc_attr( $alm_current_search ); ?>"
 					placeholder="<?php esc_attr_e( 'Search assets...', 'asset-lending-manager' ); ?>"
 				/>
-				<div id="alm_asset_autocomplete_dropdown" class="alm-autocomplete-dropdown"></div>
+				<div
+					id="alm_asset_autocomplete_dropdown"
+					class="alm-autocomplete-dropdown"
+					role="region"
+					aria-live="polite"
+					aria-label="<?php esc_attr_e( 'Search suggestions', 'asset-lending-manager' ); ?>"
+				></div>
 			</div>
 		</div>
 
@@ -231,7 +242,19 @@ if ( $filter_owner > 0 ) {
 							<?php echo wp_kses_post( $alm_asset->thumbnail ); ?>
 						</div>
 						<div class="alm-asset-content-wrapper">
-							<h2 class="alm-asset-title"><?php echo esc_html( $alm_asset->title ); ?></h2>
+							<div class="alm-card-title-row">
+								<h2 class="alm-asset-title"><?php echo esc_html( $alm_asset->title ); ?></h2>
+								<?php
+								$alm_state_classes = ALM_Asset_Manager::get_state_classes();
+								foreach ( $alm_asset->alm_state as $alm_si => $alm_state_name ) :
+									$alm_state_slug  = $alm_asset->alm_state_slugs[ $alm_si ] ?? '';
+									$alm_badge_class = $alm_state_classes[ $alm_state_slug ] ?? '';
+									?>
+									<span class="alm-availability <?php echo esc_attr( $alm_badge_class ); ?>">
+										<?php echo esc_html( $alm_state_name ); ?>
+									</span>
+								<?php endforeach; ?>
+							</div>
 							<div class="alm-asset-taxonomies">
 								<!-- Tax: Structure -->
 								<div class="alm-asset-taxonomy">
@@ -242,11 +265,6 @@ if ( $filter_owner > 0 ) {
 								<div class="alm-asset-taxonomy">
 									<span class="alm-tax-label"><?php esc_html_e( 'Type', 'asset-lending-manager' ); ?>:</span>
 									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_asset->alm_type ) ); ?></span>
-								</div>
-								<!-- Tax: State -->
-								<div class="alm-asset-taxonomy">
-									<span class="alm-tax-label"><?php esc_html_e( 'State', 'asset-lending-manager' ); ?>:</span>
-									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $alm_asset->alm_state ) ); ?></span>
 								</div>
 								<!-- Tax: Level -->
 								<div class="alm-asset-taxonomy">
@@ -277,8 +295,8 @@ if ( $filter_owner > 0 ) {
 								'format'    => '',
 								'current'   => $current_page,
 								'total'     => $total_pages,
-								'prev_text' => '&laquo;',
-								'next_text' => '&raquo;',
+								'prev_text' => '<span aria-hidden="true">&laquo;</span><span class="screen-reader-text">' . esc_html__( 'Previous page', 'asset-lending-manager' ) . '</span>',
+								'next_text' => '<span aria-hidden="true">&raquo;</span><span class="screen-reader-text">' . esc_html__( 'Next page', 'asset-lending-manager' ) . '</span>',
 							)
 						)
 					);

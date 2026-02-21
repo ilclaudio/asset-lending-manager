@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		if (!items || items.length === 0) {
 			dropdown.innerHTML = '';
 			dropdown.style.display = 'none';
+			input.setAttribute('aria-expanded', 'false');
 			return;
 		}
 
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		dropdown.innerHTML = html;
 		dropdown.style.display = 'block';
+		input.setAttribute('aria-expanded', 'true');
 	}
 
 	input.addEventListener('input', function () {
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		if (term.length < almAutocomplete.minChars) {
 			setLoading(false);
 			dropdown.style.display = 'none';
+			input.setAttribute('aria-expanded', 'false');
 			return;
 		}
 
@@ -86,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	document.addEventListener('click', function (e) {
 		if (!dropdown.contains(e.target) && e.target !== input) {
 			dropdown.style.display = 'none';
+			input.setAttribute('aria-expanded', 'false');
 		}
 	});
 });
