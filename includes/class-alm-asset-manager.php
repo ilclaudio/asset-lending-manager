@@ -258,8 +258,15 @@ class ALM_Asset_Manager {
 			$terms = get_the_terms( $asset, $taxonomy );
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 				$wrapper->{$taxonomy} = wp_list_pluck( $terms, 'name' );
+				// Also expose slugs for the state taxonomy so templates can map to badge CSS classes.
+				if ( ALM_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
+					$wrapper->alm_state_slugs = wp_list_pluck( $terms, 'slug' );
+				}
 			} else {
 				$wrapper->{$taxonomy} = array();
+				if ( ALM_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
+					$wrapper->alm_state_slugs = array();
+				}
 			}
 		}
 

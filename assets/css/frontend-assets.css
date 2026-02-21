@@ -391,7 +391,7 @@
 		gap: 12px;
 		background: #f7f7f7;
 		font-weight: 700;
-		font-size: 1rem;
+		font-size: 1.2rem;
 		line-height: 1.3;
 	}
 
@@ -404,7 +404,7 @@
 	}
 
 	.alm-asset-view .alm-collapsible__title {
-		font-size: 1rem;
+		font-size: 1.2rem;
 	}
 
 	.alm-asset-view .alm-collapsible__body {
@@ -558,6 +558,23 @@
 		gap: 8px;
 	}
 
+	/* Title row: asset title + state badge side by side */
+	.alm-card-title-row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	.alm-card-title-row .alm-asset-title {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	.alm-card-title-row .alm-availability {
+		flex-shrink: 0;
+	}
+
 	/* ========================================================================
 		RESPONSIVE STYLES
 		======================================================================== */
@@ -609,6 +626,11 @@
 		.alm-asset-title {
 			font-size: 1.1em;
 			text-align: center;
+		}
+
+		/* Title row centered on mobile, badge wraps below long titles */
+		.alm-card-title-row {
+			justify-content: center;
 		}
 
 		/* Taxonomies: una colonna su mobile */
@@ -665,7 +687,7 @@
 
 		.alm-asset-view .alm-collapsible__summary,
 		.alm-asset-view .alm-collapsible__title {
-			font-size: 0.96rem;
+			font-size: 1.1rem;
 		}
 
 		.alm-asset-acf-row {
@@ -962,5 +984,51 @@
 
 		.alm-filter-field select {
 			font-size: 0.9em;
+		}
+	}
+
+	/* ========================================================================
+		ACCESSIBILITY UTILITIES
+		======================================================================== */
+
+	/* Visually hidden text for screen readers (pagination prev/next, etc.). */
+	.screen-reader-text {
+		clip: rect(1px, 1px, 1px, 1px);
+		clip-path: inset(50%);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+		word-wrap: normal !important;
+	}
+
+	/* Respect user preference for reduced motion. */
+	@media (prefers-reduced-motion: reduce) {
+		.alm-asset-title,
+		.alm-reset-filters,
+		.alm-filters-toggle::after {
+			transition: none;
+		}
+
+		.alm-asset-card {
+			transition: none;
+		}
+
+		.alm-asset-card:hover {
+			transform: none;
+		}
+
+		.alm-asset-thumbnail img {
+			transition: none;
+		}
+
+		.alm-asset-card:hover .alm-asset-thumbnail img {
+			transform: none;
+		}
+
+		#alm_asset_search_form.alm-autocomplete-loading .alm-search-icon {
+			animation: none;
 		}
 	}
