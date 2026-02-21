@@ -152,7 +152,8 @@
 	}
 
 	/* Search form - used in asset list */
-	.alm-search-submit-btn {
+	.alm-search-submit-btn,
+	#alm_asset_search_form .alm-form-actions button[type="submit"] {
 		width: 100%;
 		padding: 10px 16px;
 		font-size: 1em;
@@ -166,12 +167,14 @@
 		transition: background 0.3s ease, border-color 0.3s ease;
 	}
 
-	.alm-search-submit-btn:hover {
-		background: #005a87;
-		border-color: #1a2735;
+	.alm-search-submit-btn:hover,
+	#alm_asset_search_form .alm-form-actions button[type="submit"]:hover {
+		background: #006a9b;
+		border-color: #243447;
 	}
 
-	.alm-search-submit-btn:focus-visible {
+	.alm-search-submit-btn:focus-visible,
+	#alm_asset_search_form .alm-form-actions button[type="submit"]:focus-visible {
 		outline: 2px solid rgba(0, 89, 179, 0.22);
 		outline-offset: 1px;
 	}
