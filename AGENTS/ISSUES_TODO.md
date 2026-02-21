@@ -93,22 +93,6 @@ Last update: 2026-02-21
 - **Expected behavior:** Wrap each collapsible title (`.alm-collapsible__title`) in an `<h2>` or assign `role="heading" aria-level="2"` to give AT users heading-based navigation.
 - **Notes:** Wrapping `<summary>` content in a heading is valid HTML5; verify cross-AT behavior before implementing. `templates/shortcodes/asset-view.php`
 
-### [Medium] Asset detail — file links open in new tab without user warning (target=_blank)
-- **Status:** Open
-- **Date:** 2026-02-21
-- **Category:** Accessibility
-- **Description:** File download links (`user_manual`, `technical_data_sheet`) use `target="_blank"` without informing the user. WCAG 3.2.2 recommends warning users when following a link causes unexpected behavior.
-- **Expected behavior:** Add a screen-reader-only span `(opens in new tab)` or an icon with `aria-label` equivalent to each `target="_blank"` link.
-- **Notes:** `templates/shortcodes/asset-view.php` — the fix was attempted but the pattern was skipped (CRLF mismatch); requires re-verification.
-
-### [Low] Asset detail — `aria-required` missing on required textareas
-- **Status:** Open
-- **Date:** 2026-02-21
-- **Category:** Accessibility
-- **Description:** Required textareas use the HTML `required` attribute but not `aria-required="true"`. Older AT may not expose `required` unless `aria-required` is also present.
-- **Expected behavior:** Add `aria-required="true"` to all `required` form fields.
-- **Notes:** `templates/shortcodes/asset-view.php`
-
 ### [Low] Asset detail — AJAX focus management missing after form submission
 - **Status:** Open
 - **Date:** 2026-02-21

@@ -1,5 +1,5 @@
 # ISSUES_RESOLVED
-Last update: 2026-02-19
+Last update: 2026-02-21
 
 ## Entry Format
 ```markdown
@@ -12,6 +12,26 @@ Last update: 2026-02-19
 - **Fix summary:** What changed and why
 - **Notes:** Optional commit/PR/doc references
 ```
+
+---
+
+### [Medium] Asset detail — file links open in new tab without user warning (target=_blank)
+- **Status:** Resolved
+- **Date:** 2026-02-21
+- **Category:** Accessibility
+- **Description:** File download links (`user_manual`, `technical_data_sheet`) used `target="_blank"` without informing the user.
+- **Resolution date:** 2026-02-21
+- **Fix summary:** Added a screen-reader-only warning `(opens in new tab)` to file links opened with `target="_blank"` in asset detail optional fields.
+- **Notes:** `templates/shortcodes/asset-view.php`
+
+### [Low] Asset detail — `aria-required` missing on required textareas
+- **Status:** Resolved
+- **Date:** 2026-02-21
+- **Category:** Accessibility
+- **Description:** Required textareas used HTML `required` but not `aria-required="true"`.
+- **Resolution date:** 2026-02-21
+- **Fix summary:** Added `aria-required="true"` to required textareas in loan request and direct assignment forms.
+- **Notes:** `templates/shortcodes/asset-view.php`
 
 ---
 
