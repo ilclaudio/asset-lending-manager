@@ -15,8 +15,8 @@
 		}
 	},
 	"scripts": {
-		"lint": "phpcs",
-		"lint:fix": "phpcbf",
+		"lint": "@php vendor/bin/phpcs --standard=phpcs.xml.dist",
+		"lint:fix": "@php vendor/bin/phpcbf --standard=phpcs.xml.dist",
 		"test": "phpunit",
 		"test:unit": "phpunit --testsuite unit",
 		"test:integration": "phpunit -c phpunit-integration.xml --testsuite integration",

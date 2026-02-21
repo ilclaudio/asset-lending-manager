@@ -794,6 +794,10 @@ class ALM_Loan_Manager {
 		$cancel_reason,
 		$check_component_conflicts = true
 	) {
+		// Capture the original kit owner before any DB write so the conflict
+		// guard (step 4) can compare against the pre-transfer state.
+		$original_kit_owner = $check_component_conflicts ? $this->get_current_owner( $asset_id ) : 0;
+
 		// 1. Assign new owner.
 		$this->set_asset_owner( $asset_id, $new_owner_id );
 
@@ -810,13 +814,14 @@ class ALM_Loan_Manager {
 			if ( ! empty( $component_ids ) ) {
 				// 4. Optional conflict guard: block if a component is on-loan to a different owner.
 				// Allows hand-off when the kit (and its components) is already on-loan to the approver.
+				// Uses $original_kit_owner (captured before step 1) to avoid a false mismatch
+				// caused by the kit owner already being updated in the DB at this point.
 				if ( $check_component_conflicts ) {
-					$current_kit_owner = $this->get_current_owner( $asset_id );
 					foreach ( $component_ids as $component_id ) {
 						$component_state = $this->get_asset_state_slug( $component_id );
 						if ( 'on-loan' === $component_state ) {
 							$component_owner = $this->get_current_owner( $component_id );
-							if ( $component_owner !== $current_kit_owner ) {
+							if ( $component_owner !== $original_kit_owner ) {
 								$component_title = get_the_title( $component_id );
 								throw new Exception(
 									sprintf(
@@ -1006,7 +1011,10 @@ class ALM_Loan_Manager {
 	private function set_asset_owner( $asset_id, $user_id ) {
 		$result = update_post_meta( $asset_id, '_alm_current_owner', $user_id );
 
-		if ( false === $result ) {
+		// update_post_meta() returns false both on DB failure and when the stored
+		// value is already equal to $user_id (no-op update). Only treat it as an
+		// error when the value was not actually saved.
+		if ( false === $result && (int) get_post_meta( $asset_id, '_alm_current_owner', true ) !== (int) $user_id ) {
 			throw new Exception(
 				sprintf(
 					__( 'Failed to set owner for asset ID %d.', 'asset-lending-manager' ),
@@ -1298,7 +1306,8 @@ class ALM_Loan_Manager {
 
 		// Fire direct assign action so ALM_Notification_Manager can send emails.
 		// Pass $assignee->ID (int) rather than the WP_User object for consistency with other actions.
-		do_action( 'alm_direct_assign', $asset_id, $assignee->ID, $current_user_id, $reason );
+		$previous_owner_id = isset( $result['previous_owner_id'] ) ? (int) $result['previous_owner_id'] : 0;
+		do_action( 'alm_direct_assign', $asset_id, $assignee->ID, $current_user_id, $reason, $previous_owner_id );
 
 		wp_send_json_success(
 			array(
@@ -1383,8 +1392,9 @@ class ALM_Loan_Manager {
 			);
 
 			return array(
-				'success' => true,
-				'message' => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
+				'success'           => true,
+				'message'           => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
+				'previous_owner_id' => $previous_owner_id,
 			);
 
 		} catch ( Exception $e ) {
@@ -1406,5 +1416,4 @@ class ALM_Loan_Manager {
 			);
 		}
 	}
-
 }

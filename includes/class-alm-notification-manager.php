@@ -7,8 +7,8 @@
  *
  * Sender configuration is controlled by the constants ALM_EMAIL_FROM_NAME,
  * ALM_EMAIL_FROM_ADDRESS, and ALM_EMAIL_SYSTEM_ADDRESS defined in plugin-config.php.
- * Email subjects and body templates are also defined as constants there and are
- * translatable via __() at send time.
+ * Email subjects and body templates are resolved via alm_get_email_templates()
+ * to keep translation strings discoverable by Loco/makepot.
  *
  * @package AssetLendingManager
  */
@@ -43,8 +43,8 @@ class ALM_Notification_Manager {
 		// because the asset was assigned to someone else.
 		add_action( 'alm_loan_request_canceled', array( $this, 'send_loan_request_canceled_notification' ), 10, 2 );
 
-		// Notify the assignee when an operator directly assigns an asset to them.
-		add_action( 'alm_direct_assign', array( $this, 'send_direct_assign_notification' ), 10, 4 );
+		// Notify the assignee, the previous owner (if any), and the system address when an asset is directly assigned.
+		add_action( 'alm_direct_assign', array( $this, 'send_direct_assign_notification' ), 10, 5 );
 	}
 
 	// -------------------------------------------------------------------------
@@ -87,8 +87,8 @@ class ALM_Notification_Manager {
 		// Email 1: confirmation to the requester.
 		$this->send_notification_email(
 			$requester->user_email,
-			ALM_EMAIL_SUBJECT_REQUEST_TO_REQUESTER,
-			ALM_EMAIL_BODY_REQUEST_TO_REQUESTER,
+			$this->get_email_template( 'subject', 'request_to_requester' ),
+			$this->get_email_template( 'body', 'request_to_requester' ),
 			$placeholders
 		);
 
@@ -98,8 +98,8 @@ class ALM_Notification_Manager {
 			if ( $owner ) {
 				$this->send_notification_email(
 					$owner->user_email,
-					ALM_EMAIL_SUBJECT_REQUEST_TO_OWNER,
-					ALM_EMAIL_BODY_REQUEST_TO_OWNER,
+					$this->get_email_template( 'subject', 'request_to_owner' ),
+					$this->get_email_template( 'body', 'request_to_owner' ),
 					$placeholders
 				);
 			}
@@ -109,8 +109,8 @@ class ALM_Notification_Manager {
 		if ( ! empty( ALM_EMAIL_SYSTEM_ADDRESS ) ) {
 			$this->send_notification_email(
 				ALM_EMAIL_SYSTEM_ADDRESS,
-				ALM_EMAIL_SUBJECT_REQUEST_TO_OWNER,
-				ALM_EMAIL_BODY_REQUEST_TO_OWNER,
+				$this->get_email_template( 'subject', 'request_to_owner' ),
+				$this->get_email_template( 'body', 'request_to_owner' ),
 				$placeholders
 			);
 		}
@@ -139,8 +139,8 @@ class ALM_Notification_Manager {
 
 		$this->send_notification_email(
 			$requester->user_email,
-			ALM_EMAIL_SUBJECT_APPROVED,
-			ALM_EMAIL_BODY_APPROVED,
+			$this->get_email_template( 'subject', 'approved' ),
+			$this->get_email_template( 'body', 'approved' ),
 			$placeholders
 		);
 	}
@@ -172,8 +172,8 @@ class ALM_Notification_Manager {
 
 		$this->send_notification_email(
 			$requester->user_email,
-			ALM_EMAIL_SUBJECT_REJECTED,
-			ALM_EMAIL_BODY_REJECTED,
+			$this->get_email_template( 'subject', 'rejected' ),
+			$this->get_email_template( 'body', 'rejected' ),
 			$placeholders
 		);
 	}
@@ -203,22 +203,28 @@ class ALM_Notification_Manager {
 
 		$this->send_notification_email(
 			$requester->user_email,
-			ALM_EMAIL_SUBJECT_CANCELED,
-			ALM_EMAIL_BODY_CANCELED,
+			$this->get_email_template( 'subject', 'canceled' ),
+			$this->get_email_template( 'body', 'canceled' ),
 			$placeholders
 		);
 	}
 
 	/**
-	 * Send a notification to the assignee when an operator directly assigns an asset.
+	 * Send notifications when an operator directly assigns an asset.
 	 *
-	 * @param int    $asset_id    Post ID of the asset.
-	 * @param int    $assignee_id WordPress user ID of the new asset owner.
-	 * @param int    $actor_id    WordPress user ID of the operator who performed the assignment.
-	 * @param string $reason      Optional reason provided by the operator.
+	 * Sends:
+	 * - A notification email to the assignee (new owner).
+	 * - A notification email to the previous owner (if any and different from the assignee).
+	 * - A copy to the system/operator address (if ALM_EMAIL_SYSTEM_ADDRESS is set).
+	 *
+	 * @param int    $asset_id          Post ID of the asset.
+	 * @param int    $assignee_id       WordPress user ID of the new asset owner.
+	 * @param int    $actor_id          WordPress user ID of the operator who performed the assignment.
+	 * @param string $reason            Optional reason provided by the operator.
+	 * @param int    $previous_owner_id WordPress user ID of the previous asset owner (0 if unassigned).
 	 * @return void
 	 */
-	public function send_direct_assign_notification( $asset_id, $assignee_id, $actor_id, $reason ) {
+	public function send_direct_assign_notification( $asset_id, $assignee_id, $actor_id, $reason, $previous_owner_id = 0 ) {
 		$assignee = get_userdata( $assignee_id );
 		if ( ! $assignee ) {
 			ALM_Logger::warning(
@@ -232,7 +238,7 @@ class ALM_Notification_Manager {
 		$actor      = get_userdata( $actor_id );
 		$actor_name = $actor ? $actor->display_name : __( 'System', 'asset-lending-manager' );
 
-		$placeholders = array_merge(
+		$base_placeholders = array_merge(
 			$this->get_asset_base_placeholders( $asset_id ),
 			array(
 				'{ASSIGNEE_NAME}' => $assignee->display_name,
@@ -241,12 +247,45 @@ class ALM_Notification_Manager {
 			)
 		);
 
+		// Email 1: notification to the assignee (new owner).
 		$this->send_notification_email(
 			$assignee->user_email,
-			ALM_EMAIL_SUBJECT_DIRECT_ASSIGN,
-			ALM_EMAIL_BODY_DIRECT_ASSIGN,
-			$placeholders
+			$this->get_email_template( 'subject', 'direct_assign' ),
+			$this->get_email_template( 'body', 'direct_assign' ),
+			$base_placeholders
 		);
+
+		// Email 2: notification to the previous owner (if assigned and different from the new assignee).
+		if ( $previous_owner_id > 0 && $previous_owner_id !== $assignee_id ) {
+			$prev_owner = get_userdata( $previous_owner_id );
+			if ( $prev_owner ) {
+				$prev_owner_placeholders = array_merge(
+					$base_placeholders,
+					array( '{PREV_OWNER_NAME}' => $prev_owner->display_name )
+				);
+				$this->send_notification_email(
+					$prev_owner->user_email,
+					$this->get_email_template( 'subject', 'direct_assign_to_prev_owner' ),
+					$this->get_email_template( 'body', 'direct_assign_to_prev_owner' ),
+					$prev_owner_placeholders
+				);
+			}
+		}
+
+		// Email 3: copy to the operator/system address (only if ALM_EMAIL_SYSTEM_ADDRESS is configured).
+		if ( ! empty( ALM_EMAIL_SYSTEM_ADDRESS ) ) {
+			$prev_owner          = $previous_owner_id > 0 ? get_userdata( $previous_owner_id ) : null;
+			$system_placeholders = array_merge(
+				$base_placeholders,
+				array( '{PREV_OWNER_NAME}' => $prev_owner ? $prev_owner->display_name : '' )
+			);
+			$this->send_notification_email(
+				ALM_EMAIL_SYSTEM_ADDRESS,
+				$this->get_email_template( 'subject', 'direct_assign_to_prev_owner' ),
+				$this->get_email_template( 'body', 'direct_assign_to_prev_owner' ),
+				$system_placeholders
+			);
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -261,8 +300,8 @@ class ALM_Notification_Manager {
 	 * logs the attempt, calls wp_mail(), and logs any failure.
 	 *
 	 * @param string $to_email     Recipient email address.
-	 * @param string $subject_tpl  Subject template constant (may contain {PLACEHOLDER} tokens).
-	 * @param string $body_tpl     Body template constant (may contain {PLACEHOLDER} tokens).
+	 * @param string $subject_tpl  Subject template (may contain {PLACEHOLDER} tokens).
+	 * @param string $body_tpl     Body template (may contain {PLACEHOLDER} tokens).
 	 * @param array  $placeholders Associative array of '{TOKEN}' => 'value' pairs.
 	 * @return bool True if wp_mail() reported success, false otherwise.
 	 */
@@ -276,12 +315,9 @@ class ALM_Notification_Manager {
 			return false;
 		}
 
-		// Translate templates and fill runtime placeholders.
-		// Note: __() is used at runtime so translations can be applied.
-		// Strings must be added manually to the .pot file since makepot
-		// cannot extract them from PHP constants passed as variables.
-		$subject = $this->format_template( __( $subject_tpl, 'asset-lending-manager' ), $placeholders );
-		$body    = $this->format_template( __( $body_tpl, 'asset-lending-manager' ), $placeholders );
+		// Fill runtime placeholders on the already-translated templates.
+		$subject = $this->format_template( $subject_tpl, $placeholders );
+		$body    = $this->format_template( $body_tpl, $placeholders );
 
 		// Build email headers: plain text encoding and custom From address.
 		$from_address = $this->get_from_address();
@@ -325,6 +361,30 @@ class ALM_Notification_Manager {
 	 */
 	private function format_template( $template, $placeholders ) {
 		return str_replace( array_keys( $placeholders ), array_values( $placeholders ), $template );
+	}
+
+	/**
+	 * Return a translated email template by group/key.
+	 *
+	 * @param string $group Template group (subject/body).
+	 * @param string $key   Template key.
+	 * @return string Template string or empty string when not found.
+	 */
+	private function get_email_template( $group, $key ) {
+		$templates = alm_get_email_templates();
+		if ( isset( $templates[ $group ][ $key ] ) ) {
+			return $templates[ $group ][ $key ];
+		}
+
+		ALM_Logger::warning(
+			'[NOTIFICATION] Missing email template.',
+			array(
+				'group' => $group,
+				'key'   => $key,
+			)
+		);
+
+		return '';
 	}
 
 	/**
