@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-02-19
+Last update: 2026-02-21
 
 ---
 
@@ -84,6 +84,38 @@ Last update: 2026-02-19
 - **Description:** Dropdown is mouse-only.
 - **Expected behavior:** Support ArrowUp/ArrowDown, Enter, Escape.
 - **Notes:** `assets/js/alm-asset-autocomplete.js`
+
+### [High] Asset detail — no heading hierarchy beyond `<h1>`
+- **Status:** Open
+- **Date:** 2026-02-21
+- **Category:** Accessibility
+- **Description:** The asset detail page (`asset-view.php`) has a single `<h1>` and no `<h2>` headings. Collapsible sections use `aria-label` on `<section>` but expose no headings. Screen reader users navigating by heading (H key in NVDA/JAWS) cannot reach any section below the title.
+- **Expected behavior:** Wrap each collapsible title (`.alm-collapsible__title`) in an `<h2>` or assign `role="heading" aria-level="2"` to give AT users heading-based navigation.
+- **Notes:** Wrapping `<summary>` content in a heading is valid HTML5; verify cross-AT behavior before implementing. `templates/shortcodes/asset-view.php`
+
+### [Medium] Asset detail — file links open in new tab without user warning (target=_blank)
+- **Status:** Open
+- **Date:** 2026-02-21
+- **Category:** Accessibility
+- **Description:** File download links (`user_manual`, `technical_data_sheet`) use `target="_blank"` without informing the user. WCAG 3.2.2 recommends warning users when following a link causes unexpected behavior.
+- **Expected behavior:** Add a screen-reader-only span `(opens in new tab)` or an icon with `aria-label` equivalent to each `target="_blank"` link.
+- **Notes:** `templates/shortcodes/asset-view.php` — the fix was attempted but the pattern was skipped (CRLF mismatch); requires re-verification.
+
+### [Low] Asset detail — `aria-required` missing on required textareas
+- **Status:** Open
+- **Date:** 2026-02-21
+- **Category:** Accessibility
+- **Description:** Required textareas use the HTML `required` attribute but not `aria-required="true"`. Older AT may not expose `required` unless `aria-required` is also present.
+- **Expected behavior:** Add `aria-required="true"` to all `required` form fields.
+- **Notes:** `templates/shortcodes/asset-view.php`
+
+### [Low] Asset detail — AJAX focus management missing after form submission
+- **Status:** Open
+- **Date:** 2026-02-21
+- **Category:** Accessibility
+- **Description:** After submitting the loan request or direct assignment form via AJAX, focus remains on the submit button (which may be disabled/hidden). No focus is moved toward the response message. Keyboard-only and AT users are left disoriented.
+- **Expected behavior:** After AJAX response, programmatically move focus to the response div (`#alm-loan-request-response`, `#alm-direct-assign-response`).
+- **Notes:** Requires JS change in `assets/js/frontend-assets.js`.
 
 ---
 
