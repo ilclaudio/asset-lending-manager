@@ -33,7 +33,6 @@
 			// Access to data passed from PHP via wp_localize_script.
 			if (typeof window.almFrontend !== 'undefined') {
 				console.log('*** AJAX URL:', window.almFrontend.ajaxUrl);
-				console.log('*** Nonce:', window.almFrontend.nonce);
 			}
 
 			// Initialize components.
@@ -563,7 +562,6 @@
 			// Check if almFrontend is available
 			if (typeof window.almFrontend === 'undefined' || !window.almFrontend.loanRequestNonce) {
 				alert( __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ) );
-				console.error('almFrontend.loanRequestNonce is undefined');
 				return;
 			}
 
