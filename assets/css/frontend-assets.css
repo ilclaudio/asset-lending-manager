@@ -164,10 +164,10 @@
 		--alm-btn-secondary-text: #243447;
 		--alm-btn-success-bg: #0073aa;
 		--alm-btn-success-hover-bg: #006a9b;
-		--alm-btn-success-border: #243447;
+		--alm-btn-success-border: #2f4254;
 		--alm-btn-danger-bg: #0073aa;
 		--alm-btn-danger-hover-bg: #006a9b;
-		--alm-btn-danger-border: #243447;
+		--alm-btn-danger-border: #2f4254;
 	}
 
 	/* Search form - used in asset list */
@@ -232,7 +232,7 @@
 
 	.alm-asset-view .alm-button--approve:hover {
 		background: var(--alm-btn-success-hover-bg);
-		border-color: var(--alm-btn-success-border);
+		border-color: var(--alm-btn-primary-border);
 	}
 
 	.alm-asset-view .alm-button--reject {
@@ -243,7 +243,25 @@
 
 	.alm-asset-view .alm-button--reject:hover {
 		background: var(--alm-btn-danger-hover-bg);
-		border-color: var(--alm-btn-danger-border);
+		border-color: var(--alm-btn-primary-border);
+	}
+
+	/* Force asset-view button colors even if theme button styles override defaults. */
+	.alm-asset-view button.alm-button,
+	.alm-asset-view .alm-button.alm-button--primary,
+	.alm-asset-view .alm-button.alm-button--approve,
+	.alm-asset-view .alm-button.alm-button--reject {
+		background: var(--alm-btn-primary-bg) !important;
+		border: 1px solid #2f4254 !important;
+		color: #fff !important;
+	}
+
+	.alm-asset-view button.alm-button:hover,
+	.alm-asset-view .alm-button.alm-button--primary:hover,
+	.alm-asset-view .alm-button.alm-button--approve:hover,
+	.alm-asset-view .alm-button.alm-button--reject:hover {
+		background: var(--alm-btn-primary-hover-bg) !important;
+		border: 1px solid var(--alm-btn-primary-border) !important;
 	}
 
 	.alm-asset-view .alm-button:disabled {
