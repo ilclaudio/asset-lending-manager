@@ -1,146 +1,231 @@
 /**
  * Styles for Asset Requests Table
- * 
+ *
  * @package AssetLendingManager
  */
 
-/* Tabella richieste */
-.alm-requests-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.alm-asset-view .alm-requests-table {
+	width: 100%;
+	font-size: 0.9rem;
+	border-collapse: separate;
+	border-spacing: 0;
+	margin: 1rem 0;
+	background: #fff;
+	border: 1px solid #d9e1e6;
+	border-radius: 8px;
+	overflow: hidden;
 }
 
-.alm-requests-table thead {
-    background: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
+.alm-asset-view .alm-requests-table thead {
+	background: #f5f7fa;
 }
 
-.alm-requests-table th {
-    padding: 12px 15px;
-    text-align: left;
-    font-weight: 600;
-    color: #495057;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.alm-asset-view .alm-requests-table th {
+	padding: 0.65rem 0.9rem;
+	text-align: left;
+	font-weight: 600;
+	font-size: 0.77rem;
+	letter-spacing: 0.02em;
+	color: #17324d;
+	border: 0;
+	border-bottom: 1px solid #d9e1e6;
 }
 
-.alm-requests-table tbody tr {
-    border-bottom: 1px solid #dee2e6;
-    transition: background-color 0.2s ease;
+.alm-asset-view .alm-requests-table td {
+	padding: 0.75rem 0.9rem;
+	vertical-align: top;
+	border: 0;
+	border-bottom: 1px solid #e8edf1;
 }
 
-.alm-requests-table tbody tr:hover {
-    background-color: #f8f9fa;
+.alm-asset-view .alm-requests-table th + th {
+	border-left: 1px solid #e8edf2;
 }
 
-.alm-requests-table td {
-    padding: 12px 15px;
-    vertical-align: middle;
+.alm-asset-view .alm-requests-table td + td {
+	border-left: 1px solid #f1f4f7;
 }
 
-/* Colonna messaggio con tooltip */
-.alm-request-message {
-    max-width: 300px;
+.alm-asset-view .alm-requests-table thead th:nth-child(1) {
+	width: 18%;
 }
 
-.alm-message-text {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: help;
+.alm-asset-view .alm-requests-table thead th:nth-child(2) {
+	width: 44%;
 }
 
-.alm-message-text:hover {
-    color: #0073aa;
+.alm-asset-view .alm-requests-table thead th:nth-child(3) {
+	width: 16%;
 }
 
-/* Colonna richiedente */
+.alm-asset-view .alm-requests-table thead th:nth-child(4) {
+	width: 22%;
+}
+
+.alm-asset-view .alm-requests-table tbody tr:nth-child(even) {
+	background: #fbfcfd;
+}
+
+.alm-asset-view .alm-requests-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
 .alm-request-requester {
-    font-weight: 500;
-    min-width: 120px;
+	min-width: 10rem;
+	font-weight: 600;
+	color: #12263a;
 }
 
-/* Colonna data */
 .alm-request-date {
-    white-space: nowrap;
-    color: #6c757d;
-    font-size: 14px;
+	white-space: nowrap;
+	color: #4f6376;
+	font-size: 0.9rem;
 }
 
-/* Action buttons */
+.alm-request-message {
+	max-width: 32rem;
+}
+
+.alm-message-preview {
+	margin: 0;
+	color: #1f3347;
+	line-height: 1.4;
+	word-break: break-word;
+}
+
+.alm-message-details {
+	margin-top: 0.5rem;
+}
+
+.alm-message-toggle {
+	cursor: pointer;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #0066cc;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.alm-message-toggle::-webkit-details-marker {
+	display: none;
+}
+
+.alm-message-toggle::before {
+	content: '+';
+	font-size: 0.95rem;
+	line-height: 1;
+}
+
+.alm-message-details[open] .alm-message-toggle::before {
+	content: '-';
+}
+
+.alm-message-toggle-open {
+	display: inline;
+}
+
+.alm-message-toggle-close {
+	display: none;
+}
+
+.alm-message-details[open] .alm-message-toggle-open {
+	display: none;
+}
+
+.alm-message-details[open] .alm-message-toggle-close {
+	display: inline;
+}
+
+.alm-message-toggle:hover,
+.alm-message-toggle:focus {
+	color: #004b99;
+}
+
+.alm-message-full {
+	margin-top: 0.5rem;
+	padding: 0.6rem 0.7rem;
+	background: #f5f9ff;
+	border: 1px solid #d7e6ff;
+	border-radius: 6px;
+	line-height: 1.45;
+	color: #17324d;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
 .alm-request-actions {
-    white-space: nowrap;
-    text-align: right;
+	white-space: nowrap;
 }
 
-.alm-button--small {
-    padding: 6px 12px;
-    font-size: 13px;
-    margin-left: 5px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+.alm-request-actions .alm-button--small + .alm-button--small {
+	margin-left: 0.35rem;
 }
 
-.alm-button--approve {
-    background-color: #28a745;
-    color: white;
-}
-
-.alm-button--approve:hover {
-    background-color: #218838;
-}
-
-.alm-button--reject {
-    background-color: #dc3545;
-    color: white;
-}
-
-.alm-button--reject:hover {
-    background-color: #c82333;
-}
-
-.alm-button--approve:disabled,
-.alm-button--reject:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-    .alm-requests-table {
-        font-size: 14px;
-    }
-    
-    .alm-requests-table th,
-    .alm-requests-table td {
-        padding: 8px 10px;
-    }
-    
-    .alm-request-message {
-        max-width: 150px;
-    }
-    
-    .alm-button--small {
-        display: block;
-        margin: 5px 0;
-        width: 100%;
-    }
-    
-    .alm-request-actions {
-        text-align: left;
-    }
-}
+	.alm-asset-view .alm-requests-table thead {
+		display: none;
+	}
 
-/* Empty state */
-.alm-requests-table + .alm-muted {
-    text-align: center;
-    padding: 40px 20px;
-    color: #6c757d;
+	.alm-asset-view .alm-requests-table,
+	.alm-asset-view .alm-requests-table tbody,
+	.alm-asset-view .alm-requests-table tr,
+	.alm-asset-view .alm-requests-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.alm-asset-view .alm-requests-table {
+		border: 0;
+		background: transparent;
+	}
+
+	.alm-asset-view .alm-requests-table tr {
+		margin-bottom: 0.85rem;
+		font-size: 0.88rem;
+		background: #fff;
+		border: 1px solid #d9e1e6;
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.alm-asset-view .alm-requests-table td {
+		position: relative;
+		padding: 0.8rem 0.8rem 0.8rem 8.5rem;
+		border-bottom: 1px solid #edf2f6;
+		border-left: 0;
+		min-height: 2.8rem;
+	}
+
+	.alm-asset-view .alm-requests-table td + td {
+		border-left: 0;
+	}
+
+	.alm-asset-view .alm-requests-table td:last-child {
+		border-bottom: 0;
+	}
+
+	.alm-asset-view .alm-requests-table td::before {
+		content: attr(data-label);
+		position: absolute;
+		left: 0.8rem;
+		top: 0.8rem;
+		width: 7.2rem;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.03em;
+		color: #4f6376;
+		text-transform: uppercase;
+	}
+
+	.alm-request-date,
+	.alm-request-requester {
+		white-space: normal;
+	}
+
+	.alm-request-actions .alm-button--small {
+		display: inline-block;
+		width: auto;
+		margin: 0 0.4rem 0.35rem 0;
+	}
 }
