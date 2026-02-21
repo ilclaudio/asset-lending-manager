@@ -151,32 +151,104 @@
 		border-radius: 4px;
 	}
 
+	/* Shared button palette for asset list and asset view */
+	#alm_asset_search_form,
+	.alm-asset-view {
+		--alm-btn-primary-bg: #0073aa;
+		--alm-btn-primary-hover-bg: #006a9b;
+		--alm-btn-primary-border: #243447;
+		--alm-btn-primary-focus: rgba(0, 89, 179, 0.22);
+		--alm-btn-secondary-bg: #f2f5f7;
+		--alm-btn-secondary-hover-bg: #e6ecf1;
+		--alm-btn-secondary-border: #c7d3dd;
+		--alm-btn-secondary-text: #243447;
+		--alm-btn-success-bg: #1f8f47;
+		--alm-btn-success-hover-bg: #19793b;
+		--alm-btn-success-border: #186a35;
+		--alm-btn-danger-bg: #c83544;
+		--alm-btn-danger-hover-bg: #af2b39;
+		--alm-btn-danger-border: #8f2130;
+	}
+
 	/* Search form - used in asset list */
+	.alm-search-submit-btn,
+	#alm_asset_search_form .alm-form-actions button[type="submit"],
+	.alm-asset-view .alm-button {
+		padding: 10px 16px;
+		font-size: 0.95rem;
+		font-weight: 600;
+		line-height: 1.2;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		text-decoration: none;
+		border-radius: 8px;
+		transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+	}
+
 	.alm-search-submit-btn,
 	#alm_asset_search_form .alm-form-actions button[type="submit"] {
 		width: 100%;
-		padding: 10px 16px;
-		font-size: 1em;
-		cursor: pointer;
 		margin-top: 8px;
-		background: #0073aa;
+	}
+
+	.alm-search-submit-btn,
+	#alm_asset_search_form .alm-form-actions button[type="submit"],
+	.alm-asset-view .alm-button,
+	.alm-asset-view .alm-button--primary {
+		background: var(--alm-btn-primary-bg);
 		color: #fff;
-		border: 1px solid #243447;
-		border-radius: 8px;
-		font-weight: 600;
-		transition: background 0.3s ease, border-color 0.3s ease;
+		border: 1px solid var(--alm-btn-primary-border);
 	}
 
 	.alm-search-submit-btn:hover,
-	#alm_asset_search_form .alm-form-actions button[type="submit"]:hover {
-		background: #006a9b;
-		border-color: #243447;
+	#alm_asset_search_form .alm-form-actions button[type="submit"]:hover,
+	.alm-asset-view .alm-button:hover,
+	.alm-asset-view .alm-button--primary:hover {
+		background: var(--alm-btn-primary-hover-bg);
+		border-color: var(--alm-btn-primary-border);
 	}
 
 	.alm-search-submit-btn:focus-visible,
-	#alm_asset_search_form .alm-form-actions button[type="submit"]:focus-visible {
-		outline: 2px solid rgba(0, 89, 179, 0.22);
+	#alm_asset_search_form .alm-form-actions button[type="submit"]:focus-visible,
+	.alm-asset-view .alm-button:focus-visible,
+	.alm-asset-view .alm-button--primary:focus-visible {
+		outline: 2px solid var(--alm-btn-primary-focus);
 		outline-offset: 1px;
+	}
+
+	.alm-asset-view .alm-button--small {
+		padding: 0.4rem 0.72rem;
+		font-size: 0.82rem;
+		border-radius: 6px;
+	}
+
+	.alm-asset-view .alm-button--approve {
+		background: var(--alm-btn-success-bg);
+		border-color: var(--alm-btn-success-border);
+		color: #fff;
+	}
+
+	.alm-asset-view .alm-button--approve:hover {
+		background: var(--alm-btn-success-hover-bg);
+		border-color: var(--alm-btn-success-border);
+	}
+
+	.alm-asset-view .alm-button--reject {
+		background: var(--alm-btn-danger-bg);
+		border-color: var(--alm-btn-danger-border);
+		color: #fff;
+	}
+
+	.alm-asset-view .alm-button--reject:hover {
+		background: var(--alm-btn-danger-hover-bg);
+		border-color: var(--alm-btn-danger-border);
+	}
+
+	.alm-asset-view .alm-button:disabled {
+		opacity: 0.65;
+		cursor: not-allowed;
 	}
 
 	#alm_asset_search_form {
@@ -914,19 +986,28 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 8px 16px;
-		background: #f0f0f0;
-		color: #555;
+		padding: 10px 16px;
+		background: var(--alm-btn-secondary-bg);
+		color: var(--alm-btn-secondary-text);
 		text-decoration: none;
-		border-radius: 4px;
-		font-size: 1em;
-		transition: background 0.2s ease, color 0.2s ease;
+		border: 1px solid var(--alm-btn-secondary-border);
+		border-radius: 8px;
+		font-size: 0.95rem;
+		font-weight: 600;
+		line-height: 1.2;
+		transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 		box-sizing: border-box;
 	}
 
 	.alm-reset-filters:hover {
-		background: #e0e0e0;
-		color: #23282d;
+		background: var(--alm-btn-secondary-hover-bg);
+		border-color: var(--alm-btn-secondary-border);
+		color: var(--alm-btn-secondary-text);
+	}
+
+	.alm-reset-filters:focus-visible {
+		outline: 2px solid var(--alm-btn-primary-focus);
+		outline-offset: 1px;
 	}
 
 	/* ========================================================================
@@ -1038,6 +1119,9 @@
 	/* Respect user preference for reduced motion. */
 	@media (prefers-reduced-motion: reduce) {
 		.alm-asset-title,
+		.alm-search-submit-btn,
+		#alm_asset_search_form .alm-form-actions button[type="submit"],
+		.alm-asset-view .alm-button,
 		.alm-reset-filters,
 		.alm-filters-toggle::after {
 			transition: none;
