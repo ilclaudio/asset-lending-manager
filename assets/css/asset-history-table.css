@@ -4,270 +4,271 @@
  * @package AssetLendingManager
  */
 
-/* Tabella storico prestiti */
-.alm-history-table {
+.alm-asset-view .alm-history-table {
 	width: 100%;
-	border-collapse: collapse;
-	margin: 20px 0;
+	font-size: 0.9rem;
+	border-collapse: separate;
+	border-spacing: 0;
+	margin: 1rem 0;
 	background: #fff;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	border: 1px solid #d9e1e6;
+	border-radius: 8px;
+	overflow: hidden;
 }
 
-.alm-history-table thead {
-	background: #f8f9fa;
-	border-bottom: 2px solid #dee2e6;
+.alm-asset-view .alm-history-table thead {
+	background: #f5f7fa;
 }
 
-.alm-history-table th {
-	padding: 12px 15px;
+.alm-asset-view .alm-history-table th {
+	padding: 0.65rem 0.9rem;
 	text-align: left;
 	font-weight: 600;
-	color: #495057;
-	font-size: 14px;
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
+	font-size: 0.77rem;
+	letter-spacing: 0.02em;
+	color: #17324d;
+	border: 0;
+	border-bottom: 1px solid #d9e1e6;
 }
 
-.alm-history-table tbody tr {
-	border-bottom: 1px solid #dee2e6;
-	transition: background-color 0.2s ease;
+.alm-asset-view .alm-history-table td {
+	padding: 0.75rem 0.9rem;
+	vertical-align: top;
+	border: 0;
+	border-bottom: 1px solid #e8edf1;
 }
 
-.alm-history-table tbody tr:hover {
-	background-color: #f8f9fa;
+.alm-asset-view .alm-history-table th + th {
+	border-left: 1px solid #e8edf2;
 }
 
-.alm-history-table td {
-	padding: 12px 15px;
-	vertical-align: middle;
+.alm-asset-view .alm-history-table td + td {
+	border-left: 1px solid #f1f4f7;
 }
 
-/* Colonna richiedente */
-.alm-history-requester {
-	font-weight: 500;
-	min-width: 120px;
+.alm-asset-view .alm-history-table thead th:nth-child(1),
+.alm-asset-view .alm-history-table thead th:nth-child(2) {
+	width: 16%;
 }
 
-/* Colonna owner precedente */
-.alm-history-prev-owner {
-	min-width: 120px;
+.alm-asset-view .alm-history-table thead th:nth-child(3),
+.alm-asset-view .alm-history-table thead th:nth-child(4) {
+	width: 14%;
 }
 
-/* Colonna operatore che ha eseguito l'azione */
+.alm-asset-view .alm-history-table thead th:nth-child(5) {
+	width: 40%;
+}
+
+.alm-asset-view .alm-history-table tbody tr:nth-child(even) {
+	background: #fbfcfd;
+}
+
+.alm-asset-view .alm-history-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.alm-history-requester,
 .alm-history-changed-by {
-	min-width: 120px;
-	font-weight: 500;
+	font-weight: 600;
+	color: #12263a;
 }
 
-/* Colonna data richiesta */
 .alm-history-request-date {
 	white-space: nowrap;
-	color: #6c757d;
-	font-size: 14px;
-	min-width: 90px;
+	color: #4f6376;
+	font-size: 0.9rem;
 }
 
-/* Colonna data azione */
-.alm-history-action-date {
-	white-space: nowrap;
-	color: #6c757d;
-	font-size: 14px;
-	min-width: 90px;
-}
-
-/* Colonna stato */
 .alm-history-status {
-	text-align: center;
-	min-width: 100px;
+	min-width: 8.5rem;
 }
 
 .alm-status-badge {
-	display: inline-block;
-	padding: 4px 10px;
-	border-radius: 12px;
-	font-size: 12px;
-	font-weight: 600;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.3rem 0.75rem;
+	border-radius: 999px;
+	font-size: 0.74rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
 	text-transform: uppercase;
-	letter-spacing: 0.3px;
+	line-height: 1.2;
+}
+
+.alm-status-badge::before {
+	content: '';
+	display: inline-block;
+	width: 0.45rem;
+	height: 0.45rem;
+	margin-right: 0.4rem;
+	border-radius: 50%;
+	background: currentColor;
+	opacity: 0.85;
 }
 
 .alm-status-badge.alm-status--approved {
-	background-color: #d4edda;
+	background-color: #d6f1df;
 	color: #155724;
 }
 
 .alm-status-badge.alm-status--rejected {
-	background-color: #f8d7da;
+	background-color: #f9dce0;
 	color: #721c24;
 }
 
 .alm-status-badge.alm-status--canceled {
-	background-color: #fff3cd;
-	color: #856404;
+	background-color: #fff1ce;
+	color: #7c5600;
 }
 
 .alm-status-badge.alm-status--direct_assign {
-	background-color: #cfe2ff;
+	background-color: #d6e6ff;
 	color: #084298;
 }
 
-/* Colonna messaggio con tooltip */
 .alm-history-message {
-	max-width: 250px;
-	position: relative;
+	max-width: 36rem;
 }
 
-.alm-message-text {
-	display: block;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	cursor: help;
-	color: #495057;
+.alm-message-toggle {
+	cursor: pointer;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #0066cc;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
 }
 
-.alm-message-text:hover {
-	color: #0073aa;
+.alm-message-toggle::-webkit-details-marker {
+	display: none;
 }
 
-/* Tooltip per messaggio completo */
-.alm-message-text[title]:hover::after {
-	content: attr(title);
-	position: absolute;
-	left: 0;
-	top: 100%;
-	z-index: 1000;
-	background: #333;
-	color: #fff;
-	padding: 8px 12px;
-	border-radius: 4px;
-	white-space: normal;
-	max-width: 300px;
-	font-size: 13px;
-	line-height: 1.4;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-	margin-top: 5px;
+.alm-message-toggle::before {
+	content: '+';
+	font-size: 0.95rem;
+	line-height: 1;
 }
 
-/* Indicatore "ultimi 10" */
+.alm-message-details[open] .alm-message-toggle::before {
+	content: '-';
+}
+
+.alm-message-toggle-open {
+	display: inline;
+}
+
+.alm-message-toggle-close {
+	display: none;
+}
+
+.alm-message-details[open] .alm-message-toggle-open {
+	display: none;
+}
+
+.alm-message-details[open] .alm-message-toggle-close {
+	display: inline;
+}
+
+.alm-message-full {
+	margin-top: 0.5rem;
+	padding: 0.6rem 0.7rem;
+	background: #f5f9ff;
+	border: 1px solid #d7e6ff;
+	border-radius: 6px;
+	line-height: 1.45;
+	color: #17324d;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
 .alm-history-limit-notice {
 	display: block;
-	padding: 10px 15px;
-	background: #e7f3ff;
-	border-left: 4px solid #0073aa;
-	margin-bottom: 15px;
-	font-size: 14px;
-	color: #495057;
+	padding: 0.8rem 1rem;
+	background: #e9f3ff;
+	border-left: 4px solid #0066cc;
+	margin-bottom: 0.9rem;
+	font-size: 0.9rem;
+	color: #1f3347;
 }
 
 .alm-history-limit-notice strong {
-	color: #0073aa;
+	color: #0050a3;
 }
 
-/* Empty state */
 .alm-history-empty {
 	text-align: center;
-	padding: 40px 20px;
-	color: #6c757d;
+	padding: 2rem 1rem;
+	color: #5b6f82;
 }
 
-/* Responsive design */
-@media (max-width: 1024px) {
-	.alm-history-table {
-		font-size: 14px;
-	}
-
-	.alm-history-table th,
-	.alm-history-table td {
-		padding: 10px 12px;
-	}
-
-	.alm-history-message {
-		max-width: 180px;
+@media (max-width: 900px) {
+	.alm-asset-view .alm-history-table th,
+	.alm-asset-view .alm-history-table td {
+		padding: 0.75rem 0.8rem;
 	}
 }
 
 @media (max-width: 768px) {
-	.alm-history-table {
-		display: block;
-		overflow-x: auto;
-		white-space: nowrap;
-		-webkit-overflow-scrolling: touch;
-	}
-
-	.alm-history-table thead,
-	.alm-history-table tbody,
-	.alm-history-table tr,
-	.alm-history-table th,
-	.alm-history-table td {
-		display: block;
-	}
-
-	.alm-history-table thead {
+	.alm-asset-view .alm-history-table thead {
 		display: none;
 	}
 
-	.alm-history-table tr {
-		margin-bottom: 15px;
-		border: 1px solid #dee2e6;
-		border-radius: 4px;
-		padding: 10px;
+	.alm-asset-view .alm-history-table,
+	.alm-asset-view .alm-history-table tbody,
+	.alm-asset-view .alm-history-table tr,
+	.alm-asset-view .alm-history-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.alm-asset-view .alm-history-table {
+		border: 0;
+		background: transparent;
+	}
+
+	.alm-asset-view .alm-history-table tr {
+		margin-bottom: 0.85rem;
+		font-size: 0.88rem;
 		background: #fff;
+		border: 1px solid #d9e1e6;
+		border-radius: 8px;
+		overflow: hidden;
 	}
 
-	.alm-history-table td {
-		text-align: right;
-		padding: 8px 10px;
-		border-bottom: 1px solid #f1f1f1;
+	.alm-asset-view .alm-history-table td {
 		position: relative;
-		padding-left: 50%;
+		padding: 0.8rem 0.8rem 0.8rem 8.5rem;
+		border-bottom: 1px solid #edf2f6;
+		border-left: 0;
+		min-height: 2.8rem;
 	}
 
-	.alm-history-table td:last-child {
-		border-bottom: none;
+	.alm-asset-view .alm-history-table td + td {
+		border-left: 0;
 	}
 
-	.alm-history-table td::before {
+	.alm-asset-view .alm-history-table td:last-child {
+		border-bottom: 0;
+	}
+
+	.alm-asset-view .alm-history-table td::before {
 		content: attr(data-label);
 		position: absolute;
-		left: 10px;
-		font-weight: 600;
+		left: 0.8rem;
+		top: 0.8rem;
+		width: 7.2rem;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.03em;
+		color: #4f6376;
 		text-transform: uppercase;
-		font-size: 11px;
-		color: #6c757d;
-		letter-spacing: 0.5px;
 	}
 
-	.alm-history-message {
-		max-width: 100%;
-	}
-
-	.alm-message-text {
+	.alm-history-status,
+	.alm-history-request-date {
 		white-space: normal;
-	}
-
-	.alm-history-status {
-		text-align: right;
-	}
-
-	.alm-history-request-date,
-	.alm-history-action-date {
-		white-space: normal;
-	}
-}
-
-@media (max-width: 480px) {
-	.alm-history-table td {
-		font-size: 13px;
-	}
-
-	.alm-status-badge {
-		font-size: 11px;
-		padding: 3px 8px;
-	}
-
-	.alm-history-limit-notice {
-		font-size: 13px;
-		padding: 8px 12px;
 	}
 }
