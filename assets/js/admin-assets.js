@@ -22,7 +22,6 @@
 
 			if (typeof window.almAdmin !== 'undefined') {
 				console.log('AJAX URL:', window.almAdmin.ajaxUrl);
-				console.log('Nonce:', window.almAdmin.nonce);
 			}
 
 			this.initAssetStatusBadges();
