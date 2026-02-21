@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-21 19:08+0000\n"
+"POT-Creation-Date: 2026-02-21 19:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -140,10 +140,6 @@ msgstr ""
 msgid "Asset assigned successfully."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:198
-msgid "Asset code"
-msgstr ""
-
 #: includes/class-alm-loan-manager.php:244
 #: includes/class-alm-loan-manager.php:496
 msgid "Asset ID mismatch."
@@ -168,7 +164,7 @@ msgstr ""
 msgid "Asset Levels"
 msgstr ""
 
-#: templates/shortcodes/asset-list.php:282
+#: templates/shortcodes/asset-list.php:289
 msgid "Asset list pagination"
 msgstr ""
 
@@ -305,6 +301,10 @@ msgstr ""
 #: templates/shortcodes/asset-view.php:361
 #: templates/shortcodes/asset-view.php:594 assets/js/frontend-assets.js:1011
 msgid "Close message"
+msgstr ""
+
+#: templates/shortcodes/asset-view.php:198
+msgid "Code"
 msgstr ""
 
 #: includes/class-alm-installer.php:188
@@ -564,7 +564,7 @@ msgid "Kit"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:152
-#: templates/shortcodes/asset-list.php:264
+#: templates/shortcodes/asset-list.php:271
 #: templates/shortcodes/asset-view.php:102
 msgid "Level"
 msgstr ""
@@ -669,6 +669,10 @@ msgstr ""
 msgid "New Asset"
 msgstr ""
 
+#: templates/shortcodes/asset-list.php:299
+msgid "Next page"
+msgstr ""
+
 #: templates/shortcodes/asset-view.php:206
 msgid "No additional details available."
 msgstr ""
@@ -681,7 +685,7 @@ msgstr ""
 msgid "No assets found in Trash"
 msgstr ""
 
-#: templates/shortcodes/asset-list.php:311
+#: templates/shortcodes/asset-list.php:318
 msgid "No assets found."
 msgstr ""
 
@@ -694,7 +698,7 @@ msgid "No pending requests for this asset."
 msgstr ""
 
 #. %s: Search term entered by the user.
-#: templates/shortcodes/asset-list.php:307
+#: templates/shortcodes/asset-list.php:314
 #, php-format
 msgid "No results found for \"%s\"."
 msgstr ""
@@ -734,7 +738,7 @@ msgid "Optical Tube"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:169
-#: templates/shortcodes/asset-list.php:270
+#: templates/shortcodes/asset-list.php:277
 msgid "Owner"
 msgstr ""
 
@@ -770,6 +774,10 @@ msgstr ""
 
 #: assets/js/frontend-assets.js:341
 msgid "Please select a user from the list."
+msgstr ""
+
+#: templates/shortcodes/asset-list.php:298
+msgid "Previous page"
 msgstr ""
 
 #: assets/js/frontend-assets.js:543 assets/js/frontend-assets.js:834
@@ -952,7 +960,6 @@ msgid "Showing the last 10 loan history entries for this asset."
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:139
-#: templates/shortcodes/asset-list.php:259
 #: templates/shortcodes/asset-view.php:110
 msgid "State"
 msgstr ""
@@ -963,7 +970,7 @@ msgid "Status"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:110
-#: templates/shortcodes/asset-list.php:249
+#: templates/shortcodes/asset-list.php:261
 #: templates/shortcodes/asset-view.php:86
 msgid "Structure"
 msgstr ""
@@ -999,7 +1006,7 @@ msgid "Tripod"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:123
-#: templates/shortcodes/asset-list.php:254
+#: templates/shortcodes/asset-list.php:266
 #: templates/shortcodes/asset-view.php:94
 msgid "Type"
 msgstr ""
