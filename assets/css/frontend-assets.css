@@ -220,7 +220,7 @@
 
 	.alm-asset-view .alm-button--small {
 		padding: 0.4rem 0.72rem;
-		font-size: 0.82rem;
+		font-size: 1em;
 		border-radius: 6px;
 	}
 
@@ -536,12 +536,12 @@
 
 	.alm-asset-view .alm-collapsible__hint {
 		font-weight: 400;
-		font-size: 0.84rem;
+		font-size: 0.8em;
 		color: #666;
 	}
 
 	.alm-asset-view .alm-asset-acf-label {
-		font-size: 0.9rem;
+		font-size: 1em;
 	}
 
 	.alm-asset-view .alm-asset-acf-value {
@@ -550,7 +550,7 @@
 	}
 
 	.alm-asset-view .alm-loan-form label {
-		font-size: 0.9rem;
+		font-size: 1em;
 		font-weight: 600;
 	}
 
@@ -559,14 +559,21 @@
 		font-size: 0.92rem;
 		line-height: 1.4;
 		border: 1px solid #c7d3dd;
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.alm-asset-view__direct-assign .alm-form-field + .alm-form-field {
+		margin-top: 0.6rem;
 	}
 
 	.alm-asset-view .alm-char-count {
-		font-size: 0.76rem;
+		font-size: 1em;
 	}
 
 	.alm-asset-view .alm-muted {
-		font-size: 0.9rem;
+		font-size: 1em;
 	}
 
 	.alm-asset-acf-list {
