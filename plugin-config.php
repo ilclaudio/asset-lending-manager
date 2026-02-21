@@ -57,6 +57,13 @@ define( 'ALM_AUTOCOMPLETE_DESC_LENGTH', 20 );
 // Asset list.
 define( 'ALM_ASSET_LIST_PER_PAGE', 12 );
 
+// Asset identifier code.
+// ALM_ASSET_CODE_PREFIX is the alphanumeric prefix used to build the human-readable asset code
+// displayed in the frontend detail view (e.g. "AAGG-00000045").
+// ALM_ASSET_CODE_FORMAT is the sprintf format: %s = prefix, %08d = ID zero-padded to 8 digits.
+define( 'ALM_ASSET_CODE_PREFIX', 'AAGG' );
+define( 'ALM_ASSET_CODE_FORMAT', '%s-%08d' );
+
 // Email notifications — sender configuration.
 // Set ALM_EMAIL_FROM_ADDRESS to a non-empty string to override the site admin email.
 // Set ALM_EMAIL_SYSTEM_ADDRESS to receive operator-level copies on loan request submission.

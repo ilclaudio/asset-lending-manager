@@ -24,7 +24,7 @@ class ALM_Asset_Manager {
 	/**
 	 * ACF Adapter instance.
 	 *
-	 * @var ALM_ACF_Adapter
+	 * @var ALM_ACF_Asset_Adapter
 	 */
 	private $acf_adapter;
 
@@ -131,7 +131,7 @@ class ALM_Asset_Manager {
 			ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
 			ALM_ASSET_CPT_SLUG,
 			array(
-				'labels'          => array(
+				'labels'            => array(
 					'name'          => __( 'Asset Structures', 'asset-lending-manager' ),
 					'singular_name' => __( 'Asset Structure', 'asset-lending-manager' ),
 				),
@@ -139,7 +139,7 @@ class ALM_Asset_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
-				'capabilities' => array(
+				'capabilities'      => array(
 					'manage_terms' => ALM_EDIT_ASSET,
 					'edit_terms'   => ALM_EDIT_ASSET,
 					'delete_terms' => ALM_EDIT_ASSET,
@@ -153,7 +153,7 @@ class ALM_Asset_Manager {
 			ALM_ASSET_TYPE_TAXONOMY_SLUG,
 			ALM_ASSET_CPT_SLUG,
 			array(
-				'labels' => array(
+				'labels'            => array(
 					'name'          => __( 'Asset Types', 'asset-lending-manager' ),
 					'singular_name' => __( 'Asset Type', 'asset-lending-manager' ),
 				),
@@ -161,7 +161,7 @@ class ALM_Asset_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
-				'capabilities' => array(
+				'capabilities'      => array(
 					'manage_terms' => ALM_EDIT_ASSET,
 					'edit_terms'   => ALM_EDIT_ASSET,
 					'delete_terms' => ALM_EDIT_ASSET,
@@ -175,7 +175,7 @@ class ALM_Asset_Manager {
 			ALM_ASSET_STATE_TAXONOMY_SLUG,
 			ALM_ASSET_CPT_SLUG,
 			array(
-				'labels' => array(
+				'labels'            => array(
 					'name'          => __( 'Asset States', 'asset-lending-manager' ),
 					'singular_name' => __( 'Asset State', 'asset-lending-manager' ),
 				),
@@ -183,7 +183,7 @@ class ALM_Asset_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
-				'capabilities' => array(
+				'capabilities'      => array(
 					'manage_terms' => ALM_EDIT_ASSET,
 					'edit_terms'   => ALM_EDIT_ASSET,
 					'delete_terms' => ALM_EDIT_ASSET,
@@ -197,7 +197,7 @@ class ALM_Asset_Manager {
 			ALM_ASSET_LEVEL_TAXONOMY_SLUG,
 			ALM_ASSET_CPT_SLUG,
 			array(
-				'labels' => array(
+				'labels'            => array(
 					'name'          => __( 'Asset Levels', 'asset-lending-manager' ),
 					'singular_name' => __( 'Asset Level', 'asset-lending-manager' ),
 				),
@@ -205,7 +205,7 @@ class ALM_Asset_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
-				'capabilities' => array(
+				'capabilities'      => array(
 					'manage_terms' => ALM_EDIT_ASSET,
 					'edit_terms'   => ALM_EDIT_ASSET,
 					'delete_terms' => ALM_EDIT_ASSET,
@@ -233,7 +233,7 @@ class ALM_Asset_Manager {
 		$wrapper->title     = get_the_title( $asset );
 		$wrapper->permalink = get_permalink( $asset );
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WordPress filter.
-		$wrapper->content   = apply_filters( 'the_content', $asset->post_content );
+		$wrapper->content = apply_filters( 'the_content', $asset->post_content );
 		// Manage the asset image.
 		$thumbnail_size = 'thumbnail';
 		if ( has_post_thumbnail( $asset ) ) {
@@ -264,9 +264,9 @@ class ALM_Asset_Manager {
 		}
 
 		// Load current owner.
-		$owner_id           = (int) get_post_meta( $asset->ID, '_alm_current_owner', true );
-		$wrapper->owner_id  = $owner_id;
-		$owner_data         = $owner_id > 0 ? get_userdata( $owner_id ) : false;
+		$owner_id            = (int) get_post_meta( $asset->ID, '_alm_current_owner', true );
+		$wrapper->owner_id   = $owner_id;
+		$owner_data          = $owner_id > 0 ? get_userdata( $owner_id ) : false;
 		$wrapper->owner_name = $owner_data ? $owner_data->display_name : '';
 
 		return $wrapper;
@@ -284,7 +284,7 @@ class ALM_Asset_Manager {
 		/**
 		 * ACF fields (ordered as defined in adapter).
 		 */
-		$order = array(
+		$order             = array(
 			'manufacturer',
 			'model',
 			'data_acquisto',
@@ -300,21 +300,21 @@ class ALM_Asset_Manager {
 			'components',
 		);
 		$translated_labels = array(
-			'manufacturer'       => __( 'Manufacturer', 'asset-lending-manager' ),
-			'model'              => __( 'Model', 'asset-lending-manager' ),
-			'data_acquisto'      => __( 'Purchase date', 'asset-lending-manager' ),
-			'cost'               => __( 'Cost', 'asset-lending-manager' ),
-			'dimensions'         => __( 'Dimensions', 'asset-lending-manager' ),
-			'weight'             => __( 'Weight', 'asset-lending-manager' ),
-			'location'           => __( 'Location', 'asset-lending-manager' ),
-			'user_manual'        => __( 'User manual', 'asset-lending-manager' ),
+			'manufacturer'         => __( 'Manufacturer', 'asset-lending-manager' ),
+			'model'                => __( 'Model', 'asset-lending-manager' ),
+			'data_acquisto'        => __( 'Purchase date', 'asset-lending-manager' ),
+			'cost'                 => __( 'Cost', 'asset-lending-manager' ),
+			'dimensions'           => __( 'Dimensions', 'asset-lending-manager' ),
+			'weight'               => __( 'Weight', 'asset-lending-manager' ),
+			'location'             => __( 'Location', 'asset-lending-manager' ),
+			'user_manual'          => __( 'User manual', 'asset-lending-manager' ),
 			'technical_data_sheet' => __( 'Technical data sheet', 'asset-lending-manager' ),
-			'serial_number'      => __( 'Serial number', 'asset-lending-manager' ),
-			'external_code'      => __( 'External code', 'asset-lending-manager' ),
-			'notes'              => __( 'Notes', 'asset-lending-manager' ),
-			'components'         => __( 'Components', 'asset-lending-manager' ),
+			'serial_number'        => __( 'Serial number', 'asset-lending-manager' ),
+			'external_code'        => __( 'External code', 'asset-lending-manager' ),
+			'notes'                => __( 'Notes', 'asset-lending-manager' ),
+			'components'           => __( 'Components', 'asset-lending-manager' ),
 		);
-		$field_objects = array();
+		$field_objects     = array();
 		// $manufacturer_value = (string) get_field( 'manufacturer', $asset_id );
 		// Get all the custom fields for this asset.
 		if ( function_exists( 'get_field_objects' ) ) {
@@ -348,13 +348,13 @@ class ALM_Asset_Manager {
 			}
 			// Add a field 'kit' if this asset is a component of a kit.
 			if ( has_term( ALM_ASSET_COMPONENT_SLUG, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
-				$args = array(
+				$args       = array(
 					'post_type'      => ALM_ASSET_CPT_SLUG,
 					'post_status'    => 'publish',
 					'posts_per_page' => 1,
 					'meta_query'     => array(
 						array(
-							'key'     => $field_name,
+							'key'     => 'components',
 							'value'   => '"' . $asset_id . '"',
 							'compare' => 'LIKE',
 						),
@@ -364,7 +364,7 @@ class ALM_Asset_Manager {
 				if ( $kit_result->have_posts() ) {
 					$item = array(
 						'name'  => 'kit',
-						'label' => 'Membership kit',
+						'label' => __( 'Membership kit', 'asset-lending-manager' ),
 						'type'  => 'post_object',
 						'value' => $kit_result->posts,
 					);
@@ -373,6 +373,23 @@ class ALM_Asset_Manager {
 			}
 		}
 		return $asset_fields;
+	}
+
+	/**
+	 * Return the human-readable identifier code for an asset.
+	 *
+	 * The code is composed of the ALM_ASSET_CODE_PREFIX constant followed by a
+	 * hyphen and the WordPress post ID zero-padded to 8 digits.
+	 * Example: prefix "AAGG" + asset ID 45 → "AAGG-00000045".
+	 *
+	 * The code is always computed at runtime from the post ID (which never
+	 * changes in WordPress) so no storage is needed.
+	 *
+	 * @param int $asset_id WordPress post ID of the asset.
+	 * @return string Human-readable asset code.
+	 */
+	public static function get_asset_code( $asset_id ) {
+		return sprintf( ALM_ASSET_CODE_FORMAT, ALM_ASSET_CODE_PREFIX, (int) $asset_id );
 	}
 
 	/**

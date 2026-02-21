@@ -193,6 +193,14 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 								</div>
 							<?php endif; ?>
 						<?php endforeach; ?>
+						<div class="alm-asset-acf-row alm-acf-asset-code">
+							<dt class="alm-asset-acf-label">
+								<?php esc_html_e( 'Asset code', 'asset-lending-manager' ); ?>
+							</dt>
+							<dd class="alm-asset-acf-value">
+								<?php echo esc_html( ALM_Asset_Manager::get_asset_code( $alm_asset_id ) ); ?>
+							</dd>
+						</div>
 					</dl>
 				<?php else : ?>
 					<p class="alm-muted"><?php esc_html_e( 'No additional details available.', 'asset-lending-manager' ); ?></p>
