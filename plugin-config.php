@@ -60,71 +60,60 @@ define( 'ALM_ASSET_LIST_PER_PAGE', 12 );
 // Email notifications — sender configuration.
 // Set ALM_EMAIL_FROM_ADDRESS to a non-empty string to override the site admin email.
 // Set ALM_EMAIL_SYSTEM_ADDRESS to receive operator-level copies on loan request submission.
-define( 'ALM_EMAIL_FROM_NAME',      'AAGG Asset Manager' );
-define( 'ALM_EMAIL_FROM_ADDRESS',   '' ); // Falls back to get_bloginfo('admin_email') if empty.
+define( 'ALM_EMAIL_FROM_NAME', 'AAGG Asset Manager' );
+define( 'ALM_EMAIL_FROM_ADDRESS', '' ); // Falls back to get_bloginfo('admin_email') if empty.
 define( 'ALM_EMAIL_SYSTEM_ADDRESS', '' ); // Operator notification address; disabled if empty.
 
-// Email notifications — subject templates.
-// Each subject may contain the {ASSET_TITLE} placeholder, replaced at send time.
-// Note: these constants are used as translation msgids in ALM_Notification_Manager
-// via __( CONSTANT, 'asset-lending-manager' ); add them manually to the .pot file.
-define( 'ALM_EMAIL_SUBJECT_REQUEST_TO_REQUESTER', '[ALM] Loan request submitted: {ASSET_TITLE}' );
-define( 'ALM_EMAIL_SUBJECT_REQUEST_TO_OWNER',     '[ALM] New loan request received: {ASSET_TITLE}' );
-define( 'ALM_EMAIL_SUBJECT_APPROVED',             '[ALM] Loan request approved: {ASSET_TITLE}' );
-define( 'ALM_EMAIL_SUBJECT_REJECTED',             '[ALM] Loan request rejected: {ASSET_TITLE}' );
-define( 'ALM_EMAIL_SUBJECT_CANCELED',             '[ALM] Loan request canceled: {ASSET_TITLE}' );
-define( 'ALM_EMAIL_SUBJECT_DIRECT_ASSIGN',        '[ALM] Asset assigned to you: {ASSET_TITLE}' );
-
-// Email notifications — body templates (plain text).
-// Supported placeholders: {REQUESTER_NAME}, {ASSIGNEE_NAME}, {ACTOR_NAME},
-// {ASSET_TITLE}, {ASSET_URL}, {REQUEST_MESSAGE}, {REJECTION_MESSAGE}, {REASON}.
-// Note: same i18n consideration as subjects above applies.
-define(
-	'ALM_EMAIL_BODY_REQUEST_TO_REQUESTER',
-	"Hello {REQUESTER_NAME},\n\n" .
-	"Your loan request for \"{ASSET_TITLE}\" has been submitted and is pending approval.\n\n" .
-	"View asset: {ASSET_URL}\n\n" .
-	"-- ALM"
-);
-define(
-	'ALM_EMAIL_BODY_REQUEST_TO_OWNER',
-	"Hello,\n\n" .
-	"{REQUESTER_NAME} has requested to borrow \"{ASSET_TITLE}\".\n\n" .
-	"Message: {REQUEST_MESSAGE}\n\n" .
-	"View asset: {ASSET_URL}\n\n" .
-	"-- ALM"
-);
-define(
-	'ALM_EMAIL_BODY_APPROVED',
-	"Hello {REQUESTER_NAME},\n\n" .
-	"Your loan request for \"{ASSET_TITLE}\" has been approved.\n\n" .
-	"View asset: {ASSET_URL}\n\n" .
-	"-- ALM"
-);
-define(
-	'ALM_EMAIL_BODY_REJECTED',
-	"Hello {REQUESTER_NAME},\n\n" .
-	"Your loan request for \"{ASSET_TITLE}\" has been rejected.\n\n" .
-	"Reason: {REJECTION_MESSAGE}\n\n" .
-	"View asset: {ASSET_URL}\n\n" .
-	"-- ALM"
-);
-define(
-	'ALM_EMAIL_BODY_CANCELED',
-	"Hello {REQUESTER_NAME},\n\n" .
-	"Your loan request for \"{ASSET_TITLE}\" has been automatically canceled " .
-	"because the asset was assigned to another user.\n\n" .
-	"View asset: {ASSET_URL}\n\n" .
-	"-- ALM"
-);
-define(
-	'ALM_EMAIL_BODY_DIRECT_ASSIGN',
-	"Hello {ASSIGNEE_NAME},\n\n" .
-	"The asset \"{ASSET_TITLE}\" has been assigned to you by {ACTOR_NAME}.\n\n" .
-	"Reason: {REASON}\n\n" .
-	"View asset: {ASSET_URL}\n\n" .
-	"-- ALM"
-);
+// Email notifications — templates.
+// Runtime placeholders are replaced before sending the email.
+/**
+ * Return the default email templates used by ALM notifications.
+ *
+ * @return array<string, array<string, string>>
+ */
+function alm_get_email_templates() {
+	return array(
+		'subject' => array(
+			'request_to_requester'        => __( '[ALM] Loan request submitted: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'request_to_owner'            => __( '[ALM] New loan request received: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'approved'                    => __( '[ALM] Loan request approved: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'rejected'                    => __( '[ALM] Loan request rejected: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'canceled'                    => __( '[ALM] Loan request canceled: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'direct_assign'               => __( '[ALM] Asset assigned to you: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'direct_assign_to_prev_owner' => __( '[ALM] Asset reassigned: {ASSET_TITLE}', 'asset-lending-manager' ),
+		),
+		'body'    => array(
+			'request_to_requester'        => __(
+				"Hello {REQUESTER_NAME},\n\nYour loan request for \"{ASSET_TITLE}\" has been submitted and is pending approval.\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+			'request_to_owner'            => __(
+				"Hello,\n\n{REQUESTER_NAME} has requested to borrow \"{ASSET_TITLE}\".\n\nMessage: {REQUEST_MESSAGE}\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+			'approved'                    => __(
+				"Hello {REQUESTER_NAME},\n\nYour loan request for \"{ASSET_TITLE}\" has been approved.\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+			'rejected'                    => __(
+				"Hello {REQUESTER_NAME},\n\nYour loan request for \"{ASSET_TITLE}\" has been rejected.\n\nReason: {REJECTION_MESSAGE}\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+			'canceled'                    => __(
+				"Hello {REQUESTER_NAME},\n\nYour loan request for \"{ASSET_TITLE}\" has been automatically canceled because the asset was assigned to another user.\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+			'direct_assign'               => __(
+				"Hello {ASSIGNEE_NAME},\n\nThe asset \"{ASSET_TITLE}\" has been assigned to you by {ACTOR_NAME}.\n\nReason: {REASON}\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+			'direct_assign_to_prev_owner' => __(
+				"Hello {PREV_OWNER_NAME},\n\nThe asset \"{ASSET_TITLE}\" has been reassigned to {ASSIGNEE_NAME} by {ACTOR_NAME}.\n\nReason: {REASON}\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+		),
+	);
+}
 
 // Loan statuses.
 define(

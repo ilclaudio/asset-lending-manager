@@ -30,8 +30,10 @@ Re-run the full "Session bootstrap" only when the user explicitly asks, using ph
   - Try commands in WSL first.
   - If required tools are missing (`php`, `node`), switch quickly to approved Windows fallback (`powershell.exe`) and explicitly report that fallback was used.
 - Lint policy:
-  - Primary command: `composer run lint:php`.
-  - If environment blocks it, use Windows PHP fallback with `vendor/bin/phpcs` and always report lint outcome.
+  - Primary command: `composer lint`.
+  - Auto-fix command: `composer lint:fix`.
+  - Windows fallback (PowerShell): `SETUP/run-lint-windows.ps1`.
+  - File scope fallback example: `SETUP/run-lint-windows.ps1 -Target 'plugin-config.php'`.
 - Pre-edit safety checks:
   - Before significant edits, run `git status --short` and `rg` on relevant call-sites.
   - If unexpected changes are found, stop and ask for confirmation.

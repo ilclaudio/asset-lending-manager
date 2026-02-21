@@ -19,6 +19,8 @@ node_modules
 # Composer
 /vendor/
 composer.lock
+.composer-cache/
+.composer-home/
 
 # Tests
 .phpunit.result.cache

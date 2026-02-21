@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-02-19 22:51+0000\n"
+"PO-Revision-Date: 2026-02-21 16:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -14,6 +14,34 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.8.0; wp-6.9; php-8.4.10\n"
 "X-Domain: asset-lending-manager"
+
+#: plugin-config.php:82
+msgid "[ALM] Asset assigned to you: {ASSET_TITLE}"
+msgstr ""
+
+#: plugin-config.php:83
+msgid "[ALM] Asset reassigned: {ASSET_TITLE}"
+msgstr ""
+
+#: plugin-config.php:79
+msgid "[ALM] Loan request approved: {ASSET_TITLE}"
+msgstr ""
+
+#: plugin-config.php:81
+msgid "[ALM] Loan request canceled: {ASSET_TITLE}"
+msgstr ""
+
+#: plugin-config.php:80
+msgid "[ALM] Loan request rejected: {ASSET_TITLE}"
+msgstr ""
+
+#: plugin-config.php:77
+msgid "[ALM] Loan request submitted: {ASSET_TITLE}"
+msgstr ""
+
+#: plugin-config.php:78
+msgid "[ALM] New loan request received: {ASSET_TITLE}"
+msgstr ""
 
 #. Author of the plugin
 msgid "AAGG"
@@ -105,8 +133,8 @@ msgstr ""
 msgid "Asset"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1305
-#: includes/class-alm-loan-manager.php:1387 assets/js/frontend-assets.js:975
+#: includes/class-alm-loan-manager.php:1306
+#: includes/class-alm-loan-manager.php:1388 assets/js/frontend-assets.js:975
 msgid "Asset assigned successfully."
 msgstr ""
 
@@ -255,7 +283,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1342
+#: includes/class-alm-loan-manager.php:1343
 msgid "Cannot assign a retired asset."
 msgstr ""
 
@@ -357,7 +385,7 @@ msgid "Failed to log cancellation for request ID %d."
 msgstr ""
 
 #: includes/class-alm-loan-manager.php:957
-#: includes/class-alm-loan-manager.php:1369
+#: includes/class-alm-loan-manager.php:1370
 msgid "Failed to log history entry."
 msgstr ""
 
@@ -400,6 +428,94 @@ msgstr ""
 
 #: includes/class-alm-installer.php:247
 msgid "Generic"
+msgstr ""
+
+#: plugin-config.php:106
+msgid ""
+"Hello {ASSIGNEE_NAME},\n"
+"\n"
+"The asset \"{ASSET_TITLE}\" has been assigned to you by {ACTOR_NAME}.\n"
+"\n"
+"Reason: {REASON}\n"
+"\n"
+"View asset: {ASSET_URL}\n"
+"\n"
+"-- ALM"
+msgstr ""
+
+#: plugin-config.php:110
+msgid ""
+"Hello {PREV_OWNER_NAME},\n"
+"\n"
+"The asset \"{ASSET_TITLE}\" has been reassigned to {ASSIGNEE_NAME} by "
+"{ACTOR_NAME}.\n"
+"\n"
+"Reason: {REASON}\n"
+"\n"
+"View asset: {ASSET_URL}\n"
+"\n"
+"-- ALM"
+msgstr ""
+
+#: plugin-config.php:94
+msgid ""
+"Hello {REQUESTER_NAME},\n"
+"\n"
+"Your loan request for \"{ASSET_TITLE}\" has been approved.\n"
+"\n"
+"View asset: {ASSET_URL}\n"
+"\n"
+"-- ALM"
+msgstr ""
+
+#: plugin-config.php:102
+msgid ""
+"Hello {REQUESTER_NAME},\n"
+"\n"
+"Your loan request for \"{ASSET_TITLE}\" has been automatically canceled "
+"because the asset was assigned to another user.\n"
+"\n"
+"View asset: {ASSET_URL}\n"
+"\n"
+"-- ALM"
+msgstr ""
+
+#: plugin-config.php:98
+msgid ""
+"Hello {REQUESTER_NAME},\n"
+"\n"
+"Your loan request for \"{ASSET_TITLE}\" has been rejected.\n"
+"\n"
+"Reason: {REJECTION_MESSAGE}\n"
+"\n"
+"View asset: {ASSET_URL}\n"
+"\n"
+"-- ALM"
+msgstr ""
+
+#: plugin-config.php:86
+msgid ""
+"Hello {REQUESTER_NAME},\n"
+"\n"
+"Your loan request for \"{ASSET_TITLE}\" has been submitted and is pending "
+"approval.\n"
+"\n"
+"View asset: {ASSET_URL}\n"
+"\n"
+"-- ALM"
+msgstr ""
+
+#: plugin-config.php:90
+msgid ""
+"Hello,\n"
+"\n"
+"{REQUESTER_NAME} has requested to borrow \"{ASSET_TITLE}\".\n"
+"\n"
+"Message: {REQUEST_MESSAGE}\n"
+"\n"
+"View asset: {ASSET_URL}\n"
+"\n"
+"-- ALM"
 msgstr ""
 
 #. URI of the plugin
@@ -716,7 +832,7 @@ msgstr ""
 msgid "Request automatically canceled: asset approved for another user."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1353
+#: includes/class-alm-loan-manager.php:1354
 msgid "Request canceled: asset directly assigned by operator."
 msgstr ""
 
@@ -831,7 +947,7 @@ msgstr ""
 msgid "Structure"
 msgstr ""
 
-#: includes/class-alm-notification-manager.php:233
+#: includes/class-alm-notification-manager.php:239
 #: templates/shortcodes/asset-view.php:528
 msgid "System"
 msgstr ""

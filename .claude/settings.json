@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(msgfmt:*)",
+      "Bash(wp i18n make-mo:*)",
+      "Read(//c/Program Files/Git/usr/bin/**)",
+      "Read(//c/Program Files/Git/mingw64/bin//**)"
+    ]
+  }
+}
