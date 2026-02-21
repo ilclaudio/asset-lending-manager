@@ -195,7 +195,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 						<?php endforeach; ?>
 						<div class="alm-asset-acf-row alm-acf-asset-code">
 							<dt class="alm-asset-acf-label">
-								<?php esc_html_e( 'Asset code', 'asset-lending-manager' ); ?>
+								<?php esc_html_e( 'Code', 'asset-lending-manager' ); ?>
 							</dt>
 							<dd class="alm-asset-acf-value">
 								<?php echo esc_html( ALM_Asset_Manager::get_asset_code( $alm_asset_id ) ); ?>
