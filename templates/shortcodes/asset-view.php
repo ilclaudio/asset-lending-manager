@@ -312,7 +312,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 
 			<div class="alm-collapsible__body">
 			<?php if ( ! empty( $alm_requests ) ) : ?>
-					<table class="alm-requests-table">
+						<table class="alm-requests-table alm-responsive-table" role="table">
 						<caption class="screen-reader-text">
 							<?php esc_html_e( 'Pending loan requests for this asset', 'asset-lending-manager' ); ?>
 						</caption>
@@ -325,38 +325,52 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $alm_requests as $alm_request ) : ?>
-								<?php
-								$alm_requester_id   = absint( $alm_request->requester_id );
-								$alm_requester_name = isset( $alm_requester_names[ $alm_requester_id ] )
-									? $alm_requester_names[ $alm_requester_id ]
-									: __( 'Unknown', 'asset-lending-manager' );
-								$alm_request_date   = mysql2date( 'd/m/Y', $alm_request->request_date );
-								$alm_request_status = $alm_request->status;
-								// Handle long messages.
-								$alm_full_message  = sanitize_text_field( (string) $alm_request->request_message );
-								$alm_short_message = mb_strlen( $alm_full_message ) > 60
-									? mb_substr( $alm_full_message, 0, 60 ) . '...'
-									: $alm_full_message;
-								// Status label and CSS class.
-								$alm_status_label = isset( ALM_LOAN_STATUS_LABELS[ $alm_request_status ] )
-									? ALM_LOAN_STATUS_LABELS[ $alm_request_status ]
-									: $alm_request_status;
-								$alm_status_class = 'alm-status--' . $alm_request_status;
-								?>
+								<?php foreach ( $alm_requests as $alm_request ) : ?>
+									<?php
+									$alm_requester_id     = absint( $alm_request->requester_id );
+									$alm_requester_name   = isset( $alm_requester_names[ $alm_requester_id ] )
+										? $alm_requester_names[ $alm_requester_id ]
+										: __( 'Unknown', 'asset-lending-manager' );
+									$alm_request_date     = mysql2date( 'd/m/Y', $alm_request->request_date );
+									$alm_request_status   = $alm_request->status;
+									$alm_full_message     = sanitize_text_field( (string) $alm_request->request_message );
+									$alm_has_long_message = mb_strlen( $alm_full_message ) > 80;
+									$alm_short_message    = $alm_has_long_message
+										? mb_substr( $alm_full_message, 0, 80 ) . '...'
+										: $alm_full_message;
+									$alm_status_label     = isset( ALM_LOAN_STATUS_LABELS[ $alm_request_status ] )
+										? ALM_LOAN_STATUS_LABELS[ $alm_request_status ]
+										: $alm_request_status;
+									$alm_status_class     = 'alm-status--' . $alm_request_status;
+									?>
 								<tr class="alm-request-row" data-request-id="<?php echo esc_attr( $alm_request->id ); ?>">
-									<td class="alm-request-requester">
-										<?php echo esc_html( $alm_requester_name ); ?>
-									</td>
-									<td class="alm-request-message">
-										<span class="alm-message-text" title="<?php echo esc_attr( $alm_full_message ); ?>">
-											<?php echo esc_html( $alm_short_message ); ?>
-										</span>
-									</td>
-									<td class="alm-request-date">
-										<?php echo esc_html( $alm_request_date ); ?>
-									</td>
-									<td class="alm-request-actions">
+										<td class="alm-request-requester" data-label="<?php esc_attr_e( 'Requester', 'asset-lending-manager' ); ?>">
+											<?php echo esc_html( $alm_requester_name ); ?>
+										</td>
+										<td class="alm-request-message" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
+											<p class="alm-message-preview">
+												<?php echo esc_html( $alm_short_message ); ?>
+											</p>
+											<?php if ( $alm_has_long_message ) : ?>
+												<details class="alm-message-details">
+													<summary class="alm-message-toggle">
+														<span class="alm-message-toggle-open">
+															<?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?>
+														</span>
+														<span class="alm-message-toggle-close">
+															<?php esc_html_e( 'Close message', 'asset-lending-manager' ); ?>
+														</span>
+													</summary>
+													<div class="alm-message-full">
+														<?php echo esc_html( $alm_full_message ); ?>
+													</div>
+												</details>
+											<?php endif; ?>
+										</td>
+										<td class="alm-request-date" data-label="<?php esc_attr_e( 'Date', 'asset-lending-manager' ); ?>">
+											<?php echo esc_html( $alm_request_date ); ?>
+										</td>
+										<td class="alm-request-actions" data-label="<?php esc_attr_e( 'Actions', 'asset-lending-manager' ); ?>">
 										<?php if ( 'pending' === $alm_request_status && $alm_is_current_owner ) : ?>
 											<button 
 												type="button" 
@@ -510,7 +524,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							<?php esc_html_e( 'Showing the last 10 loan history entries for this asset.', 'asset-lending-manager' ); ?>
 						</div>
 
-						<table class="alm-history-table">
+							<table class="alm-history-table alm-responsive-table" role="table">
 							<caption class="screen-reader-text">
 								<?php esc_html_e( 'Recent loan history entries for this asset', 'asset-lending-manager' ); ?>
 							</caption>
@@ -544,11 +558,12 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										: $alm_entry_status;
 									$alm_status_class = 'alm-status--' . $alm_entry_status;
 
-									// Handle message (truncate for display, full in tooltip).
-									$alm_full_message  = sanitize_text_field( (string) $alm_entry->message );
-									$alm_short_message = mb_strlen( $alm_full_message ) > 50
-										? mb_substr( $alm_full_message, 0, 50 ) . '...'
-										: $alm_full_message;
+										// Handle message (truncate for display, full in expandable details).
+										$alm_full_message     = sanitize_text_field( (string) $alm_entry->message );
+										$alm_has_long_message = mb_strlen( $alm_full_message ) > 80;
+										$alm_short_message    = $alm_has_long_message
+											? mb_substr( $alm_full_message, 0, 80 ) . '...'
+											: $alm_full_message;
 									?>
 									<tr class="alm-history-row">
 										<td class="alm-history-requester" data-label="<?php esc_attr_e( 'Recipient', 'asset-lending-manager' ); ?>">
@@ -565,11 +580,26 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 												<?php echo esc_html( $alm_status_label ); ?>
 											</span>
 										</td>
-										<td class="alm-history-message" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
-											<span class="alm-message-text" title="<?php echo esc_attr( $alm_full_message ); ?>">
-												<?php echo esc_html( $alm_short_message ); ?>
-											</span>
-										</td>
+											<td class="alm-history-message" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
+												<p class="alm-message-preview">
+													<?php echo esc_html( $alm_short_message ); ?>
+												</p>
+												<?php if ( $alm_has_long_message ) : ?>
+													<details class="alm-message-details">
+														<summary class="alm-message-toggle">
+															<span class="alm-message-toggle-open">
+																<?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?>
+															</span>
+															<span class="alm-message-toggle-close">
+																<?php esc_html_e( 'Close message', 'asset-lending-manager' ); ?>
+															</span>
+														</summary>
+														<div class="alm-message-full">
+															<?php echo esc_html( $alm_full_message ); ?>
+														</div>
+													</details>
+												<?php endif; ?>
+											</td>
 									</tr>
 								<?php endforeach; ?>
 							</tbody>
