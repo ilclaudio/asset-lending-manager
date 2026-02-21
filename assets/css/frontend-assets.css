@@ -128,9 +128,9 @@
 		color: #ffffff;
 	}
 
-	/* retired → dark gray */
+	/* retired → dark gray (darkened to #5a6268 for WCAG AA contrast ≥ 4.5:1) */
 	.alm-state-retired {
-		background: #6c757d;
+		background: #5a6268;
 		color: #ffffff;
 	}
 
@@ -375,19 +375,29 @@
 		display: block;
 	}
 
-	.alm-asset-taxonomies--boxed {}
+	.alm-asset-taxonomies--boxed {
+		flex-direction: column;
+		gap: 0;
+	}
 
 	.alm-asset-tax-row {
-		display: contents;
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		padding: 6px 0;
+		border-bottom: 1px solid #eee;
+	}
+
+	.alm-asset-tax-row:last-child {
+		border-bottom: none;
 	}
 
 	.alm-asset-tax-row .alm-tax-label {
-		display: grid;
-		grid-template-columns: var(--alm-tax-label-width, 100px) 1fr;
-		align-items: baseline;
+		flex: 0 0 90px;
 	}
 
 	.alm-asset-tax-row .alm-tax-value {
+		flex: 1;
 		color: #0073aa;
 	}
 

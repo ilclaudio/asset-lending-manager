@@ -120,11 +120,13 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	</section>
 
 	<!-- III section: Asset description -->
+	<?php if ( $alm_asset_content ) : ?>
 	<section class="alm-asset-view__content" aria-label="<?php esc_attr_e( 'Full description', 'asset-lending-manager' ); ?>">
 		<div class="alm-asset-content">
 			<?php echo wp_kses_post( $alm_asset_content ); ?>
 		</div>
 	</section>
+	<?php endif; ?>
 
 	<!-- IV section: Asset optional fields -->
 	<section class="alm-asset-view__acf" aria-label="<?php esc_attr_e( 'Additional fields', 'asset-lending-manager' ); ?>">
@@ -165,6 +167,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 											?>
 											<a href="<?php echo esc_url( $alm_file_url ); ?>" class="alm-link" target="_blank" rel="noopener">
 												<?php echo esc_html( $alm_file_name ); ?>
+												<span class="screen-reader-text"><?php esc_html_e( '(opens in new tab)', 'asset-lending-manager' ); ?></span>
 											</a>
 											<?php
 										} elseif ( 'post_object' === $alm_asset_row['type'] && is_array( $alm_asset_row['value'] ) ) {
@@ -244,6 +247,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										rows="4"
 										maxlength="500"
 										placeholder="<?php esc_attr_e( 'Write a brief message explaining why you need this asset...', 'asset-lending-manager' ); ?>"
+										aria-describedby="alm-request-char-count"
+										aria-required="true"
 										required
 									></textarea>
 									<div class="alm-char-count" id="alm-request-char-count">0 / 500</div>
@@ -253,7 +258,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										<?php esc_html_e( 'Send request', 'asset-lending-manager' ); ?>
 									</button>
 								</div>
-								<div id="alm-loan-request-response" class="alm-response-message" style="display:none;"></div>
+								<div id="alm-loan-request-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
 							</form>
 						<?php endif; ?>
 
@@ -312,19 +317,19 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 
 			<div class="alm-collapsible__body">
 			<?php if ( ! empty( $alm_requests ) ) : ?>
-						<table class="alm-requests-table alm-responsive-table" role="table">
+						<table class="alm-requests-table alm-responsive-table">
 						<caption class="screen-reader-text">
 							<?php esc_html_e( 'Pending loan requests for this asset', 'asset-lending-manager' ); ?>
 						</caption>
-						<thead>
-							<tr>
-								<th scope="col"><?php esc_html_e( 'Requester', 'asset-lending-manager' ); ?></th>
-								<th scope="col"><?php esc_html_e( 'Message', 'asset-lending-manager' ); ?></th>
-								<th scope="col"><?php esc_html_e( 'Date', 'asset-lending-manager' ); ?></th>
-								<th scope="col"><?php esc_html_e( 'Actions', 'asset-lending-manager' ); ?></th>
+						<thead role="rowgroup">
+							<tr role="row">
+								<th scope="col" role="columnheader"><?php esc_html_e( 'Requester', 'asset-lending-manager' ); ?></th>
+								<th scope="col" role="columnheader"><?php esc_html_e( 'Message', 'asset-lending-manager' ); ?></th>
+								<th scope="col" role="columnheader"><?php esc_html_e( 'Date', 'asset-lending-manager' ); ?></th>
+								<th scope="col" role="columnheader"><?php esc_html_e( 'Actions', 'asset-lending-manager' ); ?></th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody role="rowgroup">
 								<?php foreach ( $alm_requests as $alm_request ) : ?>
 									<?php
 									$alm_requester_id     = absint( $alm_request->requester_id );
@@ -342,12 +347,16 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										? ALM_LOAN_STATUS_LABELS[ $alm_request_status ]
 										: $alm_request_status;
 									$alm_status_class     = 'alm-status--' . $alm_request_status;
+									/* translators: %s: loan requester display name. */
+									$alm_approve_label    = esc_attr( sprintf( __( 'Approve request from %s', 'asset-lending-manager' ), $alm_requester_name ) );
+									/* translators: %s: loan requester display name. */
+									$alm_reject_label     = esc_attr( sprintf( __( 'Reject request from %s', 'asset-lending-manager' ), $alm_requester_name ) );
 									?>
-								<tr class="alm-request-row" data-request-id="<?php echo esc_attr( $alm_request->id ); ?>">
-										<td class="alm-request-requester" data-label="<?php esc_attr_e( 'Requester', 'asset-lending-manager' ); ?>">
+								<tr class="alm-request-row" role="row" data-request-id="<?php echo esc_attr( $alm_request->id ); ?>">
+										<td class="alm-request-requester" role="cell" data-label="<?php esc_attr_e( 'Requester', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $alm_requester_name ); ?>
 										</td>
-										<td class="alm-request-message" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
+										<td class="alm-request-message" role="cell" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
 											<p class="alm-message-preview">
 												<?php echo esc_html( $alm_short_message ); ?>
 											</p>
@@ -367,10 +376,10 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 												</details>
 											<?php endif; ?>
 										</td>
-										<td class="alm-request-date" data-label="<?php esc_attr_e( 'Date', 'asset-lending-manager' ); ?>">
+										<td class="alm-request-date" role="cell" data-label="<?php esc_attr_e( 'Date', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $alm_request_date ); ?>
 										</td>
-										<td class="alm-request-actions" data-label="<?php esc_attr_e( 'Actions', 'asset-lending-manager' ); ?>">
+										<td class="alm-request-actions" role="cell" data-label="<?php esc_attr_e( 'Actions', 'asset-lending-manager' ); ?>">
 										<?php if ( 'pending' === $alm_request_status && $alm_is_current_owner ) : ?>
 											<button 
 												type="button" 
@@ -378,6 +387,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 												data-action="approve" 
 												data-request-id="<?php echo esc_attr( $alm_request->id ); ?>"
 												data-asset-id="<?php echo esc_attr( $alm_asset_id ); ?>"
+												aria-label="<?php echo $alm_approve_label; ?>"
 											>
 												<?php esc_html_e( 'Approve', 'asset-lending-manager' ); ?>
 											</button>
@@ -387,6 +397,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 												data-action="reject" 
 												data-request-id="<?php echo esc_attr( $alm_request->id ); ?>"
 												data-asset-id="<?php echo esc_attr( $alm_asset_id ); ?>"
+												aria-label="<?php echo $alm_reject_label; ?>"
 											>
 												<?php esc_html_e( 'Reject', 'asset-lending-manager' ); ?>
 											</button>
@@ -458,6 +469,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							rows="3"
 							maxlength="500"
 							placeholder="<?php esc_attr_e( 'Explain the reason for this assignment...', 'asset-lending-manager' ); ?>"
+							aria-describedby="alm-direct-assign-char-count"
+							aria-required="true"
 							required
 						></textarea>
 						<div class="alm-char-count" id="alm-direct-assign-char-count">0 / 500</div>
@@ -468,7 +481,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							<?php esc_html_e( 'Assign asset', 'asset-lending-manager' ); ?>
 						</button>
 					</div>
-					<div id="alm-direct-assign-response" class="alm-response-message" style="display:none;"></div>
+					<div id="alm-direct-assign-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
 				</form>
 			</div>
 		</details>
@@ -524,20 +537,20 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							<?php esc_html_e( 'Showing the last 10 loan history entries for this asset.', 'asset-lending-manager' ); ?>
 						</div>
 
-							<table class="alm-history-table alm-responsive-table" role="table">
+							<table class="alm-history-table alm-responsive-table">
 							<caption class="screen-reader-text">
 								<?php esc_html_e( 'Recent loan history entries for this asset', 'asset-lending-manager' ); ?>
 							</caption>
-							<thead>
-								<tr>
-									<th scope="col"><?php esc_html_e( 'Recipient', 'asset-lending-manager' ); ?></th>
-									<th scope="col"><?php esc_html_e( 'Changed by', 'asset-lending-manager' ); ?></th>
-									<th scope="col"><?php esc_html_e( 'Request Date', 'asset-lending-manager' ); ?></th>
-									<th scope="col"><?php esc_html_e( 'Status', 'asset-lending-manager' ); ?></th>
-									<th scope="col"><?php esc_html_e( 'Message', 'asset-lending-manager' ); ?></th>
+							<thead role="rowgroup">
+								<tr role="row">
+									<th scope="col" role="columnheader"><?php esc_html_e( 'Recipient', 'asset-lending-manager' ); ?></th>
+									<th scope="col" role="columnheader"><?php esc_html_e( 'Changed by', 'asset-lending-manager' ); ?></th>
+									<th scope="col" role="columnheader"><?php esc_html_e( 'Request Date', 'asset-lending-manager' ); ?></th>
+									<th scope="col" role="columnheader"><?php esc_html_e( 'Status', 'asset-lending-manager' ); ?></th>
+									<th scope="col" role="columnheader"><?php esc_html_e( 'Message', 'asset-lending-manager' ); ?></th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody role="rowgroup">
 								<?php foreach ( $alm_history as $alm_entry ) : ?>
 									<?php
 										$alm_requester_id    = absint( $alm_entry->requester_id );
@@ -565,22 +578,22 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 											? mb_substr( $alm_full_message, 0, 80 ) . '...'
 											: $alm_full_message;
 									?>
-									<tr class="alm-history-row">
-										<td class="alm-history-requester" data-label="<?php esc_attr_e( 'Recipient', 'asset-lending-manager' ); ?>">
+									<tr class="alm-history-row" role="row">
+										<td class="alm-history-requester" role="cell" data-label="<?php esc_attr_e( 'Recipient', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $alm_requester_name ); ?>
 										</td>
-										<td class="alm-history-changed-by" data-label="<?php esc_attr_e( 'Changed by', 'asset-lending-manager' ); ?>">
+										<td class="alm-history-changed-by" role="cell" data-label="<?php esc_attr_e( 'Changed by', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $alm_changed_by_name ); ?>
 										</td>
-										<td class="alm-history-request-date" data-label="<?php esc_attr_e( 'Request Date', 'asset-lending-manager' ); ?>">
+										<td class="alm-history-request-date" role="cell" data-label="<?php esc_attr_e( 'Request Date', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $alm_request_date ); ?>
 										</td>
-										<td class="alm-history-status" data-label="<?php esc_attr_e( 'Status', 'asset-lending-manager' ); ?>">
+										<td class="alm-history-status" role="cell" data-label="<?php esc_attr_e( 'Status', 'asset-lending-manager' ); ?>">
 											<span class="alm-status-badge <?php echo esc_attr( $alm_status_class ); ?>">
 												<?php echo esc_html( $alm_status_label ); ?>
 											</span>
 										</td>
-											<td class="alm-history-message" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
+											<td class="alm-history-message" role="cell" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
 												<p class="alm-message-preview">
 													<?php echo esc_html( $alm_short_message ); ?>
 												</p>
