@@ -391,7 +391,7 @@
 		gap: 12px;
 		background: #f7f7f7;
 		font-weight: 700;
-		font-size: 0.95rem;
+		font-size: 1rem;
 		line-height: 1.3;
 	}
 
@@ -404,7 +404,7 @@
 	}
 
 	.alm-asset-view .alm-collapsible__title {
-		font-size: 0.95rem;
+		font-size: 1rem;
 	}
 
 	.alm-asset-view .alm-collapsible__body {
@@ -661,6 +661,11 @@
 		.alm-asset-view__taxbox {
 			flex: 1 1 100%;
 			max-width: none;
+		}
+
+		.alm-asset-view .alm-collapsible__summary,
+		.alm-asset-view .alm-collapsible__title {
+			font-size: 0.96rem;
 		}
 
 		.alm-asset-acf-row {
