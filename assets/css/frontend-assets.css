@@ -162,12 +162,12 @@
 		--alm-btn-secondary-hover-bg: #e6ecf1;
 		--alm-btn-secondary-border: #c7d3dd;
 		--alm-btn-secondary-text: #243447;
-		--alm-btn-success-bg: #1f8f47;
-		--alm-btn-success-hover-bg: #19793b;
-		--alm-btn-success-border: #186a35;
-		--alm-btn-danger-bg: #c83544;
-		--alm-btn-danger-hover-bg: #af2b39;
-		--alm-btn-danger-border: #8f2130;
+		--alm-btn-success-bg: #0073aa;
+		--alm-btn-success-hover-bg: #006a9b;
+		--alm-btn-success-border: #243447;
+		--alm-btn-danger-bg: #0073aa;
+		--alm-btn-danger-hover-bg: #006a9b;
+		--alm-btn-danger-border: #243447;
 	}
 
 	/* Search form - used in asset list */
@@ -199,7 +199,7 @@
 	.alm-asset-view .alm-button--primary {
 		background: var(--alm-btn-primary-bg);
 		color: #fff;
-		border: 1px solid var(--alm-btn-primary-border);
+		border: 1px solid #2f4254;
 	}
 
 	.alm-search-submit-btn:hover,
@@ -540,6 +540,7 @@
 	.alm-asset-view .alm-loan-form input[type="text"] {
 		font-size: 0.92rem;
 		line-height: 1.4;
+		border: 1px solid #c7d3dd;
 	}
 
 	.alm-asset-view .alm-char-count {
@@ -958,11 +959,15 @@
 
 	.alm-filter-field select {
 		padding: 6px 8px;
-		border: 1px solid #ddd;
+		border: 1px solid #c7d3dd;
 		border-radius: 4px;
 		font-size: 0.95em;
 		background: #fff;
 		cursor: pointer;
+	}
+
+	#alm_asset_search_form .alm-filter-field input[type="text"] {
+		border: 1px solid #c7d3dd;
 	}
 
 	.alm-filter-field select:focus {
@@ -980,6 +985,17 @@
 	.alm-form-actions .alm-reset-filters,
 	.alm-form-actions button {
 		flex: 1;
+	}
+
+	#alm_asset_search_form .alm-form-actions .alm-reset-filters,
+	#alm_asset_search_form .alm-form-actions button[type="submit"] {
+		min-height: 44px;
+		border-radius: 8px;
+	}
+
+	#alm_asset_search_form .alm-form-actions button[type="submit"] {
+		margin-top: 0;
+		box-sizing: border-box;
 	}
 
 	.alm-reset-filters {
