@@ -43,6 +43,40 @@ class ALM_ACF_Asset_Adapter {
 	}
 
 	/**
+	 * Read all ACF custom field objects for a given post.
+	 *
+	 * Single ACF read entry point for structured field data (label, type, value).
+	 * Returns an array keyed by field name, identical to get_field_objects().
+	 *
+	 * @param int $post_id The post ID.
+	 * @return array Field objects keyed by field name, or empty array if ACF is not active.
+	 */
+	public static function get_custom_fields( int $post_id ): array {
+		if ( ! function_exists( 'get_field_objects' ) ) {
+			return array();
+		}
+		$result = get_field_objects( $post_id );
+		return is_array( $result ) ? $result : array();
+	}
+
+	/**
+	 * Read a single ACF custom field value for a given post.
+	 *
+	 * Single ACF read entry point for simple field values.
+	 * Returns the same value as get_field().
+	 *
+	 * @param string $field_name The ACF field name (meta_key).
+	 * @param int    $post_id    The post ID.
+	 * @return mixed Field value, or null if ACF is not active.
+	 */
+	public static function get_custom_field( string $field_name, int $post_id ) {
+		if ( ! function_exists( 'get_field' ) ) {
+			return null;
+		}
+		return get_field( $field_name, $post_id );
+	}
+
+	/**
 	 * Register asset fields via ACF.
 	 *
 	 * @return void
