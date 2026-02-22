@@ -11,9 +11,11 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 ## [DEV-0.0.2] - 2026-02-23
-### Ahanged
+### Changed
 ### Added
+- New documentation files.
 ### Fixed
+- Fixed documentation files.
 ### Security
 
 

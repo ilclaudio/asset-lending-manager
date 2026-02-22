@@ -2,7 +2,7 @@
 
 Asset Lending Manager is a WordPress plugin that helps organizations manage shared assets and internal lending workflows.
 
-Members can browse available assets, submit loan requests, and track assignments, while administrators manage assets, users, and loan history through the WordPress dashboard.
+Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
 The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof.
 
@@ -10,13 +10,14 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 ## Features
 
-- Asset and kit management
-- Frontend asset browsing
-- Loan request workflow
-- Approval or rejection by current assignee
-- Loan confirmation after physical handover
-- Full loan history tracking
-- Role-based permissions
+- Asset and kit management (kits cannot contain other kits)
+- Frontend asset browsing with filters
+- Loan request workflow (submit, approve, reject)
+- Direct assignment by operator/admin (with mandatory reason)
+- Automatic cancellation of concurrent pending requests after assignment
+- Email notifications for requests and assignment outcomes
+- Loan history tracking
+- Role-based permissions (`alm_member`, `alm_operator`)
 - Translation-ready
 
 ---
@@ -25,11 +26,16 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 1. A member browses the available assets.
 2. A loan request is submitted for a selected asset.
-3. The current assignee is notified of the request.
-4. The request can be approved or rejected.
-5. The physical handover of the asset is agreed offline.
-6. Once completed, the loan is confirmed in the system.
-7. All requests and assignments are stored in the loan history.
+3. Notification emails are sent to the requester and, when applicable, to the current owner.
+4. The current owner can approve or reject the request.
+5. On approval, ownership is transferred and asset state is updated to on-loan.
+6. Operators/admins can directly assign non-retired assets at any time.
+7. All decisions and assignments are recorded in loan history.
+
+For detailed role/action and notification schemas, see:
+- `DOC/SchemaPermessiPerRuolo.md`
+- `DOC/SchemaAzioniSwimlane.md`
+- `DOC/SchemaNotificheEmail.md`
 
 ---
 
@@ -37,22 +43,33 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 1. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the **Plugins** menu in WordPress.
-3. Configure plugin settings from the WordPress admin area.
+3. Ensure **Advanced Custom Fields (ACF)** is installed and active.
+4. Add one or both shortcodes to a page:
+   - `[alm_asset_list]`
+   - `[alm_asset_view]`
+5. Optionally configure email sender/system constants in `plugin-config.php`:
+   - `ALM_EMAIL_FROM_NAME`
+   - `ALM_EMAIL_FROM_ADDRESS`
+   - `ALM_EMAIL_SYSTEM_ADDRESS`
+
+Note: `ALM_Settings_Manager` exists in code, but a full settings UI is not currently exposed in wp-admin.
 
 ## Development
 
-To execute the tests:
+Install dependencies:
 ```bash
-	composer install
-	vendor\bin\phpunit --bootstrap tests/bootstrap.php tests/unit
-	vendor\bin\phpunit --bootstrap tests/bootstrap-integration.php tests/integration
+composer install
+```
 
-	# OR
-	vendor\bin\phpunit   -c phpunit.xml --verbose
-	vendor\bin\phpunit -c phpunit-integration.xml --verbose
+Run lint:
+```bash
+composer lint
+composer lint:fix
+```
 
-	# OR
-	composer test:integration
-	composer test:unit
-	composer test:all
+Run tests:
+```bash
+composer test:unit
+composer test:integration
+composer test:all
 ```

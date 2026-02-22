@@ -14,30 +14,31 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 == Description ==
 Asset Lending Manager is a WordPress plugin that helps organizations manage shared assets and internal lending workflows.
 
-Members can browse available assets, submit loan requests, and track assignments, while administrators manage assets, users, and loan history through the WordPress dashboard.
+Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
 The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof.
 
 
 == Features ==
-* Asset and kit management
-* Frontend asset browsing
-* Loan request workflow
-* Approval or rejection by current assignee
-* Loan confirmation after physical handover
-* Full loan history tracking
-* Role-based permissions
+* Asset and kit management (kits cannot contain other kits)
+* Frontend asset browsing with filters
+* Loan request workflow (submit, approve, reject)
+* Direct assignment by operator/admin (with mandatory reason)
+* Automatic cancellation of concurrent pending requests after assignment
+* Email notifications for requests and assignment outcomes
+* Loan history tracking
+* Role-based permissions (alm_member, alm_operator)
 * Translation-ready
 
 
 == Loan Workflow ==
 * A member browses the available assets.
 * A loan request is submitted for a selected asset.
-* The current assignee is notified of the request.
-* The request can be approved or rejected.
-* The physical handover of the asset is agreed offline.
-* Once completed, the loan is confirmed in the system.
-* All requests and assignments are stored in the loan history.
+* Notification emails are sent to the requester and, when applicable, to the current owner.
+* The current owner can approve or reject the request.
+* On approval, ownership is transferred and asset state is updated to on-loan.
+* Operators/admins can directly assign non-retired assets at any time.
+* All decisions and assignments are recorded in loan history.
 
 
 == Installation ==
@@ -45,20 +46,41 @@ Upload the asset-lending-manager folder to the /wp-content/plugins/ directory.
 
 Activate the plugin through the “Plugins” menu in WordPress.
 
-Configure plugin settings from the WordPress admin area.
+Ensure Advanced Custom Fields (ACF) is installed and active.
+
+Add one or both shortcodes to a page:
+- [alm_asset_list]
+- [alm_asset_view]
+
+Optionally configure email sender/system constants in plugin-config.php:
+- ALM_EMAIL_FROM_NAME
+- ALM_EMAIL_FROM_ADDRESS
+- ALM_EMAIL_SYSTEM_ADDRESS
 
 
 == Frequently Asked Questions ==
 = Does this plugin manage physical delivery of assets? =
 No. Asset delivery and handover are handled offline. The plugin tracks requests and assignments only.
+
+= Is there a full plugin settings UI in wp-admin? =
+Not yet. The settings manager exists in code, but a complete settings UI is not currently exposed in wp-admin.
+
 = Is the plugin translation-ready? =
 Yes. All user-facing strings are prepared for translation using standard WordPress internationalization functions.
 
 
 == Development ==
-To execute the tests:
+Install dependencies:
 - composer install
-- vendor\bin\phpunit --bootstrap tests/bootstrap.php --verbose tests
+
+Run lint:
+- composer lint
+- composer lint:fix
+
+Run tests:
+- composer test:unit
+- composer test:integration
+- composer test:all
 
 
 == Screenshots ==

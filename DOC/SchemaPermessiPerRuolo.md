@@ -1,4 +1,4 @@
-# Schema azioni per ruolo — Asset Lending Manager
+# Schema permessi per ruolo — Asset Lending Manager
 
 Questo documento riassume le operazioni disponibili per ciascun ruolo nel plugin.
 
