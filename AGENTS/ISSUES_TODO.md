@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-02-21
+Last update: 2026-02-22
 
 ---
 
@@ -28,6 +28,22 @@ Last update: 2026-02-21
 ---
 
 ## Refactoring
+
+### [Low] Centralise loan status CSS class generation
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Refactoring
+- **Description:** The loan status CSS modifier class is built inline via string concatenation (`'alm-status--' . $status`) in `asset-view.php`. The analogous asset-state mapping already uses `ALM_Asset_Manager::get_state_classes()`. Adding a `get_loan_status_classes()` method would centralise the mapping and make the slug→class relationship explicit rather than implicit.
+- **Expected behavior:** Add `ALM_Asset_Manager::get_loan_status_classes()` returning a slug→CSS-class map; update `asset-view.php` to use it.
+- **Notes:** Low urgency; useful if the badge is extended to other contexts. `templates/shortcodes/asset-view.php`, `includes/class-alm-asset-manager.php`
+
+### [Low] Extract reusable PHP helper for loan status badge HTML
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Refactoring
+- **Description:** The `<span class="alm-status-badge ...">` markup is produced inline in `asset-view.php`. A shared helper `alm_render_status_badge( $status, $label )` would eliminate duplication if the badge is reused in other templates or admin views.
+- **Expected behavior:** Create helper function (e.g. in `plugin-config.php` or a new `functions-helpers.php`); replace inline markup.
+- **Notes:** Premature abstraction at current single-usage; revisit if a second template adopts the badge. `templates/shortcodes/asset-view.php`
 
 ### [Medium] Settings manager config is defined but not consumed
 - **Status:** Open

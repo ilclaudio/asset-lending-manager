@@ -108,6 +108,11 @@
 	opacity: 0.85;
 }
 
+.alm-status-badge.alm-status--pending {
+	background-color: #e8e8e8;
+	color: #3c3c3c;
+}
+
 .alm-status-badge.alm-status--approved {
 	background-color: #d6f1df;
 	color: #155724;

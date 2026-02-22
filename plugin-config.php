@@ -122,14 +122,21 @@ function alm_get_email_templates() {
 	);
 }
 
-// Loan statuses.
-define(
-	'ALM_LOAN_STATUS_LABELS',
-	array(
-		'pending'       => 'Pending',
-		'approved'      => 'Approved',
-		'rejected'      => 'Rejected',
-		'canceled'      => 'Canceled',
-		'direct_assign' => 'Direct assignment',
-	)
-);
+/**
+ * Return the translatable labels for loan request statuses.
+ *
+ * Returns an array keyed by status slug with the corresponding translated label.
+ * Defined as a function (not a constant) so that __() is called at render time,
+ * after the plugin text domain has been loaded.
+ *
+ * @return array<string, string>
+ */
+function alm_get_loan_status_labels() {
+	return array(
+		'pending'       => __( 'Pending', 'asset-lending-manager' ),
+		'approved'      => __( 'Approved', 'asset-lending-manager' ),
+		'rejected'      => __( 'Rejected', 'asset-lending-manager' ),
+		'canceled'      => __( 'Canceled', 'asset-lending-manager' ),
+		'direct_assign' => __( 'Direct assignment', 'asset-lending-manager' ),
+	);
+}
