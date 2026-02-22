@@ -1,6 +1,6 @@
 # Swimlane schema azioni per ruolo — Asset Lending Manager
 
-Questo file contiene la versione grafica Mermaid dello swimlane del documento `DOC/SchemaAzioni.md`.
+Questo file contiene la versione grafica Mermaid dello swimlane del documento `DOC/SchemaAzioniUtente.md`.
 
 ```mermaid
 flowchart TB
@@ -37,5 +37,4 @@ flowchart TB
   O6 --> H1
 ```
 
-Se il tuo viewer Markdown non renderizza Mermaid, usa la versione testuale ASCII in `DOC/SchemaAzioni.md`.
-
+Se il tuo viewer Markdown non renderizza Mermaid, usa la versione testuale ASCII in `DOC/SchemaAzioniUtente.md`.
