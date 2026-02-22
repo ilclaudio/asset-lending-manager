@@ -3,7 +3,7 @@
  * Plugin Name: Asset Lending Manager
  * Plugin URI:  https://github.com/ilclaudio/asset-lending-manager
  * Description: Manage shared assets and internal lending workflows.
- * Version:     DEV-0.0.1
+ * Version:     DEV-0.0.2
  * Author:      AAGG
  * Author URI:  https://www.astrofilipisani.it/
  * Text Domain: asset-lending-manager

@@ -1,0 +1,7 @@
+
+*** Libraries used in the theme ***
+
+
+** Plugins used by the theme ***
+
+- [Advanced Custom Fields](https://wordpress.org/plugins/advanced-custom-fields/)
