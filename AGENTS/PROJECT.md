@@ -1,8 +1,15 @@
 # PROJECT.md
 
 ## Overview
-`asset-lending-manager` is a WordPress plugin for managing association assets and loan workflows.
-Domain: astronomy association equipment and publications.
+`asset-lending-manager` is a WordPress plugin for managing shared physical assets and loan workflows.
+Origin: born within an astronomy association (AAGG, Italy) to manage telescopes, eyepieces, books
+and shared equipment. Designed to be generic and redistributable: any organization that manages
+shared physical assets can install and use it (clubs, schools, public bodies, laboratories,
+libraries, makerspaces, etc.).
+
+## Distribution
+- The plugin is published as a general-purpose open-source tool, not tied to AAGG.
+- AAGG is the founding use case, not the intended target audience.
 
 ## Core Domain
 - Asset types:

@@ -1,0 +1,336 @@
+Analisi: rimozione dipendenza da ACF (Advanced Custom Fields)
+Data: 2026-02-22
+Ultimo aggiornamento: 2026-02-22
+
+================================================================================
+CONTESTO STRATEGICO
+================================================================================
+
+Il plugin e' dichiarato esplicitamente open source e di distribuzione pubblica
+(associazioni, scuole, biblioteche, laboratori, ecc.).
+Questo cambia il peso dell'analisi rispetto a uno scenario di uso interno AAGG:
+
+- Chi installa il plugin da zero deve installare ANCHE ACF (attrito extra).
+- Aggiornamenti di ACF possono rompere la compatibilita' senza preavviso.
+- ACF e' passato da solo-free a modello freemium nel 2023: il rischio di
+  restrizioni future al tier gratuito non e' trascurabile.
+- Per pubblicazione su WordPress.org, richiedere un plugin esterno obbligatorio
+  e' accettabile ma aumenta la complessita' della scheda e del supporto.
+
+================================================================================
+RISULTATO SINTETICO
+================================================================================
+
+- E' possibile rimuovere ACF: SI.
+- Impatto tecnico: MEDIO-ALTO.
+- Perdita dati su installazioni esistenti: ZERO (se migrazione corretta).
+- Convenienza immediata (solo AAGG): BASSA.
+- Convenienza strategica (distribuzione pubblica): MEDIA-ALTA.
+- Raccomandazione: non rimuovere ora in un unico step; pianificare in 2 fasi
+  se si decide di procedere.
+
+================================================================================
+DIPENDENZE ACF ATTUALI (CODEBASE)
+================================================================================
+
+1) Registrazione campi nel backoffice:
+   - includes/class-alm-acf-asset-adapter.php
+     acf_add_local_field_group() -> definisce 13 campi sul CPT alm_asset.
+   - includes/class-alm-asset-manager.php
+     hook 'acf/include_fields' -> chiama register_asset_fields().
+
+2) Controllo dipendenza obbligatoria:
+   - includes/class-alm-plugin-manager.php: check_dependencies()
+     mostra errore admin e blocca l'avvio se ACF non e' presente.
+
+3) Lettura campi in runtime:
+   - includes/class-alm-asset-manager.php: get_asset_custom_fields()
+     usa get_field_objects($asset_id) per leggere tutti i campi con
+     label e tipo per la visualizzazione frontend.
+   - includes/class-alm-loan-manager.php: get_kit_components()
+     usa get_field('components', $asset_id) per propagare prestiti
+     e cessioni dirette ai componenti del kit.
+
+4) Documentazione che dichiara ACF necessario:
+   - README.md (sezione Installation)
+   - readme.txt (sezione Installation)
+   - AGENTS/ARCHITECTURE.md
+
+================================================================================
+DATI: DOVE VIVONO E RISCHIO DI PERDITA
+================================================================================
+
+ACF salva tutti i valori in wp_postmeta come normali post meta WordPress.
+Per ogni campo esistono due righe in wp_postmeta:
+  - meta_key = nome campo  (es: "manufacturer")     -> il valore vero
+  - meta_key = _nome campo (es: "_manufacturer")    -> la field key ACF
+
+Formato di storage per tipo:
+  - text / number / textarea : stringa pura
+  - date_picker              : stringa "d/m/Y"
+  - file                     : attachment ID (intero come stringa)
+  - post_object multiple     : array PHP serializzato di ID interi
+                               es: a:2:{i:0;s:2:"45";i:1;s:3:"123";}
+
+Conseguenza: rimuovere ACF NON cancella i dati dal DB.
+I dati sono leggibili con get_post_meta() anche senza ACF.
+
+Il rischio reale non e' perdita dati, ma mancata lettura/interpretazione
+coerente nel codice del plugin (vedi sezione Impatto tecnico).
+
+Nota tecnica componenti kit:
+La query di reverse lookup in get_asset_custom_fields() usa gia' ora
+una meta_query LIKE sul campo "components" in formato serializzato.
+Questa query funzionera' identicamente con o senza ACF, purche' il
+formato di storage non cambi (e non c'e' ragione di cambiarlo).
+
+================================================================================
+IMPATTO TECNICO SE SI RIMUOVESSE ACF "COSI' COM'E'" (SENZA MIGRAZIONE)
+================================================================================
+
+- Frontend dettaglio asset: i 13 campi custom non vengono piu' visualizzati
+  (get_field_objects() non esiste -> l'array restituito e' vuoto).
+- Workflow kit: get_kit_components() restituisce array vuoto
+  (get_field() non esiste -> propagazione proprietario/stato ai componenti
+  non avviene -> bug silenzioso gia' tracciato in ISSUES_TODO).
+- Backoffice: la UI di editing campi custom sparisce completamente;
+  i dati restano nel DB ma non sono piu' modificabili dall'admin.
+
+================================================================================
+PRO E CONTRO
+================================================================================
+
+PRO (rimuovere ACF)
+-------------------
++ Plugin autosufficiente: un solo plugin da installare, nessuna dipendenza esterna.
++ Eliminazione rischio aggiornamenti ACF che rompano la compatibilita'.
++ Eliminazione rischio cambiamenti al modello freemium di ACF.
++ Controllo totale su UX e validazioni dei campi nel backoffice.
++ Piena liberta' di evoluzione del meta model senza vincoli ACF.
++ Scheda WordPress.org piu' semplice (nessun "requires ACF").
++ Piu' adatto a distribuzione pubblica e installazioni self-service.
+
+CONTRO (rimuovere ACF)
+----------------------
+- Effort non banale: 4-8 giorni lavorativi (stima, vedi sotto).
+- Rischio regressioni su kit workflow (il punto piu' critico).
+- Vanno riscritti: meta box backoffice, media library picker (file fields),
+  selettore relazione componenti kit (il piu' complesso).
+- Aumenta il codice da mantenere internamente nel plugin.
+- ACF Free e' stabile, gratuito, usato in milioni di siti: il rischio
+  concreto e' basso nel breve periodo.
+- Ci sono issue piu' urgenti (notifiche email, UI settings, return flow,
+  sicurezza endpoint autocomplete).
+
+================================================================================
+FATTORI DI DECISIONE (VALUTAZIONE PONDERATA)
+================================================================================
+
+Fattore                                     Peso    Rimozione ACF    Mantenere ACF
+---------------------------------------------------------------------------
+Distribuzione pubblica self-service          Alto    Vantaggio        Svantaggio
+Stabilita' a breve termine                  Alto    Neutro           Vantaggio
+Effort/rischio tecnico                      Alto    Svantaggio       Vantaggio
+Priorita' rispetto ad altri task            Medio   Svantaggio       Vantaggio
+Rischio futuro dipendenza freemium          Medio   Vantaggio        Svantaggio
+Controllo UX backoffice                     Basso   Vantaggio        Svantaggio
+Semplicita' installazione per terzi         Medio   Vantaggio        Svantaggio
+---------------------------------------------------------------------------
+Bilancio attuale (solo AAGG)                                         Mantenere
+Bilancio se obiettivo e' distribuzione pubblica entro 6-12 mesi      Pianificare rimozione
+
+================================================================================
+STIMA EFFORT PER RIMOZIONE COMPLETA
+================================================================================
+
+Attivita'                                               Stima
+---------------------------------------------------------------
+Analisi e design layer ALM_Custom_Fields_Repository     0.5 d
+Refactor lettura campi (get_asset_custom_fields)        0.5-1 d
+Refactor lettura componenti kit (get_kit_components)    0.5 d
+Meta box backoffice: campi testo/numero/textarea/data   1 d
+Meta box backoffice: file fields (media library JS)     1-1.5 d
+Meta box backoffice: campo components (relazione AJAX)  1.5-2 d
+Test regressione (prestiti, kit, direct assign)         1-2 d
+---------------------------------------------------------------
+Totale                                                  6-9 giorni lavorativi
+
+Il campo "components" (relazione multi-asset con ricerca) e' la parte
+piu' complessa: richiede un widget AJAX custom o un'alternativa semplificata
+(ad es. inserimento manuale di ID separati da virgola, meno UX-friendly).
+
+================================================================================
+PIANO D'AZIONE RACCOMANDATO (SE SI DECIDE DI PROCEDERE)
+================================================================================
+
+FASE 0 — Prerequisiti (prima di iniziare)
+  [ ] Completare le feature piu' urgenti (return flow, notifiche, UI settings).
+  [ ] Avere almeno un set di dati reali inseriti su AAGG per test di regressione.
+  [ ] Documentare il meta model corrente (nomi chiave, formati, relazioni).
+
+FASE 1 — Introdurre il layer interno (ACF ancora attivo)
+  Obiettivo: rendere il codice del plugin indipendente da ACF nelle letture,
+  senza toccare ancora la UI di editing.
+  Passi:
+  [ ] Creare class-alm-custom-fields.php con metodi:
+        get_asset_fields($post_id) -> array strutturato (stesso formato di ora)
+        get_kit_component_ids($post_id) -> int[]
+  [ ] Implementare con get_post_meta(), gestendo:
+        - normalizzazione array serializzato (components)
+        - ricostruzione dati file da attachment ID
+        - formato data
+  [ ] Sostituire get_field_objects() in get_asset_custom_fields() con il nuovo layer.
+  [ ] Sostituire get_field('components') in get_kit_components() con il nuovo layer.
+  [ ] Verificare parity funzionale completa (frontend dettaglio, kit workflow).
+  [ ] Test regressione manuale su tutti i flussi principali.
+  Risultato: il plugin funziona con o senza ACF a livello di lettura dati.
+
+FASE 2 — Sostituire la UI di backoffice (ACF non piu' richiesto)
+  Obiettivo: eliminare la necessita' di ACF anche per il backoffice admin.
+  Passi:
+  [ ] Creare meta box custom con add_meta_box() per campi semplici
+      (text, number, textarea, date input HTML5).
+  [ ] Aggiungere media library picker JS nativo WordPress per file fields
+      (user_manual, technical_data_sheet).
+  [ ] Aggiungere selettore relazione per components:
+        Opzione A: AJAX search basato su endpoint esistente (complessita' alta, UX ottima).
+        Opzione B: input testo "ID separati da virgola" con lista preview (complessita' bassa).
+  [ ] Rimuovere hook 'acf/include_fields' e la classe ALM_ACF_Asset_Adapter.
+  [ ] Rimuovere check obbligatorio ACF in check_dependencies().
+  [ ] Rendere ACF opzionale (se presente, non interferire; se assente, funzionare).
+  [ ] Aggiornare documentazione: README, readme.txt, ARCHITECTURE.md.
+  Risultato: plugin completamente autonomo, ACF non richiesto.
+
+================================================================================
+QUANDO E' IL MOMENTO GIUSTO PER INIZIARE
+================================================================================
+
+Iniziare la Fase 1 quando:
+  - Return flow e' implementato.
+  - Notifiche email funzionanti.
+  - UI settings base e' disponibile.
+  - Il plugin e' stato testato con utenti reali su AAGG (dati reali disponibili).
+
+Iniziare la Fase 2 quando:
+  - Fase 1 e' completa e stabile.
+  - Si decide di puntare alla pubblicazione su WordPress.org o comunque
+    alla distribuzione self-service senza prerequisiti.
+
+================================================================================
+RISCHI PRINCIPALI DA GESTIRE
+================================================================================
+
+1) Regressioni kit workflow (il piu' critico):
+   Testare approfonditamente approve/reject/direct_assign su asset di tipo kit
+   dopo ogni modifica a get_kit_components().
+
+2) Formato dati "components" su installazioni esistenti:
+   Se si cambia il formato di storage (es. da serializzato a righe multiple),
+   serve uno script di migrazione one-shot. Raccomandato: mantenere lo stesso
+   formato serializzato per compatibilita' con i dati storici.
+
+3) Divergenza tra installazioni:
+   Se alcune installazioni usano ACF e altre no, il formato di storage
+   potrebbe divergere. Soluzione: definire il formato interno una volta
+   e farlo rispettare dal layer in Fase 1.
+
+4) File fields su installazioni precedenti:
+   I campi user_manual e technical_data_sheet contengono attachment ID.
+   Il layer interno li deve gestire con wp_get_attachment_url() e
+   get_the_title() per ricostruire nome e URL del file.
+
+================================================================================
+CAMPI ACF ATTUALI: NOME LOGICO E CHIAVE DB
+================================================================================
+
+Tutti i 13 campi sono definiti in class-alm-acf-asset-adapter.php e applicati
+al CPT alm_asset. Per ogni campo ACF scrive due righe in wp_postmeta:
+  - meta_key = <nome>          -> il valore effettivo
+  - meta_key = _<nome>         -> la field key ACF (es: "field_694a656243fca")
+    (questa seconda riga non serve al plugin, ma ACF la scrive sempre)
+
+Label UI                meta_key DB          Tipo ACF         Formato storage
+-------------------------------------------------------------------------------
+Manufacturer            manufacturer         text             stringa pura (required)
+Model                   model                text             stringa pura (required)
+Purchase date           data_acquisto        date_picker      stringa "d/m/Y"
+Cost                    cost                 number           numero come stringa
+Dimensions              dimensions           text             stringa pura
+Weight                  weight               text             stringa pura
+Location                location             text             stringa pura
+Components              components           post_object      PHP serialize() di int[]
+                                             (multiple)       es: a:2:{i:0;s:2:"45";}
+User manual             user_manual          file             attachment ID (stringa)
+Technical data sheet    technical_data_sheet file             attachment ID (stringa)
+Serial number           serial_number        text             stringa pura
+External code           external_code        text             stringa pura
+Notes                   notes                textarea         stringa pura
+
+Note:
+- "Membership kit" compare nella lista di label interna define_custom_field_labels()
+  ma NON e' definito come campo ACF nel field group. Non e' un campo custom ACF;
+  la distinzione kit/non-kit e' gestita altrove nel plugin.
+- I file fields (user_manual, technical_data_sheet) restituiscono un array PHP
+  tramite get_field() (return_format 'array'), ma in DB e' salvato solo l'ID
+  intero dell'attachment. Il layer interno deve ricostruire url e titolo
+  con wp_get_attachment_url() e get_the_title().
+- Il campo components usa return_format 'object' (restituisce WP_Post[]), ma
+  in DB e' un array PHP serializzato di ID interi.
+
+================================================================================
+SCENARIO SENZA MIGRAZIONE: COME CAMBIANO LE DIFFICOLTA'
+================================================================================
+
+Se si decide di non preservare i dati esistenti e di reinserire tutto da zero
+(scenario "fresh start": tutti gli asset vengono ricreati nel backoffice dopo
+la rimozione di ACF), alcune difficolta' spariscono e l'effort si riduce.
+
+Cosa scompare:
+  - Script di migrazione: non serve. Nessuna riga da trasformare o normalizzare.
+  - Compatibilita' formato serializzato per "components": si puo' scegliere
+    liberamente il formato di storage piu' conveniente per il layer interno
+    (es. una riga per componente con add_post_meta() multiplo, oppure JSON),
+    senza doversi adeguare a quanto ACF ha gia' scritto.
+  - Gestione delle chiavi ACF orfane ("_manufacturer", "_model", ecc.): le righe
+    con meta_key prefissato da "_" che ACF ha scritto si possono ignorare o
+    cancellare con uno script di pulizia banale.
+  - Formato data "data_acquisto": si puo' adottare ISO 8601 ("Y-m-d") invece di
+    "d/m/Y", piu' comodo per ordinamento e confronto senza conversioni.
+  - Il prerequisito di Fase 0 "avere dati reali per test di regressione":
+    il test si fa direttamente sui nuovi inserimenti.
+
+Cosa NON cambia (lavoro invariato):
+  - Implementazione meta box backoffice (campi testo, numero, textarea, data).
+  - Media library picker JS per user_manual e technical_data_sheet.
+  - Selettore relazione per components (la parte piu' complessa rimane tale).
+  - Refactor get_asset_custom_fields() e get_kit_components() per usare
+    get_post_meta() al posto di get_field_objects() / get_field().
+  - Rimozione hook ACF e del check di dipendenza in check_dependencies().
+  - Aggiornamento documentazione.
+
+Stima effort senza migrazione (confronto):
+
+Attivita'                                               Con migrazione   Senza migrazione
+-----------------------------------------------------------------------------------------
+Script migrazione + test formato                        0.5-1 d          0 d
+Analisi e design layer ALM_Custom_Fields_Repository     0.5 d            0.5 d (*)
+Refactor lettura campi (get_asset_custom_fields)        0.5-1 d          0.5 d
+Refactor lettura componenti kit (get_kit_components)    0.5 d            0.5 d
+Meta box backoffice: campi semplici                     1 d              1 d
+Meta box backoffice: file fields (media library JS)     1-1.5 d          1-1.5 d
+Meta box backoffice: campo components (relazione)       1.5-2 d          1.5-2 d
+Test regressione                                        1-2 d            1 d (meno casi)
+-----------------------------------------------------------------------------------------
+Totale                                                  6-9 d            6-7 d
+
+(*) Il design del layer semplifica leggermente se si sceglie un formato di
+    storage piu' pulito (es. post meta multipli per components invece di
+    serializzato), ma la struttura della classe rimane la stessa.
+
+Conclusione scenario senza migrazione:
+Il risparmio e' modesto (circa 1-2 giorni), perche' il grosso del lavoro e'
+nella UI del backoffice, non nella migrazione dati. Il vantaggio principale
+non e' l'effort ma la liberta' di scegliere il formato di storage ottimale
+senza dover garantire retrocompatibilita'. In pratica questo scenario conviene
+solo se il sito AAGG non ha ancora inserito asset reali (o ne ha pochissimi
+reinseribili manualmente in breve tempo).

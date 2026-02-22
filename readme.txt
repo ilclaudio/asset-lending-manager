@@ -3,7 +3,7 @@ Contributors: ilclaudio
 Plugin link: https://github.com/ilclaudio/asset-lending-manager
 Author URI: https://www.astrofilipisani.it/
 Author: AAGG
-Tags: asset management, lending, inventory, loans
+Tags: asset management, lending, inventory, loans, library, equipment, organization, school
 Requires at least: 6.0
 Tested up to: 6.5
 Requires PHP: 7.4
@@ -12,11 +12,13 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
-Asset Lending Manager is a WordPress plugin that helps organizations manage shared assets and internal lending workflows.
+Asset Lending Manager is a free, open-source WordPress plugin that helps any organization manage shared physical assets and internal lending workflows.
+
+Designed for clubs, associations, schools, public bodies, libraries, laboratories, makerspaces, and any group that loans equipment or materials to its members.
 
 Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
-The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof.
+The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof. Born within the AAGG astronomy association to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
 
 
 == Features ==
@@ -59,6 +61,9 @@ Optionally configure email sender/system constants in plugin-config.php:
 
 
 == Frequently Asked Questions ==
+= Who is this plugin for? =
+Any organization that manages a shared pool of physical objects: associations, schools, public bodies, libraries, laboratories, makerspaces, sports clubs, and more. The plugin was originally created for an astronomy association (AAGG, Italy) but is designed to be generic and suitable for any context.
+
 = Does this plugin manage physical delivery of assets? =
 No. Asset delivery and handover are handled offline. The plugin tracks requests and assignments only.
 

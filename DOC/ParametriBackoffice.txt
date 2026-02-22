@@ -33,6 +33,7 @@ Legenda accesso modifica:
 3) Regole prestiti
 - loans.max_active_per_user (intero, 0 = illimitato) [A/O]
 - loans.allow_multiple_requests (bool) [A/O]
+- loans.approver_policy_for_unowned_assets (enum: none|operator|any_alm_user, default none) [A]
 - loans.request_message_max_length (intero, default 500) [A]
 - loans.rejection_message_max_length (intero, default 255) [A]
 - loans.direct_assign_reason_max_length (intero, default 500) [A]
@@ -49,6 +50,8 @@ Legenda accesso modifica:
 
 6) Frontend
 - frontend.assets_page_id (page id) [A/O]
+- frontend.login_redirect_page_id (page id, default archivio /asset/) [A]
+- frontend.logout_redirect_page_id (page id, default home /) [A]
 - frontend.asset_list_per_page (intero, default 12) [A/O]
 - frontend.default_filters_open (bool) [A/O]
 
@@ -67,7 +70,10 @@ Legenda accesso modifica:
 - logging.mask_personal_data (bool) [A]
 - logging.log_email_events (bool) [A]
 
-9) Manutenzione
+9) Identificazione asset
+- asset.code_prefix (stringa alfanumerica, default AAGG) [A]
+
+10) Manutenzione
 - maintenance.enable_reload_default_terms_action (bool) [A]
 - maintenance.enable_tools_page (bool) [A]
 
