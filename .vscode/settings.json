@@ -5,6 +5,7 @@
   "intelephense.environment.includePaths": [
     "${workspaceFolder}/../../.."
   ],
+	"markdown.preview.mermaid": true,
   "intelephense.stubs": [
     "Core",
     "standard",
