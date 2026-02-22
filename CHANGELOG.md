@@ -8,7 +8,13 @@ This projects uses [Semantic Versioning](http://semver.org/).
 
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
-## [TODO]
+
+
+## [DEV-0.0.2] - 2026-02-23
+### Ahanged
+### Added
+### Fixed
+### Security
 
 
 ## [DEV-0.0.1] - 2026-02-22
