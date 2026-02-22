@@ -144,24 +144,6 @@ class ALM_Autocomplete_Manager {
 		// // Read nonce from POST.
 		$nonce = $request->get_param( 'nonce' ) ?? '';
 		$nonce = $nonce ? sanitize_text_field( $nonce ) : '';
-		error_log( '*** Nonce in handle_autocomplete:' . $nonce );
-
-		// Check nonce.
-		// $nonce = $request->get_param( 'nonce' );
-		// if ( ! wp_verify_nonce( $nonce, 'alm_autocomplete_nonce' ) ) {
-		// return new WP_REST_Response(
-		// array( 'error' => __( 'Invalid security token.', 'asset-lending-manager' ) ),
-		// 403
-		// );
-		// }
-
-		// // Check capability.
-		// if ( ! current_user_can( ALM_VIEW_ASSETS ) ) {
-		// return new WP_REST_Response(
-		// array( 'error' => __( 'Insufficient permissions.', 'asset-lending-manager' ) ),
-		// 403
-		// );
-		// }
 
 		// Read search term.
 		$term = $request->get_param( 'term' ) ?? '';

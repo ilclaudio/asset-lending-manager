@@ -343,10 +343,6 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									$alm_short_message    = $alm_has_long_message
 										? mb_substr( $alm_full_message, 0, 80 ) . '...'
 										: $alm_full_message;
-									$alm_status_label     = isset( ALM_LOAN_STATUS_LABELS[ $alm_request_status ] )
-										? ALM_LOAN_STATUS_LABELS[ $alm_request_status ]
-										: $alm_request_status;
-									$alm_status_class     = 'alm-status--' . $alm_request_status;
 									/* translators: %s: loan requester display name. */
 									$alm_approve_label    = esc_attr( sprintf( __( 'Approve request from %s', 'asset-lending-manager' ), $alm_requester_name ) );
 									/* translators: %s: loan requester display name. */
@@ -566,9 +562,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									// Get status.
 									$alm_entry_status = $alm_entry->status;
 									// Status labels and CSS classes.
-									$alm_status_label = isset( ALM_LOAN_STATUS_LABELS[ $alm_entry_status ] )
-										? ALM_LOAN_STATUS_LABELS[ $alm_entry_status ]
-										: $alm_entry_status;
+									$alm_loan_labels  = alm_get_loan_status_labels();
+									$alm_status_label = $alm_loan_labels[ $alm_entry_status ] ?? $alm_entry_status;
 									$alm_status_class = 'alm-status--' . $alm_entry_status;
 
 										// Handle message (truncate for display, full in expandable details).

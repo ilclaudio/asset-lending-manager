@@ -51,31 +51,6 @@
 	border-bottom: 1px solid #ddd;
 }
 
-/* Asset status badges */
-.alm-status-badge {
-	display: inline-block;
-	padding: 3px 8px;
-	border-radius: 3px;
-	font-size: 12px;
-	font-weight: 600;
-	text-transform: uppercase;
-}
-
-.alm-status-badge.available {
-	background: #d4edda;
-	color: #155724;
-}
-
-.alm-status-badge.loaned {
-	background: #fff3cd;
-	color: #856404;
-}
-
-.alm-status-badge.maintenance {
-	background: #f8d7da;
-	color: #721c24;
-}
-
 /* ACF field groups styling */
 .acf-field-group .acf-field {
 	border-top: 1px solid #eeeeee;
