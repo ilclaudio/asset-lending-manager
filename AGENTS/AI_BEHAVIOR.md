@@ -128,7 +128,6 @@ Always ignore these folders for review/refactoring/fixes:
 - Treat third-party/library directories as read-only unless the user explicitly asks for a direct library patch:
   - `vendor/`
   - `node_modules/`
-  - `assets/bootstrap-italia/`
 - Before staging/commit, verify with `git status --short` that all changed files are inside the allowed repository scope.
 
 

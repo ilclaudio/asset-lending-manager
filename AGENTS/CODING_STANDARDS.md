@@ -66,14 +66,12 @@ Official references:
 
 ### HTML
 
-- Prefer Bootstrap Italia components/patterns before custom structures.
 - Keep semantic, valid, well-formed HTML.
 - Use lowercase tags/attributes and quote all attribute values.
 - Keep mixed PHP/HTML indentation coherent.
 
 ### CSS
 
-- Prefer Bootstrap Italia components, patterns, and utility classes before custom CSS.
 - Use tabs for indentation.
 - One selector/property per line; keep declarations explicit and readable.
 - Follow WordPress CSS formatting conventions.
