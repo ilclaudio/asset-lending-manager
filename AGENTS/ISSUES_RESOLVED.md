@@ -1,5 +1,5 @@
 # ISSUES_RESOLVED
-Last update: 2026-02-21
+Last update: 2026-02-22
 
 ## Entry Format
 ```markdown
@@ -12,6 +12,17 @@ Last update: 2026-02-21
 - **Fix summary:** What changed and why
 - **Notes:** Optional commit/PR/doc references
 ```
+
+---
+
+### [Low] REST autocomplete handler logs nonce in plaintext
+- **Status:** Resolved
+- **Date:** 2026-02-14
+- **Category:** Security
+- **Description:** `handle_autocomplete()` was tracked as writing the received nonce to PHP error log.
+- **Resolution date:** 2026-02-22
+- **Fix summary:** Re-verified current code path and confirmed no nonce/token logging is present in `handle_autocomplete()`. The issue is no longer reproducible and has been moved out of TODO.
+- **Notes:** `includes/class-alm-autocomplete-manager.php:143`
 
 ---
 

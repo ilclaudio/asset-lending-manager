@@ -1,0 +1,76 @@
+Parametri candidati UI Backoffice (bozza temporanea)
+Data: 2026-02-22
+
+Legenda accesso modifica:
+- A = Amministratore
+- O = Operatore
+
+1) Email / Notifiche
+- email.from_name (stringa) [A]
+- email.from_address (email) [A]
+- email.system_email (email opzionale) [A]
+- notifications.enabled (bool) [A]
+- notifications.loan_request (bool) [A/O]
+- notifications.loan_decision (bool) [A/O]
+- notifications.loan_confirmation (bool, se/quando introdotta) [A/O]
+
+2) Template email
+- template.subject.request_to_requester (testo) [A]
+- template.subject.request_to_owner (testo) [A]
+- template.subject.approved (testo) [A]
+- template.subject.rejected (testo) [A]
+- template.subject.canceled (testo) [A]
+- template.subject.direct_assign (testo) [A]
+- template.subject.direct_assign_to_prev_owner (testo) [A]
+- template.body.request_to_requester (textarea) [A]
+- template.body.request_to_owner (textarea) [A]
+- template.body.approved (textarea) [A]
+- template.body.rejected (textarea) [A]
+- template.body.canceled (textarea) [A]
+- template.body.direct_assign (textarea) [A]
+- template.body.direct_assign_to_prev_owner (textarea) [A]
+
+3) Regole prestiti
+- loans.max_active_per_user (intero, 0 = illimitato) [A/O]
+- loans.allow_multiple_requests (bool) [A/O]
+- loans.request_message_max_length (intero, default 500) [A]
+- loans.rejection_message_max_length (intero, default 255) [A]
+- loans.direct_assign_reason_max_length (intero, default 500) [A]
+
+4) Assegnamento diretto
+- direct_assign.enabled (bool) [A]
+- direct_assign.allowed_target_roles (lista ruoli, default member+operator) [A]
+- direct_assign.require_reason (bool) [A/O]
+
+5) Workflow automatico
+- workflow.cancel_concurrent_requests_on_assign (bool) [A/O]
+- workflow.cancel_component_requests_when_kit_assigned (bool) [A/O]
+- workflow.automatic_operations_actor_user_id (user_id fallback) [A]
+
+6) Frontend
+- frontend.assets_page_id (page id) [A/O]
+- frontend.asset_list_per_page (intero, default 12) [A/O]
+- frontend.default_filters_open (bool) [A/O]
+
+7) Autocomplete / API
+- autocomplete.min_chars (intero, default 3) [A/O]
+- autocomplete.max_results (intero, default 5) [A/O]
+- autocomplete.description_length (intero, default 20) [A/O]
+- autocomplete.public_assets_endpoint_enabled (bool) [A]
+- autocomplete.rate_limit_enabled (bool) [A]
+- autocomplete.rate_limit_per_minute (intero) [A]
+- autocomplete.cache_ttl_seconds (intero) [A/O]
+
+8) Logging / Audit
+- logging.enabled (bool) [A]
+- logging.level (debug|info|warning|error) [A]
+- logging.mask_personal_data (bool) [A]
+- logging.log_email_events (bool) [A]
+
+9) Manutenzione
+- maintenance.enable_reload_default_terms_action (bool) [A]
+- maintenance.enable_tools_page (bool) [A]
+
+Note operative:
+- Impostazioni con impatto sicurezza/privacy consigliate in sola modifica Amministratore.
+- Operatore: modifica solo parametri operativi (workflow/UX) non sensibili.

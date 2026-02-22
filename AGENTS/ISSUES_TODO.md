@@ -5,13 +5,13 @@ Last update: 2026-02-22
 
 ## Security
 
-### [Low] REST autocomplete handler logs nonce in plaintext
+### [Low] Notification logs expose recipient email addresses and subjects
 - **Status:** Open
-- **Date:** 2026-02-14
+- **Date:** 2026-02-22
 - **Category:** Security
-- **Description:** `handle_autocomplete()` writes the received nonce to PHP error log.
-- **Expected behavior:** Remove nonce logging and keep security token values out of logs.
-- **Notes:** The autocomplete endpoint is intended to remain public for frontend usage; treat it as public read-only surface and harden it (minimal response data, strict input validation, result limits, optional rate limiting/caching, no sensitive token logging). `includes/class-alm-autocomplete-manager.php`
+- **Description:** `send_notification_email()` logs recipient (`to`) and email subject in plaintext via `ALM_Logger::info()`. With `WP_DEBUG` enabled, this can persist personal data and workflow details in server logs.
+- **Expected behavior:** Avoid logging recipient addresses/subjects (or mask them), and keep verbose mail tracing behind an explicit opt-in debug setting.
+- **Notes:** `includes/class-alm-notification-manager.php:330`, `includes/class-alm-notification-manager.php:333`
 
 ---
 
@@ -24,6 +24,22 @@ Last update: 2026-02-22
 - **Description:** `redirect_restricted_users()` calls `wp_redirect( home_url() )`. While `home_url()` is normally safe, `wp_safe_redirect()` is the WordPress-recommended function for internal redirects as it validates the destination against the allowed hosts list.
 - **Expected behavior:** Replace `wp_redirect()` with `wp_safe_redirect()`.
 - **Notes:** `includes/class-alm-admin-manager.php`, line 60.
+
+### [High] Reject flow can write inconsistent history under concurrent processing
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Bug
+- **Description:** The reject path reads the request row outside the transaction and, inside `reject_loan_request()`, inserts a `rejected` history entry before deleting the request. Deletion checks only `false` and treats `0 affected rows` as success. If another action processes/deletes the same request first, the reject path can still commit a stale/incorrect history row.
+- **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
+- **Notes:** `includes/class-alm-loan-manager.php:223`, `includes/class-alm-loan-manager.php:327`, `includes/class-alm-loan-manager.php:335`, `includes/class-alm-loan-manager.php:357`
+
+### [Medium] Duplicate pending requests possible under concurrent submissions
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Bug
+- **Description:** Submission checks `has_pending_request()` and inserts via `create_loan_request()` in separate steps without row-level locking or DB uniqueness. Two near-simultaneous requests from the same user/asset can both pass the check and insert duplicate pending rows.
+- **Expected behavior:** Make submission idempotent under concurrency (transactional lock/check at insert time and/or schema-level uniqueness strategy).
+- **Notes:** `includes/class-alm-loan-manager.php:127`, `includes/class-alm-loan-manager.php:135`, `includes/class-alm-loan-manager.php:622`, `includes/class-alm-loan-manager.php:554`
 
 ---
 
