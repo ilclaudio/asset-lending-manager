@@ -4,7 +4,6 @@
 - **PHP:** 7.4+ (WordPress minimum; no PHP 8-only syntax used).
 - **WordPress:** 6.0+.
 - **Required plugin:** Advanced Custom Fields (ACF) — field groups for `alm_asset`.
-- **Frontend framework:** Bootstrap Italia (provided by the active theme, not bundled).
 - **Dev tooling:** Composer (`phpcs`/`phpcbf` via WPCS, PHPUnit). See `composer.json`.
 
 ## Architecture Notes
