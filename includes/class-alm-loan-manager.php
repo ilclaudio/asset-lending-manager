@@ -1093,11 +1093,7 @@ class ALM_Loan_Manager {
 	 * @return array Array of component post IDs.
 	 */
 	private function get_kit_components( $asset_id ) {
-		if ( ! function_exists( 'get_field' ) ) {
-			return array();
-		}
-
-		$components = get_field( 'components', $asset_id );
+		$components = ALM_ACF_Asset_Adapter::get_custom_field( 'components', $asset_id );
 
 		if ( ! is_array( $components ) || empty( $components ) ) {
 			return array();

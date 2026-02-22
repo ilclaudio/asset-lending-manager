@@ -321,15 +321,7 @@ class ALM_Asset_Manager {
 			'notes'                => __( 'Notes', 'asset-lending-manager' ),
 			'components'           => __( 'Components', 'asset-lending-manager' ),
 		);
-		$field_objects     = array();
-		// $manufacturer_value = (string) get_field( 'manufacturer', $asset_id );
-		// Get all the custom fields for this asset.
-		if ( function_exists( 'get_field_objects' ) ) {
-			$tmp = get_field_objects( $asset_id );
-			if ( is_array( $tmp ) ) {
-				$field_objects = $tmp;
-			}
-		}
+		$field_objects = ALM_ACF_Asset_Adapter::get_custom_fields( $asset_id );
 		// Build an array with the fields ordered based on $order.
 		if ( ! empty( $field_objects ) ) {
 			foreach ( $order as $field_name ) {
