@@ -24,6 +24,12 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 ---
 
+## Requirements
+
+This plugin requires the Advanced Custom Fields plugin (free).
+
+---
+
 ## Loan Workflow
 
 1. A member browses the available assets.

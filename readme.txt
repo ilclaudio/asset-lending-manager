@@ -32,6 +32,9 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 * Role-based permissions (alm_member, alm_operator)
 * Translation-ready
 
+== Requirements ==
+This plugin requires the Advanced Custom Fields plugin (free).
+
 
 == Loan Workflow ==
 * A member browses the available assets.
