@@ -1,10 +1,12 @@
 # WordPress Asset Lending Manager
 
-Asset Lending Manager is a WordPress plugin that helps organizations manage shared assets and internal lending workflows.
+Asset Lending Manager is an open-source WordPress plugin that helps any organization manage shared physical assets and internal lending workflows.
+
+Designed for clubs, associations, schools, public bodies, libraries, laboratories, makerspaces, and any group that loans equipment or materials to its members.
 
 Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
-The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof.
+The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof. Born within the [AAGG astronomy association](https://www.astrofilipisani.it/) to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
 
 ---
 

@@ -1,9 +1,41 @@
 # ISSUES TODO
-Last update: 2026-02-22
+Last update: 2026-02-22 (review 2026-02-22)
 
 ---
 
 ## Security
+
+### [High] Operators cannot approve or reject loan requests for unowned assets
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Bug
+- **Description:** `can_user_approve_request()` and `can_user_reject_request()` both require the acting user to be the current owner of the asset (either via the stored `owner_id` on the request or via `get_current_owner()`). When an asset has no owner (`owner_id = 0`), neither condition is satisfied for anyone — including operators. As a result, loan requests submitted for unowned assets become stuck in `pending` with no approval path through the standard workflow.
+- **Expected behavior:** Operators (users with `ALM_EDIT_ASSET`) should be able to approve or reject loan requests regardless of whether they are the current owner, particularly for unowned assets. Alternatively, the form should prevent members from submitting requests for unowned assets and direct them to contact an operator.
+- **Notes:** `includes/class-alm-loan-manager.php:752`, `includes/class-alm-loan-manager.php:300`. The approved path (direct_assign) is available to operators but requires bypassing the request flow entirely.
+
+### [Medium] Email template placeholder injection via user display names
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Security
+- **Description:** `format_template()` uses `str_replace()` with arrays, which processes replacement pairs left-to-right. User-controlled values (e.g., `display_name`, request message) are used as replacement values. If a user sets their display name to a placeholder token used later in the array (e.g., `{REQUEST_MESSAGE}`), PHP's iterative `str_replace` will substitute that token in the next pass, causing a later placeholder's value to appear in the wrong position in the email.
+- **Expected behavior:** Placeholder replacement values should be sanitized to remove or escape `{...}` tokens before substitution, or the template engine should be replaced with one that is not vulnerable to recursive substitution (e.g., replace all tokens in a single pass using `strtr()`).
+- **Notes:** `includes/class-alm-notification-manager.php:362`. Impact: data leakage / wrong data in wrong email field. No code execution possible (plain-text emails).
+
+### [Medium] Email header injection risk when settings UI exposes From fields
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Security
+- **Description:** The `From:` header is built by direct string concatenation of `ALM_EMAIL_FROM_NAME` and `$from_address`: `'From: ' . ALM_EMAIL_FROM_NAME . ' <' . $from_address . '>'`. Currently these are compile-time constants (low risk). However, when the settings UI is implemented and these values are read from `wp_options` (user-editable by admins), a value containing `\r\n` would allow injecting arbitrary mail headers (header injection attack).
+- **Expected behavior:** When the settings UI is added, sanitize `from_name` and `from_address` before building the header by stripping newline/carriage-return characters. Consider using `sanitize_email()` for the address and a dedicated sanitizer that strips CRLF for the name.
+- **Notes:** `includes/class-alm-notification-manager.php:324`. Pre-emptive issue to address before the settings page is implemented.
+
+### [Medium] `insertAdjacentHTML` with unvalidated DOM data in admin JS
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Security
+- **Description:** In `admin-assets.js`, `initQuickActions()` extracts `postId` from `row.id.replace('post-', '')` and concatenates it directly into an HTML string passed to `insertAdjacentHTML`. If another script modifies a table row's `id` attribute, or if unexpected characters appear (e.g., `post-123"><script>`), the concatenated HTML could execute arbitrary code.
+- **Expected behavior:** Replace `insertAdjacentHTML` with the `createElement` / `textContent` / `setAttribute` DOM API to ensure all values are treated as data and never interpreted as markup.
+- **Notes:** `assets/js/admin-assets.js:80-86`. Practical risk is low (WordPress core controls the DOM), but the pattern is unsafe by construction.
 
 ### [Low] Notification logs expose recipient email addresses and subjects
 - **Status:** Open
@@ -32,6 +64,14 @@ Last update: 2026-02-22
 - **Description:** The reject path reads the request row outside the transaction and, inside `reject_loan_request()`, inserts a `rejected` history entry before deleting the request. Deletion checks only `false` and treats `0 affected rows` as success. If another action processes/deletes the same request first, the reject path can still commit a stale/incorrect history row.
 - **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
 - **Notes:** `includes/class-alm-loan-manager.php:223`, `includes/class-alm-loan-manager.php:327`, `includes/class-alm-loan-manager.php:335`, `includes/class-alm-loan-manager.php:357`
+
+### [Medium] ACF unavailability silently skips kit component propagation
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Bug
+- **Description:** `get_kit_components()` silently returns an empty array when ACF is not available (`! function_exists('get_field')`). If ACF is deactivated while a kit loan is being approved or a direct assignment is processed, the kit is treated as if it has no components: the owner and state are updated on the kit post, but all component posts remain in their previous state. This leaves the data model in an inconsistent state with no error logged or surfaced to the user.
+- **Expected behavior:** When ACF is not available during a kit operation, `execute_ownership_transfer()` should throw an exception to abort the transaction, or at minimum log an error and surface a user-visible failure response.
+- **Notes:** `includes/class-alm-loan-manager.php:1096`. Only relevant if ACF is deactivated after kit assets are already created.
 
 ### [Medium] Duplicate pending requests possible under concurrent submissions
 - **Status:** Open
@@ -68,6 +108,30 @@ Last update: 2026-02-22
 - **Description:** Settings structure exists but is not wired to modules or admin UI.
 - **Expected behavior:** Wire settings into runtime usage or remove dead configuration paths.
 - **Notes:** `includes/class-alm-settings-manager.php`
+
+### [Low] Dead code: `$nonce` variable read but never used in `handle_autocomplete()`
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** Refactoring
+- **Description:** `handle_autocomplete()` reads and sanitizes `$nonce = $request->get_param('nonce')` but never uses the variable for any purpose. The endpoint has `'permission_callback' => '__return_true'` so nonce validation is also not performed. The dead code is confusing and may mislead future developers into thinking nonce validation is active.
+- **Expected behavior:** Remove the dead `$nonce` assignment until the endpoint actually validates nonces or is restricted to authenticated users.
+- **Notes:** `includes/class-alm-autocomplete-manager.php:145-146`
+
+### [Low] `echo` without escaping wrapper for pre-escaped `aria-label` variables
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** CodeStyle
+- **Description:** In the loan requests table, `$alm_approve_label` and `$alm_reject_label` are escaped with `esc_attr()` at assignment time, then output with bare `echo`. WordPress Coding Standards require escaping at the point of output, not at assignment, because the escape context may not be obvious to future readers and PHPCS reports this pattern as a violation.
+- **Expected behavior:** Move `esc_attr()` to the `echo` call site (e.g., `echo esc_attr( $alm_approve_label )`), or use `esc_attr_e()` directly.
+- **Notes:** `templates/shortcodes/asset-view.php:386`, `templates/shortcodes/asset-view.php:397`
+
+### [Low] `in_array()` without strict flag in `keep_alm_taxonomy_menu_open()`
+- **Status:** Open
+- **Date:** 2026-02-22
+- **Category:** CodeStyle
+- **Description:** `in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES )` is called without the `true` strict comparison flag. This allows type-coercive matching, which can produce unexpected results when the taxonomy value is `null`, `false`, or a non-string type. WordPress Coding Standards require strict comparisons by default.
+- **Expected behavior:** Add `true` as the third argument: `in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES, true )`.
+- **Notes:** `includes/class-alm-plugin-manager.php:303`
 
 ### [Low] Excessive debug console logs in JS
 - **Status:** Open
