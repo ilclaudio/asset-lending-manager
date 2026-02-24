@@ -40,34 +40,45 @@ class ALM_Settings_Manager {
 	private $option_name = 'alm_settings';
 
 	/**
-	 * Default settings.
+	 * Get default settings.
 	 *
-	 * @var array
+	 * Defined as a method (not a property) so that __() translation functions
+	 * are called at runtime, after the plugin text domain has been loaded.
+	 * Template defaults delegate to alm_get_email_templates() for the same reason.
+	 *
+	 * @return array
 	 */
-	private $defaults = array(
-		'email' => array(
-			'from_name'    => '',
-			'from_address' => '',
-			'system_email' => '',
-		),
-		'notifications' => array(
-			'enabled'           => true,
-			'loan_request'      => true,
-			'loan_decision'     => true,
-			'loan_confirmation' => true,
-		),
-		'loans' => array(
-			'max_active_per_user'     => 0,
-			'allow_multiple_requests' => true,
-		),
-		'frontend' => array(
-			'assets_page_id' => 0,
-		),
-		'logging' => array(
-			'enabled' => false,
-			'level'   => 'error',
-		),
-	);
+	private function get_defaults(): array {
+		$templates = alm_get_email_templates();
+		return array(
+			'email'         => array(
+				'from_name'    => '',
+				'from_address' => '',
+				'system_email' => '',
+			),
+			'notifications' => array(
+				'enabled'           => true,
+				'loan_request'      => true,
+				'loan_decision'     => true,
+				'loan_confirmation' => true,
+			),
+			'template'      => array(
+				'subject' => $templates['subject'],
+				'body'    => $templates['body'],
+			),
+			'loans'         => array(
+				'max_active_per_user'     => 0,
+				'allow_multiple_requests' => true,
+			),
+			'frontend'      => array(
+				'assets_page_id' => 0,
+			),
+			'logging'       => array(
+				'enabled' => false,
+				'level'   => 'error',
+			),
+		);
+	}
 
 	/**
 	 * Register hooks.
@@ -110,7 +121,7 @@ class ALM_Settings_Manager {
 			$saved = array();
 		}
 
-		return $this->deep_merge( $this->defaults, $saved );
+		return $this->deep_merge( $this->get_defaults(), $saved );
 	}
 
 	/**
@@ -162,7 +173,32 @@ class ALM_Settings_Manager {
 	 * Reset settings to defaults.
 	 */
 	public function reset() {
-		update_option( $this->option_name, $this->defaults );
+		update_option( $this->option_name, $this->get_defaults() );
+	}
+
+	/**
+	 * Set multiple settings at once using dot notation.
+	 *
+	 * Performs a single database write for all provided changes.
+	 *
+	 * @param array $changes Associative array of dot-notation key => value pairs.
+	 * @return void
+	 */
+	public function set_batch( array $changes ) {
+		$settings = $this->get_all();
+		foreach ( $changes as $key => $value ) {
+			$keys = explode( '.', $key );
+			$ref  = &$settings;
+			foreach ( $keys as $segment ) {
+				if ( ! isset( $ref[ $segment ] ) || ! is_array( $ref[ $segment ] ) ) {
+					$ref[ $segment ] = array();
+				}
+				$ref = &$ref[ $segment ];
+			}
+			$ref = $value;
+			unset( $ref );
+		}
+		update_option( $this->option_name, $settings );
 	}
 
 	/**

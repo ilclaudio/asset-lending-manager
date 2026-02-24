@@ -73,6 +73,11 @@ class ALM_Plugin_Manager {
 			'admin_post_alm_reload_default_terms',
 			array( $this, 'handle_reload_default_terms' ),
 		);
+		// Save settings page form.
+		add_action(
+			'admin_post_alm_save_settings',
+			array( $this, 'handle_settings_save' ),
+		);
 
 	}
 
@@ -280,6 +285,16 @@ class ALM_Plugin_Manager {
 			'edit-tags.php?taxonomy=' . ALM_ASSET_LEVEL_TAXONOMY_SLUG,
 		);
 
+		// Settings page.
+		add_submenu_page(
+			$slug_main_menu,
+			__( 'ALM Settings', 'asset-lending-manager' ),
+			__( 'Settings', 'asset-lending-manager' ),
+			ALM_EDIT_ASSET,
+			'alm-settings',
+			array( $this, 'render_settings_page' )
+		);
+
 		// Link to the page to reload default data.
 		add_submenu_page(
 			$slug_main_menu,
@@ -328,6 +343,83 @@ class ALM_Plugin_Manager {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
 		}
 		require_once ALM_PLUGIN_DIR . 'admin/alm-tools-page.php';
+	}
+
+	/**
+	 * Render the settings page.
+	 *
+	 * @return void
+	 */
+	public function render_settings_page() {
+		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
+		}
+		require_once ALM_PLUGIN_DIR . 'admin/alm-settings-page.php';
+	}
+
+	/**
+	 * Handle the settings form submission.
+	 *
+	 * Validates capability and nonce, sanitizes input per field type,
+	 * respects [A] vs [A/O] access levels, then saves via set_batch().
+	 *
+	 * @return void
+	 */
+	public function handle_settings_save() {
+		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+			wp_die( esc_html__( 'Unauthorized action.', 'asset-lending-manager' ) );
+		}
+
+		check_admin_referer( 'alm_save_settings', 'alm_settings_nonce' );
+
+		$is_admin   = current_user_can( 'manage_options' );
+		$active_tab = isset( $_POST['alm_active_tab'] ) ? sanitize_key( wp_unslash( $_POST['alm_active_tab'] ) ) : 'email';
+		$changes    = array();
+
+		if ( 'email' === $active_tab ) {
+			// [A]-only fields.
+			if ( $is_admin ) {
+				$changes['email.from_name']          = sanitize_text_field( wp_unslash( $_POST['alm_email_from_name'] ?? '' ) );
+				$changes['email.from_address']       = sanitize_email( wp_unslash( $_POST['alm_email_from_address'] ?? '' ) );
+				$changes['email.system_email']       = sanitize_email( wp_unslash( $_POST['alm_email_system_email'] ?? '' ) );
+				$changes['notifications.enabled']    = isset( $_POST['alm_notifications_enabled'] );
+			}
+			// [A/O] fields.
+			$changes['notifications.loan_request']      = isset( $_POST['alm_notifications_loan_request'] );
+			$changes['notifications.loan_decision']     = isset( $_POST['alm_notifications_loan_decision'] );
+			$changes['notifications.loan_confirmation'] = isset( $_POST['alm_notifications_loan_confirmation'] );
+		}
+
+		if ( 'templates' === $active_tab && $is_admin ) {
+			$types = array(
+				'request_to_requester',
+				'request_to_owner',
+				'approved',
+				'rejected',
+				'canceled',
+				'direct_assign',
+				'direct_assign_to_prev_owner',
+			);
+			foreach ( $types as $type ) {
+				$changes[ 'template.subject.' . $type ] = sanitize_text_field( wp_unslash( $_POST[ 'alm_tpl_subject_' . $type ] ?? '' ) );
+				$changes[ 'template.body.' . $type ]    = sanitize_textarea_field( wp_unslash( $_POST[ 'alm_tpl_body_' . $type ] ?? '' ) );
+			}
+		}
+
+		if ( ! empty( $changes ) ) {
+			$this->modules['settings']->set_batch( $changes );
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'tab'   => $active_tab,
+					'saved' => '1',
+				),
+				admin_url( 'admin.php?page=alm-settings' )
+			)
+		);
+		exit;
 	}
 
 	/**

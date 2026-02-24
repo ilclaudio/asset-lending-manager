@@ -134,6 +134,51 @@
 	to { transform: rotate(360deg); }
 }
 
+/* Settings page — template accordion */
+.alm-settings-template-section {
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	margin-bottom: 12px;
+	background: #fff;
+}
+
+.alm-settings-template-summary {
+	padding: 12px 16px;
+	cursor: pointer;
+	list-style: none;
+	user-select: none;
+	border-bottom: 1px solid transparent;
+}
+
+.alm-settings-template-section[open] > .alm-settings-template-summary {
+	border-bottom-color: #dcdcde;
+	background: #f6f7f7;
+}
+
+.alm-settings-template-section > .form-table {
+	margin: 0;
+	padding: 0 16px;
+}
+
+.alm-settings-template-section > .form-table th {
+	width: 120px;
+}
+
+/* Settings page — administrator-only field badge */
+.alm-badge-admin {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 1;
+	padding: 2px 5px;
+	margin-left: 4px;
+	border-radius: 3px;
+	background: #2271b1;
+	color: #fff;
+	vertical-align: middle;
+	cursor: default;
+}
+
 /* Responsive adjustments */
 @media (max-width: 782px) {
 	.post-type-alm_asset .wp-list-table .column-thumbnail {
