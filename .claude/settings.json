@@ -9,7 +9,8 @@
       "Bash(py -3:*)",
       "Bash(python:*)",
       "Bash(git add:*)",
-      "Read(//c/Users/Claudio/Local Sites/alm-site/app/public/**)"
+      "Read(//c/Users/Claudio/Local Sites/alm-site/app/public/**)",
+      "Bash(git commit:*)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Claudio\\AppData\\Local\\Temp"
