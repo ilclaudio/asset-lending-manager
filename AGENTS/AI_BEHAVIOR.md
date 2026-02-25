@@ -202,6 +202,18 @@ Before marking work complete:
 - Update issue tracking (`ISSUES_TODO.md` / `ISSUES_RESOLVED.md`) when applicable.
 - Update AGENTS docs affected by the change (`PROJECT.md`, `ARCHITECTURE.md`, `CODING_STANDARDS.md`, `AI_BEHAVIOR.md`, `AGENTS_README.md` as needed).
 - Report a concise summary of what changed, what was verified, and any remaining risks.
+- Apply the **Next Step Suggestion** rule below.
+
+
+## Next Step Suggestion
+After every completed task, always close with a next-step recommendation:
+
+1. Re-read `AGENTS/ISSUES_TODO.md` and consider the current conversation context.
+2. Identify the most logical continuation(s).
+3. **One clear next step:** state it directly with a short rationale.
+4. **Multiple valid options:** present them as a numbered list so the user can choose.
+
+Keep suggestions concise (1–3 sentences each). Do not suggest steps already in progress.
 
 
 ## Batch and Mass Updates

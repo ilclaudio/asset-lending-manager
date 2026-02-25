@@ -15,6 +15,17 @@ Last update: 2026-02-22
 
 ---
 
+### [High] Minimum operator settings UI for runtime configuration
+- **Status:** Resolved
+- **Date:** 2026-02-14
+- **Category:** Feature
+- **Description:** Settings structure existed but was not exposed via admin UI.
+- **Resolution date:** 2026-02-25
+- **Fix summary:** Implemented complete settings admin page (`admin/alm-settings-page.php`) with 10 tabs covering all parameters in `ParametriBackoffice.txt`: Email & Notifications, Email Templates, Loan Rules, Direct Assignment, Workflow, Frontend, Autocomplete & API, Logging & Audit, Asset Identification, Maintenance. All parameters saved via `ALM_Settings_Manager::set_batch()` with correct [A]/[A/O] access control. Runtime wiring of settings into modules is tracked as a separate Refactoring issue.
+- **Notes:** `admin/alm-settings-page.php`, `includes/class-alm-settings-manager.php`, `includes/class-alm-plugin-manager.php`
+
+---
+
 ### [Low] REST autocomplete handler logs nonce in plaintext
 - **Status:** Resolved
 - **Date:** 2026-02-14

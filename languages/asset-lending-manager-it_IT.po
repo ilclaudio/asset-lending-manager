@@ -424,11 +424,11 @@ msgstr "Email e notifiche"
 
 #: admin/alm-settings-page.php:27
 msgid "Email Templates"
-msgstr "Template email"
+msgstr "Template e-mail"
 
 #: admin/alm-settings-page.php:225
 msgid "Email templates can only be modified by administrators."
-msgstr "I template email possono essere modificati solo dagli amministratori."
+msgstr "I Template e-mail possono essere modificati solo dagli amministratori."
 
 #: admin/alm-settings-page.php:156
 msgid "Enable notifications"

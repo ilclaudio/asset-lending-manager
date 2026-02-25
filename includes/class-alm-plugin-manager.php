@@ -390,6 +390,91 @@ class ALM_Plugin_Manager {
 			$changes['notifications.loan_confirmation'] = isset( $_POST['alm_notifications_loan_confirmation'] );
 		}
 
+		if ( 'loans' === $active_tab ) {
+			// [A/O] fields.
+			$changes['loans.max_active_per_user']      = max( 0, (int) wp_unslash( $_POST['alm_loans_max_active_per_user'] ?? 0 ) );
+			$changes['loans.allow_multiple_requests']  = isset( $_POST['alm_loans_allow_multiple_requests'] );
+			// [A]-only fields.
+			if ( $is_admin ) {
+				$policy_whitelist                                = array( 'none', 'operator', 'any_alm_user' );
+				$raw_policy                                      = sanitize_key( wp_unslash( $_POST['alm_loans_approver_policy'] ?? 'none' ) );
+				$changes['loans.approver_policy_for_unowned_assets'] = in_array( $raw_policy, $policy_whitelist, true ) ? $raw_policy : 'none';
+				$changes['loans.request_message_max_length']         = max( 0, (int) wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) );
+				$changes['loans.rejection_message_max_length']       = max( 0, (int) wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 255 ) );
+				$changes['loans.direct_assign_reason_max_length']    = max( 0, (int) wp_unslash( $_POST['alm_loans_direct_assign_reason_max_length'] ?? 500 ) );
+			}
+		}
+
+		if ( 'direct_assign' === $active_tab ) {
+			// [A/O] field.
+			$changes['direct_assign.require_reason'] = isset( $_POST['alm_direct_assign_require_reason'] );
+			// [A]-only fields.
+			if ( $is_admin ) {
+				$changes['direct_assign.enabled'] = isset( $_POST['alm_direct_assign_enabled'] );
+				$valid_roles                       = array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE );
+				$raw_roles                         = isset( $_POST['alm_direct_assign_roles'] ) ? (array) wp_unslash( $_POST['alm_direct_assign_roles'] ) : array();
+				$changes['direct_assign.allowed_target_roles'] = array_values(
+					array_intersect( array_map( 'sanitize_key', $raw_roles ), $valid_roles )
+				);
+			}
+		}
+
+		if ( 'workflow' === $active_tab ) {
+			// [A/O] fields.
+			$changes['workflow.cancel_concurrent_requests_on_assign']        = isset( $_POST['alm_workflow_cancel_concurrent'] );
+			$changes['workflow.cancel_component_requests_when_kit_assigned'] = isset( $_POST['alm_workflow_cancel_component_requests'] );
+			// [A]-only fields.
+			if ( $is_admin ) {
+				$changes['workflow.automatic_operations_actor_user_id'] = max( 1, (int) wp_unslash( $_POST['alm_workflow_actor_user_id'] ?? 1 ) );
+			}
+		}
+
+		if ( 'frontend' === $active_tab ) {
+			// [A/O] fields.
+			$changes['frontend.asset_list_per_page']  = min( 100, max( 1, (int) wp_unslash( $_POST['alm_frontend_asset_list_per_page'] ?? ALM_ASSET_LIST_PER_PAGE ) ) );
+			$changes['frontend.default_filters_open'] = isset( $_POST['alm_frontend_default_filters_open'] );
+			// [A]-only fields.
+			if ( $is_admin ) {
+				$changes['frontend.assets_page_id']          = max( 0, (int) wp_unslash( $_POST['alm_frontend_assets_page_id'] ?? 0 ) );
+				$changes['frontend.login_redirect_page_id']  = max( 0, (int) wp_unslash( $_POST['alm_frontend_login_redirect_page_id'] ?? 0 ) );
+				$changes['frontend.logout_redirect_page_id'] = max( 0, (int) wp_unslash( $_POST['alm_frontend_logout_redirect_page_id'] ?? 0 ) );
+			}
+		}
+
+		if ( 'autocomplete' === $active_tab ) {
+			// [A/O] fields.
+			$changes['autocomplete.min_chars']          = min( 10, max( 1, (int) wp_unslash( $_POST['alm_autocomplete_min_chars'] ?? 3 ) ) );
+			$changes['autocomplete.max_results']        = min( 20, max( 1, (int) wp_unslash( $_POST['alm_autocomplete_max_results'] ?? ALM_AUTOCOMPLETE_MAX_RESULTS ) ) );
+			$changes['autocomplete.description_length'] = min( 200, max( 0, (int) wp_unslash( $_POST['alm_autocomplete_description_length'] ?? ALM_AUTOCOMPLETE_DESC_LENGTH ) ) );
+			$changes['autocomplete.cache_ttl_seconds']  = max( 0, (int) wp_unslash( $_POST['alm_autocomplete_cache_ttl'] ?? 0 ) );
+			// [A]-only fields.
+			if ( $is_admin ) {
+				$changes['autocomplete.public_assets_endpoint_enabled'] = isset( $_POST['alm_autocomplete_public_endpoint'] );
+				$changes['autocomplete.rate_limit_enabled']             = isset( $_POST['alm_autocomplete_rate_limit_enabled'] );
+				$changes['autocomplete.rate_limit_per_minute']          = max( 1, (int) wp_unslash( $_POST['alm_autocomplete_rate_limit_per_minute'] ?? 60 ) );
+			}
+		}
+
+		if ( 'logging' === $active_tab && $is_admin ) {
+			$level_whitelist               = array( 'debug', 'info', 'warning', 'error' );
+			$raw_level                     = sanitize_key( wp_unslash( $_POST['alm_logging_level'] ?? 'error' ) );
+			$changes['logging.enabled']            = isset( $_POST['alm_logging_enabled'] );
+			$changes['logging.level']              = in_array( $raw_level, $level_whitelist, true ) ? $raw_level : 'error';
+			$changes['logging.mask_personal_data'] = isset( $_POST['alm_logging_mask_personal_data'] );
+			$changes['logging.log_email_events']   = isset( $_POST['alm_logging_log_email_events'] );
+		}
+
+		if ( 'asset' === $active_tab && $is_admin ) {
+			$raw_prefix               = sanitize_text_field( wp_unslash( $_POST['alm_asset_code_prefix'] ?? ALM_ASSET_CODE_PREFIX ) );
+			$clean_prefix             = substr( preg_replace( '/[^A-Za-z0-9]/', '', $raw_prefix ), 0, 10 );
+			$changes['asset.code_prefix'] = '' !== $clean_prefix ? $clean_prefix : ALM_ASSET_CODE_PREFIX;
+		}
+
+		if ( 'maintenance' === $active_tab && $is_admin ) {
+			$changes['maintenance.enable_tools_page']                  = isset( $_POST['alm_maintenance_enable_tools_page'] );
+			$changes['maintenance.enable_reload_default_terms_action'] = isset( $_POST['alm_maintenance_enable_reload_terms'] );
+		}
+
 		if ( 'templates' === $active_tab && $is_admin ) {
 			$types = array(
 				'request_to_requester',

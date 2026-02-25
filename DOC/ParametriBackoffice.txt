@@ -14,7 +14,7 @@ Legenda accesso modifica:
 - notifications.loan_decision (bool) [A/O]
 - notifications.loan_confirmation (bool, se/quando introdotta) [A/O]
 
-2) Template email
+2) Template e-mail
 - template.subject.request_to_requester (testo) [A]
 - template.subject.request_to_owner (testo) [A]
 - template.subject.approved (testo) [A]

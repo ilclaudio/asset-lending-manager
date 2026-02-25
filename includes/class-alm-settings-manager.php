@@ -67,15 +67,51 @@ class ALM_Settings_Manager {
 				'body'    => $templates['body'],
 			),
 			'loans'         => array(
-				'max_active_per_user'     => 0,
-				'allow_multiple_requests' => true,
+				'max_active_per_user'                => 0,
+				'allow_multiple_requests'            => true,
+				'approver_policy_for_unowned_assets' => 'none',
+				'request_message_max_length'         => 500,
+				'rejection_message_max_length'       => 255,
+				'direct_assign_reason_max_length'    => 500,
+			),
+			'direct_assign' => array(
+				'enabled'              => true,
+				'allowed_target_roles' => array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ),
+				'require_reason'       => false,
+			),
+			'workflow'      => array(
+				'cancel_concurrent_requests_on_assign'        => true,
+				'cancel_component_requests_when_kit_assigned' => true,
+				'automatic_operations_actor_user_id'          => 1,
 			),
 			'frontend'      => array(
-				'assets_page_id' => 0,
+				'assets_page_id'          => 0,
+				'login_redirect_page_id'  => 0,
+				'logout_redirect_page_id' => 0,
+				'asset_list_per_page'     => ALM_ASSET_LIST_PER_PAGE,
+				'default_filters_open'    => false,
+			),
+			'autocomplete'  => array(
+				'min_chars'                      => 3,
+				'max_results'                    => ALM_AUTOCOMPLETE_MAX_RESULTS,
+				'description_length'             => ALM_AUTOCOMPLETE_DESC_LENGTH,
+				'public_assets_endpoint_enabled' => true,
+				'rate_limit_enabled'             => false,
+				'rate_limit_per_minute'          => 60,
+				'cache_ttl_seconds'              => 0,
 			),
 			'logging'       => array(
-				'enabled' => false,
-				'level'   => 'error',
+				'enabled'            => false,
+				'level'              => 'error',
+				'mask_personal_data' => false,
+				'log_email_events'   => false,
+			),
+			'asset'         => array(
+				'code_prefix' => ALM_ASSET_CODE_PREFIX,
+			),
+			'maintenance'   => array(
+				'enable_reload_default_terms_action' => true,
+				'enable_tools_page'                  => true,
 			),
 		);
 	}
