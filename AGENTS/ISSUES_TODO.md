@@ -101,13 +101,13 @@ Last update: 2026-02-22 (review 2026-02-22)
 - **Expected behavior:** Create helper function (e.g. in `plugin-config.php` or a new `functions-helpers.php`); replace inline markup.
 - **Notes:** Premature abstraction at current single-usage; revisit if a second template adopts the badge. `templates/shortcodes/asset-view.php`
 
-### [Medium] Settings manager config is defined but not consumed
+### [Medium] Settings values stored but not consumed by runtime modules
 - **Status:** Open
 - **Date:** 2026-02-09
 - **Category:** Refactoring
-- **Description:** Settings structure exists but is not wired to modules or admin UI.
-- **Expected behavior:** Wire settings into runtime usage or remove dead configuration paths.
-- **Notes:** `includes/class-alm-settings-manager.php`
+- **Description:** Settings UI is complete (10 tabs, all parameters from ParametriBackoffice.txt). Values are persisted to `wp_options`. However, runtime modules still read hardcoded constants instead of the settings store: `ALM_Loan_Manager` uses class constants (`SEND_REQUEST_MESSAGE_MAX_LENGTH`, `REJECTION_MESSAGE_MAX_LENGTH`, `DIRECT_ASSIGN_REASON_MAX_LENGTH`, `AUTOMATIC_OPERATIONS_OPERATOR_ID`) and always-on cancel logic; `ALM_Frontend_Manager` uses `home_url('/asset/')` and `home_url('/')` for redirects and `ALM_ASSET_LIST_PER_PAGE` for list size; `ALM_Autocomplete_Manager` uses `ALM_AUTOCOMPLETE_MAX_RESULTS`, `ALM_AUTOCOMPLETE_DESC_LENGTH`, and hardcoded `min_chars=3`; `ALM_Asset_Manager::get_asset_code()` uses `ALM_ASSET_CODE_PREFIX`.
+- **Expected behavior:** Replace each hardcoded constant/value with a `$settings->get(...)` call so the admin UI actually controls runtime behavior.
+- **Notes:** `includes/class-alm-loan-manager.php`, `includes/class-alm-frontend-manager.php`, `includes/class-alm-autocomplete-manager.php`, `includes/class-alm-asset-manager.php`
 
 ### [Low] Dead code: `$nonce` variable read but never used in `handle_autocomplete()`
 - **Status:** Open
@@ -210,12 +210,12 @@ Last update: 2026-02-22 (review 2026-02-22)
 - **Notes:** Required for realistic end-to-end user testing of the lending lifecycle.
 
 ### [High] Minimum operator settings UI for runtime configuration
-- **Status:** Open
+- **Status:** Resolved — 2026-02-25
 - **Date:** 2026-02-14
 - **Category:** Feature
 - **Description:** Settings structure exists but is not exposed via complete admin UI and is not fully consumed at runtime.
 - **Expected behavior:** Provide a minimal settings page to configure notification sender/system email and core workflow toggles used by runtime modules.
-- **Notes:** Required before broad user testing to avoid hardcoded operational behavior.
+- **Notes:** Settings page complete with 10 tabs covering all ParametriBackoffice.txt parameters. Runtime wiring tracked separately in the Refactoring issue above.
 
 ### [Medium] Member dashboard for "My requests" and "My active loans"
 - **Status:** Open
