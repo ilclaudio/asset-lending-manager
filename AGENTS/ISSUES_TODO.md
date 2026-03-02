@@ -101,13 +101,6 @@ Last update: 2026-03-02
 - **Expected behavior:** Create helper function (e.g. in `plugin-config.php` or a new `functions-helpers.php`); replace inline markup.
 - **Notes:** Premature abstraction at current single-usage; revisit if a second template adopts the badge. `templates/shortcodes/asset-view.php`
 
-### [Medium] Settings values stored but not consumed by runtime modules
-- **Status:** Resolved — 2026-03-02
-- **Date:** 2026-02-09
-- **Category:** Refactoring
-- **Description:** All runtime modules now read from `ALM_Settings_Manager` instead of hardcoded constants. Full wiring complete across all 10 settings tabs.
-- **Notes:** Moved to ISSUES_RESOLVED.
-
 ### [Low] Dead code: `$nonce` variable read but never used in `handle_autocomplete()`
 - **Status:** Open
 - **Date:** 2026-02-22
@@ -199,14 +192,6 @@ Last update: 2026-03-02
 - **Description:** Current workflow supports request/approve/reject, but there is no explicit return/check-in flow to close an active loan.
 - **Expected behavior:** Add operator/owner-driven return flow that sets state back to `available`, clears or updates current owner correctly, propagates to kit components, and writes auditable history entries.
 - **Notes:** Required for realistic end-to-end user testing of the lending lifecycle.
-
-### [High] Minimum operator settings UI for runtime configuration
-- **Status:** Resolved — 2026-02-25
-- **Date:** 2026-02-14
-- **Category:** Feature
-- **Description:** Settings structure exists but is not exposed via complete admin UI and is not fully consumed at runtime.
-- **Expected behavior:** Provide a minimal settings page to configure notification sender/system email and core workflow toggles used by runtime modules.
-- **Notes:** Settings page complete with 10 tabs covering all ParametriBackoffice.txt parameters. Runtime wiring tracked separately in the Refactoring issue above.
 
 ### [Medium] Member dashboard for "My requests" and "My active loans"
 - **Status:** Open
