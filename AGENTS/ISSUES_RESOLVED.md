@@ -12,6 +12,17 @@ Last update: 2026-03-02
 - **Fix summary:** Full wiring completed in two phases. Phase 1 (tabs 1–3, done previously): `ALM_Notification_Manager` reads `email.*`, `notifications.*`, `template.*`; `ALM_Loan_Manager` reads `loans.*` message lengths. Phase 2 (tabs 4–10, this session): `ALM_Frontend_Manager` (new `$settings` constructor injection) reads `frontend.asset_list_per_page`, `frontend.login_redirect_page_id`, `frontend.logout_redirect_page_id`, `autocomplete.min_chars`. `ALM_Autocomplete_Manager` (new `$settings` constructor injection) reads `autocomplete.min_chars`, `autocomplete.max_results`, `autocomplete.description_length`. `ALM_Loan_Manager` reads `workflow.cancel_concurrent_requests_on_assign`, `workflow.cancel_component_requests_when_kit_assigned`, `workflow.automatic_operations_actor_user_id`. `ALM_Asset_Manager::get_asset_code()` reads `asset.code_prefix` via `ALM_Plugin_Manager` singleton (method is `static`). `ALM_Plugin_Manager::init_modules()` updated to pass `$settings` to `ALM_Frontend_Manager` and `ALM_Autocomplete_Manager` constructors. All constants kept as fallback defaults.
 - **Notes:** `includes/class-alm-plugin-manager.php`, `includes/class-alm-frontend-manager.php`, `includes/class-alm-autocomplete-manager.php`, `includes/class-alm-loan-manager.php`, `includes/class-alm-asset-manager.php`
 
+---
+
+### [Low] Hardcoded operator user ID for automatic operations
+- **Status:** Resolved
+- **Date:** 2026-02-12
+- **Category:** Refactoring
+- **Description:** Automatic operations (e.g. automatic cancellation of concurrent requests) used a hardcoded constant `AUTOMATIC_OPERATIONS_OPERATOR_ID` (value `1`) as the actor user ID, unsafe for installations where user ID 1 is not the designated operator.
+- **Resolution date:** 2026-03-02
+- **Fix summary:** `ALM_Loan_Manager::cancel_concurrent_requests()` now reads the actor ID from `$this->settings->get( 'workflow.automatic_operations_actor_user_id', self::AUTOMATIC_OPERATIONS_OPERATOR_ID )`. The constant remains as the safe fallback default. Operators can configure the correct user ID in Settings → Workflow tab.
+- **Notes:** `includes/class-alm-loan-manager.php`
+
 ## Entry Format
 ```markdown
 ### [PRIORITY] Short descriptive title
@@ -34,6 +45,17 @@ Last update: 2026-03-02
 - **Resolution date:** 2026-03-02
 - **Fix summary:** Updated permission checks so operators (`ALM_EDIT_ASSET`) can approve/reject any pending request via `user_can( $user_id, ALM_EDIT_ASSET )` in both `can_user_approve_request()` and `can_user_reject_request()`. Updated request table UI condition to show approve/reject buttons to operators as well as current owners.
 - **Notes:** `includes/class-alm-loan-manager.php`, `templates/shortcodes/asset-view.php`
+
+---
+
+### [High] Cancellation notifications fired before DB transaction commit
+- **Status:** Resolved
+- **Date:** 2026-03-02
+- **Category:** Bug
+- **Description:** `cancel_concurrent_requests()` fired `alm_loan_request_canceled` inside an open DB transaction. If later steps failed and rollback happened, users could receive cancellation notifications for changes that were never committed.
+- **Resolution date:** 2026-03-02
+- **Fix summary:** Refactored cancellation flow to queue notification payloads during transactional work and dispatch them only after a successful `COMMIT`. `execute_ownership_transfer()` now collects cancellation events, `cancel_concurrent_requests()` only records events, and both `approve_loan_request()` / `direct_assign_asset()` trigger notifications via a post-commit dispatcher.
+- **Notes:** `includes/class-alm-loan-manager.php`
 
 ---
 
