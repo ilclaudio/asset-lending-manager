@@ -10,7 +10,15 @@
       "Bash(python:*)",
       "Bash(git add:*)",
       "Read(//c/Users/Claudio/Local Sites/alm-site/app/public/**)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(composer run i18n:pot)",
+      "Bash(wp i18n make-pot . languages/asset-lending-manager.pot --domain=asset-lending-manager --exclude=vendor,node_modules)",
+      "Read(//^msgid /{id=$0; next} /^msgstr \"\"\"\"$/**)",
+      "Bash(node \"c:\\\\Users\\\\Claudio\\\\AppData\\\\Local\\\\Temp\\\\patch-po.js\")",
+      "Bash(where msgfmt)",
+      "Bash(where gettext)",
+      "Read(//c/Program Files/Git/mingw64/**)",
+      "Read(//c/Program Files/Git/**)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Claudio\\AppData\\Local\\Temp"
