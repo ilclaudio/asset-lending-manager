@@ -99,9 +99,7 @@ class ALM_Autocomplete_Manager {
 					'term' => array(
 						'required'          => true,
 						'sanitize_callback' => 'sanitize_text_field',
-						'validate_callback' => function ( $param ) {
-							return is_string( $param ) && strlen( $param ) >= 3;
-						},
+						'validate_callback' => array( $this, 'validate_autocomplete_term' ),
 					),
 				),
 			)
@@ -120,13 +118,28 @@ class ALM_Autocomplete_Manager {
 					'term' => array(
 						'required'          => true,
 						'sanitize_callback' => 'sanitize_text_field',
-						'validate_callback' => function ( $param ) {
-							return is_string( $param ) && strlen( $param ) >= 3;
-						},
+						'validate_callback' => array( $this, 'validate_autocomplete_term' ),
 					),
 				),
 			)
 		);
+	}
+
+	/**
+	 * Validates autocomplete search term against configured minimum length.
+	 *
+	 * @param mixed $param Term parameter received by REST API.
+	 * @return bool
+	 */
+	public function validate_autocomplete_term( $param ) {
+		if ( ! is_string( $param ) ) {
+			return false;
+		}
+
+		$term      = trim( $param );
+		$min_chars = (int) $this->settings->get( 'autocomplete.min_chars', 3 );
+
+		return strlen( $term ) >= $min_chars;
 	}
 
 	/**

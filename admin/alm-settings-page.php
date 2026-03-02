@@ -788,27 +788,7 @@ $placeholders = array(
 							</label>
 						</td>
 					</tr>
-					<tr>
-						<th scope="row">
-							<label for="alm_autocomplete_cache_ttl">
-								<?php esc_html_e( 'Cache TTL (seconds)', 'asset-lending-manager' ); ?>
-						</label>
-					</th>
-					<td>
-						<input
-							type="number"
-							id="alm_autocomplete_cache_ttl"
-							name="alm_autocomplete_cache_ttl"
-							value="<?php echo esc_attr( $settings->get( 'autocomplete.cache_ttl_seconds' ) ); ?>"
-							min="0"
-							class="small-text"
-						>
-						<p class="description">
-							<?php esc_html_e( 'How long autocomplete results are cached (in seconds). Set to 0 to disable caching.', 'asset-lending-manager' ); ?>
-						</p>
-					</td>
-				</tr>
-			</table>
+				</table>
 
 			<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
 
