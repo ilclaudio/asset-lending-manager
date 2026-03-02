@@ -224,3 +224,6 @@ Keep suggestions concise (1–3 sentences each). Do not suggest steps already in
 ## Git Workflow Usage
 Git branch/commit/PR conventions are defined in `AGENTS/GIT_WORKFLOW.md`.
 Read and apply that file only when the user asks for VCS actions.
+
+**Never create a commit unless the user explicitly requests it.**
+If a task is complete but no commit was requested, stop and report what was done without committing.
