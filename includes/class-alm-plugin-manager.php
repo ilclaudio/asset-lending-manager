@@ -2,7 +2,6 @@
 /**
  * Plugin Manager.
  *
- *
  * @package AssetLendingManager
  */
 
@@ -78,7 +77,6 @@ class ALM_Plugin_Manager {
 			'admin_post_alm_save_settings',
 			array( $this, 'handle_settings_save' ),
 		);
-
 	}
 
 	/**
@@ -90,7 +88,7 @@ class ALM_Plugin_Manager {
 		if ( ! class_exists( 'ACF' ) ) {
 			add_action(
 				'admin_notices',
-				function() {
+				function () {
 					$msg = __( 'The ALM plugin requires the plugin ACF installed and enabled.', 'asset-lending-manager' );
 					echo '<div class="notice notice-error"><p>';
 					echo esc_html( $msg );
@@ -122,12 +120,13 @@ class ALM_Plugin_Manager {
 	 */
 	private function init_modules() {
 		if ( empty( $this->modules ) ) {
+			$settings      = new ALM_Settings_Manager();
 			$this->modules = array(
-				'settings'     => new ALM_Settings_Manager(),
+				'settings'     => $settings,
 				'role'         => new ALM_Role_Manager(),
 				'asset'        => new ALM_Asset_Manager(),
-				'loan'         => new ALM_Loan_Manager(),
-				'notification' => new ALM_Notification_Manager(),
+				'loan'         => new ALM_Loan_Manager( $settings ),
+				'notification' => new ALM_Notification_Manager( $settings ),
 				'frontend'     => new ALM_Frontend_Manager(),
 				'admin'        => new ALM_Admin_Manager(),
 				'autocomplete' => new ALM_Autocomplete_Manager(),
@@ -379,10 +378,10 @@ class ALM_Plugin_Manager {
 		if ( 'email' === $active_tab ) {
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['email.from_name']          = sanitize_text_field( wp_unslash( $_POST['alm_email_from_name'] ?? '' ) );
-				$changes['email.from_address']       = sanitize_email( wp_unslash( $_POST['alm_email_from_address'] ?? '' ) );
-				$changes['email.system_email']       = sanitize_email( wp_unslash( $_POST['alm_email_system_email'] ?? '' ) );
-				$changes['notifications.enabled']    = isset( $_POST['alm_notifications_enabled'] );
+				$changes['email.from_name']       = sanitize_text_field( wp_unslash( $_POST['alm_email_from_name'] ?? '' ) );
+				$changes['email.from_address']    = sanitize_email( wp_unslash( $_POST['alm_email_from_address'] ?? '' ) );
+				$changes['email.system_email']    = sanitize_email( wp_unslash( $_POST['alm_email_system_email'] ?? '' ) );
+				$changes['notifications.enabled'] = isset( $_POST['alm_notifications_enabled'] );
 			}
 			// [A/O] fields.
 			$changes['notifications.loan_request']      = isset( $_POST['alm_notifications_loan_request'] );
@@ -392,12 +391,12 @@ class ALM_Plugin_Manager {
 
 		if ( 'loans' === $active_tab ) {
 			// [A/O] fields.
-			$changes['loans.max_active_per_user']      = max( 0, (int) wp_unslash( $_POST['alm_loans_max_active_per_user'] ?? 0 ) );
-			$changes['loans.allow_multiple_requests']  = isset( $_POST['alm_loans_allow_multiple_requests'] );
+			$changes['loans.max_active_per_user']     = max( 0, (int) wp_unslash( $_POST['alm_loans_max_active_per_user'] ?? 0 ) );
+			$changes['loans.allow_multiple_requests'] = isset( $_POST['alm_loans_allow_multiple_requests'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$policy_whitelist                                = array( 'none', 'operator', 'any_alm_user' );
-				$raw_policy                                      = sanitize_key( wp_unslash( $_POST['alm_loans_approver_policy'] ?? 'none' ) );
+				$policy_whitelist = array( 'none', 'operator', 'any_alm_user' );
+				$raw_policy       = sanitize_key( wp_unslash( $_POST['alm_loans_approver_policy'] ?? 'none' ) );
 				$changes['loans.approver_policy_for_unowned_assets'] = in_array( $raw_policy, $policy_whitelist, true ) ? $raw_policy : 'none';
 				$changes['loans.request_message_max_length']         = max( 0, (int) wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) );
 				$changes['loans.rejection_message_max_length']       = max( 0, (int) wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 255 ) );
@@ -410,9 +409,9 @@ class ALM_Plugin_Manager {
 			$changes['direct_assign.require_reason'] = isset( $_POST['alm_direct_assign_require_reason'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['direct_assign.enabled'] = isset( $_POST['alm_direct_assign_enabled'] );
-				$valid_roles                       = array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE );
-				$raw_roles                         = isset( $_POST['alm_direct_assign_roles'] ) ? (array) wp_unslash( $_POST['alm_direct_assign_roles'] ) : array();
+				$changes['direct_assign.enabled']              = isset( $_POST['alm_direct_assign_enabled'] );
+				$valid_roles                                   = array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE );
+				$raw_roles                                     = isset( $_POST['alm_direct_assign_roles'] ) ? (array) wp_unslash( $_POST['alm_direct_assign_roles'] ) : array();
 				$changes['direct_assign.allowed_target_roles'] = array_values(
 					array_intersect( array_map( 'sanitize_key', $raw_roles ), $valid_roles )
 				);
@@ -456,8 +455,8 @@ class ALM_Plugin_Manager {
 		}
 
 		if ( 'logging' === $active_tab && $is_admin ) {
-			$level_whitelist               = array( 'debug', 'info', 'warning', 'error' );
-			$raw_level                     = sanitize_key( wp_unslash( $_POST['alm_logging_level'] ?? 'error' ) );
+			$level_whitelist                       = array( 'debug', 'info', 'warning', 'error' );
+			$raw_level                             = sanitize_key( wp_unslash( $_POST['alm_logging_level'] ?? 'error' ) );
 			$changes['logging.enabled']            = isset( $_POST['alm_logging_enabled'] );
 			$changes['logging.level']              = in_array( $raw_level, $level_whitelist, true ) ? $raw_level : 'error';
 			$changes['logging.mask_personal_data'] = isset( $_POST['alm_logging_mask_personal_data'] );
@@ -465,8 +464,8 @@ class ALM_Plugin_Manager {
 		}
 
 		if ( 'asset' === $active_tab && $is_admin ) {
-			$raw_prefix               = sanitize_text_field( wp_unslash( $_POST['alm_asset_code_prefix'] ?? ALM_ASSET_CODE_PREFIX ) );
-			$clean_prefix             = substr( preg_replace( '/[^A-Za-z0-9]/', '', $raw_prefix ), 0, 10 );
+			$raw_prefix                   = sanitize_text_field( wp_unslash( $_POST['alm_asset_code_prefix'] ?? ALM_ASSET_CODE_PREFIX ) );
+			$clean_prefix                 = substr( preg_replace( '/[^A-Za-z0-9]/', '', $raw_prefix ), 0, 10 );
 			$changes['asset.code_prefix'] = '' !== $clean_prefix ? $clean_prefix : ALM_ASSET_CODE_PREFIX;
 		}
 
@@ -571,5 +570,4 @@ class ALM_Plugin_Manager {
 		);
 		exit;
 	}
-
 }
