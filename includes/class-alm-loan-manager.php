@@ -107,6 +107,7 @@ class ALM_Loan_Manager {
 			wp_send_json_error(
 				array(
 					'message' => sprintf(
+						/* translators: %d: maximum number of characters allowed in request message */
 						__( 'Request message must not exceed %d characters.', 'asset-lending-manager' ),
 						$request_max
 					),
@@ -230,6 +231,7 @@ class ALM_Loan_Manager {
 			wp_send_json_error(
 				array(
 					'message' => sprintf(
+						/* translators: %d: maximum number of characters allowed in rejection message */
 						__( 'Rejection message must not exceed %d characters.', 'asset-lending-manager' ),
 						$rejection_max
 					),
@@ -239,13 +241,14 @@ class ALM_Loan_Manager {
 
 		// Get loan request from database.
 		global $wpdb;
-		$table_name   = $wpdb->prefix . 'alm_loan_requests';
-		$loan_request = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT * FROM $table_name WHERE id = %d",
-				$request_id
-			)
-		);
+		$table_name       = $wpdb->prefix . 'alm_loan_requests';
+			$loan_request = $wpdb->get_row(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
+					"SELECT * FROM $table_name WHERE id = %d",
+					$request_id
+				)
+			);
 
 		if ( ! $loan_request ) {
 			wp_send_json_error(
@@ -316,6 +319,11 @@ class ALM_Loan_Manager {
 	 * @return bool True if user can reject.
 	 */
 	private function can_user_reject_request( $loan_request, $user_id ) {
+		// Operators can reject any request, including unowned assets.
+		if ( user_can( $user_id, ALM_EDIT_ASSET ) ) {
+			return true;
+		}
+
 		// Current owner can reject requests for their assets.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;
@@ -340,6 +348,7 @@ class ALM_Loan_Manager {
 	 * @param object $loan_request      Loan request object from database.
 	 * @param string $rejection_message Rejection message.
 	 * @param int    $rejected_by       User ID who rejected the request.
+	 * @throws Exception When a transactional operation fails (caught internally).
 	 * @return bool True on success, false on failure.
 	 */
 	private function reject_loan_request( $loan_request, $rejection_message, $rejected_by ) {
@@ -491,13 +500,14 @@ class ALM_Loan_Manager {
 
 		// Get loan request from database.
 		global $wpdb;
-		$table_name   = $wpdb->prefix . 'alm_loan_requests';
-		$loan_request = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT * FROM $table_name WHERE id = %d",
-				$request_id
-			)
-		);
+		$table_name       = $wpdb->prefix . 'alm_loan_requests';
+			$loan_request = $wpdb->get_row(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
+					"SELECT * FROM $table_name WHERE id = %d",
+					$request_id
+				)
+			);
 
 		if ( ! $loan_request ) {
 			wp_send_json_error(
@@ -567,6 +577,7 @@ class ALM_Loan_Manager {
 	 * @param int    $requester_id Requester user ID.
 	 * @param int    $owner_id     Current owner user ID (0 if none).
 	 * @param string $message      Request message.
+	 * @throws Exception When a transactional operation fails (caught internally).
 	 * @return int|false Request ID on success, false on failure.
 	 */
 	private function create_loan_request( $asset_id, $requester_id, $owner_id, $message ) {
@@ -643,6 +654,7 @@ class ALM_Loan_Manager {
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
 				"SELECT COUNT(*) FROM $table_name 
 				WHERE asset_id = %d 
 				AND requester_id = %d 
@@ -667,6 +679,7 @@ class ALM_Loan_Manager {
 
 		return $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
 				"SELECT * FROM $table_name 
 				WHERE asset_id = %d 
 				AND status = %s 
@@ -691,6 +704,7 @@ class ALM_Loan_Manager {
 		if ( empty( $status ) ) {
 			return $wpdb->get_results(
 				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
 					"SELECT * FROM $table_name 
 					WHERE requester_id = %d 
 					ORDER BY request_date DESC",
@@ -700,6 +714,7 @@ class ALM_Loan_Manager {
 		}
 		return $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
 				"SELECT * FROM $table_name 
 				WHERE requester_id = %d 
 				AND status = %s 
@@ -729,20 +744,22 @@ class ALM_Loan_Manager {
 
 		if ( $is_operator || $user_id <= 0 ) {
 			// Operators see all entries for this asset.
-			return $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT * FROM $table_name 
-					WHERE asset_id = %d 
-					ORDER BY changed_at DESC 
+				return $wpdb->get_results(
+					$wpdb->prepare(
+						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
+						"SELECT * FROM $table_name 
+						WHERE asset_id = %d 
+						ORDER BY changed_at DESC 
 					LIMIT 10",
-					$asset_id
-				)
-			);
+						$asset_id
+					)
+				);
 		}
 
 		// Members see only entries where they are involved.
 		return $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
 				"SELECT * FROM $table_name 
 				WHERE asset_id = %d 
 				AND (
@@ -768,6 +785,11 @@ class ALM_Loan_Manager {
 	 * @return bool True if user can approve.
 	 */
 	private function can_user_approve_request( $loan_request, $user_id ) {
+		// Operators can approve any request, including unowned assets.
+		if ( user_can( $user_id, ALM_EDIT_ASSET ) ) {
+			return true;
+		}
+
 		// Current owner can approve requests for their assets.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;
@@ -843,8 +865,9 @@ class ALM_Loan_Manager {
 								$component_title = get_the_title( $component_id );
 								throw new Exception(
 									sprintf(
-										__( 'Component "%s" is already on loan and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
-										$component_title
+										/* translators: %s: kit component title */
+										esc_html__( 'Component "%s" is already on loan and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
+										esc_html( (string) $component_title )
 									)
 								);
 							}
@@ -907,24 +930,26 @@ class ALM_Loan_Manager {
 			$asset_id   = (int) $loan_request->asset_id;
 
 			// Lock all pending requests for this asset to serialize concurrent approvals.
-			$wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT id FROM $table_name
-					WHERE asset_id = %d
-					FOR UPDATE",
-					$asset_id
-				)
-			);
+				$wpdb->get_results(
+					$wpdb->prepare(
+						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
+						"SELECT id FROM $table_name
+						WHERE asset_id = %d
+						FOR UPDATE",
+						$asset_id
+					)
+				);
 
 			// Re-read and lock the target request row inside the transaction.
-			$loan_request = $wpdb->get_row(
-				$wpdb->prepare(
-					"SELECT * FROM $table_name
-					WHERE id = %d
-					FOR UPDATE",
-					$loan_request->id
-				)
-			);
+				$loan_request = $wpdb->get_row(
+					$wpdb->prepare(
+						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
+						"SELECT * FROM $table_name
+						WHERE id = %d
+						FOR UPDATE",
+						$loan_request->id
+					)
+				);
 
 			if ( ! $loan_request ) {
 				throw new Exception( __( 'Loan request not found.', 'asset-lending-manager' ) );
@@ -1024,6 +1049,7 @@ class ALM_Loan_Manager {
 	 *
 	 * @param int $asset_id Asset ID.
 	 * @param int $user_id  User ID (0 = no owner).
+	 * @throws Exception When owner persistence fails.
 	 * @return bool True on success, false on failure.
 	 */
 	private function set_asset_owner( $asset_id, $user_id ) {
@@ -1035,8 +1061,9 @@ class ALM_Loan_Manager {
 		if ( false === $result && (int) get_post_meta( $asset_id, '_alm_current_owner', true ) !== (int) $user_id ) {
 			throw new Exception(
 				sprintf(
-					__( 'Failed to set owner for asset ID %d.', 'asset-lending-manager' ),
-					$asset_id
+					/* translators: %d: asset post ID */
+					esc_html__( 'Failed to set owner for asset ID %d.', 'asset-lending-manager' ),
+					(int) $asset_id
 				)
 			);
 		}
@@ -1049,6 +1076,7 @@ class ALM_Loan_Manager {
 	 *
 	 * @param int    $asset_id   Asset ID.
 	 * @param string $state_slug State slug (e.g., 'available', 'on-loan', 'maintenance').
+	 * @throws Exception When state slug is invalid or taxonomy update fails.
 	 * @return bool True on success, false on failure.
 	 */
 	private function set_asset_state( $asset_id, $state_slug ) {
@@ -1057,8 +1085,9 @@ class ALM_Loan_Manager {
 		if ( ! $term ) {
 			throw new Exception(
 				sprintf(
-					__( 'Invalid state slug: %s', 'asset-lending-manager' ),
-					$state_slug
+					/* translators: %s: invalid asset state slug */
+					esc_html__( 'Invalid state slug: %s', 'asset-lending-manager' ),
+					esc_html( (string) $state_slug )
 				)
 			);
 		}
@@ -1068,9 +1097,10 @@ class ALM_Loan_Manager {
 		if ( is_wp_error( $result ) ) {
 			throw new Exception(
 				sprintf(
-					__( 'Failed to set state for asset ID %1$d: %2$s', 'asset-lending-manager' ),
-					$asset_id,
-					$result->get_error_message()
+					/* translators: 1: asset post ID, 2: taxonomy error message */
+					esc_html__( 'Failed to set state for asset ID %1$d: %2$s', 'asset-lending-manager' ),
+					(int) $asset_id,
+					esc_html( $result->get_error_message() )
 				)
 			);
 		}
@@ -1136,6 +1166,7 @@ class ALM_Loan_Manager {
 	 * @param int    $asset_id           Asset ID.
 	 * @param int    $exclude_request_id Request ID to exclude (0 = cancel all).
 	 * @param string $cancel_message     Cancellation message.
+	 * @throws Exception When cancellation logging or deletion fails.
 	 * @return int Number of requests canceled.
 	 */
 	private function cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_message ) {
@@ -1146,9 +1177,10 @@ class ALM_Loan_Manager {
 		if ( $exclude_request_id > 0 ) {
 			$requests = $wpdb->get_results(
 				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
 					"SELECT * FROM $table_name 
-					WHERE asset_id = %d 
-					AND id != %d 
+						WHERE asset_id = %d 
+						AND id != %d 
 					AND status = 'pending'",
 					$asset_id,
 					$exclude_request_id
@@ -1157,9 +1189,10 @@ class ALM_Loan_Manager {
 		} else {
 			$requests = $wpdb->get_results(
 				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
 					"SELECT * FROM $table_name 
-					WHERE asset_id = %d 
-					AND status = 'pending'",
+						WHERE asset_id = %d 
+						AND status = 'pending'",
 					$asset_id
 				)
 			);
@@ -1186,8 +1219,9 @@ class ALM_Loan_Manager {
 			if ( ! $history_logged ) {
 				throw new Exception(
 					sprintf(
-						__( 'Failed to log cancellation for request ID %d.', 'asset-lending-manager' ),
-						$request->id
+						/* translators: %d: loan request ID */
+						esc_html__( 'Failed to log cancellation for request ID %d.', 'asset-lending-manager' ),
+						(int) $request->id
 					)
 				);
 			}
@@ -1202,8 +1236,9 @@ class ALM_Loan_Manager {
 			if ( false === $deleted ) {
 				throw new Exception(
 					sprintf(
-						__( 'Failed to delete request ID %d.', 'asset-lending-manager' ),
-						$request->id
+						/* translators: %d: loan request ID */
+						esc_html__( 'Failed to delete request ID %d.', 'asset-lending-manager' ),
+						(int) $request->id
 					)
 				);
 			}

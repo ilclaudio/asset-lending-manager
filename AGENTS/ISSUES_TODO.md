@@ -1,17 +1,9 @@
 # ISSUES TODO
-Last update: 2026-02-22 (review 2026-02-22)
+Last update: 2026-03-02 (review 2026-03-02)
 
 ---
 
 ## Security
-
-### [High] Operators cannot approve or reject loan requests for unowned assets
-- **Status:** Open
-- **Date:** 2026-02-22
-- **Category:** Bug
-- **Description:** `can_user_approve_request()` and `can_user_reject_request()` both require the acting user to be the current owner of the asset (either via the stored `owner_id` on the request or via `get_current_owner()`). When an asset has no owner (`owner_id = 0`), neither condition is satisfied for anyone — including operators. As a result, loan requests submitted for unowned assets become stuck in `pending` with no approval path through the standard workflow.
-- **Expected behavior:** Operators (users with `ALM_EDIT_ASSET`) should be able to approve or reject loan requests regardless of whether they are the current owner, particularly for unowned assets. Alternatively, the form should prevent members from submitting requests for unowned assets and direct them to contact an operator.
-- **Notes:** `includes/class-alm-loan-manager.php:752`, `includes/class-alm-loan-manager.php:300`. The approved path (direct_assign) is available to operators but requires bypassing the request flow entirely.
 
 ### [Medium] Email template placeholder injection via user display names
 - **Status:** Open
@@ -65,6 +57,14 @@ Last update: 2026-02-22 (review 2026-02-22)
 - **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
 - **Notes:** `includes/class-alm-loan-manager.php:223`, `includes/class-alm-loan-manager.php:327`, `includes/class-alm-loan-manager.php:335`, `includes/class-alm-loan-manager.php:357`
 
+### [High] Cancellation notifications fired before DB transaction commit
+- **Status:** Open
+- **Date:** 2026-03-02
+- **Category:** Bug
+- **Description:** `cancel_concurrent_requests()` triggers `do_action( 'alm_loan_request_canceled', ... )` while the caller transaction is still open. If a later step fails and a `ROLLBACK` occurs, users may receive "request canceled" notifications for changes that were not committed.
+- **Expected behavior:** Defer notification dispatch until after successful `COMMIT` (for example collect canceled IDs during transaction and fire actions post-commit), or implement an outbox pattern.
+- **Notes:** `includes/class-alm-loan-manager.php:1235`, `includes/class-alm-loan-manager.php:874`, `includes/class-alm-loan-manager.php:1383`, `includes/class-alm-loan-manager.php:1427`
+
 ### [Medium] ACF unavailability silently skips kit component propagation
 - **Status:** Open
 - **Date:** 2026-02-22
@@ -80,6 +80,14 @@ Last update: 2026-02-22 (review 2026-02-22)
 - **Description:** Submission checks `has_pending_request()` and inserts via `create_loan_request()` in separate steps without row-level locking or DB uniqueness. Two near-simultaneous requests from the same user/asset can both pass the check and insert duplicate pending rows.
 - **Expected behavior:** Make submission idempotent under concurrency (transactional lock/check at insert time and/or schema-level uniqueness strategy).
 - **Notes:** `includes/class-alm-loan-manager.php:127`, `includes/class-alm-loan-manager.php:135`, `includes/class-alm-loan-manager.php:622`, `includes/class-alm-loan-manager.php:554`
+
+### [Medium] Concurrent cancellation can create stale history rows
+- **Status:** Open
+- **Date:** 2026-03-02
+- **Category:** Bug
+- **Description:** In `cancel_concurrent_requests()`, each pending request is logged to history before deletion, and delete failure checks only `false`. Under concurrent processing, `DELETE` can affect `0` rows while history has already been written, producing inconsistent audit entries.
+- **Expected behavior:** Lock target rows before processing and require exactly one deleted row per request; rollback if row count is not `1`.
+- **Notes:** `includes/class-alm-loan-manager.php:1157`, `includes/class-alm-loan-manager.php:1186`, `includes/class-alm-loan-manager.php:1206`, `includes/class-alm-loan-manager.php:1212`
 
 ---
 
