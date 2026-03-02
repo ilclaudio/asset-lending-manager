@@ -1,6 +1,17 @@
 # ISSUES_RESOLVED
 Last update: 2026-03-02
 
+---
+
+### [Medium] Settings values stored but not consumed by runtime modules
+- **Status:** Resolved
+- **Date:** 2026-02-09
+- **Category:** Refactoring
+- **Description:** All runtime modules were using hardcoded constants instead of reading from `ALM_Settings_Manager`. Settings UI (10 tabs) was complete but disconnected from runtime.
+- **Resolution date:** 2026-03-02
+- **Fix summary:** Full wiring completed in two phases. Phase 1 (tabs 1–3, done previously): `ALM_Notification_Manager` reads `email.*`, `notifications.*`, `template.*`; `ALM_Loan_Manager` reads `loans.*` message lengths. Phase 2 (tabs 4–10, this session): `ALM_Frontend_Manager` (new `$settings` constructor injection) reads `frontend.asset_list_per_page`, `frontend.login_redirect_page_id`, `frontend.logout_redirect_page_id`, `autocomplete.min_chars`. `ALM_Autocomplete_Manager` (new `$settings` constructor injection) reads `autocomplete.min_chars`, `autocomplete.max_results`, `autocomplete.description_length`. `ALM_Loan_Manager` reads `workflow.cancel_concurrent_requests_on_assign`, `workflow.cancel_component_requests_when_kit_assigned`, `workflow.automatic_operations_actor_user_id`. `ALM_Asset_Manager::get_asset_code()` reads `asset.code_prefix` via `ALM_Plugin_Manager` singleton (method is `static`). `ALM_Plugin_Manager::init_modules()` updated to pass `$settings` to `ALM_Frontend_Manager` and `ALM_Autocomplete_Manager` constructors. All constants kept as fallback defaults.
+- **Notes:** `includes/class-alm-plugin-manager.php`, `includes/class-alm-frontend-manager.php`, `includes/class-alm-autocomplete-manager.php`, `includes/class-alm-loan-manager.php`, `includes/class-alm-asset-manager.php`
+
 ## Entry Format
 ```markdown
 ### [PRIORITY] Short descriptive title
