@@ -824,6 +824,7 @@ class ALM_Loan_Manager {
 	 * @param int    $exclude_request_id        Request ID to exclude from cancellation (0 = cancel all).
 	 * @param string $cancel_reason             Cancellation message for concurrent requests on the main asset.
 	 * @param bool   $check_component_conflicts Whether to throw if a kit component is already on-loan.
+	 * @param array  $canceled_notification_events Collected notification events to dispatch post-commit.
 	 * @throws Exception When any operation fails.
 	 * @return int[] Component IDs processed (empty array if asset is not a kit).
 	 */
@@ -832,7 +833,8 @@ class ALM_Loan_Manager {
 		$new_owner_id,
 		$exclude_request_id,
 		$cancel_reason,
-		$check_component_conflicts = true
+		$check_component_conflicts = true,
+		&$canceled_notification_events = array()
 	) {
 		// Capture the original kit owner before any DB write so the conflict
 		// guard (step 4) can compare against the pre-transfer state.
@@ -885,7 +887,12 @@ class ALM_Loan_Manager {
 
 		// 6. Cancel concurrent requests for the main asset (if enabled in workflow settings).
 		if ( (bool) $this->settings->get( 'workflow.cancel_concurrent_requests_on_assign', true ) ) {
-			$this->cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_reason );
+			$this->cancel_concurrent_requests(
+				$asset_id,
+				$exclude_request_id,
+				$cancel_reason,
+				$canceled_notification_events
+			);
 		}
 
 		// 7. Cancel concurrent requests for kit components (if enabled in workflow settings).
@@ -900,7 +907,8 @@ class ALM_Loan_Manager {
 						/* translators: %s: kit asset title */
 						__( 'Request canceled: component assigned as part of kit "%s".', 'asset-lending-manager' ),
 						$kit_title
-					)
+					),
+					$canceled_notification_events
 				);
 			}
 		}
@@ -974,12 +982,14 @@ class ALM_Loan_Manager {
 			}
 
 			// 2–6. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
-			$component_ids = $this->execute_ownership_transfer(
+			$canceled_notification_events = array();
+			$component_ids                = $this->execute_ownership_transfer(
 				$asset_id,
 				$requester_id,
 				$loan_request->id,
 				__( 'Request automatically canceled: asset approved for another user.', 'asset-lending-manager' ),
-				true
+				true,
+				$canceled_notification_events
 			);
 
 			// 8. Update request status to approved and delete from requests table.
@@ -1010,6 +1020,8 @@ class ALM_Loan_Manager {
 
 			// Commit transaction.
 			$wpdb->query( 'COMMIT' );
+
+			$this->dispatch_cancellation_notifications( $canceled_notification_events );
 
 			ALM_Logger::info(
 				'Loan request approved successfully',
@@ -1169,10 +1181,11 @@ class ALM_Loan_Manager {
 	 * @param int    $asset_id           Asset ID.
 	 * @param int    $exclude_request_id Request ID to exclude (0 = cancel all).
 	 * @param string $cancel_message     Cancellation message.
+	 * @param array  $canceled_notification_events Collected notification events to dispatch post-commit.
 	 * @throws Exception When cancellation logging or deletion fails.
 	 * @return int Number of requests canceled.
 	 */
-	private function cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_message ) {
+	private function cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_message, &$canceled_notification_events ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'alm_loan_requests';
 
@@ -1258,12 +1271,35 @@ class ALM_Loan_Manager {
 				)
 			);
 
-			// Fire loan request canceled action so ALM_Notification_Manager
-			// can notify the requester that their request was automatically canceled.
-			do_action( 'alm_loan_request_canceled', (int) $request->requester_id, (int) $request->asset_id );
+			$canceled_notification_events[] = array(
+				'requester_id' => (int) $request->requester_id,
+				'asset_id'     => (int) $request->asset_id,
+			);
 		}
 
 		return $canceled_count;
+	}
+
+	/**
+	 * Dispatch queued cancellation notifications after a successful commit.
+	 *
+	 * @param array $canceled_notification_events List of notification payloads.
+	 * @return void
+	 */
+	private function dispatch_cancellation_notifications( $canceled_notification_events ) {
+		foreach ( $canceled_notification_events as $notification_event ) {
+			if ( ! is_array( $notification_event ) ) {
+				continue;
+			}
+
+			$requester_id = isset( $notification_event['requester_id'] ) ? (int) $notification_event['requester_id'] : 0;
+			$asset_id     = isset( $notification_event['asset_id'] ) ? (int) $notification_event['asset_id'] : 0;
+			if ( $requester_id <= 0 || $asset_id <= 0 ) {
+				continue;
+			}
+
+			do_action( 'alm_loan_request_canceled', $requester_id, $asset_id );
+		}
 	}
 
 	/**
@@ -1408,12 +1444,14 @@ class ALM_Loan_Manager {
 			$previous_owner_id = $this->get_current_owner( $asset_id );
 
 			// 3–7. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
-			$component_ids = $this->execute_ownership_transfer(
+			$canceled_notification_events = array();
+			$component_ids                = $this->execute_ownership_transfer(
 				$asset_id,
 				$assignee_id,
 				0,
 				__( 'Request canceled: asset directly assigned by operator.', 'asset-lending-manager' ),
-				false
+				false,
+				$canceled_notification_events
 			);
 
 			// 8. Log history entry (loan_request_id = 0 for direct assignments).
@@ -1433,6 +1471,8 @@ class ALM_Loan_Manager {
 
 			// Commit transaction.
 			$wpdb->query( 'COMMIT' );
+
+			$this->dispatch_cancellation_notifications( $canceled_notification_events );
 
 			ALM_Logger::info(
 				'Direct assignment completed successfully',

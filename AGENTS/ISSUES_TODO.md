@@ -57,14 +57,6 @@ Last update: 2026-03-02
 - **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
 - **Notes:** `includes/class-alm-loan-manager.php:223`, `includes/class-alm-loan-manager.php:327`, `includes/class-alm-loan-manager.php:335`, `includes/class-alm-loan-manager.php:357`
 
-### [High] Cancellation notifications fired before DB transaction commit
-- **Status:** Open
-- **Date:** 2026-03-02
-- **Category:** Bug
-- **Description:** `cancel_concurrent_requests()` triggers `do_action( 'alm_loan_request_canceled', ... )` while the caller transaction is still open. If a later step fails and a `ROLLBACK` occurs, users may receive "request canceled" notifications for changes that were not committed.
-- **Expected behavior:** Defer notification dispatch until after successful `COMMIT` (for example collect canceled IDs during transaction and fire actions post-commit), or implement an outbox pattern.
-- **Notes:** `includes/class-alm-loan-manager.php:1235`, `includes/class-alm-loan-manager.php:874`, `includes/class-alm-loan-manager.php:1383`, `includes/class-alm-loan-manager.php:1427`
-
 ### [Medium] ACF unavailability silently skips kit component propagation
 - **Status:** Open
 - **Date:** 2026-02-22
@@ -147,14 +139,6 @@ Last update: 2026-03-02
 - **Description:** Many debug logs expose runtime details and clutter browser console.
 - **Expected behavior:** Remove logs or gate them behind explicit debug flag.
 - **Notes:** `assets/js/frontend-assets.js`, `assets/js/admin-assets.js`
-
-### [Low] Hardcoded operator user ID for automatic operations
-- **Status:** Open
-- **Date:** 2026-02-12
-- **Category:** Refactoring
-- **Description:** Automatic operations use fixed user ID `1`, unsafe across installations.
-- **Expected behavior:** Make configurable or use context-aware actor resolution.
-- **Notes:** `includes/class-alm-loan-manager.php`
 
 ---
 
