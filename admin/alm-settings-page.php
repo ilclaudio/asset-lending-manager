@@ -785,53 +785,13 @@ $placeholders = array(
 								<?php disabled( ! $is_admin ); ?>
 							>
 							<?php esc_html_e( 'Allow unauthenticated requests to the asset autocomplete REST endpoint (/wp-json/alm/v1/assets/autocomplete)', 'asset-lending-manager' ); ?>
-						</label>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-						<?php esc_html_e( 'Rate limiting', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
-					</th>
-					<td>
-						<label>
-							<input
-								type="checkbox"
-								name="alm_autocomplete_rate_limit_enabled"
-								value="1"
-								<?php checked( $settings->get( 'autocomplete.rate_limit_enabled' ) ); ?>
-								<?php disabled( ! $is_admin ); ?>
-							>
-							<?php esc_html_e( 'Enable rate limiting on the autocomplete endpoint', 'asset-lending-manager' ); ?>
-						</label>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-						<label for="alm_autocomplete_rate_limit_per_minute">
-							<?php esc_html_e( 'Requests per minute', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
-						</label>
-					</th>
-					<td>
-						<input
-							type="number"
-							id="alm_autocomplete_rate_limit_per_minute"
-							name="alm_autocomplete_rate_limit_per_minute"
-							value="<?php echo esc_attr( $settings->get( 'autocomplete.rate_limit_per_minute' ) ); ?>"
-							min="1"
-							class="small-text"
-							<?php disabled( ! $is_admin ); ?>
-						>
-						<p class="description">
-							<?php esc_html_e( 'Maximum autocomplete requests per IP per minute when rate limiting is enabled.', 'asset-lending-manager' ); ?>
-						</p>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-						<label for="alm_autocomplete_cache_ttl">
-							<?php esc_html_e( 'Cache TTL (seconds)', 'asset-lending-manager' ); ?>
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="alm_autocomplete_cache_ttl">
+								<?php esc_html_e( 'Cache TTL (seconds)', 'asset-lending-manager' ); ?>
 						</label>
 					</th>
 					<td>

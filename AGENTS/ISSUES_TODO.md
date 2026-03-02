@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-03-02
+Last update: 2026-03-02 (rev 2)
 
 ---
 
@@ -56,6 +56,23 @@ Last update: 2026-03-02
 - **Description:** The reject path reads the request row outside the transaction and, inside `reject_loan_request()`, inserts a `rejected` history entry before deleting the request. Deletion checks only `false` and treats `0 affected rows` as success. If another action processes/deletes the same request first, the reject path can still commit a stale/incorrect history row.
 - **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
 - **Notes:** `includes/class-alm-loan-manager.php:244` (stale read outside tx), `includes/class-alm-loan-manager.php:362` (history insert), `includes/class-alm-loan-manager.php:378` (delete), `includes/class-alm-loan-manager.php:384` (check `false` only)
+
+### [High] Loan request submission and approval do not validate asset state
+
+- **Status:** Open
+- **Date:** 2026-03-02
+- **Category:** Bug
+- **Description:** `ajax_submit_loan_request()` accepts requests for assets in any state without checking that the asset is `available`. A member can bypass the frontend UI and POST directly to the AJAX handler to submit a loan request for an asset marked as `retired`, `maintenance`, or already `on-loan`. Similarly, `approve_loan_request()` does not validate the asset's current state before executing the ownership transfer: if an asset moves to `retired` or `maintenance` after a request is submitted but before it is approved, the approval will still succeed and corrupt the data model. `direct_assign_asset()` correctly rejects retired assets (via `$current_state` check); the same guard is absent from the request/approval flow.
+- **Expected behavior:** `ajax_submit_loan_request()` should reject the request with a user-visible error if the asset is not in `available` state. `approve_loan_request()` should throw an exception (and roll back) if the asset is in `retired` or `maintenance` state at approval time, consistent with the guard already present in `direct_assign_asset()`.
+- **Notes:** `includes/class-alm-loan-manager.php:124-132` (submit: asset exists check, no state check), `includes/class-alm-loan-manager.php:978-983` (approve: asset exists check inside transaction, no state check), `includes/class-alm-loan-manager.php:1437-1441` (direct assign: correctly rejects retired state).
+
+### [High] Loan/direct-assign governance settings are not enforced by runtime handlers
+- **Status:** Open
+- **Date:** 2026-03-02
+- **Category:** Bug
+- **Description:** Multiple governance settings are saved but ignored by runtime flows: `loans.max_active_per_user`, `loans.allow_multiple_requests`, `loans.approver_policy_for_unowned_assets`, `direct_assign.enabled`, `direct_assign.require_reason`, and `direct_assign.allowed_target_roles`. Current AJAX handlers apply hardcoded behavior instead of policy-driven rules, causing functional mismatch between admin configuration and actual permissions/workflow.
+- **Expected behavior:** Enforce these settings in `ajax_submit_loan_request()` and `ajax_direct_assign_asset()` (and related permission checks), including active-loan limits, multi-request policy, approver policy for unowned assets, direct-assign enable/disable, optional reason requirement, and allowed target roles.
+- **Notes:** `includes/class-alm-plugin-manager.php:394-415`, `includes/class-alm-loan-manager.php:83-153`, `includes/class-alm-loan-manager.php:1310-1375`
 
 ### [Medium] ACF unavailability silently skips kit component propagation
 - **Status:** Open
@@ -136,6 +153,14 @@ Last update: 2026-03-02
 ---
 
 ## Performance
+
+### [High] Autocomplete cache TTL setting is unused; endpoint runs uncached search queries
+- **Status:** Open
+- **Date:** 2026-03-02
+- **Category:** Performance
+- **Description:** `autocomplete.cache_ttl_seconds` is persisted from settings but never used in runtime. The public autocomplete handler executes a new `WP_Query` on every request/keystroke without object/transient caching, increasing DB load and response time under traffic.
+- **Expected behavior:** Implement cache lookup/write keyed by normalized term and settings (respecting `cache_ttl_seconds`), and bypass repeated queries while cache is warm.
+- **Notes:** `includes/class-alm-plugin-manager.php:448`, `includes/class-alm-autocomplete-manager.php:159-199`
 
 ### [High] Taxonomy filter term lists are queried on every list render without caching
 - **Status:** Open

@@ -96,8 +96,6 @@ class ALM_Settings_Manager {
 				'max_results'                    => ALM_AUTOCOMPLETE_MAX_RESULTS,
 				'description_length'             => ALM_AUTOCOMPLETE_DESC_LENGTH,
 				'public_assets_endpoint_enabled' => true,
-				'rate_limit_enabled'             => false,
-				'rate_limit_per_minute'          => 60,
 				'cache_ttl_seconds'              => 0,
 			),
 			'logging'       => array(
