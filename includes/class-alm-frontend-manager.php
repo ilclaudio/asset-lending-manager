@@ -21,6 +21,22 @@ defined( 'ABSPATH' ) || exit;
 class ALM_Frontend_Manager {
 
 	/**
+	 * Settings manager instance.
+	 *
+	 * @var ALM_Settings_Manager
+	 */
+	private $settings;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param ALM_Settings_Manager $settings Plugin settings instance.
+	 */
+	public function __construct( ALM_Settings_Manager $settings ) {
+		$this->settings = $settings;
+	}
+
+	/**
 	 * Plugin activation hook.
 	 *
 	 * @return void
@@ -82,6 +98,13 @@ class ALM_Frontend_Manager {
 			in_array( ALM_MEMBER_ROLE, $roles, true ) ||
 			in_array( ALM_OPERATOR_ROLE, $roles, true )
 		) {
+			$login_page_id = (int) $this->settings->get( 'frontend.login_redirect_page_id', 0 );
+			if ( $login_page_id > 0 ) {
+				$url = get_permalink( $login_page_id );
+				if ( $url ) {
+					return $url;
+				}
+			}
 			return home_url( '/asset/' );
 		}
 		return $redirect_to;
@@ -105,6 +128,13 @@ class ALM_Frontend_Manager {
 			in_array( ALM_MEMBER_ROLE, $roles, true ) ||
 			in_array( ALM_OPERATOR_ROLE, $roles, true )
 		) {
+			$logout_page_id = (int) $this->settings->get( 'frontend.logout_redirect_page_id', 0 );
+			if ( $logout_page_id > 0 ) {
+				$url = get_permalink( $logout_page_id );
+				if ( $url ) {
+					return $url;
+				}
+			}
 			return home_url( '/' );
 		}
 		return $redirect_to;
@@ -224,7 +254,7 @@ class ALM_Frontend_Manager {
 			array(
 				'restUrl'   => esc_url( rest_url( 'alm/v1/users/autocomplete' ) ),
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
-				'minChars'  => 3,
+				'minChars'  => (int) $this->settings->get( 'autocomplete.min_chars', 3 ),
 			)
 		);
 	}
@@ -309,7 +339,7 @@ class ALM_Frontend_Manager {
 		// Parse shortcode attributes (for future extensions like filters).
 		$attributes = shortcode_atts(
 			array(
-				'per_page' => ALM_ASSET_LIST_PER_PAGE,
+				'per_page' => (int) $this->settings->get( 'frontend.asset_list_per_page', ALM_ASSET_LIST_PER_PAGE ),
 			),
 			$attributes,
 			'alm_asset_list'

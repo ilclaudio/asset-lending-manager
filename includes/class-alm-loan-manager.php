@@ -883,11 +883,14 @@ class ALM_Loan_Manager {
 			}
 		}
 
-		// 6. Cancel concurrent requests for the main asset.
-		$this->cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_reason );
+		// 6. Cancel concurrent requests for the main asset (if enabled in workflow settings).
+		if ( (bool) $this->settings->get( 'workflow.cancel_concurrent_requests_on_assign', true ) ) {
+			$this->cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_reason );
+		}
 
-		// 7. Cancel concurrent requests for kit components.
-		if ( $is_kit && ! empty( $component_ids ) ) {
+		// 7. Cancel concurrent requests for kit components (if enabled in workflow settings).
+		$cancel_kit_requests = (bool) $this->settings->get( 'workflow.cancel_component_requests_when_kit_assigned', true );
+		if ( $is_kit && ! empty( $component_ids ) && $cancel_kit_requests ) {
 			$kit_title = get_the_title( $asset_id );
 			foreach ( $component_ids as $component_id ) {
 				$this->cancel_concurrent_requests(
@@ -1213,7 +1216,7 @@ class ALM_Loan_Manager {
 				$request->owner_id,
 				'canceled',
 				$cancel_message,
-				self::AUTOMATIC_OPERATIONS_OPERATOR_ID
+				(int) $this->settings->get( 'workflow.automatic_operations_actor_user_id', self::AUTOMATIC_OPERATIONS_OPERATOR_ID )
 			);
 
 			if ( ! $history_logged ) {

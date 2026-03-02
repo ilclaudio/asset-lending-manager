@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-03-02 (review 2026-03-02)
+Last update: 2026-03-02
 
 ---
 
@@ -110,12 +110,11 @@ Last update: 2026-03-02 (review 2026-03-02)
 - **Notes:** Premature abstraction at current single-usage; revisit if a second template adopts the badge. `templates/shortcodes/asset-view.php`
 
 ### [Medium] Settings values stored but not consumed by runtime modules
-- **Status:** Partially resolved — 2026-03-02 (tabs 1–3 done)
+- **Status:** Resolved — 2026-03-02
 - **Date:** 2026-02-09
 - **Category:** Refactoring
-- **Description:** Settings UI is complete (10 tabs). Tab 1–3 wiring done: `ALM_Notification_Manager` now reads `email.*`, `notifications.*` and `template.*` from settings; `ALM_Loan_Manager` reads `loans.request_message_max_length`, `loans.rejection_message_max_length`, `loans.direct_assign_reason_max_length`. Remaining hardcoded values: `ALM_Loan_Manager` constants `AUTOMATIC_OPERATIONS_OPERATOR_ID` and always-on cancel logic; `ALM_Frontend_Manager` uses `home_url('/asset/')`, `home_url('/')`, `ALM_ASSET_LIST_PER_PAGE`; `ALM_Autocomplete_Manager` uses `ALM_AUTOCOMPLETE_MAX_RESULTS`, `ALM_AUTOCOMPLETE_DESC_LENGTH`, hardcoded `min_chars=3`; `ALM_Asset_Manager::get_asset_code()` uses `ALM_ASSET_CODE_PREFIX`.
-- **Expected behavior:** Replace remaining hardcoded constants with `$settings->get(...)` calls.
-- **Notes:** Remaining files: `includes/class-alm-loan-manager.php`, `includes/class-alm-frontend-manager.php`, `includes/class-alm-autocomplete-manager.php`, `includes/class-alm-asset-manager.php`
+- **Description:** All runtime modules now read from `ALM_Settings_Manager` instead of hardcoded constants. Full wiring complete across all 10 settings tabs.
+- **Notes:** Moved to ISSUES_RESOLVED.
 
 ### [Low] Dead code: `$nonce` variable read but never used in `handle_autocomplete()`
 - **Status:** Open

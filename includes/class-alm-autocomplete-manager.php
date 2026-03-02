@@ -15,6 +15,22 @@ defined( 'ABSPATH' ) || exit;
 class ALM_Autocomplete_Manager {
 
 	/**
+	 * Settings manager instance.
+	 *
+	 * @var ALM_Settings_Manager
+	 */
+	private $settings;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param ALM_Settings_Manager $settings Plugin settings instance.
+	 */
+	public function __construct( ALM_Settings_Manager $settings ) {
+		$this->settings = $settings;
+	}
+
+	/**
 	 * Register hooks.
 	 *
 	 * @return void
@@ -58,7 +74,7 @@ class ALM_Autocomplete_Manager {
 			array(
 				'restUrl'   => esc_url( rest_url( 'alm/v1/assets/autocomplete' ) ),
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
-				'minChars'  => 3,
+				'minChars'  => (int) $this->settings->get( 'autocomplete.min_chars', 3 ),
 			)
 		);
 	}
@@ -148,8 +164,9 @@ class ALM_Autocomplete_Manager {
 		// Read search term.
 		$term = $request->get_param( 'term' ) ?? '';
 		$term = $term ? trim( wp_unslash( $term ) ) : '';
-		// Require at least 3 characters.
-		if ( strlen( $term ) < 3 ) {
+		// Require minimum characters (from settings).
+		$min_chars = (int) $this->settings->get( 'autocomplete.min_chars', 3 );
+		if ( strlen( $term ) < $min_chars ) {
 			return rest_ensure_response( array() );
 		}
 
@@ -158,7 +175,7 @@ class ALM_Autocomplete_Manager {
 			'post_type'      => ALM_ASSET_CPT_SLUG,
 			'post_status'    => 'publish',
 			's'              => $term,
-			'posts_per_page' => ALM_AUTOCOMPLETE_MAX_RESULTS,
+			'posts_per_page' => (int) $this->settings->get( 'autocomplete.max_results', ALM_AUTOCOMPLETE_MAX_RESULTS ),
 		);
 		$query      = new WP_Query( $query_args );
 		$results    = array();
@@ -171,7 +188,7 @@ class ALM_Autocomplete_Manager {
 				$results[] = array(
 					'id'          => $post->ID,
 					'title'       => $wrapper->title,
-					'description' => wp_trim_words( wp_strip_all_tags( $post->post_content ), ALM_AUTOCOMPLETE_DESC_LENGTH, '...' ),
+					'description' => wp_trim_words( wp_strip_all_tags( $post->post_content ), (int) $this->settings->get( 'autocomplete.description_length', ALM_AUTOCOMPLETE_DESC_LENGTH ), '...' ),
 					'structure'   => ! empty( $wrapper->alm_structure ) ? implode( ', ', $wrapper->alm_structure ) : '',
 					'type'        => ! empty( $wrapper->alm_type ) ? implode( ', ', $wrapper->alm_type ) : '',
 					'permalink'   => $wrapper->permalink,
@@ -195,7 +212,8 @@ class ALM_Autocomplete_Manager {
 		$term = $request->get_param( 'term' ) ?? '';
 		$term = trim( wp_unslash( (string) $term ) );
 
-		if ( strlen( $term ) < 3 ) {
+		$min_chars = (int) $this->settings->get( 'autocomplete.min_chars', 3 );
+		if ( strlen( $term ) < $min_chars ) {
 			return rest_ensure_response( array() );
 		}
 
@@ -203,7 +221,7 @@ class ALM_Autocomplete_Manager {
 			array(
 				'role__in' => array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ),
 				'search'   => '*' . $term . '*',
-				'number'   => ALM_AUTOCOMPLETE_MAX_RESULTS,
+				'number'   => (int) $this->settings->get( 'autocomplete.max_results', ALM_AUTOCOMPLETE_MAX_RESULTS ),
 				'orderby'  => 'display_name',
 				'order'    => 'ASC',
 			)

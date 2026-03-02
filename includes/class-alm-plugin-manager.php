@@ -127,9 +127,9 @@ class ALM_Plugin_Manager {
 				'asset'        => new ALM_Asset_Manager(),
 				'loan'         => new ALM_Loan_Manager( $settings ),
 				'notification' => new ALM_Notification_Manager( $settings ),
-				'frontend'     => new ALM_Frontend_Manager(),
+				'frontend'     => new ALM_Frontend_Manager( $settings ),
 				'admin'        => new ALM_Admin_Manager(),
-				'autocomplete' => new ALM_Autocomplete_Manager(),
+				'autocomplete' => new ALM_Autocomplete_Manager( $settings ),
 			);
 		}
 	}

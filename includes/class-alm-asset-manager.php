@@ -388,7 +388,15 @@ class ALM_Asset_Manager {
 	 * @return string Human-readable asset code.
 	 */
 	public static function get_asset_code( $asset_id ) {
-		return sprintf( ALM_ASSET_CODE_FORMAT, ALM_ASSET_CODE_PREFIX, (int) $asset_id );
+		$prefix   = ALM_ASSET_CODE_PREFIX;
+		$instance = ALM_Plugin_Manager::get_instance();
+		if ( $instance ) {
+			$settings = $instance->get_module( 'settings' );
+			if ( $settings ) {
+				$prefix = (string) $settings->get( 'asset.code_prefix', ALM_ASSET_CODE_PREFIX );
+			}
+		}
+		return sprintf( ALM_ASSET_CODE_FORMAT, $prefix, (int) $asset_id );
 	}
 
 	/**
