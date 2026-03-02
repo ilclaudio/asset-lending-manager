@@ -21,6 +21,22 @@ defined( 'ABSPATH' ) || exit;
 class ALM_Notification_Manager {
 
 	/**
+	 * Settings manager instance.
+	 *
+	 * @var ALM_Settings_Manager
+	 */
+	private $settings;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param ALM_Settings_Manager $settings Plugin settings instance.
+	 */
+	public function __construct( ALM_Settings_Manager $settings ) {
+		$this->settings = $settings;
+	}
+
+	/**
 	 * Register WordPress action hooks for loan workflow events.
 	 *
 	 * Each hook maps a custom ALM action to the corresponding notification method.
@@ -66,6 +82,13 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_loan_request_submitted_notification( $requester_id, $owner_id, $asset_id, $message ) {
+		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+			return;
+		}
+		if ( ! $this->settings->get( 'notifications.loan_request', true ) ) {
+			return;
+		}
+
 		$requester = get_userdata( $requester_id );
 		if ( ! $requester ) {
 			ALM_Logger::warning(
@@ -105,10 +128,11 @@ class ALM_Notification_Manager {
 			}
 		}
 
-		// Email 3: copy to the operator/system address (only if ALM_EMAIL_SYSTEM_ADDRESS is configured).
-		if ( ! empty( ALM_EMAIL_SYSTEM_ADDRESS ) ) {
+		// Email 3: copy to the system/operator address (only if configured in settings).
+		$system_email = $this->settings->get( 'email.system_email', '' );
+		if ( ! empty( $system_email ) ) {
 			$this->send_notification_email(
-				ALM_EMAIL_SYSTEM_ADDRESS,
+				$system_email,
 				$this->get_email_template( 'subject', 'request_to_owner' ),
 				$this->get_email_template( 'body', 'request_to_owner' ),
 				$placeholders
@@ -123,6 +147,13 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_loan_request_approved_notification( $loan_request ) {
+		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+			return;
+		}
+		if ( ! $this->settings->get( 'notifications.loan_decision', true ) ) {
+			return;
+		}
+
 		$requester = get_userdata( $loan_request->requester_id );
 		if ( ! $requester ) {
 			ALM_Logger::warning(
@@ -153,6 +184,13 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_loan_request_rejected_notification( $loan_request, $rejection_message ) {
+		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+			return;
+		}
+		if ( ! $this->settings->get( 'notifications.loan_decision', true ) ) {
+			return;
+		}
+
 		$requester = get_userdata( $loan_request->requester_id );
 		if ( ! $requester ) {
 			ALM_Logger::warning(
@@ -187,6 +225,13 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_loan_request_canceled_notification( $requester_id, $asset_id ) {
+		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+			return;
+		}
+		if ( ! $this->settings->get( 'notifications.loan_request', true ) ) {
+			return;
+		}
+
 		$requester = get_userdata( $requester_id );
 		if ( ! $requester ) {
 			ALM_Logger::warning(
@@ -225,6 +270,10 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_direct_assign_notification( $asset_id, $assignee_id, $actor_id, $reason, $previous_owner_id = 0 ) {
+		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+			return;
+		}
+
 		$assignee = get_userdata( $assignee_id );
 		if ( ! $assignee ) {
 			ALM_Logger::warning(
@@ -272,15 +321,16 @@ class ALM_Notification_Manager {
 			}
 		}
 
-		// Email 3: copy to the operator/system address (only if ALM_EMAIL_SYSTEM_ADDRESS is configured).
-		if ( ! empty( ALM_EMAIL_SYSTEM_ADDRESS ) ) {
+		// Email 3: copy to the system/operator address (only if configured in settings).
+		$system_email = $this->settings->get( 'email.system_email', '' );
+		if ( ! empty( $system_email ) ) {
 			$prev_owner          = $previous_owner_id > 0 ? get_userdata( $previous_owner_id ) : null;
 			$system_placeholders = array_merge(
 				$base_placeholders,
 				array( '{PREV_OWNER_NAME}' => $prev_owner ? $prev_owner->display_name : '' )
 			);
 			$this->send_notification_email(
-				ALM_EMAIL_SYSTEM_ADDRESS,
+				$system_email,
 				$this->get_email_template( 'subject', 'direct_assign_to_prev_owner' ),
 				$this->get_email_template( 'body', 'direct_assign_to_prev_owner' ),
 				$system_placeholders
@@ -321,9 +371,11 @@ class ALM_Notification_Manager {
 
 		// Build email headers: plain text encoding and custom From address.
 		$from_address = $this->get_from_address();
+		$from_name    = $this->settings->get( 'email.from_name', '' );
+		$from_name    = $from_name ? $from_name : get_bloginfo( 'name' );
 		$headers      = array(
 			'Content-Type: text/plain; charset=UTF-8',
-			'From: ' . ALM_EMAIL_FROM_NAME . ' <' . $from_address . '>',
+			'From: ' . $from_name . ' <' . $from_address . '>',
 		);
 
 		// Log the outgoing email attempt for debugging (visible when WP_DEBUG is active).
@@ -371,9 +423,11 @@ class ALM_Notification_Manager {
 	 * @return string Template string or empty string when not found.
 	 */
 	private function get_email_template( $group, $key ) {
-		$templates = alm_get_email_templates();
-		if ( isset( $templates[ $group ][ $key ] ) ) {
-			return $templates[ $group ][ $key ];
+		// Settings store custom overrides under template.{group}.{key};
+		// defaults are pre-populated with translated values from alm_get_email_templates().
+		$value = $this->settings->get( 'template.' . $group . '.' . $key, '' );
+		if ( '' !== $value ) {
+			return $value;
 		}
 
 		ALM_Logger::warning(
@@ -396,9 +450,8 @@ class ALM_Notification_Manager {
 	 * @return string Sender email address.
 	 */
 	private function get_from_address() {
-		return ! empty( ALM_EMAIL_FROM_ADDRESS )
-			? ALM_EMAIL_FROM_ADDRESS
-			: get_bloginfo( 'admin_email' );
+		$address = $this->settings->get( 'email.from_address', '' );
+		return $address ? $address : get_bloginfo( 'admin_email' );
 	}
 
 	/**

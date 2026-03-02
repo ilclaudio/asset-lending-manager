@@ -32,9 +32,25 @@ class ALM_Loan_Manager {
 	/**
 	 * User ID for automatic system operations.
 	 *
-	 * TODO: Make this configurable via Settings Manager in future versions.
+	 * Used as fallback when the setting is not configured.
 	 */
 	const AUTOMATIC_OPERATIONS_OPERATOR_ID = 1;
+
+	/**
+	 * Settings manager instance.
+	 *
+	 * @var ALM_Settings_Manager
+	 */
+	private $settings;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param ALM_Settings_Manager $settings Plugin settings instance.
+	 */
+	public function __construct( ALM_Settings_Manager $settings ) {
+		$this->settings = $settings;
+	}
 
 	/**
 	 * Plugin activation hook.
@@ -86,12 +102,13 @@ class ALM_Loan_Manager {
 				)
 			);
 		}
-		if ( mb_strlen( $message ) > self::SEND_REQUEST_MESSAGE_MAX_LENGTH ) {
+		$request_max = (int) $this->settings->get( 'loans.request_message_max_length', self::SEND_REQUEST_MESSAGE_MAX_LENGTH );
+		if ( $request_max > 0 && mb_strlen( $message ) > $request_max ) {
 			wp_send_json_error(
 				array(
 					'message' => sprintf(
 						__( 'Request message must not exceed %d characters.', 'asset-lending-manager' ),
-						self::SEND_REQUEST_MESSAGE_MAX_LENGTH
+						$request_max
 					),
 				)
 			);
@@ -208,12 +225,13 @@ class ALM_Loan_Manager {
 			);
 		}
 
-		if ( mb_strlen( $rejection_message ) > self::REJECTION_MESSAGE_MAX_LENGTH ) {
+		$rejection_max = (int) $this->settings->get( 'loans.rejection_message_max_length', self::REJECTION_MESSAGE_MAX_LENGTH );
+		if ( $rejection_max > 0 && mb_strlen( $rejection_message ) > $rejection_max ) {
 			wp_send_json_error(
 				array(
 					'message' => sprintf(
 						__( 'Rejection message must not exceed %d characters.', 'asset-lending-manager' ),
-						self::REJECTION_MESSAGE_MAX_LENGTH
+						$rejection_max
 					),
 				)
 			);
@@ -1245,13 +1263,14 @@ class ALM_Loan_Manager {
 			wp_send_json_error( array( 'message' => __( 'Assignment reason is required.', 'asset-lending-manager' ) ) );
 		}
 
-		if ( mb_strlen( $reason ) > self::DIRECT_ASSIGN_REASON_MAX_LENGTH ) {
+		$assign_max = (int) $this->settings->get( 'loans.direct_assign_reason_max_length', self::DIRECT_ASSIGN_REASON_MAX_LENGTH );
+		if ( $assign_max > 0 && mb_strlen( $reason ) > $assign_max ) {
 			wp_send_json_error(
 				array(
 					'message' => sprintf(
 						/* translators: %d: maximum number of characters allowed */
 						__( 'Assignment reason must not exceed %d characters.', 'asset-lending-manager' ),
-						self::DIRECT_ASSIGN_REASON_MAX_LENGTH
+						$assign_max
 					),
 				)
 			);
