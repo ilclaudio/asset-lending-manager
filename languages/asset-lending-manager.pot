@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-22 17:22+0000\n"
+"POT-Creation-Date: 2026-03-02 20:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -48,6 +48,10 @@ msgstr ""
 msgid "[ALM] New loan request received: {ASSET_TITLE}"
 msgstr ""
 
+#: admin/alm-settings-page.php:330
+msgid "A user can have more than one pending loan request at the same time"
+msgstr ""
+
 #. Author of the plugin
 msgid "AAGG"
 msgstr ""
@@ -78,8 +82,18 @@ msgstr ""
 msgid "Additional fields"
 msgstr ""
 
-#: admin/alm-settings-page.php:91 admin/alm-settings-page.php:112
-#: admin/alm-settings-page.php:133 admin/alm-settings-page.php:157
+#: admin/alm-settings-page.php:101 admin/alm-settings-page.php:122
+#: admin/alm-settings-page.php:143 admin/alm-settings-page.php:167
+#: admin/alm-settings-page.php:342 admin/alm-settings-page.php:374
+#: admin/alm-settings-page.php:396 admin/alm-settings-page.php:418
+#: admin/alm-settings-page.php:447 admin/alm-settings-page.php:481
+#: admin/alm-settings-page.php:556 admin/alm-settings-page.php:586
+#: admin/alm-settings-page.php:611 admin/alm-settings-page.php:636
+#: admin/alm-settings-page.php:776 admin/alm-settings-page.php:794
+#: admin/alm-settings-page.php:813 admin/alm-settings-page.php:862
+#: admin/alm-settings-page.php:881 admin/alm-settings-page.php:913
+#: admin/alm-settings-page.php:931 admin/alm-settings-page.php:958
+#: admin/alm-settings-page.php:993 admin/alm-settings-page.php:1011
 msgid "Administrator only"
 msgstr ""
 
@@ -107,12 +121,32 @@ msgstr ""
 msgid "All types"
 msgstr ""
 
+#: admin/alm-settings-page.php:320
+msgid "Allow multiple requests"
+msgstr ""
+
+#: admin/alm-settings-page.php:458
+msgid ""
+"Allow operators/administrators to assign an asset directly to a user without "
+"a loan request"
+msgstr ""
+
+#: admin/alm-settings-page.php:787
+msgid ""
+"Allow unauthenticated requests to the asset autocomplete REST endpoint (/wp-"
+"json/alm/v1/assets/autocomplete)"
+msgstr ""
+
+#: admin/alm-settings-page.php:480
+msgid "Allowed target roles"
+msgstr ""
+
 #. Page title.
 #: includes/class-alm-plugin-manager.php:226
 msgid "ALM"
 msgstr ""
 
-#: admin/alm-settings-page.php:59 includes/class-alm-plugin-manager.php:291
+#: admin/alm-settings-page.php:69 includes/class-alm-plugin-manager.php:291
 msgid "ALM Settings"
 msgstr ""
 
@@ -120,8 +154,28 @@ msgstr ""
 msgid "ALM Tools"
 msgstr ""
 
+#. %s: example formatted code
+#: admin/alm-settings-page.php:975
+#, php-format
+msgid ""
+"Alphanumeric prefix prepended to the asset ID to form the human-readable "
+"asset code (e.g. %s)."
+msgstr ""
+
 #: admin/alm-tools-page.php:16
 msgid "An error occurred while loading default terms."
+msgstr ""
+
+#: admin/alm-settings-page.php:358
+msgid "Any ALM user"
+msgstr ""
+
+#: admin/alm-settings-page.php:355
+msgid "Any operator"
+msgstr ""
+
+#: admin/alm-settings-page.php:771
+msgid "API Access"
 msgstr ""
 
 #: assets/js/frontend-assets.js:608
@@ -146,6 +200,14 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
+#: admin/alm-settings-page.php:341
+msgid "Approver for unowned assets"
+msgstr ""
+
+#: admin/alm-settings-page.php:336
+msgid "Approver Policy"
+msgstr ""
+
 #: assets/js/frontend-assets.js:571
 msgid "Approving..."
 msgstr ""
@@ -158,9 +220,17 @@ msgstr ""
 msgid "Asset"
 msgstr ""
 
+#: admin/alm-settings-page.php:585
+msgid "Asset archive page"
+msgstr ""
+
 #: includes/class-alm-loan-manager.php:1310
 #: includes/class-alm-loan-manager.php:1392 assets/js/frontend-assets.js:973
 msgid "Asset assigned successfully."
+msgstr ""
+
+#: admin/alm-settings-page.php:952
+msgid "Asset Code"
 msgstr ""
 
 #: includes/class-alm-loan-manager.php:244
@@ -170,6 +240,10 @@ msgstr ""
 
 #: assets/js/frontend-assets.js:219 assets/js/frontend-assets.js:335
 msgid "Asset ID not found."
+msgstr ""
+
+#: admin/alm-settings-page.php:36
+msgid "Asset Identification"
 msgstr ""
 
 #. Name of the plugin
@@ -185,6 +259,10 @@ msgstr ""
 
 #: includes/class-alm-asset-manager.php:201
 msgid "Asset Levels"
+msgstr ""
+
+#: admin/alm-settings-page.php:659
+msgid "Asset List"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:291
@@ -255,6 +333,10 @@ msgstr ""
 msgid "Assets found: %d"
 msgstr ""
 
+#: admin/alm-settings-page.php:664
+msgid "Assets per page"
+msgstr ""
+
 #: templates/shortcodes/asset-view.php:477
 msgid "Assign asset"
 msgstr ""
@@ -288,11 +370,23 @@ msgstr ""
 msgid "Assignment reason must not exceed %d characters."
 msgstr ""
 
+#: admin/alm-settings-page.php:34
+msgid "Autocomplete & API"
+msgstr ""
+
+#: admin/alm-settings-page.php:514
+msgid "Automatic Cancellations"
+msgstr ""
+
+#: admin/alm-settings-page.php:555
+msgid "Automatic operations actor user ID"
+msgstr ""
+
 #: includes/class-alm-installer.php:262
 msgid "Available"
 msgstr ""
 
-#: admin/alm-settings-page.php:271
+#: admin/alm-settings-page.php:281
 msgid "Available placeholders:"
 msgstr ""
 
@@ -304,7 +398,7 @@ msgstr ""
 msgid "Binoculars"
 msgstr ""
 
-#: admin/alm-settings-page.php:259
+#: admin/alm-settings-page.php:269
 msgid "Body"
 msgstr ""
 
@@ -312,8 +406,20 @@ msgstr ""
 msgid "Book"
 msgstr ""
 
+#: admin/alm-settings-page.php:834
+msgid "Cache TTL (seconds)"
+msgstr ""
+
 #: assets/js/frontend-assets.js:498 assets/js/frontend-assets.js:745
 msgid "Cancel"
+msgstr ""
+
+#: admin/alm-settings-page.php:534
+msgid "Cancel component requests when kit assigned"
+msgstr ""
+
+#: admin/alm-settings-page.php:518
+msgid "Cancel concurrent requests on assign"
 msgstr ""
 
 #: plugin-config.php:139
@@ -340,6 +446,10 @@ msgstr ""
 
 #: templates/shortcodes/asset-view.php:201
 msgid "Code"
+msgstr ""
+
+#: admin/alm-settings-page.php:957
+msgid "Code prefix"
 msgstr ""
 
 #: includes/class-alm-installer.php:188
@@ -375,7 +485,7 @@ msgstr ""
 msgid "Current owner"
 msgstr ""
 
-#: admin/alm-settings-page.php:230
+#: admin/alm-settings-page.php:240
 msgid ""
 "Customize the subject and body of each notification email. Placeholders in "
 "curly braces are replaced at send time. Leave a field empty to use the "
@@ -387,8 +497,16 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
+#: admin/alm-settings-page.php:892
+msgid "Debug — all events"
+msgstr ""
+
 #: admin/alm-tools-page.php:12
 msgid "Default terms loaded successfully."
+msgstr ""
+
+#: admin/alm-settings-page.php:751
+msgid "Description snippet length"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:31
@@ -396,37 +514,73 @@ msgstr ""
 msgid "Dimensions"
 msgstr ""
 
+#: admin/alm-settings-page.php:31
+msgid "Direct Assignment"
+msgstr ""
+
 #: plugin-config.php:140 templates/shortcodes/asset-view.php:423
 #: templates/shortcodes/asset-view.php:427
 msgid "Direct assignment"
 msgstr ""
 
-#: admin/alm-settings-page.php:42
+#: admin/alm-settings-page.php:442
+msgid "Direct Assignment Settings"
+msgstr ""
+
+#: admin/alm-settings-page.php:52
 msgid "Direct assignment — to assignee"
 msgstr ""
 
-#: admin/alm-settings-page.php:43
+#: admin/alm-settings-page.php:53
 msgid "Direct assignment — to previous owner"
+msgstr ""
+
+#: admin/alm-settings-page.php:417
+msgid "Direct-assign reason max length"
 msgstr ""
 
 #: includes/class-alm-asset-manager.php:96
 msgid "Edit Asset"
 msgstr ""
 
-#: admin/alm-settings-page.php:26
+#: admin/alm-settings-page.php:28
 msgid "Email & Notifications"
 msgstr ""
 
-#: admin/alm-settings-page.php:27
+#: admin/alm-settings-page.php:29
 msgid "Email Templates"
 msgstr ""
 
-#: admin/alm-settings-page.php:225
+#: admin/alm-settings-page.php:235
 msgid "Email templates can only be modified by administrators."
 msgstr ""
 
-#: admin/alm-settings-page.php:156
+#: admin/alm-settings-page.php:1010
+msgid "Enable \"reload default terms\" action"
+msgstr ""
+
+#: admin/alm-settings-page.php:861
+msgid "Enable ALM logging"
+msgstr ""
+
+#: admin/alm-settings-page.php:446
+msgid "Enable direct assignment"
+msgstr ""
+
+#: admin/alm-settings-page.php:166
 msgid "Enable notifications"
+msgstr ""
+
+#: admin/alm-settings-page.php:805
+msgid "Enable rate limiting on the autocomplete endpoint"
+msgstr ""
+
+#: admin/alm-settings-page.php:992
+msgid "Enable tools page"
+msgstr ""
+
+#: admin/alm-settings-page.php:895
+msgid "Error — errors only"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:467
@@ -496,12 +650,20 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: admin/alm-settings-page.php:111
+#: admin/alm-settings-page.php:684
+msgid "Filters open by default"
+msgstr ""
+
+#: admin/alm-settings-page.php:121
 msgid "From address"
 msgstr ""
 
-#: admin/alm-settings-page.php:90
+#: admin/alm-settings-page.php:100
 msgid "From name"
+msgstr ""
+
+#: admin/alm-settings-page.php:33
+msgid "Frontend"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:124
@@ -600,12 +762,22 @@ msgid ""
 "-- ALM"
 msgstr ""
 
+#: admin/alm-settings-page.php:847
+msgid ""
+"How long autocomplete results are cached (in seconds). Set to 0 to disable "
+"caching."
+msgstr ""
+
 #. URI of the plugin
 msgid "https://github.com/ilclaudio/asset-lending-manager"
 msgstr ""
 
 #. Author URI of the plugin
 msgid "https://www.astrofilipisani.it/"
+msgstr ""
+
+#: admin/alm-settings-page.php:893
+msgid "Info — informational and above"
 msgstr ""
 
 #: includes/class-alm-installer.php:285
@@ -643,13 +815,17 @@ msgstr ""
 msgid "Level"
 msgstr ""
 
-#: admin/alm-settings-page.php:204
+#: admin/alm-settings-page.php:214
 msgid "Loan confirmation"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:489
 #: templates/shortcodes/asset-view.php:493
 msgid "Loan history"
+msgstr ""
+
+#: admin/alm-settings-page.php:296
+msgid "Loan Limits"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:217
@@ -664,7 +840,7 @@ msgstr ""
 msgid "Loan request approved successfully. The page will reload."
 msgstr ""
 
-#: admin/alm-settings-page.php:190
+#: admin/alm-settings-page.php:200
 msgid "Loan request decision"
 msgstr ""
 
@@ -686,15 +862,15 @@ msgstr ""
 msgid "Loan request sent successfully."
 msgstr ""
 
-#: admin/alm-settings-page.php:176
+#: admin/alm-settings-page.php:186
 msgid "Loan request submitted"
 msgstr ""
 
-#: admin/alm-settings-page.php:38
+#: admin/alm-settings-page.php:48
 msgid "Loan request — to operator"
 msgstr ""
 
-#: admin/alm-settings-page.php:37
+#: admin/alm-settings-page.php:47
 msgid "Loan request — to requester"
 msgstr ""
 
@@ -703,9 +879,37 @@ msgstr ""
 msgid "Loan requests"
 msgstr ""
 
+#: admin/alm-settings-page.php:30
+msgid "Loan Rules"
+msgstr ""
+
 #: includes/class-alm-acf-asset-adapter.php:33
 #: includes/class-alm-asset-manager.php:316
 msgid "Location"
+msgstr ""
+
+#: admin/alm-settings-page.php:930
+msgid "Log email events"
+msgstr ""
+
+#: admin/alm-settings-page.php:880
+msgid "Log level"
+msgstr ""
+
+#: admin/alm-settings-page.php:857
+msgid "Logging"
+msgstr ""
+
+#: admin/alm-settings-page.php:35
+msgid "Logging & Audit"
+msgstr ""
+
+#: admin/alm-settings-page.php:610
+msgid "Login redirect page"
+msgstr ""
+
+#: admin/alm-settings-page.php:635
+msgid "Logout redirect page"
 msgstr ""
 
 #: includes/class-alm-installer.php:239
@@ -716,7 +920,7 @@ msgstr ""
 msgid "Main page of the plugin"
 msgstr ""
 
-#: includes/class-alm-installer.php:266
+#: admin/alm-settings-page.php:37 includes/class-alm-installer.php:266
 msgid "Maintenance"
 msgstr ""
 
@@ -725,12 +929,61 @@ msgstr ""
 msgid "Manufacturer"
 msgstr ""
 
-#: admin/alm-settings-page.php:171
+#: admin/alm-settings-page.php:912
+msgid "Mask personal data in logs"
+msgstr ""
+
+#: admin/alm-settings-page.php:181
 msgid ""
 "Master switch. When disabled, no emails are sent regardless of other "
 "settings."
 msgstr ""
 
+#: admin/alm-settings-page.php:301
+msgid "Max active loans per user"
+msgstr ""
+
+#: admin/alm-settings-page.php:730
+msgid "Max results"
+msgstr ""
+
+#: admin/alm-settings-page.php:827
+msgid ""
+"Maximum autocomplete requests per IP per minute when rate limiting is "
+"enabled."
+msgstr ""
+
+#: admin/alm-settings-page.php:388
+msgid ""
+"Maximum character length of the message a member writes when submitting a "
+"loan request. Set to 0 for unlimited."
+msgstr ""
+
+#: admin/alm-settings-page.php:432
+msgid ""
+"Maximum character length of the reason field when performing a direct "
+"assignment. Set to 0 for unlimited."
+msgstr ""
+
+#: admin/alm-settings-page.php:410
+msgid ""
+"Maximum character length of the rejection reason an operator enters when "
+"declining a request. Set to 0 for unlimited."
+msgstr ""
+
+#: admin/alm-settings-page.php:314
+msgid ""
+"Maximum number of active loans a single user can hold simultaneously. Set to "
+"0 for unlimited."
+msgstr ""
+
+#: admin/alm-settings-page.php:744
+msgid ""
+"Maximum number of suggestions returned by the autocomplete endpoint. Default:"
+" 5."
+msgstr ""
+
+#: admin/alm-settings-page.php:487
 #: includes/class-alm-autocomplete-manager.php:217
 #: includes/class-alm-role-manager.php:73
 msgid "Member"
@@ -750,6 +1003,18 @@ msgstr ""
 
 #: templates/shortcodes/asset-view.php:242
 msgid "Message for the current owner:"
+msgstr ""
+
+#: admin/alm-settings-page.php:368
+msgid "Message Length Limits"
+msgstr ""
+
+#: admin/alm-settings-page.php:709
+msgid "Minimum characters"
+msgstr ""
+
+#: admin/alm-settings-page.php:723
+msgid "Minimum characters typed before autocomplete activates. Default: 3."
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:28
@@ -799,6 +1064,10 @@ msgstr ""
 msgid "No results found for \"%s\"."
 msgstr ""
 
+#: admin/alm-settings-page.php:352
+msgid "None — requests are auto-approved"
+msgstr ""
+
 #: templates/shortcodes/asset-view.php:532
 msgid "Note:"
 msgstr ""
@@ -808,16 +1077,28 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: admin/alm-settings-page.php:152
+#: admin/alm-settings-page.php:162
 msgid "Notification Toggles"
 msgstr ""
 
-#: admin/alm-settings-page.php:185
+#: admin/alm-settings-page.php:195
 msgid "Notify requester and operator when a loan request is submitted"
 msgstr ""
 
-#: admin/alm-settings-page.php:199
+#: admin/alm-settings-page.php:209
 msgid "Notify requester when a loan request is approved or rejected"
+msgstr ""
+
+#: admin/alm-settings-page.php:678
+msgid ""
+"Number of assets displayed per page in the frontend list. Minimum 1, maximum "
+"100."
+msgstr ""
+
+#: admin/alm-settings-page.php:765
+msgid ""
+"Number of characters of the asset description shown in each suggestion. Set "
+"to 0 to hide the description."
 msgstr ""
 
 #: includes/class-alm-installer.php:207
@@ -841,12 +1122,13 @@ msgstr ""
 msgid "Open/Close"
 msgstr ""
 
+#: admin/alm-settings-page.php:488
 #: includes/class-alm-autocomplete-manager.php:216
 #: includes/class-alm-role-manager.php:83
 msgid "Operator"
 msgstr ""
 
-#: admin/alm-settings-page.php:146
+#: admin/alm-settings-page.php:156
 msgid ""
 "Operator address that receives a copy of every loan request submission. "
 "Leave empty to disable."
@@ -859,6 +1141,28 @@ msgstr ""
 #: templates/shortcodes/asset-list.php:169
 #: templates/shortcodes/asset-list.php:279
 msgid "Owner"
+msgstr ""
+
+#: admin/alm-settings-page.php:580
+msgid "Page Links"
+msgstr ""
+
+#: admin/alm-settings-page.php:628
+msgid ""
+"Page members are redirected to after login. Leave empty to use the default "
+"asset archive URL (/asset/)."
+msgstr ""
+
+#: admin/alm-settings-page.php:653
+msgid ""
+"Page members are redirected to after logout. Leave empty to use the site "
+"home page."
+msgstr ""
+
+#: admin/alm-settings-page.php:603
+msgid ""
+"Page that contains the asset list. Used as the login redirect target for "
+"members with no specific destination."
 msgstr ""
 
 #: plugin-config.php:136
@@ -903,13 +1207,25 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
+#: admin/alm-settings-page.php:908
+msgid "Privacy"
+msgstr ""
+
 #: assets/js/frontend-assets.js:543 assets/js/frontend-assets.js:834
 msgid "Processing..."
+msgstr ""
+
+#: admin/alm-settings-page.php:775
+msgid "Public asset search endpoint"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:29
 #: includes/class-alm-asset-manager.php:312
 msgid "Purchase date"
+msgstr ""
+
+#: admin/alm-settings-page.php:793
+msgid "Rate limiting"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:136
@@ -933,6 +1249,14 @@ msgstr ""
 #: templates/shortcodes/asset-view.php:542
 #: templates/shortcodes/asset-view.php:577
 msgid "Recipient"
+msgstr ""
+
+#: admin/alm-settings-page.php:942
+msgid "Record each notification email dispatch attempt in the log"
+msgstr ""
+
+#: admin/alm-settings-page.php:924
+msgid "Redact user names and email addresses from log entries"
 msgstr ""
 
 #: includes/class-alm-installer.php:211
@@ -965,6 +1289,10 @@ msgstr ""
 msgid "Rejection message is required."
 msgstr ""
 
+#: admin/alm-settings-page.php:395
+msgid "Rejection message max length"
+msgstr ""
+
 #: includes/class-alm-loan-manager.php:215
 msgid "Rejection message must not exceed %d characters."
 msgstr ""
@@ -981,7 +1309,7 @@ msgstr ""
 msgid "Reload Default Taxonomies Terms"
 msgstr ""
 
-#: admin/alm-settings-page.php:39
+#: admin/alm-settings-page.php:49
 msgid "Request approved"
 msgstr ""
 
@@ -989,7 +1317,7 @@ msgstr ""
 msgid "Request automatically canceled: asset approved for another user."
 msgstr ""
 
-#: admin/alm-settings-page.php:41
+#: admin/alm-settings-page.php:51
 msgid "Request canceled"
 msgstr ""
 
@@ -1025,6 +1353,10 @@ msgstr ""
 msgid "Request message is required."
 msgstr ""
 
+#: admin/alm-settings-page.php:373
+msgid "Request message max length"
+msgstr ""
+
 #: includes/class-alm-loan-manager.php:93
 msgid "Request message must not exceed %d characters."
 msgstr ""
@@ -1033,13 +1365,21 @@ msgstr ""
 msgid "Request message must not exceed 500 characters."
 msgstr ""
 
-#: admin/alm-settings-page.php:40
+#: admin/alm-settings-page.php:50
 msgid "Request rejected"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:326
 #: templates/shortcodes/asset-view.php:352
 msgid "Requester"
+msgstr ""
+
+#: admin/alm-settings-page.php:812
+msgid "Requests per minute"
+msgstr ""
+
+#: admin/alm-settings-page.php:464
+msgid "Require reason"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:211
@@ -1050,7 +1390,11 @@ msgstr ""
 msgid "Retired"
 msgstr ""
 
-#: admin/alm-settings-page.php:219 admin/alm-settings-page.php:281
+#: admin/alm-settings-page.php:229 admin/alm-settings-page.php:291
+#: admin/alm-settings-page.php:438 admin/alm-settings-page.php:510
+#: admin/alm-settings-page.php:576 admin/alm-settings-page.php:700
+#: admin/alm-settings-page.php:853 admin/alm-settings-page.php:948
+#: admin/alm-settings-page.php:984 admin/alm-settings-page.php:1029
 msgid "Save Settings"
 msgstr ""
 
@@ -1070,6 +1414,10 @@ msgstr ""
 msgid "Search assets..."
 msgstr ""
 
+#: admin/alm-settings-page.php:704
+msgid "Search Behaviour"
+msgstr ""
+
 #: templates/shortcodes/asset-view.php:447
 msgid "Search member or operator..."
 msgstr ""
@@ -1087,13 +1435,13 @@ msgstr ""
 msgid "Security token not found. Please reload the page."
 msgstr ""
 
-#: admin/alm-settings-page.php:213
+#: admin/alm-settings-page.php:223
 msgid ""
 "Send confirmation email when a loan is confirmed (if/when the feature is "
 "introduced)"
 msgstr ""
 
-#: admin/alm-settings-page.php:168
+#: admin/alm-settings-page.php:178
 msgid "Send email notifications"
 msgstr ""
 
@@ -1101,15 +1449,15 @@ msgstr ""
 msgid "Send request"
 msgstr ""
 
-#: admin/alm-settings-page.php:85
+#: admin/alm-settings-page.php:95
 msgid "Sender Configuration"
 msgstr ""
 
-#: admin/alm-settings-page.php:125
+#: admin/alm-settings-page.php:135
 msgid "Sender email address. Leave empty to use the site admin email."
 msgstr ""
 
-#: admin/alm-settings-page.php:104
+#: admin/alm-settings-page.php:114
 msgid "Sender name shown in outgoing emails. Leave empty to use the site name."
 msgstr ""
 
@@ -1126,16 +1474,28 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: admin/alm-settings-page.php:63
+#: admin/alm-settings-page.php:73
 msgid "Settings saved."
 msgstr ""
 
-#: admin/alm-settings-page.php:67
+#: admin/alm-settings-page.php:77
 msgid "Settings sections"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:199
 msgid "Show only my assets"
+msgstr ""
+
+#: admin/alm-settings-page.php:1022
+msgid "Show the \"Reload default taxonomy terms\" button on the Tools page"
+msgstr ""
+
+#: admin/alm-settings-page.php:1004
+msgid "Show the ALM Tools submenu page in the admin area"
+msgstr ""
+
+#: admin/alm-settings-page.php:694
+msgid "Show the search/filter panel expanded when the asset list loads"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:533
@@ -1158,7 +1518,7 @@ msgstr ""
 msgid "Structure"
 msgstr ""
 
-#: admin/alm-settings-page.php:242
+#: admin/alm-settings-page.php:252
 msgid "Subject"
 msgstr ""
 
@@ -1167,7 +1527,11 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: admin/alm-settings-page.php:132
+#: admin/alm-settings-page.php:550
+msgid "System Actor"
+msgstr ""
+
+#: admin/alm-settings-page.php:142
 msgid "System email (BCC)"
 msgstr ""
 
@@ -1184,12 +1548,20 @@ msgstr ""
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr ""
 
+#: admin/alm-settings-page.php:474
+msgid "The assignor must enter a reason when performing a direct assignment"
+msgstr ""
+
 #: templates/shortcodes/asset-view.php:268
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 
 #: includes/class-alm-plugin-manager.php:302
 msgid "Tools"
+msgstr ""
+
+#: admin/alm-settings-page.php:988
+msgid "Tools Page"
 msgstr ""
 
 #: includes/class-alm-installer.php:223
@@ -1203,7 +1575,7 @@ msgid "Type"
 msgstr ""
 
 #: includes/class-alm-plugin-manager.php:370
-#: includes/class-alm-plugin-manager.php:446
+#: includes/class-alm-plugin-manager.php:531
 msgid "Unauthorized action."
 msgstr ""
 
@@ -1229,13 +1601,52 @@ msgstr ""
 msgid "View on Frontend"
 msgstr ""
 
+#: admin/alm-settings-page.php:894
+msgid "Warning — warnings and errors only"
+msgstr ""
+
 #: includes/class-alm-acf-asset-adapter.php:32
 #: includes/class-alm-asset-manager.php:315
 msgid "Weight"
 msgstr ""
 
+#: admin/alm-settings-page.php:544
+msgid ""
+"When a kit is assigned, automatically cancel pending requests for its "
+"individual components"
+msgstr ""
+
+#: admin/alm-settings-page.php:528
+msgid ""
+"When an asset is assigned, automatically cancel all other pending loan "
+"requests for that asset"
+msgstr ""
+
+#: admin/alm-settings-page.php:504
+msgid "Which user roles can be selected as the target of a direct assignment."
+msgstr ""
+
+#: admin/alm-settings-page.php:362
+msgid ""
+"Who can approve loan requests for assets that have no current owner assigned."
+msgstr ""
+
+#: admin/alm-settings-page.php:570
+msgid ""
+"WordPress user ID recorded as the actor for automatic system operations (e.g."
+" auto-cancellations). Defaults to 1 (site administrator)."
+msgstr ""
+
+#: admin/alm-settings-page.php:32
+msgid "Workflow"
+msgstr ""
+
 #: templates/shortcodes/asset-view.php:249
 msgid "Write a brief message explaining why you need this asset..."
+msgstr ""
+
+#: admin/alm-settings-page.php:873
+msgid "Write ALM events to the debug log (requires WP_DEBUG to be enabled)"
 msgstr ""
 
 #: includes/class-alm-loan-manager.php:130
@@ -1278,4 +1689,16 @@ msgstr ""
 
 #: templates/shortcodes/asset-view.php:234
 msgid "You have already requested a loan for this asset."
+msgstr ""
+
+#: admin/alm-settings-page.php:621
+msgid "— Default (/asset/) —"
+msgstr ""
+
+#: admin/alm-settings-page.php:646
+msgid "— Default (home) —"
+msgstr ""
+
+#: admin/alm-settings-page.php:596
+msgid "— Not set —"
 msgstr ""
