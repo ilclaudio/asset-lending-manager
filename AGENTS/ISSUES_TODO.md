@@ -11,15 +11,15 @@ Last update: 2026-03-02
 - **Category:** Security
 - **Description:** `format_template()` uses `str_replace()` with arrays, which processes replacement pairs left-to-right. User-controlled values (e.g., `display_name`, request message) are used as replacement values. If a user sets their display name to a placeholder token used later in the array (e.g., `{REQUEST_MESSAGE}`), PHP's iterative `str_replace` will substitute that token in the next pass, causing a later placeholder's value to appear in the wrong position in the email.
 - **Expected behavior:** Placeholder replacement values should be sanitized to remove or escape `{...}` tokens before substitution, or the template engine should be replaced with one that is not vulnerable to recursive substitution (e.g., replace all tokens in a single pass using `strtr()`).
-- **Notes:** `includes/class-alm-notification-manager.php:362`. Impact: data leakage / wrong data in wrong email field. No code execution possible (plain-text emails).
+- **Notes:** `includes/class-alm-notification-manager.php:414` (`format_template`). Impact: data leakage / wrong data in wrong email field. No code execution possible (plain-text emails).
 
 ### [Medium] Email header injection risk when settings UI exposes From fields
 - **Status:** Open
 - **Date:** 2026-02-22
 - **Category:** Security
-- **Description:** The `From:` header is built by direct string concatenation of `ALM_EMAIL_FROM_NAME` and `$from_address`: `'From: ' . ALM_EMAIL_FROM_NAME . ' <' . $from_address . '>'`. Currently these are compile-time constants (low risk). However, when the settings UI is implemented and these values are read from `wp_options` (user-editable by admins), a value containing `\r\n` would allow injecting arbitrary mail headers (header injection attack).
-- **Expected behavior:** When the settings UI is added, sanitize `from_name` and `from_address` before building the header by stripping newline/carriage-return characters. Consider using `sanitize_email()` for the address and a dedicated sanitizer that strips CRLF for the name.
-- **Notes:** `includes/class-alm-notification-manager.php:324`. Pre-emptive issue to address before the settings page is implemented.
+- **Description:** The `From:` header is built by direct string concatenation of `$from_name` and `$from_address`: `'From: ' . $from_name . ' <' . $from_address . '>'`. `$from_name` is now read from `$this->settings->get('email.from_name', '')` (settings are live), so an admin saving `\r\n` in that field would inject arbitrary mail headers. Risk is real, not just pre-emptive.
+- **Expected behavior:** Sanitize `from_name` and `from_address` before building the header by stripping newline/carriage-return characters. Use `sanitize_email()` for the address and a CRLF-stripping sanitizer for the name.
+- **Notes:** `includes/class-alm-notification-manager.php:374` (settings read), `includes/class-alm-notification-manager.php:378` (header build). Now active risk since settings UI is complete.
 
 ### [Medium] `insertAdjacentHTML` with unvalidated DOM data in admin JS
 - **Status:** Open
@@ -35,7 +35,7 @@ Last update: 2026-03-02
 - **Category:** Security
 - **Description:** `send_notification_email()` logs recipient (`to`) and email subject in plaintext via `ALM_Logger::info()`. With `WP_DEBUG` enabled, this can persist personal data and workflow details in server logs.
 - **Expected behavior:** Avoid logging recipient addresses/subjects (or mask them), and keep verbose mail tracing behind an explicit opt-in debug setting.
-- **Notes:** `includes/class-alm-notification-manager.php:330`, `includes/class-alm-notification-manager.php:333`
+- **Notes:** `includes/class-alm-notification-manager.php:382` (attempt log), `includes/class-alm-notification-manager.php:395` (failure log)
 
 ---
 
@@ -55,15 +55,15 @@ Last update: 2026-03-02
 - **Category:** Bug
 - **Description:** The reject path reads the request row outside the transaction and, inside `reject_loan_request()`, inserts a `rejected` history entry before deleting the request. Deletion checks only `false` and treats `0 affected rows` as success. If another action processes/deletes the same request first, the reject path can still commit a stale/incorrect history row.
 - **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
-- **Notes:** `includes/class-alm-loan-manager.php:223`, `includes/class-alm-loan-manager.php:327`, `includes/class-alm-loan-manager.php:335`, `includes/class-alm-loan-manager.php:357`
+- **Notes:** `includes/class-alm-loan-manager.php:244` (stale read outside tx), `includes/class-alm-loan-manager.php:362` (history insert), `includes/class-alm-loan-manager.php:378` (delete), `includes/class-alm-loan-manager.php:384` (check `false` only)
 
 ### [Medium] ACF unavailability silently skips kit component propagation
 - **Status:** Open
 - **Date:** 2026-02-22
 - **Category:** Bug
-- **Description:** `get_kit_components()` silently returns an empty array when ACF is not available (`! function_exists('get_field')`). If ACF is deactivated while a kit loan is being approved or a direct assignment is processed, the kit is treated as if it has no components: the owner and state are updated on the kit post, but all component posts remain in their previous state. This leaves the data model in an inconsistent state with no error logged or surfaced to the user.
+- **Description:** `get_kit_components()` calls `ALM_ACF_Asset_Adapter::get_custom_field('components', $asset_id)`. The adapter returns `null` when ACF is not available (`! function_exists('get_field')`); `get_kit_components()` treats `null` as empty array and silently returns `[]`. If ACF is deactivated while a kit loan is being approved or a direct assignment is processed, the kit is treated as if it has no components: the owner and state are updated on the kit post, but all component posts remain in their previous state. This leaves the data model in an inconsistent state with no error logged or surfaced to the user.
 - **Expected behavior:** When ACF is not available during a kit operation, `execute_ownership_transfer()` should throw an exception to abort the transaction, or at minimum log an error and surface a user-visible failure response.
-- **Notes:** `includes/class-alm-loan-manager.php:1096`. Only relevant if ACF is deactivated after kit assets are already created.
+- **Notes:** `includes/class-alm-loan-manager.php:1158` (`get_kit_components`), `includes/class-alm-acf-asset-adapter.php:73` (silent null return). Only relevant if ACF is deactivated after kit assets are already created.
 
 ### [Medium] Duplicate pending requests possible under concurrent submissions
 - **Status:** Open
@@ -71,7 +71,7 @@ Last update: 2026-03-02
 - **Category:** Bug
 - **Description:** Submission checks `has_pending_request()` and inserts via `create_loan_request()` in separate steps without row-level locking or DB uniqueness. Two near-simultaneous requests from the same user/asset can both pass the check and insert duplicate pending rows.
 - **Expected behavior:** Make submission idempotent under concurrency (transactional lock/check at insert time and/or schema-level uniqueness strategy).
-- **Notes:** `includes/class-alm-loan-manager.php:127`, `includes/class-alm-loan-manager.php:135`, `includes/class-alm-loan-manager.php:622`, `includes/class-alm-loan-manager.php:554`
+- **Notes:** `includes/class-alm-loan-manager.php:144` (pending check in AJAX handler), `includes/class-alm-loan-manager.php:153` (insert call in AJAX handler), `includes/class-alm-loan-manager.php:583` (`create_loan_request`), `includes/class-alm-loan-manager.php:651` (`has_pending_request`)
 
 ### [Medium] Concurrent cancellation can create stale history rows
 - **Status:** Open
@@ -79,7 +79,7 @@ Last update: 2026-03-02
 - **Category:** Bug
 - **Description:** In `cancel_concurrent_requests()`, each pending request is logged to history before deletion, and delete failure checks only `false`. Under concurrent processing, `DELETE` can affect `0` rows while history has already been written, producing inconsistent audit entries.
 - **Expected behavior:** Lock target rows before processing and require exactly one deleted row per request; rollback if row count is not `1`.
-- **Notes:** `includes/class-alm-loan-manager.php:1157`, `includes/class-alm-loan-manager.php:1186`, `includes/class-alm-loan-manager.php:1206`, `includes/class-alm-loan-manager.php:1212`
+- **Notes:** `includes/class-alm-loan-manager.php:1188` (function), `includes/class-alm-loan-manager.php:1225` (history insert), `includes/class-alm-loan-manager.php:1246` (delete), `includes/class-alm-loan-manager.php:1252` (check `false` only)
 
 ---
 
@@ -114,7 +114,7 @@ Last update: 2026-03-02
 - **Category:** Refactoring
 - **Description:** `handle_autocomplete()` reads and sanitizes `$nonce = $request->get_param('nonce')` but never uses the variable for any purpose. The endpoint has `'permission_callback' => '__return_true'` so nonce validation is also not performed. The dead code is confusing and may mislead future developers into thinking nonce validation is active.
 - **Expected behavior:** Remove the dead `$nonce` assignment until the endpoint actually validates nonces or is restricted to authenticated users.
-- **Notes:** `includes/class-alm-autocomplete-manager.php:145-146`
+- **Notes:** `includes/class-alm-autocomplete-manager.php:161-163`
 
 ### [Low] `echo` without escaping wrapper for pre-escaped `aria-label` variables
 - **Status:** Open
@@ -122,7 +122,7 @@ Last update: 2026-03-02
 - **Category:** CodeStyle
 - **Description:** In the loan requests table, `$alm_approve_label` and `$alm_reject_label` are escaped with `esc_attr()` at assignment time, then output with bare `echo`. WordPress Coding Standards require escaping at the point of output, not at assignment, because the escape context may not be obvious to future readers and PHPCS reports this pattern as a violation.
 - **Expected behavior:** Move `esc_attr()` to the `echo` call site (e.g., `echo esc_attr( $alm_approve_label )`), or use `esc_attr_e()` directly.
-- **Notes:** `templates/shortcodes/asset-view.php:386`, `templates/shortcodes/asset-view.php:397`
+- **Notes:** `templates/shortcodes/asset-view.php:386`, `templates/shortcodes/asset-view.php:396`
 
 ### [Low] `in_array()` without strict flag in `keep_alm_taxonomy_menu_open()`
 - **Status:** Open
@@ -130,7 +130,7 @@ Last update: 2026-03-02
 - **Category:** CodeStyle
 - **Description:** `in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES )` is called without the `true` strict comparison flag. This allows type-coercive matching, which can produce unexpected results when the taxonomy value is `null`, `false`, or a non-string type. WordPress Coding Standards require strict comparisons by default.
 - **Expected behavior:** Add `true` as the third argument: `in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES, true )`.
-- **Notes:** `includes/class-alm-plugin-manager.php:303`
+- **Notes:** `includes/class-alm-plugin-manager.php:317`
 
 ### [Low] Excessive debug console logs in JS
 - **Status:** Open
