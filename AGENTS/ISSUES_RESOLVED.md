@@ -1,5 +1,5 @@
 # ISSUES_RESOLVED
-Last update: 2026-02-22
+Last update: 2026-03-02
 
 ## Entry Format
 ```markdown
@@ -12,6 +12,17 @@ Last update: 2026-02-22
 - **Fix summary:** What changed and why
 - **Notes:** Optional commit/PR/doc references
 ```
+
+---
+
+### [High] Operators cannot approve or reject loan requests for unowned assets
+- **Status:** Resolved
+- **Date:** 2026-02-22
+- **Category:** Bug
+- **Description:** `can_user_approve_request()` and `can_user_reject_request()` required the acting user to be the current asset owner. For unowned assets (`owner_id = 0`) this blocked the standard approve/reject flow and left requests stuck in `pending`.
+- **Resolution date:** 2026-03-02
+- **Fix summary:** Updated permission checks so operators (`ALM_EDIT_ASSET`) can approve/reject any pending request via `user_can( $user_id, ALM_EDIT_ASSET )` in both `can_user_approve_request()` and `can_user_reject_request()`. Updated request table UI condition to show approve/reject buttons to operators as well as current owners.
+- **Notes:** `includes/class-alm-loan-manager.php`, `templates/shortcodes/asset-view.php`
 
 ---
 

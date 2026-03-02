@@ -376,7 +376,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 											<?php echo esc_html( $alm_request_date ); ?>
 										</td>
 										<td class="alm-request-actions" role="cell" data-label="<?php esc_attr_e( 'Actions', 'asset-lending-manager' ); ?>">
-										<?php if ( 'pending' === $alm_request_status && $alm_is_current_owner ) : ?>
+										<?php if ( 'pending' === $alm_request_status && ( $alm_is_current_owner || $alm_is_operator ) ) : ?>
 											<button 
 												type="button" 
 												class="alm-button alm-button--small alm-button--approve" 
