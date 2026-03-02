@@ -14,6 +14,17 @@ Last update: 2026-03-02
 
 ---
 
+### [High] Autocomplete hardening settings are saved but not enforced at runtime
+- **Status:** Resolved
+- **Date:** 2026-03-02
+- **Category:** Security
+- **Description:** The admin UI persisted `autocomplete.public_assets_endpoint_enabled`, `autocomplete.rate_limit_enabled`, and `autocomplete.rate_limit_per_minute`, but the public REST route remained fully open (`permission_callback => __return_true`) and runtime did not enforce the configured guards.
+- **Resolution date:** 2026-03-02
+- **Fix summary:** Applied runtime enforcement for `autocomplete.public_assets_endpoint_enabled` in `ALM_Autocomplete_Manager` via dedicated REST permission callback. When public access is disabled, endpoint access is limited to authenticated users with `ALM_VIEW_ASSETS`. Also stopped enqueuing frontend autocomplete assets for users who cannot access the endpoint. Removed unused rate-limit settings end-to-end (`rate_limit_enabled`, `rate_limit_per_minute`) from defaults, settings save handler, and admin settings UI to avoid non-functional controls.
+- **Notes:** `includes/class-alm-autocomplete-manager.php`, `includes/class-alm-settings-manager.php`, `includes/class-alm-plugin-manager.php`, `admin/alm-settings-page.php`
+
+---
+
 ### [Low] Hardcoded operator user ID for automatic operations
 - **Status:** Resolved
 - **Date:** 2026-02-12

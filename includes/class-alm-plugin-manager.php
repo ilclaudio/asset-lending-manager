@@ -449,8 +449,6 @@ class ALM_Plugin_Manager {
 			// [A]-only fields.
 			if ( $is_admin ) {
 				$changes['autocomplete.public_assets_endpoint_enabled'] = isset( $_POST['alm_autocomplete_public_endpoint'] );
-				$changes['autocomplete.rate_limit_enabled']             = isset( $_POST['alm_autocomplete_rate_limit_enabled'] );
-				$changes['autocomplete.rate_limit_per_minute']          = max( 1, (int) wp_unslash( $_POST['alm_autocomplete_rate_limit_per_minute'] ?? 60 ) );
 			}
 		}
 

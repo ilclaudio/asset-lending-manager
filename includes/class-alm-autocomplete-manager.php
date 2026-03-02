@@ -54,6 +54,9 @@ class ALM_Autocomplete_Manager {
 		if ( ! $this->is_alm_page() ) {
 			return;
 		}
+		if ( ! $this->can_current_user_access_assets_autocomplete() ) {
+			return;
+		}
 
 		wp_enqueue_script(
 			'alm-asset-autocomplete',
@@ -91,10 +94,7 @@ class ALM_Autocomplete_Manager {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'handle_autocomplete' ),
-				'permission_callback' => '__return_true',
-				// 'permission_callback' => function() {
-				// return current_user_can( ALM_VIEW_ASSETS );
-				// },
+				'permission_callback' => array( $this, 'can_access_assets_autocomplete_endpoint' ),
 				'args'                => array(
 					'term' => array(
 						'required'          => true,
@@ -130,6 +130,45 @@ class ALM_Autocomplete_Manager {
 	}
 
 	/**
+	 * Checks whether unauthenticated access is allowed for the assets autocomplete endpoint.
+	 *
+	 * @return bool
+	 */
+	private function is_public_assets_endpoint_enabled() {
+		return (bool) $this->settings->get( 'autocomplete.public_assets_endpoint_enabled', true );
+	}
+
+	/**
+	 * Checks whether the current user can access the assets autocomplete endpoint.
+	 *
+	 * @return bool
+	 */
+	private function can_current_user_access_assets_autocomplete() {
+		if ( $this->is_public_assets_endpoint_enabled() ) {
+			return true;
+		}
+
+		return is_user_logged_in() && current_user_can( ALM_VIEW_ASSETS );
+	}
+
+	/**
+	 * REST permission callback for assets autocomplete endpoint.
+	 *
+	 * @return true|WP_Error
+	 */
+	public function can_access_assets_autocomplete_endpoint() {
+		if ( $this->can_current_user_access_assets_autocomplete() ) {
+			return true;
+		}
+
+		return new WP_Error(
+			'alm_assets_autocomplete_forbidden',
+			__( 'You do not have permission to access asset autocomplete.', 'asset-lending-manager' ),
+			array( 'status' => rest_authorization_required_code() )
+		);
+	}
+
+	/**
 	 * Check whether the current page is an ALM page.
 	 *
 	 * Returns true for asset archive, single asset, and pages containing
@@ -157,10 +196,6 @@ class ALM_Autocomplete_Manager {
 	 * @return WP_REST_Response
 	 */
 	public function handle_autocomplete( WP_REST_Request $request ) {
-		// // Read nonce from POST.
-		$nonce = $request->get_param( 'nonce' ) ?? '';
-		$nonce = $nonce ? sanitize_text_field( $nonce ) : '';
-
 		// Read search term.
 		$term = $request->get_param( 'term' ) ?? '';
 		$term = $term ? trim( wp_unslash( $term ) ) : '';
