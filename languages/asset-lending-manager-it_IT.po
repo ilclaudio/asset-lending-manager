@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-03-02 20:55+0000\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2026-03-02 23:05+0000\n"
+"Last-Translator: Amministra Tore\n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.8.0; wp-6.9; php-8.4.10\n"
+"X-Loco-Version: 2.8.2; wp-6.9.1; php-8.4.10\n"
 "X-Domain: asset-lending-manager"
 
 #: templates/shortcodes/asset-view.php:170
@@ -66,8 +66,8 @@ msgstr "Accessorio"
 msgid "Actions"
 msgstr "Azioni"
 
+#: includes/class-alm-plugin-manager.php:245
 #: includes/class-alm-plugin-manager.php:246
-#: includes/class-alm-plugin-manager.php:247
 msgid "Add a asset"
 msgstr "Aggiungi risorsa"
 
@@ -90,11 +90,10 @@ msgstr "Campi aggiuntivi"
 #: admin/alm-settings-page.php:447 admin/alm-settings-page.php:481
 #: admin/alm-settings-page.php:556 admin/alm-settings-page.php:586
 #: admin/alm-settings-page.php:611 admin/alm-settings-page.php:636
-#: admin/alm-settings-page.php:776 admin/alm-settings-page.php:794
-#: admin/alm-settings-page.php:813 admin/alm-settings-page.php:862
-#: admin/alm-settings-page.php:881 admin/alm-settings-page.php:913
-#: admin/alm-settings-page.php:931 admin/alm-settings-page.php:958
-#: admin/alm-settings-page.php:993 admin/alm-settings-page.php:1011
+#: admin/alm-settings-page.php:776 admin/alm-settings-page.php:802
+#: admin/alm-settings-page.php:821 admin/alm-settings-page.php:853
+#: admin/alm-settings-page.php:871 admin/alm-settings-page.php:898
+#: admin/alm-settings-page.php:933 admin/alm-settings-page.php:951
 msgid "Administrator only"
 msgstr "Solo amministratore"
 
@@ -131,43 +130,43 @@ msgid ""
 "Allow operators/administrators to assign an asset directly to a user without "
 "a loan request"
 msgstr ""
-"Consenti a operatori/amministratori di assegnare una risorsa "
-"direttamente a un utente senza una richiesta di prestito"
+"Consenti a operatori/amministratori di assegnare una risorsa direttamente a "
+"un utente senza una richiesta di prestito"
 
 #: admin/alm-settings-page.php:787
 msgid ""
 "Allow unauthenticated requests to the asset autocomplete REST endpoint (/wp-"
 "json/alm/v1/assets/autocomplete)"
 msgstr ""
-"Consenti richieste non autenticate all'endpoint REST di autocomplete "
-"delle risorse (/wp-json/alm/v1/assets/autocomplete)"
+"Consenti richieste non autenticate all'endpoint REST di autocomplete delle "
+"risorse (/wp-json/alm/v1/assets/autocomplete)"
 
 #: admin/alm-settings-page.php:480
 msgid "Allowed target roles"
 msgstr "Ruoli destinatari consentiti"
 
 #. Page title.
-#: includes/class-alm-plugin-manager.php:226
+#: includes/class-alm-plugin-manager.php:225
 msgid "ALM"
 msgstr "ALM"
 
-#: admin/alm-settings-page.php:69 includes/class-alm-plugin-manager.php:291
+#: admin/alm-settings-page.php:69 includes/class-alm-plugin-manager.php:290
 msgid "ALM Settings"
 msgstr "Impostazioni ALM"
 
-#: admin/alm-tools-page.php:7 includes/class-alm-plugin-manager.php:301
+#: admin/alm-tools-page.php:7 includes/class-alm-plugin-manager.php:300
 msgid "ALM Tools"
 msgstr "Strumenti ALM"
 
 #. %s: example formatted code
-#: admin/alm-settings-page.php:975
+#: admin/alm-settings-page.php:915
 #, php-format
 msgid ""
 "Alphanumeric prefix prepended to the asset ID to form the human-readable "
 "asset code (e.g. %s)."
 msgstr ""
-"Prefisso alfanumerico anteposto all'ID risorsa per formare il codice "
-"risorsa leggibile (es. %s)."
+"Prefisso alfanumerico anteposto all'ID risorsa per formare il codice risorsa "
+"leggibile (es. %s)."
 
 #: admin/alm-tools-page.php:16
 msgid "An error occurred while loading default terms."
@@ -232,17 +231,17 @@ msgstr "Risorsa"
 msgid "Asset archive page"
 msgstr "Pagina archivio risorse"
 
-#: includes/class-alm-loan-manager.php:1310
-#: includes/class-alm-loan-manager.php:1392 assets/js/frontend-assets.js:973
+#: includes/class-alm-loan-manager.php:1403
+#: includes/class-alm-loan-manager.php:1489 assets/js/frontend-assets.js:973
 msgid "Asset assigned successfully."
 msgstr "Risorsa assegnata con successo."
 
-#: admin/alm-settings-page.php:952
+#: admin/alm-settings-page.php:892
 msgid "Asset Code"
 msgstr "Codice risorsa"
 
-#: includes/class-alm-loan-manager.php:244
-#: includes/class-alm-loan-manager.php:496
+#: includes/class-alm-loan-manager.php:265
+#: includes/class-alm-loan-manager.php:524
 msgid "Asset ID mismatch."
 msgstr "ID risorsa non corrispondente."
 
@@ -255,13 +254,13 @@ msgid "Asset Identification"
 msgstr "Identificazione risorsa"
 
 #. Name of the plugin
-#: includes/class-alm-plugin-manager.php:225
+#: includes/class-alm-plugin-manager.php:224
 msgid "Asset Lending Manager"
 msgstr "Asset Lending Manager"
 
 #: includes/class-alm-asset-manager.php:202
+#: includes/class-alm-plugin-manager.php:281
 #: includes/class-alm-plugin-manager.php:282
-#: includes/class-alm-plugin-manager.php:283
 msgid "Asset Level"
 msgstr "Livello risorsa"
 
@@ -281,11 +280,11 @@ msgstr "Paginazione della lista delle risorse"
 msgid "Asset name is required."
 msgstr "Il nome della risorsa e obbligatorio."
 
-#: includes/class-alm-frontend-manager.php:350
-#: includes/class-alm-frontend-manager.php:542
-#: includes/class-alm-loan-manager.php:111
-#: includes/class-alm-loan-manager.php:927
-#: includes/class-alm-loan-manager.php:1263
+#: includes/class-alm-frontend-manager.php:380
+#: includes/class-alm-frontend-manager.php:572
+#: includes/class-alm-loan-manager.php:129
+#: includes/class-alm-loan-manager.php:981
+#: includes/class-alm-loan-manager.php:1356
 msgid "Asset not found."
 msgstr "Risorsa non trovata."
 
@@ -294,8 +293,8 @@ msgid "Asset overview"
 msgstr "Anteprima della risorsa"
 
 #: includes/class-alm-asset-manager.php:180
+#: includes/class-alm-plugin-manager.php:272
 #: includes/class-alm-plugin-manager.php:273
-#: includes/class-alm-plugin-manager.php:274
 msgid "Asset State"
 msgstr "Stato risorsa"
 
@@ -304,8 +303,8 @@ msgid "Asset States"
 msgstr "Stati risorsa"
 
 #: includes/class-alm-asset-manager.php:136
+#: includes/class-alm-plugin-manager.php:254
 #: includes/class-alm-plugin-manager.php:255
-#: includes/class-alm-plugin-manager.php:256
 msgid "Asset Structure"
 msgstr "Struttura risorsa"
 
@@ -318,8 +317,8 @@ msgid "Asset taxonomies"
 msgstr "Tassonomie della risorsa"
 
 #: includes/class-alm-asset-manager.php:158
+#: includes/class-alm-plugin-manager.php:263
 #: includes/class-alm-plugin-manager.php:264
-#: includes/class-alm-plugin-manager.php:265
 msgid "Asset Type"
 msgstr "Tipo risorsa"
 
@@ -331,8 +330,8 @@ msgstr "Tipi risorsa"
 #. page title.
 #: includes/class-alm-asset-manager.php:92
 #: includes/class-alm-asset-manager.php:102
+#: includes/class-alm-plugin-manager.php:236
 #: includes/class-alm-plugin-manager.php:237
-#: includes/class-alm-plugin-manager.php:238
 msgid "Assets"
 msgstr "Risorse"
 
@@ -353,11 +352,11 @@ msgstr "Assegna risorsa"
 msgid "Assign to user:"
 msgstr "Assegna a utente:"
 
-#: includes/class-alm-loan-manager.php:1279
+#: includes/class-alm-loan-manager.php:1372
 msgid "Assignee must be a member or operator."
 msgstr "Il destinatario deve essere un socio o un operatore."
 
-#: includes/class-alm-loan-manager.php:1269
+#: includes/class-alm-loan-manager.php:1362
 msgid "Assignee user not found."
 msgstr "Utente destinatario non trovato."
 
@@ -369,12 +368,12 @@ msgstr "Assegnazione in corso..."
 msgid "Assignment failed. Please try again."
 msgstr "Assegnazione non riuscita. Riprova."
 
-#: includes/class-alm-loan-manager.php:1245
+#: includes/class-alm-loan-manager.php:1337
 msgid "Assignment reason is required."
 msgstr "Il motivo dell'assegnamento è obbligatorio."
 
 #. %d: maximum number of characters allowed
-#: includes/class-alm-loan-manager.php:1253
+#: includes/class-alm-loan-manager.php:1346
 msgid "Assignment reason must not exceed %d characters."
 msgstr "Il motivo dell'assegnamento non deve superare i %d caratteri."
 
@@ -414,10 +413,6 @@ msgstr "Corpo"
 msgid "Book"
 msgstr "Libro"
 
-#: admin/alm-settings-page.php:834
-msgid "Cache TTL (seconds)"
-msgstr "TTL cache (secondi)"
-
 #: assets/js/frontend-assets.js:498 assets/js/frontend-assets.js:745
 msgid "Cancel"
 msgstr "Annulla"
@@ -434,7 +429,7 @@ msgstr "Cancella le richieste concorrenti all'assegnazione"
 msgid "Canceled"
 msgstr "Annullata"
 
-#: includes/class-alm-loan-manager.php:1347
+#: includes/class-alm-loan-manager.php:1440
 msgid "Cannot assign a retired asset."
 msgstr "Impossibile assegnare una risorsa ritirata."
 
@@ -456,7 +451,7 @@ msgstr "Chiudi messaggio"
 msgid "Code"
 msgstr "Codice"
 
-#: admin/alm-settings-page.php:957
+#: admin/alm-settings-page.php:897
 msgid "Code prefix"
 msgstr "Prefisso codice"
 
@@ -464,7 +459,8 @@ msgstr "Prefisso codice"
 msgid "Component"
 msgstr "Componente"
 
-#: includes/class-alm-loan-manager.php:828
+#. %s: kit component title
+#: includes/class-alm-loan-manager.php:871
 #, php-format
 msgid ""
 "Component \"%s\" is already on loan and cannot be assigned as part of this "
@@ -510,7 +506,7 @@ msgstr ""
 msgid "Date"
 msgstr "Data"
 
-#: admin/alm-settings-page.php:892
+#: admin/alm-settings-page.php:832
 msgid "Debug — all events"
 msgstr "Debug — tutti gli eventi"
 
@@ -568,11 +564,11 @@ msgstr "Template e-mail"
 msgid "Email templates can only be modified by administrators."
 msgstr "I Template e-mail possono essere modificati solo dagli amministratori."
 
-#: admin/alm-settings-page.php:1010
+#: admin/alm-settings-page.php:950
 msgid "Enable \"reload default terms\" action"
 msgstr "Abilita l'azione \\\"ricarica termini predefiniti\\\""
 
-#: admin/alm-settings-page.php:861
+#: admin/alm-settings-page.php:801
 msgid "Enable ALM logging"
 msgstr "Abilita il logging ALM"
 
@@ -584,15 +580,11 @@ msgstr "Abilita l'assegnamento diretto"
 msgid "Enable notifications"
 msgstr "Abilita notifiche"
 
-#: admin/alm-settings-page.php:805
-msgid "Enable rate limiting on the autocomplete endpoint"
-msgstr "Abilita il rate limiting sull'endpoint autocomplete"
-
-#: admin/alm-settings-page.php:992
+#: admin/alm-settings-page.php:932
 msgid "Enable tools page"
 msgstr "Abilita la pagina strumenti"
 
-#: admin/alm-settings-page.php:895
+#: admin/alm-settings-page.php:835
 msgid "Error — errors only"
 msgstr "Error — solo errori"
 
@@ -613,24 +605,26 @@ msgstr "Impossibile approvare la richiesta di prestito. Riprova."
 msgid "Failed to assign asset. Please try again."
 msgstr "Impossibile assegnare la risorsa. Riprova."
 
-#: includes/class-alm-loan-manager.php:139
+#: includes/class-alm-loan-manager.php:157
 msgid "Failed to create loan request."
 msgstr "Impossibile creare la richiesta di prestito."
 
-#: includes/class-alm-loan-manager.php:1187
+#. %d: loan request ID
+#: includes/class-alm-loan-manager.php:1256
 msgid "Failed to delete request ID %d."
 msgstr "Impossibile eliminare la richiesta ID %d."
 
-#: includes/class-alm-loan-manager.php:1171
+#. %d: loan request ID
+#: includes/class-alm-loan-manager.php:1239
 msgid "Failed to log cancellation for request ID %d."
 msgstr "Impossibile registrare l'annullamento per la richiesta ID %d."
 
-#: includes/class-alm-loan-manager.php:962
-#: includes/class-alm-loan-manager.php:1374
+#: includes/class-alm-loan-manager.php:1018
+#: includes/class-alm-loan-manager.php:1469
 msgid "Failed to log history entry."
 msgstr "Impossibile registrare la voce nello storico."
 
-#: includes/class-alm-loan-manager.php:267
+#: includes/class-alm-loan-manager.php:288
 msgid "Failed to reject loan request."
 msgstr "Impossibile rifiutare la richiesta di prestito."
 
@@ -646,17 +640,19 @@ msgstr "Impossibile rifiutare la richiesta. Riprova."
 msgid "Failed to send loan request. Please try again."
 msgstr "Impossibile inviare la richiesta di prestito. Riprova."
 
-#: includes/class-alm-loan-manager.php:1020
+#. %d: asset post ID
+#: includes/class-alm-loan-manager.php:1080
 msgid "Failed to set owner for asset ID %d."
 msgstr "Impossibile impostare il proprietario per la risorsa ID %d."
 
-#: includes/class-alm-loan-manager.php:1053
+#. 1: asset post ID, 2: taxonomy error message
+#: includes/class-alm-loan-manager.php:1116
 #, fuzzy, php-format
 #| msgid "Failed to set state for asset ID %d: %s"
 msgid "Failed to set state for asset ID %1$d: %2$s"
 msgstr "Impossibile impostare lo stato per la risorsa ID %d: %s"
 
-#: includes/class-alm-loan-manager.php:947
+#: includes/class-alm-loan-manager.php:1003
 msgid "Failed to update request status."
 msgstr "Impossibile aggiornare lo stato della richiesta."
 
@@ -836,14 +832,6 @@ msgstr ""
 "\n"
 "-- ALM"
 
-#: admin/alm-settings-page.php:847
-msgid ""
-"How long autocomplete results are cached (in seconds). Set to 0 to disable "
-"caching."
-msgstr ""
-"Per quanto tempo i risultati dell'autocomplete vengono conservati in "
-"cache (in secondi). Impostare a 0 per disabilitare la cache."
-
 #. URI of the plugin
 msgid "https://github.com/ilclaudio/asset-lending-manager"
 msgstr "https://github.com/ilclaudio/asset-lending-manager"
@@ -852,7 +840,7 @@ msgstr "https://github.com/ilclaudio/asset-lending-manager"
 msgid "https://www.astrofilipisani.it/"
 msgstr "https://www.astrofilipisani.it/"
 
-#: admin/alm-settings-page.php:893
+#: admin/alm-settings-page.php:833
 msgid "Info — informational and above"
 msgstr "Info — informazioni e superiori"
 
@@ -860,23 +848,24 @@ msgstr "Info — informazioni e superiori"
 msgid "Intermediate"
 msgstr "Intermedio"
 
-#: includes/class-alm-loan-manager.php:102
-#: includes/class-alm-loan-manager.php:197
-#: includes/class-alm-loan-manager.php:469
-#: includes/class-alm-loan-manager.php:1237
+#: includes/class-alm-loan-manager.php:120
+#: includes/class-alm-loan-manager.php:215
+#: includes/class-alm-loan-manager.php:496
+#: includes/class-alm-loan-manager.php:1329
 msgid "Invalid asset ID."
 msgstr "ID risorsa non valido."
 
-#: includes/class-alm-loan-manager.php:1241
+#: includes/class-alm-loan-manager.php:1333
 msgid "Invalid assignee ID."
 msgstr "ID destinatario non valido."
 
-#: includes/class-alm-loan-manager.php:189
-#: includes/class-alm-loan-manager.php:461
+#: includes/class-alm-loan-manager.php:207
+#: includes/class-alm-loan-manager.php:488
 msgid "Invalid request ID."
 msgstr "ID richiesta non valido."
 
-#: includes/class-alm-loan-manager.php:1042
+#. %s: invalid asset state slug
+#: includes/class-alm-loan-manager.php:1104
 #, php-format
 msgid "Invalid state slug: %s"
 msgstr "Slug dello stato non valido: %s"
@@ -908,11 +897,11 @@ msgstr "Limiti prestiti"
 msgid "Loan request"
 msgstr "Richiesta di prestito"
 
-#: includes/class-alm-loan-manager.php:981 assets/js/frontend-assets.js:965
+#: includes/class-alm-loan-manager.php:1039 assets/js/frontend-assets.js:965
 msgid "Loan request approved successfully."
 msgstr "Richiesta di prestito approvata con successo."
 
-#: includes/class-alm-loan-manager.php:540
+#: includes/class-alm-loan-manager.php:568
 msgid "Loan request approved successfully. The page will reload."
 msgstr ""
 "Richiesta di prestito approvata con successo. La pagina verrà ricaricata."
@@ -921,17 +910,17 @@ msgstr ""
 msgid "Loan request decision"
 msgstr "Decisione sulla richiesta di prestito"
 
-#: includes/class-alm-loan-manager.php:235
-#: includes/class-alm-loan-manager.php:487
-#: includes/class-alm-loan-manager.php:912
+#: includes/class-alm-loan-manager.php:256
+#: includes/class-alm-loan-manager.php:515
+#: includes/class-alm-loan-manager.php:966
 msgid "Loan request not found."
 msgstr "Richiesta di prestito non trovata."
 
-#: includes/class-alm-loan-manager.php:288 assets/js/frontend-assets.js:961
+#: includes/class-alm-loan-manager.php:309 assets/js/frontend-assets.js:961
 msgid "Loan request rejected successfully."
 msgstr "Richiesta di prestito rifiutata con successo."
 
-#: includes/class-alm-loan-manager.php:157
+#: includes/class-alm-loan-manager.php:175
 msgid "Loan request sent successfully!"
 msgstr "Richiesta di prestito inviata con successo!"
 
@@ -965,15 +954,15 @@ msgstr "Regole prestiti"
 msgid "Location"
 msgstr "Locazione"
 
-#: admin/alm-settings-page.php:930
+#: admin/alm-settings-page.php:870
 msgid "Log email events"
 msgstr "Registra eventi email"
 
-#: admin/alm-settings-page.php:880
+#: admin/alm-settings-page.php:820
 msgid "Log level"
 msgstr "Livello di log"
 
-#: admin/alm-settings-page.php:857
+#: admin/alm-settings-page.php:797
 msgid "Logging"
 msgstr "Logging"
 
@@ -1006,7 +995,7 @@ msgstr "In manutenzione"
 msgid "Manufacturer"
 msgstr "Marca"
 
-#: admin/alm-settings-page.php:912
+#: admin/alm-settings-page.php:852
 msgid "Mask personal data in logs"
 msgstr "Maschera i dati personali nei log"
 
@@ -1026,29 +1015,21 @@ msgstr "Max prestiti attivi per utente"
 msgid "Max results"
 msgstr "Risultati massimi"
 
-#: admin/alm-settings-page.php:827
-msgid ""
-"Maximum autocomplete requests per IP per minute when rate limiting is "
-"enabled."
-msgstr ""
-"Numero massimo di richieste autocomplete per IP al minuto quando la "
-"limitazione delle richieste è abilitata."
-
 #: admin/alm-settings-page.php:388
 msgid ""
 "Maximum character length of the message a member writes when submitting a "
 "loan request. Set to 0 for unlimited."
 msgstr ""
-"Lunghezza massima in caratteri del messaggio che un socio scrive "
-"inviando una richiesta di prestito. Impostare a 0 per illimitato."
+"Lunghezza massima in caratteri del messaggio che un socio scrive inviando "
+"una richiesta di prestito. Impostare a 0 per illimitato."
 
 #: admin/alm-settings-page.php:432
 msgid ""
 "Maximum character length of the reason field when performing a direct "
 "assignment. Set to 0 for unlimited."
 msgstr ""
-"Lunghezza massima in caratteri del campo motivo durante un "
-"assegnamento diretto. Impostare a 0 per illimitato."
+"Lunghezza massima in caratteri del campo motivo durante un assegnamento "
+"diretto. Impostare a 0 per illimitato."
 
 #: admin/alm-settings-page.php:410
 msgid ""
@@ -1075,7 +1056,7 @@ msgstr ""
 "Predefinito: 5."
 
 #: admin/alm-settings-page.php:487
-#: includes/class-alm-autocomplete-manager.php:217
+#: includes/class-alm-autocomplete-manager.php:283
 #: includes/class-alm-role-manager.php:73
 msgid "Member"
 msgstr "Socio"
@@ -1107,8 +1088,7 @@ msgstr "Caratteri minimi"
 #: admin/alm-settings-page.php:723
 msgid "Minimum characters typed before autocomplete activates. Default: 3."
 msgstr ""
-"Caratteri minimi digitati prima che l'autocomplete si attivi. "
-"Predefinito: 3."
+"Caratteri minimi digitati prima che l'autocomplete si attivi. Predefinito: 3."
 
 #: includes/class-alm-acf-asset-adapter.php:28
 #: includes/class-alm-asset-manager.php:311
@@ -1191,16 +1171,16 @@ msgid ""
 "Number of assets displayed per page in the frontend list. Minimum 1, maximum "
 "100."
 msgstr ""
-"Numero di risorse visualizzate per pagina nella lista frontend. Minimo "
-"1, massimo 100."
+"Numero di risorse visualizzate per pagina nella lista frontend. Minimo 1, "
+"massimo 100."
 
 #: admin/alm-settings-page.php:765
 msgid ""
 "Number of characters of the asset description shown in each suggestion. Set "
 "to 0 to hide the description."
 msgstr ""
-"Numero di caratteri della descrizione risorsa mostrati in ogni "
-"suggerimento. Impostare a 0 per nascondere la descrizione."
+"Numero di caratteri della descrizione risorsa mostrati in ogni suggerimento. "
+"Impostare a 0 per nascondere la descrizione."
 
 #: includes/class-alm-installer.php:207
 msgid "Ocular"
@@ -1226,7 +1206,7 @@ msgid "Open/Close"
 msgstr "Apri/chiudi"
 
 #: admin/alm-settings-page.php:488
-#: includes/class-alm-autocomplete-manager.php:216
+#: includes/class-alm-autocomplete-manager.php:282
 #: includes/class-alm-role-manager.php:83
 msgid "Operator"
 msgstr "Operatore"
@@ -1257,16 +1237,16 @@ msgid ""
 "Page members are redirected to after login. Leave empty to use the default "
 "asset archive URL (/asset/)."
 msgstr ""
-"Pagina a cui i soci vengono reindirizzati dopo il login. Lasciare "
-"vuoto per usare l'URL dell'archivio risorse predefinito (/asset/)."
+"Pagina a cui i soci vengono reindirizzati dopo il login. Lasciare vuoto per "
+"usare l'URL dell'archivio risorse predefinito (/asset/)."
 
 #: admin/alm-settings-page.php:653
 msgid ""
 "Page members are redirected to after logout. Leave empty to use the site "
 "home page."
 msgstr ""
-"Pagina a cui i soci vengono reindirizzati dopo il logout. Lasciare "
-"vuoto per usare la home page del sito."
+"Pagina a cui i soci vengono reindirizzati dopo il logout. Lasciare vuoto per "
+"usare la home page del sito."
 
 #: admin/alm-settings-page.php:603
 msgid ""
@@ -1320,7 +1300,7 @@ msgstr "Seleziona un utente dalla lista."
 msgid "Previous page"
 msgstr "Pagina precedente"
 
-#: admin/alm-settings-page.php:908
+#: admin/alm-settings-page.php:848
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -1336,10 +1316,6 @@ msgstr "Endpoint di ricerca risorse pubblico"
 #: includes/class-alm-asset-manager.php:312
 msgid "Purchase date"
 msgstr "Data acquisto"
-
-#: admin/alm-settings-page.php:793
-msgid "Rate limiting"
-msgstr "Limitazione delle richieste"
 
 #: templates/shortcodes/asset-view.php:136
 #: templates/shortcodes/asset-view.php:363
@@ -1364,11 +1340,11 @@ msgstr "Voci recenti della cronologia dei prestiti per questa risorsa"
 msgid "Recipient"
 msgstr "Destinatario"
 
-#: admin/alm-settings-page.php:942
+#: admin/alm-settings-page.php:882
 msgid "Record each notification email dispatch attempt in the log"
 msgstr "Registra nel log ogni tentativo di invio email di notifica"
 
-#: admin/alm-settings-page.php:924
+#: admin/alm-settings-page.php:864
 msgid "Redact user names and email addresses from log entries"
 msgstr "Oscura nomi utente e indirizzi email nelle voci del log"
 
@@ -1398,7 +1374,7 @@ msgstr "Rifiuta la richiesta di %s"
 msgid "Rejected"
 msgstr "Rifiutata"
 
-#: includes/class-alm-loan-manager.php:206
+#: includes/class-alm-loan-manager.php:224
 msgid "Rejection message is required."
 msgstr "Il messaggio di rifiuto è obbligatorio."
 
@@ -1406,7 +1382,8 @@ msgstr "Il messaggio di rifiuto è obbligatorio."
 msgid "Rejection message max length"
 msgstr "Lunghezza massima messaggio di rifiuto"
 
-#: includes/class-alm-loan-manager.php:215
+#. %d: maximum number of characters allowed in rejection message
+#: includes/class-alm-loan-manager.php:235
 msgid "Rejection message must not exceed %d characters."
 msgstr "Il messaggio di rifiuto non deve superare i %d caratteri."
 
@@ -1426,7 +1403,7 @@ msgstr "Ricarica i termini delle tassonomie predefinite"
 msgid "Request approved"
 msgstr "Richiesta approvata"
 
-#: includes/class-alm-loan-manager.php:935
+#: includes/class-alm-loan-manager.php:990
 msgid "Request automatically canceled: asset approved for another user."
 msgstr ""
 "Richiesta annullata automaticamente: risorsa approvata per un altro utente."
@@ -1435,12 +1412,12 @@ msgstr ""
 msgid "Request canceled"
 msgstr "Richiesta annullata"
 
-#: includes/class-alm-loan-manager.php:1358
+#: includes/class-alm-loan-manager.php:1452
 msgid "Request canceled: asset directly assigned by operator."
 msgstr "Richiesta annullata: risorsa assegnata direttamente dall'operatore."
 
 #. %s: kit asset title
-#: includes/class-alm-loan-manager.php:857
+#: includes/class-alm-loan-manager.php:908
 #, php-format
 msgid "Request canceled: component assigned as part of kit \"%s\"."
 msgstr "Richiesta annullata: componente assegnato come parte del kit \"%s\"."
@@ -1455,7 +1432,7 @@ msgstr "Data richiesta"
 msgid "Request failed. Please try again."
 msgstr "Richiesta non riuscita. Riprova."
 
-#: includes/class-alm-loan-manager.php:917
+#: includes/class-alm-loan-manager.php:971
 msgid "Request is not pending."
 msgstr "La richiesta non è in sospeso."
 
@@ -1463,7 +1440,7 @@ msgstr "La richiesta non è in sospeso."
 msgid "Request loan"
 msgstr "Richiedi prestito"
 
-#: includes/class-alm-loan-manager.php:85
+#: includes/class-alm-loan-manager.php:101
 msgid "Request message is required."
 msgstr "Il messaggio della richiesta è obbligatorio."
 
@@ -1471,7 +1448,8 @@ msgstr "Il messaggio della richiesta è obbligatorio."
 msgid "Request message max length"
 msgstr "Lunghezza massima messaggio di richiesta"
 
-#: includes/class-alm-loan-manager.php:93
+#. %d: maximum number of characters allowed in request message
+#: includes/class-alm-loan-manager.php:111
 msgid "Request message must not exceed %d characters."
 msgstr "Il messaggio della richiesta non deve superare i %d caratteri."
 
@@ -1488,10 +1466,6 @@ msgstr "Richiesta rifiutata"
 msgid "Requester"
 msgstr "Richiedente"
 
-#: admin/alm-settings-page.php:812
-msgid "Requests per minute"
-msgstr "Richieste al minuto"
-
 #: admin/alm-settings-page.php:464
 msgid "Require reason"
 msgstr "Richiedi motivo"
@@ -1507,8 +1481,8 @@ msgstr "Ritirato"
 #: admin/alm-settings-page.php:229 admin/alm-settings-page.php:291
 #: admin/alm-settings-page.php:438 admin/alm-settings-page.php:510
 #: admin/alm-settings-page.php:576 admin/alm-settings-page.php:700
-#: admin/alm-settings-page.php:853 admin/alm-settings-page.php:948
-#: admin/alm-settings-page.php:984 admin/alm-settings-page.php:1029
+#: admin/alm-settings-page.php:793 admin/alm-settings-page.php:888
+#: admin/alm-settings-page.php:924 admin/alm-settings-page.php:969
 msgid "Save Settings"
 msgstr "Salva impostazioni"
 
@@ -1590,7 +1564,7 @@ msgstr "Invio in corso..."
 msgid "Serial number"
 msgstr "Numero seriale"
 
-#: includes/class-alm-plugin-manager.php:292
+#: includes/class-alm-plugin-manager.php:291
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -1606,21 +1580,21 @@ msgstr "Sezioni delle impostazioni"
 msgid "Show only my assets"
 msgstr "Mostra solo le mie risorse"
 
-#: admin/alm-settings-page.php:1022
+#: admin/alm-settings-page.php:962
 msgid "Show the \"Reload default taxonomy terms\" button on the Tools page"
 msgstr ""
-"Mostra il pulsante \\\"Ricarica termini tassonomia predefiniti\\\" "
-"nella pagina Strumenti"
+"Mostra il pulsante \\\"Ricarica termini tassonomia predefiniti\\\" nella "
+"pagina Strumenti"
 
-#: admin/alm-settings-page.php:1004
+#: admin/alm-settings-page.php:944
 msgid "Show the ALM Tools submenu page in the admin area"
 msgstr "Mostra la pagina del sottomenu Strumenti ALM nell'area admin"
 
 #: admin/alm-settings-page.php:694
 msgid "Show the search/filter panel expanded when the asset list loads"
 msgstr ""
-"Mostra il pannello di ricerca/filtri espanso al caricamento della "
-"lista risorse"
+"Mostra il pannello di ricerca/filtri espanso al caricamento della lista "
+"risorse"
 
 #: templates/shortcodes/asset-view.php:533
 msgid "Showing the last 10 loan history entries for this asset."
@@ -1647,7 +1621,7 @@ msgstr "Struttura"
 msgid "Subject"
 msgstr "Oggetto"
 
-#: includes/class-alm-notification-manager.php:239
+#: includes/class-alm-notification-manager.php:288
 #: templates/shortcodes/asset-view.php:559
 msgid "System"
 msgstr "Sistema"
@@ -1669,7 +1643,7 @@ msgstr "Scheda tecnica"
 msgid "Telescope"
 msgstr "Telescopio"
 
-#: includes/class-alm-plugin-manager.php:94
+#: includes/class-alm-plugin-manager.php:92
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr "Il plugin ALM richiede che il plugin ACF sia installato e abilitato."
 
@@ -1682,11 +1656,11 @@ msgid "To request a loan, you must log in as a member."
 msgstr ""
 "Per richiedere un prestito, è necessario effettuare l'accesso come socio."
 
-#: includes/class-alm-plugin-manager.php:302
+#: includes/class-alm-plugin-manager.php:301
 msgid "Tools"
 msgstr "Strumenti"
 
-#: admin/alm-settings-page.php:988
+#: admin/alm-settings-page.php:928
 msgid "Tools Page"
 msgstr "Pagina strumenti"
 
@@ -1700,8 +1674,8 @@ msgstr "Treppiede"
 msgid "Type"
 msgstr "Tipo"
 
-#: includes/class-alm-plugin-manager.php:370
-#: includes/class-alm-plugin-manager.php:531
+#: includes/class-alm-plugin-manager.php:369
+#: includes/class-alm-plugin-manager.php:527
 msgid "Unauthorized action."
 msgstr "Azione non autorizzata."
 
@@ -1727,7 +1701,7 @@ msgstr "Vedi risorsa"
 msgid "View on Frontend"
 msgstr "Visualizza sul frontend"
 
-#: admin/alm-settings-page.php:894
+#: admin/alm-settings-page.php:834
 msgid "Warning — warnings and errors only"
 msgstr "Warning — avvisi ed errori"
 
@@ -1749,8 +1723,8 @@ msgid ""
 "When an asset is assigned, automatically cancel all other pending loan "
 "requests for that asset"
 msgstr ""
-"Quando una risorsa viene assegnata, annulla automaticamente tutte le "
-"altre richieste di prestito in sospeso per quella risorsa"
+"Quando una risorsa viene assegnata, annulla automaticamente tutte le altre "
+"richieste di prestito in sospeso per quella risorsa"
 
 #: admin/alm-settings-page.php:504
 msgid "Which user roles can be selected as the target of a direct assignment."
@@ -1762,17 +1736,17 @@ msgstr ""
 msgid ""
 "Who can approve loan requests for assets that have no current owner assigned."
 msgstr ""
-"Chi può approvare le richieste di prestito per le risorse che non "
-"hanno un proprietario assegnato."
+"Chi può approvare le richieste di prestito per le risorse che non hanno un "
+"proprietario assegnato."
 
 #: admin/alm-settings-page.php:570
 msgid ""
 "WordPress user ID recorded as the actor for automatic system operations (e.g."
 " auto-cancellations). Defaults to 1 (site administrator)."
 msgstr ""
-"ID utente WordPress registrato come attore per le operazioni "
-"automatiche di sistema (es. annullamenti automatici). Predefinito: 1 "
-"(amministratore del sito)."
+"ID utente WordPress registrato come attore per le operazioni automatiche di "
+"sistema (es. annullamenti automatici). Predefinito: 1 (amministratore del "
+"sito)."
 
 #: admin/alm-settings-page.php:32
 msgid "Workflow"
@@ -1784,45 +1758,51 @@ msgstr ""
 "Scrivi un breve messaggio per spiegare perché hai bisogno di questa risorsa.."
 "."
 
-#: admin/alm-settings-page.php:873
+#: admin/alm-settings-page.php:813
 msgid "Write ALM events to the debug log (requires WP_DEBUG to be enabled)"
 msgstr "Scrivi gli eventi ALM nel log di debug (richiede WP_DEBUG abilitato)"
 
-#: includes/class-alm-loan-manager.php:130
+#: includes/class-alm-loan-manager.php:148
 msgid "You already have a pending request for this asset."
 msgstr "Hai già una richiesta in sospeso per questa risorsa."
 
-#: includes/class-alm-loan-manager.php:122
+#: includes/class-alm-loan-manager.php:140
 msgid "You already own this asset and cannot request it."
 msgstr "Sei già il proprietario di questa risorsa e non puoi richiederla."
 
-#: includes/class-alm-loan-manager.php:448
+#: includes/class-alm-autocomplete-manager.php:179
+msgid "You do not have permission to access asset autocomplete."
+msgstr ""
+"Non hai l'autorizzazione per accedere al completamento automatico delle "
+"risorse."
+
+#: includes/class-alm-loan-manager.php:475
 msgid "You do not have permission to approve loan requests."
 msgstr "Non hai i permessi per approvare le richieste di prestito."
 
-#: includes/class-alm-loan-manager.php:508
+#: includes/class-alm-loan-manager.php:536
 msgid "You do not have permission to approve this request."
 msgstr "Non hai i permessi per approvare questa richiesta."
 
-#: includes/class-alm-loan-manager.php:1226
+#: includes/class-alm-loan-manager.php:1318
 msgid "You do not have permission to assign assets."
 msgstr "Non hai i permessi per assegnare le risorse."
 
-#: includes/class-alm-loan-manager.php:175
+#: includes/class-alm-loan-manager.php:193
 msgid "You do not have permission to reject loan requests."
 msgstr "Non hai i permessi per rifiutare le richieste di prestito."
 
-#: includes/class-alm-loan-manager.php:256
+#: includes/class-alm-loan-manager.php:277
 msgid "You do not have permission to reject this request."
 msgstr "Non hai i permessi per rifiutare questa richiesta."
 
-#: includes/class-alm-loan-manager.php:74
+#: includes/class-alm-loan-manager.php:90
 msgid "You do not have permission to request loans."
 msgstr "Non hai i permessi per richiedere prestiti."
 
-#: includes/class-alm-plugin-manager.php:331
-#: includes/class-alm-plugin-manager.php:343
-#: includes/class-alm-plugin-manager.php:355
+#: includes/class-alm-plugin-manager.php:330
+#: includes/class-alm-plugin-manager.php:342
+#: includes/class-alm-plugin-manager.php:354
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Non hai autorizzazioni sufficienti per accedere a questa pagina."
 

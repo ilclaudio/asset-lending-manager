@@ -154,14 +154,6 @@ Last update: 2026-03-02 (rev 2)
 
 ## Performance
 
-### [High] Autocomplete cache TTL setting is unused; endpoint runs uncached search queries
-- **Status:** Open
-- **Date:** 2026-03-02
-- **Category:** Performance
-- **Description:** `autocomplete.cache_ttl_seconds` is persisted from settings but never used in runtime. The public autocomplete handler executes a new `WP_Query` on every request/keystroke without object/transient caching, increasing DB load and response time under traffic.
-- **Expected behavior:** Implement cache lookup/write keyed by normalized term and settings (respecting `cache_ttl_seconds`), and bypass repeated queries while cache is warm.
-- **Notes:** `includes/class-alm-plugin-manager.php:448`, `includes/class-alm-autocomplete-manager.php:159-199`
-
 ### [High] Taxonomy filter term lists are queried on every list render without caching
 - **Status:** Open
 - **Date:** 2026-02-18
