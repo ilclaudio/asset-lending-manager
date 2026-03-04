@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-03-04
+Last update: 2026-03-05
 
 ---
 
@@ -48,14 +48,6 @@ Last update: 2026-03-04
 - **Description:** `redirect_restricted_users()` calls `wp_redirect( home_url() )`. While `home_url()` is normally safe, `wp_safe_redirect()` is the WordPress-recommended function for internal redirects as it validates the destination against the allowed hosts list.
 - **Expected behavior:** Replace `wp_redirect()` with `wp_safe_redirect()`.
 - **Notes:** `includes/class-alm-admin-manager.php`, line 60.
-
-### [High] Reject flow can write inconsistent history under concurrent processing
-- **Status:** Open
-- **Date:** 2026-02-22
-- **Category:** Bug
-- **Description:** The reject path reads the request row outside the transaction and, inside `reject_loan_request()`, inserts a `rejected` history entry before deleting the request. Deletion checks only `false` and treats `0 affected rows` as success. If another action processes/deletes the same request first, the reject path can still commit a stale/incorrect history row.
-- **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
-- **Notes:** `includes/class-alm-loan-manager.php:244` (stale read outside tx), `includes/class-alm-loan-manager.php:362` (history insert), `includes/class-alm-loan-manager.php:378` (delete), `includes/class-alm-loan-manager.php:384` (check `false` only)
 
 ### [Medium] Loan request form is visible for non-loanable asset states
 - **Status:** Open
