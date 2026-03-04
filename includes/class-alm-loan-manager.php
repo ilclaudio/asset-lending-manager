@@ -130,6 +130,15 @@ class ALM_Loan_Manager {
 				)
 			);
 		}
+		// Verify asset is available for loan.
+		$asset_state = $this->get_asset_state_slug( $asset_id );
+		if ( 'available' !== $asset_state ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'This asset is not available for loan.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		$requester_id = get_current_user_id();
 		// Get current owner (if any).
 		$owner_id = $this->get_current_owner( $asset_id );
@@ -141,11 +150,43 @@ class ALM_Loan_Manager {
 				)
 			);
 		}
+		// Block submission for unowned assets if no approver policy is configured.
+		$approver_policy = $this->settings->get( 'loans.approver_policy_for_unowned_assets', 'none' );
+		if ( 0 === $owner_id && 'none' === $approver_policy ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'This asset has no current owner and cannot receive loan requests at this time.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Check if user already has a pending request for this asset.
 		if ( $this->has_pending_request( $asset_id, $requester_id ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'You already have a pending request for this asset.', 'asset-lending-manager' ),
+				)
+			);
+		}
+		// Block if multiple pending requests are not allowed.
+		if ( ! $this->settings->get( 'loans.allow_multiple_requests', true ) ) {
+			if ( $this->has_any_pending_request( $requester_id ) ) {
+				wp_send_json_error(
+					array(
+						'message' => __( 'You already have a pending loan request. Only one request at a time is allowed.', 'asset-lending-manager' ),
+					)
+				);
+			}
+		}
+		// Block if user has reached the active loan limit.
+		$max_active = (int) $this->settings->get( 'loans.max_active_per_user', 0 );
+		if ( $max_active > 0 && $this->count_active_loans_for_user( $requester_id ) >= $max_active ) {
+			wp_send_json_error(
+				array(
+					'message' => sprintf(
+						/* translators: %d: maximum number of active loans allowed */
+						__( 'You have reached the maximum number of active loans (%d).', 'asset-lending-manager' ),
+						$max_active
+					),
 				)
 			);
 		}
@@ -667,6 +708,51 @@ class ALM_Loan_Manager {
 	}
 
 	/**
+	 * Check if user has any pending request across all assets.
+	 *
+	 * @param int $user_id User ID.
+	 * @return bool True if at least one pending request exists for the user.
+	 */
+	private function has_any_pending_request( $user_id ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'alm_loan_requests';
+
+		$count = $wpdb->get_var(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
+				"SELECT COUNT(*) FROM $table_name WHERE requester_id = %d AND status = 'pending'",
+				$user_id
+			)
+		);
+		return $count > 0;
+	}
+
+	/**
+	 * Count the number of assets currently on loan to a user.
+	 *
+	 * @param int $user_id User ID.
+	 * @return int Number of active loans.
+	 */
+	private function count_active_loans_for_user( $user_id ) {
+		$query = new WP_Query(
+			array(
+				'post_type'      => ALM_ASSET_CPT_SLUG,
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => array(
+					array(
+						'key'   => '_alm_current_owner',
+						'value' => $user_id,
+						'type'  => 'NUMERIC',
+					),
+				),
+			)
+		);
+		return (int) $query->found_posts;
+	}
+
+	/**
 	 * Get loan requests for a specific asset.
 	 *
 	 * @param int    $asset_id Asset ID.
@@ -979,6 +1065,14 @@ class ALM_Loan_Manager {
 			$asset = get_post( $asset_id );
 			if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
 				throw new Exception( __( 'Asset not found.', 'asset-lending-manager' ) );
+			}
+
+			// Verify asset is still in a loanable state.
+			$asset_state = $this->get_asset_state_slug( $asset_id );
+			if ( 'retired' === $asset_state || 'maintenance' === $asset_state ) {
+				throw new Exception(
+					__( 'Cannot approve: asset is no longer available for loan.', 'asset-lending-manager' )
+				);
 			}
 
 			// 2–6. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
@@ -1320,6 +1414,15 @@ class ALM_Loan_Manager {
 			);
 		}
 
+		// Block if direct assignment is disabled.
+		if ( ! $this->settings->get( 'direct_assign.enabled', true ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Direct asset assignment is currently disabled.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
 		// Get and validate input.
 		$asset_id    = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
 		$assignee_id = isset( $_POST['assignee_id'] ) ? absint( $_POST['assignee_id'] ) : 0;
@@ -1333,7 +1436,7 @@ class ALM_Loan_Manager {
 			wp_send_json_error( array( 'message' => __( 'Invalid assignee ID.', 'asset-lending-manager' ) ) );
 		}
 
-		if ( empty( $reason ) ) {
+		if ( $this->settings->get( 'direct_assign.require_reason', false ) && empty( $reason ) ) {
 			wp_send_json_error( array( 'message' => __( 'Assignment reason is required.', 'asset-lending-manager' ) ) );
 		}
 
@@ -1362,14 +1465,12 @@ class ALM_Loan_Manager {
 			wp_send_json_error( array( 'message' => __( 'Assignee user not found.', 'asset-lending-manager' ) ) );
 		}
 
+		$allowed_roles  = (array) $this->settings->get( 'direct_assign.allowed_target_roles', array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ) );
 		$assignee_roles = (array) $assignee->roles;
-		if (
-			! in_array( ALM_MEMBER_ROLE, $assignee_roles, true ) &&
-			! in_array( ALM_OPERATOR_ROLE, $assignee_roles, true )
-		) {
+		if ( empty( array_intersect( $allowed_roles, $assignee_roles ) ) ) {
 			wp_send_json_error(
 				array(
-					'message' => __( 'Assignee must be a member or operator.', 'asset-lending-manager' ),
+					'message' => __( 'This user is not eligible to receive asset assignments.', 'asset-lending-manager' ),
 				)
 			);
 		}

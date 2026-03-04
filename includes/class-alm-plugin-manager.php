@@ -55,6 +55,9 @@ class ALM_Plugin_Manager {
 	public function init() {
 		$this->check_dependencies();
 		$this->init_i18n();
+		// Configure logger with user settings (runs on plugins_loaded, safe because
+		// get_defaults() defers __() calls until after the 'init' action).
+		ALM_Logger::configure( $this->modules['settings'] );
 		// Register all the other modules of the plugin.
 		$this->register_modules();
 		// Register the main menu of the plugin.
@@ -104,13 +107,16 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	private function init_i18n() {
-		if ( function_exists( 'load_plugin_textdomain' ) ) {
-			load_plugin_textdomain(
-				ALM_TEXT_DOMAIN,
-				false,
-				dirname( plugin_basename( ALM_PLUGIN_FILE ) ) . '/languages/'
-			);
-		}
+		add_action(
+			'init',
+			static function () {
+				load_plugin_textdomain(
+					ALM_TEXT_DOMAIN,
+					false,
+					dirname( plugin_basename( ALM_PLUGIN_FILE ) ) . '/languages/'
+				);
+			}
+		);
 	}
 
 	/**
@@ -464,11 +470,6 @@ class ALM_Plugin_Manager {
 			$raw_prefix                   = sanitize_text_field( wp_unslash( $_POST['alm_asset_code_prefix'] ?? ALM_ASSET_CODE_PREFIX ) );
 			$clean_prefix                 = substr( preg_replace( '/[^A-Za-z0-9]/', '', $raw_prefix ), 0, 10 );
 			$changes['asset.code_prefix'] = '' !== $clean_prefix ? $clean_prefix : ALM_ASSET_CODE_PREFIX;
-		}
-
-		if ( 'maintenance' === $active_tab && $is_admin ) {
-			$changes['maintenance.enable_tools_page']                  = isset( $_POST['alm_maintenance_enable_tools_page'] );
-			$changes['maintenance.enable_reload_default_terms_action'] = isset( $_POST['alm_maintenance_enable_reload_terms'] );
 		}
 
 		if ( 'templates' === $active_tab && $is_admin ) {

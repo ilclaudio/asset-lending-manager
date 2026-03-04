@@ -49,7 +49,10 @@ class ALM_Settings_Manager {
 	 * @return array
 	 */
 	private function get_defaults(): array {
-		$templates = alm_get_email_templates();
+		// alm_get_email_templates() uses __() and must not be called before the 'init'
+		// action (WordPress 6.7 JIT textdomain loading). Templates are only needed when
+		// sending emails, which always happens after 'init', so empty arrays are safe before.
+		$templates = did_action( 'init' ) ? alm_get_email_templates() : array( 'subject' => array(), 'body' => array() );
 		return array(
 			'email'         => array(
 				'from_name'    => '',
@@ -105,10 +108,6 @@ class ALM_Settings_Manager {
 			),
 			'asset'         => array(
 				'code_prefix' => ALM_ASSET_CODE_PREFIX,
-			),
-			'maintenance'   => array(
-				'enable_reload_default_terms_action' => true,
-				'enable_tools_page'                  => true,
 			),
 		);
 	}

@@ -34,7 +34,6 @@ $tabs = array(
 	'autocomplete'  => __( 'Autocomplete & API', 'asset-lending-manager' ),
 	'logging'       => __( 'Logging & Audit', 'asset-lending-manager' ),
 	'asset'         => __( 'Asset Identification', 'asset-lending-manager' ),
-	'maintenance'   => __( 'Maintenance', 'asset-lending-manager' ),
 );
 
 // Validate active tab.
@@ -922,52 +921,6 @@ $placeholders = array(
 			</table>
 
 			<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
-
-		<?php elseif ( 'maintenance' === $active_tab ) : ?>
-
-			<h2><?php esc_html_e( 'Tools Page', 'asset-lending-manager' ); ?></h2>
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row">
-						<?php esc_html_e( 'Enable tools page', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
-					</th>
-					<td>
-						<label>
-							<input
-								type="checkbox"
-								name="alm_maintenance_enable_tools_page"
-								value="1"
-								<?php checked( $settings->get( 'maintenance.enable_tools_page' ) ); ?>
-								<?php disabled( ! $is_admin ); ?>
-							>
-							<?php esc_html_e( 'Show the ALM Tools submenu page in the admin area', 'asset-lending-manager' ); ?>
-						</label>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
-						<?php esc_html_e( 'Enable "reload default terms" action', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
-					</th>
-					<td>
-						<label>
-							<input
-								type="checkbox"
-								name="alm_maintenance_enable_reload_terms"
-								value="1"
-								<?php checked( $settings->get( 'maintenance.enable_reload_default_terms_action' ) ); ?>
-								<?php disabled( ! $is_admin ); ?>
-							>
-							<?php esc_html_e( 'Show the "Reload default taxonomy terms" button on the Tools page', 'asset-lending-manager' ); ?>
-						</label>
-					</td>
-				</tr>
-			</table>
-
-			<?php if ( $is_admin ) : ?>
-				<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
-			<?php endif; ?>
 
 		<?php endif; ?>
 	</form>

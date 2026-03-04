@@ -1,5 +1,26 @@
 # ISSUES_RESOLVED
-Last update: 2026-03-02
+Last update: 2026-03-04 (rev 2)
+
+---
+
+### [High] Loan/direct-assign governance settings are not enforced by runtime handlers
+- **Status:** Resolved
+- **Date:** 2026-03-02
+- **Category:** Bug
+- **Resolution date:** 2026-03-04
+- **Fix summary:** Enforced 6 governance settings in AJAX handlers. In `ajax_submit_loan_request()`: added `loans.approver_policy_for_unowned_assets` check (blocks requests on unowned assets when policy is 'none'), `loans.allow_multiple_requests` check (blocks if user already has a pending request when disabled), and `loans.max_active_per_user` check (blocks if user is at the active loan limit, using new private helper `count_active_loans_for_user()`). In `ajax_direct_assign_asset()`: added `direct_assign.enabled` guard (blocks when feature is disabled), made reason requirement conditional on `direct_assign.require_reason` setting (was hardcoded mandatory), and replaced hardcoded role check with `direct_assign.allowed_target_roles` policy via `array_intersect`. Added two new private helpers: `has_any_pending_request()` and `count_active_loans_for_user()`.
+- **Notes:** `includes/class-alm-loan-manager.php`
+
+---
+
+### [High] Loan request submission and approval do not validate asset state
+- **Status:** Resolved
+- **Date:** 2026-03-02
+- **Category:** Bug
+- **Description:** `ajax_submit_loan_request()` accepted requests for assets in any state. `approve_loan_request()` did not re-validate state inside the transaction.
+- **Resolution date:** 2026-03-04
+- **Fix summary:** Added `get_asset_state_slug()` check in `ajax_submit_loan_request()` immediately after the asset existence check: returns `wp_send_json_error` if state is not `available`. Added the same check inside the `approve_loan_request()` transaction after the asset existence check: throws an Exception (triggering rollback) if state is `retired` or `maintenance`.
+- **Notes:** `includes/class-alm-loan-manager.php` (submit: ~line 133, approve: ~line 984). Reuses existing private helper `get_asset_state_slug()`.
 
 ---
 
