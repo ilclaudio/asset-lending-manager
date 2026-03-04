@@ -130,9 +130,9 @@ class ALM_Loan_Manager {
 				)
 			);
 		}
-		// Verify asset is available for loan.
+		// Verify asset is in a loanable state.
 		$asset_state = $this->get_asset_state_slug( $asset_id );
-		if ( 'available' !== $asset_state ) {
+		if ( ! in_array( $asset_state, array( 'available', 'on-loan' ), true ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'This asset is not available for loan.', 'asset-lending-manager' ),

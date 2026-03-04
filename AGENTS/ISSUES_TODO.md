@@ -57,14 +57,6 @@ Last update: 2026-03-04
 - **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
 - **Notes:** `includes/class-alm-loan-manager.php:244` (stale read outside tx), `includes/class-alm-loan-manager.php:362` (history insert), `includes/class-alm-loan-manager.php:378` (delete), `includes/class-alm-loan-manager.php:384` (check `false` only)
 
-### [High] Loan request submission rejects assets that are currently on-loan
-- **Status:** Open
-- **Date:** 2026-03-04
-- **Category:** Bug
-- **Description:** `ajax_submit_loan_request()` allows requests only when state is exactly `available`. Assets in `on-loan` state are rejected, even though the lending workflow requires requests to be sent to the current assignee for hand-off.
-- **Expected behavior:** Allow request submission when asset state is `available` or `on-loan`; keep rejecting non-loanable states (for example `maintenance`, `retired`).
-- **Notes:** `includes/class-alm-loan-manager.php:133-139`.
-
 ### [Medium] Loan request form is visible for non-loanable asset states
 - **Status:** Open
 - **Date:** 2026-03-04
