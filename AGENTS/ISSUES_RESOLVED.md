@@ -1,5 +1,16 @@
 # ISSUES_RESOLVED
-Last update: 2026-03-04 (rev 2)
+Last update: 2026-03-04 (rev 3)
+
+---
+
+### [High] Loan request submission rejects assets that are currently on-loan
+- **Status:** Resolved
+- **Date:** 2026-03-04
+- **Category:** Bug
+- **Description:** `ajax_submit_loan_request()` allowed requests only when state was exactly `available`, rejecting valid hand-off requests when the asset was already `on-loan`.
+- **Resolution date:** 2026-03-04
+- **Fix summary:** Updated `ajax_submit_loan_request()` to treat both `available` and `on-loan` as loanable states. Requests are now rejected only when state is outside the loanable set (for example `maintenance` or `retired`).
+- **Notes:** `includes/class-alm-loan-manager.php` (`ajax_submit_loan_request` state guard)
 
 ---
 
@@ -19,7 +30,7 @@ Last update: 2026-03-04 (rev 2)
 - **Category:** Bug
 - **Description:** `ajax_submit_loan_request()` accepted requests for assets in any state. `approve_loan_request()` did not re-validate state inside the transaction.
 - **Resolution date:** 2026-03-04
-- **Fix summary:** Added `get_asset_state_slug()` check in `ajax_submit_loan_request()` immediately after the asset existence check: returns `wp_send_json_error` if state is not `available`. Added the same check inside the `approve_loan_request()` transaction after the asset existence check: throws an Exception (triggering rollback) if state is `retired` or `maintenance`.
+- **Fix summary:** Added `get_asset_state_slug()` check in `ajax_submit_loan_request()` immediately after the asset existence check: returns `wp_send_json_error` if state is outside the loanable states (`available`, `on-loan`). Added the same check inside the `approve_loan_request()` transaction after the asset existence check: throws an Exception (triggering rollback) if state is `retired` or `maintenance`.
 - **Notes:** `includes/class-alm-loan-manager.php` (submit: ~line 133, approve: ~line 984). Reuses existing private helper `get_asset_state_slug()`.
 
 ---
