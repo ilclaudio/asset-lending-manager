@@ -273,6 +273,9 @@ class ALM_Notification_Manager {
 		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
 			return;
 		}
+		if ( ! $this->settings->get( 'notifications.loan_confirmation', true ) ) {
+			return;
+		}
 
 		$assignee = get_userdata( $assignee_id );
 		if ( ! $assignee ) {
@@ -378,20 +381,22 @@ class ALM_Notification_Manager {
 			'From: ' . $from_name . ' <' . $from_address . '>',
 		);
 
-		// Log the outgoing email attempt for debugging (visible when WP_DEBUG is active).
-		ALM_Logger::info(
-			'[NOTIFICATION] Sending email.',
-			array(
-				'to'      => $to_email,
-				'subject' => $subject,
-			)
-		);
+		// Log the outgoing email attempt when email event logging is enabled.
+		if ( $this->settings->get( 'logging.log_email_events', false ) ) {
+			ALM_Logger::info(
+				'[NOTIFICATION] Sending email.',
+				array(
+					'to'      => $to_email,
+					'subject' => $subject,
+				)
+			);
+		}
 
 		// Dispatch via WordPress mail API.
 		$result = wp_mail( $to_email, $subject, $body, $headers );
 
-		// Log delivery failure so it is visible in the error log.
-		if ( ! $result ) {
+		// Log delivery failure when email event logging is enabled.
+		if ( ! $result && $this->settings->get( 'logging.log_email_events', false ) ) {
 			ALM_Logger::warning(
 				'[NOTIFICATION] wp_mail() returned false — email may not have been delivered.',
 				array(

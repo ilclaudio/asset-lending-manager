@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-03-02 (rev 2)
+Last update: 2026-03-04
 
 ---
 
@@ -57,22 +57,45 @@ Last update: 2026-03-02 (rev 2)
 - **Expected behavior:** Re-read and lock the request row inside the transaction (`SELECT ... FOR UPDATE`), validate it is still pending, and require one affected row on delete before commit.
 - **Notes:** `includes/class-alm-loan-manager.php:244` (stale read outside tx), `includes/class-alm-loan-manager.php:362` (history insert), `includes/class-alm-loan-manager.php:378` (delete), `includes/class-alm-loan-manager.php:384` (check `false` only)
 
-### [High] Loan request submission and approval do not validate asset state
-
+### [High] Loan request submission rejects assets that are currently on-loan
 - **Status:** Open
-- **Date:** 2026-03-02
+- **Date:** 2026-03-04
 - **Category:** Bug
-- **Description:** `ajax_submit_loan_request()` accepts requests for assets in any state without checking that the asset is `available`. A member can bypass the frontend UI and POST directly to the AJAX handler to submit a loan request for an asset marked as `retired`, `maintenance`, or already `on-loan`. Similarly, `approve_loan_request()` does not validate the asset's current state before executing the ownership transfer: if an asset moves to `retired` or `maintenance` after a request is submitted but before it is approved, the approval will still succeed and corrupt the data model. `direct_assign_asset()` correctly rejects retired assets (via `$current_state` check); the same guard is absent from the request/approval flow.
-- **Expected behavior:** `ajax_submit_loan_request()` should reject the request with a user-visible error if the asset is not in `available` state. `approve_loan_request()` should throw an exception (and roll back) if the asset is in `retired` or `maintenance` state at approval time, consistent with the guard already present in `direct_assign_asset()`.
-- **Notes:** `includes/class-alm-loan-manager.php:124-132` (submit: asset exists check, no state check), `includes/class-alm-loan-manager.php:978-983` (approve: asset exists check inside transaction, no state check), `includes/class-alm-loan-manager.php:1437-1441` (direct assign: correctly rejects retired state).
+- **Description:** `ajax_submit_loan_request()` allows requests only when state is exactly `available`. Assets in `on-loan` state are rejected, even though the lending workflow requires requests to be sent to the current assignee for hand-off.
+- **Expected behavior:** Allow request submission when asset state is `available` or `on-loan`; keep rejecting non-loanable states (for example `maintenance`, `retired`).
+- **Notes:** `includes/class-alm-loan-manager.php:133-139`.
 
-### [High] Loan/direct-assign governance settings are not enforced by runtime handlers
+### [Medium] Loan request form is visible for non-loanable asset states
 - **Status:** Open
-- **Date:** 2026-03-02
+- **Date:** 2026-03-04
 - **Category:** Bug
-- **Description:** Multiple governance settings are saved but ignored by runtime flows: `loans.max_active_per_user`, `loans.allow_multiple_requests`, `loans.approver_policy_for_unowned_assets`, `direct_assign.enabled`, `direct_assign.require_reason`, and `direct_assign.allowed_target_roles`. Current AJAX handlers apply hardcoded behavior instead of policy-driven rules, causing functional mismatch between admin configuration and actual permissions/workflow.
-- **Expected behavior:** Enforce these settings in `ajax_submit_loan_request()` and `ajax_direct_assign_asset()` (and related permission checks), including active-loan limits, multi-request policy, approver policy for unowned assets, direct-assign enable/disable, optional reason requirement, and allowed target roles.
-- **Notes:** `includes/class-alm-plugin-manager.php:394-415`, `includes/class-alm-loan-manager.php:83-153`, `includes/class-alm-loan-manager.php:1310-1375`
+- **Description:** In the asset detail template, the "Request loan" section is shown based on ownership/login checks but not on asset state. As a result, users can see the form also when asset state is `maintenance` or `retired`, then receive backend rejection.
+- **Expected behavior:** Show the request form only when asset state is `available` or `on-loan` (and existing role/ownership checks pass).
+- **Notes:** `templates/shortcodes/asset-view.php:216-229`, `includes/class-alm-loan-manager.php:133-139`.
+
+### [High] Kit approval can override maintenance/retired component states
+- **Status:** Open
+- **Date:** 2026-03-04
+- **Category:** Bug
+- **Description:** In kit transfer, component conflict checks only handle the `on-loan` case with owner mismatch. Components in `maintenance` or `retired` are still forcibly updated to owner=`new_owner` and state=`on-loan` during approval.
+- **Expected behavior:** During standard request approval, block the operation if any kit component is in non-loanable state (`maintenance`/`retired`). Direct assignment by operator may keep explicit override behavior by policy.
+- **Notes:** `includes/class-alm-loan-manager.php:870-893`.
+
+### [Medium] Loan request message max length is hardcoded in frontend
+- **Status:** Open
+- **Date:** 2026-03-04
+- **Category:** Bug
+- **Description:** Frontend request validation and textarea attributes use fixed `500` chars, while backend limit is settings-driven (`loans.request_message_max_length`). When admin changes the setting, frontend and backend can diverge.
+- **Expected behavior:** Localize the configured max length to JS and template attributes so client-side constraints match backend validation.
+- **Notes:** `assets/js/frontend-assets.js:229-233`, `templates/shortcodes/asset-view.php:248-255`, `includes/class-alm-loan-manager.php:105-113`.
+
+### [Medium] Kit component updates are not fully traceable in history
+- **Status:** Open
+- **Date:** 2026-03-04
+- **Category:** Bug
+- **Description:** When approving a kit request, owner/state changes are propagated to each component, but only one `approved` history row is written for the main kit asset. Component-level history remains incomplete for audit/debug purposes.
+- **Expected behavior:** Add explicit history entries for affected components (or a linked audit mechanism) when kit propagation updates their ownership/state.
+- **Notes:** `includes/class-alm-loan-manager.php:890-893`, `includes/class-alm-loan-manager.php:1023-1032`.
 
 ### [Medium] ACF unavailability silently skips kit component propagation
 - **Status:** Open

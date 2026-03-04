@@ -105,6 +105,13 @@ class ALM_Frontend_Manager {
 					return $url;
 				}
 			}
+			$assets_page_id = (int) $this->settings->get( 'frontend.assets_page_id', 0 );
+			if ( $assets_page_id > 0 ) {
+				$url = get_permalink( $assets_page_id );
+				if ( $url ) {
+					return $url;
+				}
+			}
 			return home_url( '/asset/' );
 		}
 		return $redirect_to;
@@ -554,7 +561,8 @@ class ALM_Frontend_Manager {
 			}
 		}
 		wp_reset_postdata();
-		$alm_current_search = $search_term;
+		$alm_current_search      = $search_term;
+		$alm_default_filters_open = (bool) $this->settings->get( 'frontend.default_filters_open', false );
 		include ALM_PLUGIN_DIR . 'templates/shortcodes/asset-list.php';
 	}
 

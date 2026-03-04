@@ -94,7 +94,7 @@ if ( $filter_owner > 0 ) {
 		</div>
 
 		<!-- Advanced Filters -->
-		<details class="alm-filters-collapsible">
+		<details class="alm-filters-collapsible"<?php if ( ! empty( $alm_default_filters_open ) ) echo ' open'; ?>>
 			<summary class="alm-filters-toggle">
 				<?php esc_html_e( 'Advanced Filters', 'asset-lending-manager' ); ?>
 				<?php if ( $alm_active_filters_count > 0 ) : ?>
