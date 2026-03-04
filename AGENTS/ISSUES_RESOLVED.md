@@ -1,5 +1,16 @@
 # ISSUES_RESOLVED
-Last update: 2026-03-04 (rev 3)
+Last update: 2026-03-05 (rev 4)
+
+---
+
+### [High] Reject flow can write inconsistent history under concurrent processing
+- **Status:** Resolved
+- **Date:** 2026-02-22
+- **Category:** Bug
+- **Description:** The reject flow could insert a `rejected` history row before deleting the request and accepted `0 affected rows` as success, allowing stale history under concurrent processing.
+- **Resolution date:** 2026-03-05
+- **Fix summary:** `reject_loan_request()` now re-reads and locks the target request row inside the transaction (`SELECT ... FOR UPDATE`), validates that status is still `pending`, writes history from the locked row, and requires delete to affect exactly one row. Any mismatch now raises an exception and triggers rollback.
+- **Notes:** `includes/class-alm-loan-manager.php` (`reject_loan_request`)
 
 ---
 

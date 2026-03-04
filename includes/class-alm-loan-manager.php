@@ -383,8 +383,10 @@ class ALM_Loan_Manager {
 	 * Reject a loan request (atomic operation).
 	 *
 	 * This method performs the following operations atomically:
-	 * 1. Insert record into history table
-	 * 2. Delete record from requests table
+	 * 1. Re-read and lock target request row.
+	 * 2. Validate request is still pending.
+	 * 3. Insert record into history table.
+	 * 4. Delete record from requests table (must affect exactly 1 row).
 	 *
 	 * @param object $loan_request      Loan request object from database.
 	 * @param string $rejection_message Rejection message.
@@ -399,31 +401,51 @@ class ALM_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
+			$table_name = $wpdb->prefix . 'alm_loan_requests';
+
+			// Re-read and lock the target request row inside the transaction.
+			$locked_request = $wpdb->get_row(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
+					"SELECT * FROM $table_name
+					WHERE id = %d
+					FOR UPDATE",
+					$loan_request->id
+				)
+			);
+
+			if ( ! $locked_request ) {
+				throw new Exception( __( 'Loan request not found.', 'asset-lending-manager' ) );
+			}
+
+			if ( 'pending' !== $locked_request->status ) {
+				throw new Exception( __( 'Request is not pending.', 'asset-lending-manager' ) );
+			}
+
 			// Insert into history table.
 			$history_inserted = $this->log_history_entry(
-				$loan_request->id,
-				$loan_request->asset_id,
-				$loan_request->requester_id,
-				$loan_request->owner_id,
+				(int) $locked_request->id,
+				(int) $locked_request->asset_id,
+				(int) $locked_request->requester_id,
+				(int) $locked_request->owner_id,
 				'rejected',
 				$rejection_message,
 				$rejected_by
 			);
 
 			if ( ! $history_inserted ) {
-				throw new Exception( 'Failed to insert history record' );
+				throw new Exception( __( 'Failed to insert history record.', 'asset-lending-manager' ) );
 			}
 
 			// Delete from requests table.
-			$table_name = $wpdb->prefix . 'alm_loan_requests';
-			$deleted    = $wpdb->delete(
+			$deleted = $wpdb->delete(
 				$table_name,
-				array( 'id' => $loan_request->id ),
+				array( 'id' => (int) $locked_request->id ),
 				array( '%d' )
 			);
 
-			if ( false === $deleted ) {
-				throw new Exception( 'Failed to delete loan request' );
+			if ( 1 !== (int) $deleted ) {
+				throw new Exception( __( 'Failed to delete loan request.', 'asset-lending-manager' ) );
 			}
 
 			// Commit transaction.
@@ -432,8 +454,8 @@ class ALM_Loan_Manager {
 			ALM_Logger::debug(
 				'Loan request rejected successfully',
 				array(
-					'request_id' => $loan_request->id,
-					'asset_id'   => $loan_request->asset_id,
+					'request_id' => (int) $locked_request->id,
+					'asset_id'   => (int) $locked_request->asset_id,
 				)
 			);
 
@@ -446,7 +468,7 @@ class ALM_Loan_Manager {
 			ALM_Logger::error(
 				'Failed to reject loan request',
 				array(
-					'request_id' => $loan_request->id,
+					'request_id' => isset( $loan_request->id ) ? (int) $loan_request->id : 0,
 					'error'      => $e->getMessage(),
 					'db_error'   => $wpdb->last_error,
 				)
