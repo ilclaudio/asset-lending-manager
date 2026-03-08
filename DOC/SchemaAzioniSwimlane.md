@@ -27,14 +27,17 @@ flowchart TB
     O4{Proprietario corrente}
     O5[Approva o rifiuta richiesta]
     O6[Assegnamento diretto]
+    O7[Cambia stato asset - maintenance o retired]
     O1 --> O2 --> O3 --> O4
     O4 -- Si --> O5
     O4 -- No --> O6
+    O3 --> O7
   end
 
   S2 --> O3
   O5 --> H1[Storico aggiornato]
   O6 --> H1
+  O7 --> H1
 ```
 
 Se il tuo viewer Markdown non renderizza Mermaid, usa la versione testuale ASCII in `DOC/SchemaPermessiPerRuolo.md`.

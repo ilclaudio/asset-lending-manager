@@ -30,6 +30,11 @@ class ALM_Loan_Manager {
 	const DIRECT_ASSIGN_REASON_MAX_LENGTH = 500;
 
 	/**
+	 * Maximum length for state change notes.
+	 */
+	const CHANGE_STATE_NOTES_MAX_LENGTH = 500;
+
+	/**
 	 * User ID for automatic system operations.
 	 *
 	 * Used as fallback when the setting is not configured.
@@ -73,6 +78,7 @@ class ALM_Loan_Manager {
 		add_action( 'wp_ajax_alm_reject_loan_request', array( $this, 'ajax_reject_loan_request' ) );
 		add_action( 'wp_ajax_alm_approve_loan_request', array( $this, 'ajax_approve_loan_request' ) );
 		add_action( 'wp_ajax_alm_direct_assign_asset', array( $this, 'ajax_direct_assign_asset' ) );
+		add_action( 'wp_ajax_alm_change_asset_state', array( $this, 'ajax_change_asset_state' ) );
 	}
 
 	/**
@@ -1644,5 +1650,216 @@ class ALM_Loan_Manager {
 				'message' => $e->getMessage(),
 			);
 		}
+	}
+
+	/**
+	 * AJAX handler for asset state change (maintenance/retired).
+	 *
+	 * @return void
+	 */
+	public function ajax_change_asset_state() {
+		check_ajax_referer( 'alm_change_state_nonce', 'nonce' );
+
+		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to change asset states.', 'asset-lending-manager' ) ) );
+		}
+
+		$asset_id     = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$target_state = isset( $_POST['target_state'] ) ? sanitize_key( $_POST['target_state'] ) : '';
+		$notes        = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
+
+		if ( $asset_id <= 0 ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
+		}
+
+		$allowed_states = array( 'maintenance', 'retired' );
+		if ( ! in_array( $target_state, $allowed_states, true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid target state.', 'asset-lending-manager' ) ) );
+		}
+
+		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
+		if ( mb_strlen( $notes ) > $notes_max ) {
+			wp_send_json_error(
+				array(
+					'message' => sprintf(
+						/* translators: %d: maximum number of characters allowed */
+						__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
+						$notes_max
+					),
+				)
+			);
+		}
+
+		$asset = get_post( $asset_id );
+		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+		}
+
+		$actor_id = get_current_user_id();
+		$result   = $this->change_asset_state( $asset_id, $target_state, $notes, $actor_id );
+
+		if ( ! $result['success'] ) {
+			wp_send_json_error( array( 'message' => $result['message'] ) );
+		}
+
+		wp_send_json_success( array( 'message' => $result['message'] ) );
+	}
+
+	/**
+	 * Change asset state to maintenance or retired.
+	 *
+	 * Operations for a kit:
+	 * 1. Change kit state to target state, clear owner.
+	 * 2. Write history entry for the kit.
+	 * 3. Propagate state and clear owner on all components (components stay in kit).
+	 * 4. Write history entry for each component.
+	 *
+	 * Operations for a component/standalone:
+	 * 1. Remove component from parent kit(s) ACF field.
+	 * 2. Change component state to target state, clear owner.
+	 * 3. Write history entry.
+	 *
+	 * @param int    $asset_id     Asset ID.
+	 * @param string $target_state Target state slug ('maintenance' or 'retired').
+	 * @param string $notes        Operator notes.
+	 * @param int    $actor_id     Operator user ID performing the action.
+	 * @return array ['success' => bool, 'message' => string]
+	 */
+	private function change_asset_state( $asset_id, $target_state, $notes, $actor_id ) {
+		global $wpdb;
+
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			$is_kit         = $this->is_asset_kit( $asset_id );
+			$previous_owner = $this->get_current_owner( $asset_id );
+			$history_status = 'maintenance' === $target_state ? 'to_maintenance' : 'to_retired';
+
+			if ( $is_kit ) {
+				// Kit: change state and clear owner, then propagate to components.
+				$component_ids = $this->get_kit_components( $asset_id );
+
+				$this->set_asset_state( $asset_id, $target_state );
+				$this->set_asset_owner( $asset_id, 0 );
+
+				$logged = $this->log_history_entry( 0, $asset_id, 0, $previous_owner, $history_status, $notes, $actor_id );
+				if ( ! $logged ) {
+					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+				}
+
+				foreach ( $component_ids as $component_id ) {
+					$component_prev_owner = $this->get_current_owner( $component_id );
+					$this->set_asset_state( $component_id, $target_state );
+					$this->set_asset_owner( $component_id, 0 );
+
+					$logged = $this->log_history_entry( 0, $component_id, 0, $component_prev_owner, $history_status, $notes, $actor_id );
+					if ( ! $logged ) {
+						throw new Exception( __( 'Failed to log history entry for component.', 'asset-lending-manager' ) );
+					}
+				}
+			} else {
+				// Component or standalone: remove from parent kit(s), then change state.
+				$parent_kit_ids = $this->get_parent_kit_ids( $asset_id );
+				foreach ( $parent_kit_ids as $kit_id ) {
+					$this->remove_component_from_kit( $asset_id, $kit_id );
+				}
+
+				$this->set_asset_state( $asset_id, $target_state );
+				$this->set_asset_owner( $asset_id, 0 );
+
+				$logged = $this->log_history_entry( 0, $asset_id, 0, $previous_owner, $history_status, $notes, $actor_id );
+				if ( ! $logged ) {
+					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+				}
+			}
+
+			$wpdb->query( 'COMMIT' );
+
+			ALM_Logger::info(
+				'Asset state changed',
+				array(
+					'asset_id'     => $asset_id,
+					'target_state' => $target_state,
+					'is_kit'       => $is_kit,
+					'actor_id'     => $actor_id,
+				)
+			);
+
+			return array(
+				'success' => true,
+				'message' => __( 'Asset state updated successfully.', 'asset-lending-manager' ),
+			);
+
+		} catch ( Exception $e ) {
+			$wpdb->query( 'ROLLBACK' );
+
+			ALM_Logger::error(
+				'Failed to change asset state',
+				array(
+					'asset_id' => $asset_id,
+					'error'    => $e->getMessage(),
+					'db_error' => $wpdb->last_error,
+				)
+			);
+
+			return array(
+				'success' => false,
+				'message' => $e->getMessage(),
+			);
+		}
+	}
+
+	/**
+	 * Find all kit IDs that contain a given component.
+	 *
+	 * Uses a meta LIKE query on the serialized ACF components field.
+	 *
+	 * @param int $component_id Component asset ID.
+	 * @return int[] Array of kit post IDs.
+	 */
+	private function get_parent_kit_ids( $component_id ) {
+		$query = new WP_Query(
+			array(
+				'post_type'      => ALM_ASSET_CPT_SLUG,
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => array(
+					array(
+						'key'     => 'components',
+						'value'   => '"' . $component_id . '"',
+						'compare' => 'LIKE',
+					),
+				),
+			)
+		);
+
+		return array_map( 'intval', $query->posts );
+	}
+
+	/**
+	 * Remove a component from a kit's ACF components field.
+	 *
+	 * @param int $component_id Component asset ID to remove.
+	 * @param int $kit_id       Kit asset ID.
+	 * @throws Exception When ACF is not available.
+	 * @return void
+	 */
+	private function remove_component_from_kit( $component_id, $kit_id ) {
+		if ( ! function_exists( 'update_field' ) ) {
+			throw new Exception( __( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
+		}
+
+		$current_ids = $this->get_kit_components( $kit_id );
+		$updated_ids = array_values(
+			array_filter(
+				$current_ids,
+				function ( $id ) use ( $component_id ) {
+					return (int) $id !== (int) $component_id;
+				}
+			)
+		);
+
+		update_field( 'components', $updated_ids, $kit_id );
 	}
 }

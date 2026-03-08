@@ -42,6 +42,7 @@
 			this.initLoanRequestForm();
 			this.initRequestActions();
 			this.initDirectAssignForm();
+			this.initChangeStateForm();
 			this.showActionResultMessage();
 		},
 
@@ -398,6 +399,94 @@
 					submitBtn.disabled    = false;
 					submitBtn.textContent = originalBtnText;
 				});
+			});
+		},
+
+		/**
+		 * Initialize change asset state form (operator only).
+		 *
+		 * Handles form submission for setting an asset to maintenance or retired.
+		 * Two submit buttons carry a data-target-state attribute to distinguish the action.
+		 */
+		initChangeStateForm: function() {
+			var form = document.getElementById('alm-change-state-form');
+
+			if (!form) {
+				return;
+			}
+
+			// Character counter for notes field.
+			var notesField = document.getElementById('alm-change-state-notes');
+			var charCount  = document.getElementById('alm-change-state-char-count');
+
+			if (notesField && charCount) {
+				notesField.addEventListener('input', function() {
+					var length = notesField.value.length;
+					charCount.textContent = length + ' / ' + notesField.getAttribute('maxlength');
+				});
+			}
+
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+
+				var clickedBtn  = e.submitter || form.querySelector('button[type="submit"]');
+				var targetState = clickedBtn ? clickedBtn.getAttribute('data-target-state') : '';
+				var responseDiv = document.getElementById('alm-change-state-response');
+				var submitBtns  = form.querySelectorAll('button[type="submit"]');
+
+				if (!targetState) {
+					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Could not determine target state.', 'asset-lending-manager' ));
+					return;
+				}
+
+				if (typeof window.almFrontend === 'undefined' || !window.almFrontend.changeStateNonce) {
+					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
+					return;
+				}
+
+				var assetId = ALM_Frontend.getAssetIdFromPage();
+				if (!assetId) {
+					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
+					return;
+				}
+
+				var originalTexts = [];
+				submitBtns.forEach(function(btn) {
+					originalTexts.push(btn.textContent);
+					btn.disabled = true;
+				});
+				responseDiv.style.display = 'none';
+
+				var formData = new FormData();
+				formData.append('action',       'alm_change_asset_state');
+				formData.append('nonce',        window.almFrontend.changeStateNonce);
+				formData.append('asset_id',     assetId);
+				formData.append('target_state', targetState);
+				formData.append('notes',        notesField ? notesField.value.trim() : '');
+
+				fetch(window.almFrontend.ajaxUrl, { method: 'POST', body: formData })
+					.then(function(response) { return response.json(); })
+					.then(function(data) {
+						if (data.success) {
+							var currentUrl = window.location.href.split('?')[0];
+							window.location.href = currentUrl + '?alm_action=change_state&alm_status=success&alm_state=' + encodeURIComponent(targetState);
+						} else {
+							var errorMsg = data.data && data.data.message ? data.data.message : __( 'State change failed. Please try again.', 'asset-lending-manager' );
+							ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
+							submitBtns.forEach(function(btn, i) {
+								btn.disabled    = false;
+								btn.textContent = originalTexts[i];
+							});
+						}
+					})
+					.catch(function(error) {
+						ALM_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
+						console.error('*** Change state AJAX error:', error);
+						submitBtns.forEach(function(btn, i) {
+							btn.disabled    = false;
+							btn.textContent = originalTexts[i];
+						});
+					});
 			});
 		},
 
@@ -973,6 +1062,10 @@
 				message = __( 'Asset assigned successfully.', 'asset-lending-manager' );
 			} else if (action === 'direct_assign' && status === 'error') {
 				message = __( 'Failed to assign asset. Please try again.', 'asset-lending-manager' );
+			} else if (action === 'change_state' && status === 'success') {
+				message = __( 'Asset state updated successfully.', 'asset-lending-manager' );
+			} else if (action === 'change_state' && status === 'error') {
+				message = __( 'Failed to update asset state. Please try again.', 'asset-lending-manager' );
 			}
 
 			if (message) {

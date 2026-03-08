@@ -14,3 +14,4 @@ This directory provides AI-oriented directives and project context to support de
 - `ISSUES_TODO.md`: active backlog.
 - `ISSUES_RESOLVED.md`: resolved issue archive.
 - `GIT_WORKFLOW.md`: branch, commit, and PR conventions.
+- `TESTS_INTRODUCTION.md`: testing strategy baseline for workflow/state transitions and coverage levels.
