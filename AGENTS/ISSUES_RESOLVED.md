@@ -1,5 +1,16 @@
 # ISSUES_RESOLVED
-Last update: 2026-03-05 (rev 4)
+Last update: 2026-03-08 (rev 5)
+
+---
+
+### [High] Kit approval can override maintenance/retired component states
+- **Status:** Resolved
+- **Date:** 2026-03-04
+- **Category:** Bug
+- **Description:** During kit transfer, the conflict guard only blocked `on-loan` components with a different owner. Components in `maintenance` or `retired` state were not checked and were forcibly set to `on-loan` during propagation.
+- **Resolution date:** 2026-03-08
+- **Fix summary:** Extended the conflict guard in `execute_ownership_transfer()` to throw an exception if any kit component is in `maintenance` or `retired` state before the propagation loop runs. Also extracted `$component_title` before the inner checks to avoid redundant `get_the_title()` calls.
+- **Notes:** `includes/class-alm-loan-manager.php` (`execute_ownership_transfer`, conflict guard block ~line 976)
 
 ---
 
