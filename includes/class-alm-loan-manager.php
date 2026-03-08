@@ -962,17 +962,30 @@ class ALM_Loan_Manager {
 			$component_ids = $this->get_kit_components( $asset_id );
 
 			if ( ! empty( $component_ids ) ) {
-				// 4. Optional conflict guard: block if a component is on-loan to a different owner.
-				// Allows hand-off when the kit (and its components) is already on-loan to the approver.
+				// 4. Optional conflict guard: block if a component is in a non-transferable state.
+				// Always blocks maintenance/retired components.
+				// For on-loan components, allows hand-off when already assigned to the same kit owner;
+				// blocks if assigned to a different owner.
 				// Uses $original_kit_owner (captured before step 1) to avoid a false mismatch
 				// caused by the kit owner already being updated in the DB at this point.
 				if ( $check_component_conflicts ) {
 					foreach ( $component_ids as $component_id ) {
 						$component_state = $this->get_asset_state_slug( $component_id );
+						$component_title = get_the_title( $component_id );
+
+						if ( 'maintenance' === $component_state || 'retired' === $component_state ) {
+							throw new Exception(
+								sprintf(
+									/* translators: %s: kit component title */
+									esc_html__( 'Component "%s" is in a non-loanable state and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
+									esc_html( (string) $component_title )
+								)
+							);
+						}
+
 						if ( 'on-loan' === $component_state ) {
 							$component_owner = $this->get_current_owner( $component_id );
 							if ( $component_owner !== $original_kit_owner ) {
-								$component_title = get_the_title( $component_id );
 								throw new Exception(
 									sprintf(
 										/* translators: %s: kit component title */

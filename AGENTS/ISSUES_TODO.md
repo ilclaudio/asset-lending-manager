@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-03-05
+Last update: 2026-03-08
 
 ---
 
@@ -56,14 +56,6 @@ Last update: 2026-03-05
 - **Description:** In the asset detail template, the "Request loan" section is shown based on ownership/login checks but not on asset state. As a result, users can see the form also when asset state is `maintenance` or `retired`, then receive backend rejection.
 - **Expected behavior:** Show the request form only when asset state is `available` or `on-loan` (and existing role/ownership checks pass).
 - **Notes:** `templates/shortcodes/asset-view.php:216-229`, `includes/class-alm-loan-manager.php:133-139`.
-
-### [High] Kit approval can override maintenance/retired component states
-- **Status:** Open
-- **Date:** 2026-03-04
-- **Category:** Bug
-- **Description:** In kit transfer, component conflict checks only handle the `on-loan` case with owner mismatch. Components in `maintenance` or `retired` are still forcibly updated to owner=`new_owner` and state=`on-loan` during approval.
-- **Expected behavior:** During standard request approval, block the operation if any kit component is in non-loanable state (`maintenance`/`retired`). Direct assignment by operator may keep explicit override behavior by policy.
-- **Notes:** `includes/class-alm-loan-manager.php:870-893`.
 
 ### [Medium] Loan request message max length is hardcoded in frontend
 - **Status:** Open
