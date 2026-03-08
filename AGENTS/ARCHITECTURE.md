@@ -24,7 +24,7 @@ Main content model:
 - **ALM_Role_Manager**: Creates and maintains ALM roles (`alm_member`, `alm_operator`) and capability assignments.
 - **ALM_Asset_Manager**: Registers `alm_asset`, related taxonomies, and asset-level helper methods.
 - **ALM_ACF_Asset_Adapter**: Registers ACF field groups attached to `alm_asset`.
-- **ALM_Loan_Manager**: Handles request/approve/reject loan workflow, owner transitions, and history persistence.
+- **ALM_Loan_Manager**: Handles request/approve/reject loan workflow, owner transitions, history persistence, and operator-driven state change (maintenance/retired) with kit propagation.
 - **ALM_Notification_Manager**: Notification layer placeholder; currently mostly stub/logging behavior.
 - **ALM_Frontend_Manager**: Frontend templates/shortcodes, frontend asset enqueue, and login/logout redirects by role.
 - **ALM_Admin_Manager**: Admin-area restrictions, menu cleanup, and admin asset enqueue.
@@ -48,6 +48,7 @@ Core hooks/endpoints used across modules:
 - `acf/include_fields`: ACF field group registration.
 - `wp_ajax_alm_submit_loan_request`, `wp_ajax_alm_approve_loan_request`, `wp_ajax_alm_reject_loan_request`: loan workflow actions.
 - `wp_ajax_alm_direct_assign_asset`: direct asset assignment by operator (requires `ALM_EDIT_ASSET`).
+- `wp_ajax_alm_change_asset_state`: set asset state to `maintenance` or `retired` from frontend (requires `ALM_EDIT_ASSET`); propagates to kit components or removes component from kit.
 - `template_include`: frontend template override for ALM asset views.
 - `wp_enqueue_scripts`: frontend and autocomplete assets.
 - `admin_init`, `admin_menu`, `admin_enqueue_scripts`: admin restrictions/menu/assets.
@@ -82,11 +83,23 @@ Core hooks/endpoints used across modules:
 ### Database Tables
 - `{$wpdb->prefix}alm_loan_requests`: `id`, `asset_id`, `requester_id`, `owner_id`, `request_date`, `request_message`, `status`, `response_date`, `response_message`.
 - `{$wpdb->prefix}alm_loan_requests_history`: `id`, `loan_request_id`, `asset_id`, `requester_id`, `owner_id`, `status`, `message`, `changed_at`, `changed_by`.
-  - `status` known values: `approved`, `rejected`, `canceled`, `direct_assign`.
-  - For `direct_assign` entries: `loan_request_id = 0` (no originating request), `requester_id` = new owner (assignee), `owner_id` = previous owner.
+  - `status` known values: `approved`, `rejected`, `canceled`, `direct_assign`, `to_maintenance`, `to_retired`.
+  - For `direct_assign` entries: `loan_request_id = 0`, `requester_id` = new owner (assignee), `owner_id` = previous owner.
+  - For `to_maintenance`/`to_retired` entries: `loan_request_id = 0`, `requester_id = 0`, `owner_id` = previous owner (or 0), `changed_by` = operator ID.
 
 ### Post Meta
-- `_alm_current_owner` (int user ID): current assignee for an asset.
+- `_alm_current_owner` (int user ID): current assignee for an asset. Always `0` when asset state is `maintenance` or `retired`.
+
+### Asset State Semantics
+- `available`: no active loan; `_alm_current_owner = 0`.
+- `on-loan`: active loan; `_alm_current_owner` = borrower user ID.
+- `maintenance`: temporarily unavailable; `_alm_current_owner = 0`. Triggers component removal from parent kit(s).
+- `retired`: permanently decommissioned; `_alm_current_owner = 0`. Triggers component removal from parent kit(s).
+
+State transition rules (enforced by `ALM_Loan_Manager`):
+- Kit → `maintenance`/`retired`: all components follow; components stay in the kit.
+- Component → `maintenance`/`retired`: component is removed from parent kit(s).
+- Transition to `available` (return flow): not yet implemented; manual state change via WP admin for now.
 
 ### Permissions
 - Roles: `alm_member`, `alm_operator`.

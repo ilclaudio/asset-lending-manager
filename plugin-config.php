@@ -137,6 +137,8 @@ function alm_get_loan_status_labels() {
 		'approved'      => __( 'Approved', 'asset-lending-manager' ),
 		'rejected'      => __( 'Rejected', 'asset-lending-manager' ),
 		'canceled'      => __( 'Canceled', 'asset-lending-manager' ),
-		'direct_assign' => __( 'Direct assignment', 'asset-lending-manager' ),
+		'direct_assign'  => __( 'Direct assignment', 'asset-lending-manager' ),
+		'to_maintenance' => __( 'Set to maintenance', 'asset-lending-manager' ),
+		'to_retired'     => __( 'Set to retired', 'asset-lending-manager' ),
 	);
 }

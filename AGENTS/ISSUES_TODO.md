@@ -209,6 +209,14 @@ Last update: 2026-03-08
 - **Expected behavior:** Add operator/owner-driven return flow that sets state back to `available`, clears or updates current owner correctly, propagates to kit components, and writes auditable history entries.
 - **Notes:** Required for realistic end-to-end user testing of the lending lifecycle.
 
+### [High] Asset state change (maintenance/retired) from frontend
+- **Status:** In progress
+- **Date:** 2026-03-08
+- **Category:** Feature
+- **Description:** Operators have no dedicated frontend UI to change asset state to `maintenance` or `retired`. State changes currently require WP admin access. No propagation logic or history tracking exists for these transitions.
+- **Expected behavior:** Add a collapsible section in the asset detail page (operator-only) with two actions: set to maintenance / set to retired. Kit propagates state to all components (components stay in kit). A component in a kit gets removed from the kit. Owner is cleared to 0 in all cases. A history row is written (`to_maintenance` / `to_retired`). If asset is `on-loan`, a confirmation warning is shown before proceeding.
+- **Notes:** Design decisions in `AGENTS/Maintenance.md`. New history status values: `to_maintenance`, `to_retired`. Files: `includes/class-alm-loan-manager.php`, `templates/shortcodes/asset-view.php`, `assets/js/frontend-assets.js`, `includes/class-alm-frontend-manager.php`.
+
 ### [Medium] Member dashboard for "My requests" and "My active loans"
 - **Status:** Open
 - **Date:** 2026-02-14

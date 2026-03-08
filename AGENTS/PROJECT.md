@@ -28,10 +28,12 @@ libraries, makerspaces, etc.).
 - Approve/reject workflow via AJAX handlers.
 - Ownership tracking and loan history persistence.
 - Operator/admin back-office menu and tools.
+- Operator-driven state change (maintenance/retired) from frontend asset detail page, with kit propagation, component removal from kit, owner clear, and history tracking.
 
 ## Planned / Not Fully Implemented
 - Real email notification sending (notification module is still a stub).
 - Full plugin settings UI and runtime use of settings.
+- Loan closure/return flow (set asset back to `available`).
 - Some workflow/security hardening tracked in `AGENTS/ISSUES_TODO.md`.
 
 ## Product Workflow (Target)
