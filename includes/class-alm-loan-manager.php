@@ -79,6 +79,7 @@ class ALM_Loan_Manager {
 		add_action( 'wp_ajax_alm_approve_loan_request', array( $this, 'ajax_approve_loan_request' ) );
 		add_action( 'wp_ajax_alm_direct_assign_asset', array( $this, 'ajax_direct_assign_asset' ) );
 		add_action( 'wp_ajax_alm_change_asset_state', array( $this, 'ajax_change_asset_state' ) );
+		add_action( 'wp_ajax_alm_restore_asset_state', array( $this, 'ajax_restore_asset_state' ) );
 	}
 
 	/**
@@ -1576,10 +1577,10 @@ class ALM_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
-			// 1. Reject retired assets.
+			// 1. Reject assets in non-assignable states.
 			$current_state = $this->get_asset_state_slug( $asset_id );
-			if ( 'retired' === $current_state ) {
-				throw new Exception( __( 'Cannot assign a retired asset.', 'asset-lending-manager' ) );
+			if ( in_array( $current_state, array( 'retired', 'maintenance' ), true ) ) {
+				throw new Exception( __( 'Cannot assign an asset that is in maintenance or retired state.', 'asset-lending-manager' ) );
 			}
 
 			// 2. Record previous owner before overwriting.
@@ -1760,8 +1761,12 @@ class ALM_Loan_Manager {
 			} else {
 				// Component or standalone: remove from parent kit(s), then change state.
 				$parent_kit_ids = $this->get_parent_kit_ids( $asset_id );
-				foreach ( $parent_kit_ids as $kit_id ) {
-					$this->remove_component_from_kit( $asset_id, $kit_id );
+				if ( ! empty( $parent_kit_ids ) ) {
+					// Persist kit membership so it can be restored later via restore_asset_state().
+					update_post_meta( $asset_id, '_alm_removed_from_kit_ids', $parent_kit_ids );
+					foreach ( $parent_kit_ids as $kit_id ) {
+						$this->remove_component_from_kit( $asset_id, $kit_id );
+					}
 				}
 
 				$this->set_asset_state( $asset_id, $target_state );
@@ -1861,5 +1866,187 @@ class ALM_Loan_Manager {
 		);
 
 		update_field( 'components', $updated_ids, $kit_id );
+	}
+
+	/**
+	 * Add a component to a kit's ACF components field.
+	 *
+	 * @param int $component_id Component asset ID to add.
+	 * @param int $kit_id       Kit asset ID.
+	 * @throws Exception When ACF is not available.
+	 * @return void
+	 */
+	private function add_component_to_kit( $component_id, $kit_id ) {
+		if ( ! function_exists( 'update_field' ) ) {
+			throw new Exception( __( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
+		}
+
+		$current_ids = $this->get_kit_components( $kit_id );
+
+		// Avoid duplicates.
+		if ( in_array( (int) $component_id, $current_ids, true ) ) {
+			return;
+		}
+
+		$current_ids[] = (int) $component_id;
+		update_field( 'components', $current_ids, $kit_id );
+	}
+
+	/**
+	 * AJAX handler for restoring an asset to available state.
+	 *
+	 * @return void
+	 */
+	public function ajax_restore_asset_state() {
+		check_ajax_referer( 'alm_restore_state_nonce', 'nonce' );
+
+		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to restore asset states.', 'asset-lending-manager' ) ) );
+		}
+
+		$asset_id = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
+
+		if ( $asset_id <= 0 ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
+		}
+
+		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
+		if ( mb_strlen( $notes ) > $notes_max ) {
+			wp_send_json_error(
+				array(
+					'message' => sprintf(
+						/* translators: %d: maximum number of characters allowed */
+						__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
+						$notes_max
+					),
+				)
+			);
+		}
+
+		$asset = get_post( $asset_id );
+		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+		}
+
+		$current_state = $this->get_asset_state_slug( $asset_id );
+		if ( ! in_array( $current_state, array( 'maintenance', 'retired' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Asset is not in a restorable state.', 'asset-lending-manager' ) ) );
+		}
+
+		$actor_id = get_current_user_id();
+		$result   = $this->restore_asset_state( $asset_id, $notes, $actor_id );
+
+		if ( ! $result['success'] ) {
+			wp_send_json_error( array( 'message' => $result['message'] ) );
+		}
+
+		wp_send_json_success( array( 'message' => $result['message'] ) );
+	}
+
+	/**
+	 * Restore an asset to available state.
+	 *
+	 * Operations for a kit:
+	 * 1. Restore kit state to available, clear owner.
+	 * 2. Write history entry for the kit.
+	 * 3. Restore state and clear owner on all components.
+	 * 4. Write history entry for each component.
+	 *
+	 * Operations for a component/standalone:
+	 * 1. Re-add component to any kit it was removed from (using _alm_removed_from_kit_ids meta).
+	 * 2. Restore state to available, clear owner.
+	 * 3. Write history entry.
+	 * 4. Delete _alm_removed_from_kit_ids meta.
+	 *
+	 * @param int    $asset_id Asset ID.
+	 * @param string $notes    Operator notes.
+	 * @param int    $actor_id Operator user ID performing the action.
+	 * @return array ['success' => bool, 'message' => string]
+	 */
+	private function restore_asset_state( $asset_id, $notes, $actor_id ) {
+		global $wpdb;
+
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			$is_kit = $this->is_asset_kit( $asset_id );
+
+			if ( $is_kit ) {
+				// Kit: restore kit and all components to available.
+				$component_ids = $this->get_kit_components( $asset_id );
+
+				$this->set_asset_state( $asset_id, 'available' );
+				$this->set_asset_owner( $asset_id, 0 );
+
+				$logged = $this->log_history_entry( 0, $asset_id, 0, 0, 'to_available', $notes, $actor_id );
+				if ( ! $logged ) {
+					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+				}
+
+				foreach ( $component_ids as $component_id ) {
+					$this->set_asset_state( $component_id, 'available' );
+					$this->set_asset_owner( $component_id, 0 );
+					delete_post_meta( $component_id, '_alm_removed_from_kit_ids' );
+
+					$logged = $this->log_history_entry( 0, $component_id, 0, 0, 'to_available', $notes, $actor_id );
+					if ( ! $logged ) {
+						throw new Exception( __( 'Failed to log history entry for component.', 'asset-lending-manager' ) );
+					}
+				}
+			} else {
+				// Component or standalone: re-add to previous kit(s) if applicable, then restore state.
+				$previous_kit_ids = get_post_meta( $asset_id, '_alm_removed_from_kit_ids', true );
+
+				if ( ! empty( $previous_kit_ids ) && is_array( $previous_kit_ids ) ) {
+					foreach ( $previous_kit_ids as $kit_id ) {
+						$this->add_component_to_kit( $asset_id, (int) $kit_id );
+					}
+				}
+
+				$this->set_asset_state( $asset_id, 'available' );
+				$this->set_asset_owner( $asset_id, 0 );
+
+				$logged = $this->log_history_entry( 0, $asset_id, 0, 0, 'to_available', $notes, $actor_id );
+				if ( ! $logged ) {
+					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+				}
+
+				delete_post_meta( $asset_id, '_alm_removed_from_kit_ids' );
+			}
+
+			$wpdb->query( 'COMMIT' );
+
+			ALM_Logger::info(
+				'Asset state restored to available',
+				array(
+					'asset_id' => $asset_id,
+					'is_kit'   => $is_kit,
+					'actor_id' => $actor_id,
+				)
+			);
+
+			return array(
+				'success' => true,
+				'message' => __( 'Asset restored to available successfully.', 'asset-lending-manager' ),
+			);
+
+		} catch ( Exception $e ) {
+			$wpdb->query( 'ROLLBACK' );
+
+			ALM_Logger::error(
+				'Failed to restore asset state',
+				array(
+					'asset_id' => $asset_id,
+					'error'    => $e->getMessage(),
+					'db_error' => $wpdb->last_error,
+				)
+			);
+
+			return array(
+				'success' => false,
+				'message' => $e->getMessage(),
+			);
+		}
 	}
 }

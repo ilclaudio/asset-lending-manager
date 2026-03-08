@@ -50,12 +50,20 @@ Last update: 2026-03-08
 - **Notes:** `includes/class-alm-admin-manager.php`, line 60.
 
 ### [Medium] Loan request form is visible for non-loanable asset states
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-03-04
 - **Category:** Bug
 - **Description:** In the asset detail template, the "Request loan" section is shown based on ownership/login checks but not on asset state. As a result, users can see the form also when asset state is `maintenance` or `retired`, then receive backend rejection.
 - **Expected behavior:** Show the request form only when asset state is `available` or `on-loan` (and existing role/ownership checks pass).
-- **Notes:** `templates/shortcodes/asset-view.php:216-229`, `includes/class-alm-loan-manager.php:133-139`.
+- **Notes:** Fixed in `templates/shortcodes/asset-view.php` — added `in_array( $alm_state_slug, ['available','on-loan'], true )` to the section guard condition.
+
+### [Medium] Direct assignment tab visible for maintenance/retired assets
+- **Status:** Done
+- **Date:** 2026-03-08
+- **Category:** Bug
+- **Description:** The "Direct assignment" collapsible section in the asset detail template was shown to operators regardless of asset state. An operator who had set an asset to `maintenance` or `retired` could still see the form, even though the backend (`direct_assign_asset()`) correctly blocks the operation.
+- **Expected behavior:** Hide the direct assignment tab when asset state is `maintenance` or `retired`, consistent with the loan request form behavior.
+- **Notes:** Fixed in `templates/shortcodes/asset-view.php:422` — added `! in_array( $alm_state_slug, ['maintenance','retired'], true )` to the section guard condition alongside the existing `$alm_is_operator` check.
 
 ### [Medium] Loan request message max length is hardcoded in frontend
 - **Status:** Open
@@ -113,6 +121,14 @@ Last update: 2026-03-08
 - **Expected behavior:** Validate current asset state server-side and reject transitions when source state is outside the allowed workflow.
 - **Notes:** `templates/shortcodes/asset-view.php:487-488` (UI guard), `includes/class-alm-loan-manager.php:1660-1705` (AJAX handler without source-state validation).
 
+### [Medium] Restore state endpoint does not enforce source-state constraints
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Bug
+- **Description:** UI shows the restore form only for assets in `maintenance` or `retired`, but `ajax_restore_asset_state()` relies on `restore_asset_state()` which re-validates state internally. If `restore_asset_state()` is called in a different context or via crafted request it could attempt to "restore" an `available` or `on-loan` asset.
+- **Expected behavior:** Add explicit server-side guard in `ajax_restore_asset_state()` to reject requests where current state is not `maintenance` or `retired`.
+- **Notes:** `includes/class-alm-loan-manager.php` (`ajax_restore_asset_state`, `restore_asset_state`).
+
 ### [Medium] Component removal from kit ignores ACF write failures
 - **Status:** Open
 - **Date:** 2026-03-08
@@ -124,6 +140,22 @@ Last update: 2026-03-08
 ---
 
 ## Refactoring
+
+### [Medium] Split `ALM_Loan_Manager` into focused services and shared transaction helpers
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Refactoring
+- **Description:** `ALM_Loan_Manager` currently combines AJAX adapters, permission checks, payload parsing, domain transitions, persistence, and transaction orchestration in a single class (~1865 LOC). Multiple methods replicate the same transactional structure (`START TRANSACTION` / `COMMIT` / `ROLLBACK`) and error-to-response patterns, increasing cognitive load and regression risk.
+- **Expected behavior:** Extract dedicated collaborators (for example: request policy/validation, transition service, persistence repository, transaction runner) and keep AJAX handlers thin. Reuse a shared transaction wrapper to remove duplicated try/catch transaction scaffolding across request creation, approval, direct assignment, and state change flows.
+- **Notes:** Evidence in `includes/class-alm-loan-manager.php:89-226`, `includes/class-alm-loan-manager.php:537-640`, `includes/class-alm-loan-manager.php:652-699`, `includes/class-alm-loan-manager.php:1060-1194`, `includes/class-alm-loan-manager.php:1572-1653`, `includes/class-alm-loan-manager.php:1728-1810`.
+
+### [Medium] Break up `frontend-assets.js` and move runtime-injected CSS to static stylesheet
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Refactoring
+- **Description:** `assets/js/frontend-assets.js` currently mixes unrelated responsibilities (filters, forms, modals, request actions, URL message handling) and injects a large CSS block directly into the DOM at runtime. This makes maintenance and debugging harder, reduces cacheability of style rules, and couples presentation concerns to behavior code.
+- **Expected behavior:** Split frontend logic into smaller modules (loan forms, request actions, modal utilities, state-change actions, shared AJAX helpers) and move injected CSS from JS to `assets/css/frontend-assets.css`, keeping JS focused on behavior only.
+- **Notes:** Evidence in `assets/js/frontend-assets.js:9-1194` (monolithic object) and `assets/js/frontend-assets.js:1199-1446` (dynamic style injection).
 
 ### [Low] Centralise loan status CSS class generation
 - **Status:** Open
@@ -257,13 +289,21 @@ Last update: 2026-03-08
 - **Expected behavior:** Add operator/owner-driven return flow that sets state back to `available`, clears or updates current owner correctly, propagates to kit components, and writes auditable history entries.
 - **Notes:** Required for realistic end-to-end user testing of the lending lifecycle.
 
-### [High] Asset state change (maintenance/retired) from frontend
-- **Status:** In progress
+### [High] Asset state change (maintenance/retired/restore) from frontend
+- **Status:** Done
 - **Date:** 2026-03-08
 - **Category:** Feature
 - **Description:** Operators have no dedicated frontend UI to change asset state to `maintenance` or `retired`. State changes currently require WP admin access. No propagation logic or history tracking exists for these transitions.
-- **Expected behavior:** Add a collapsible section in the asset detail page (operator-only) with two actions: set to maintenance / set to retired. Kit propagates state to all components (components stay in kit). A component in a kit gets removed from the kit. Owner is cleared to 0 in all cases. A history row is written (`to_maintenance` / `to_retired`). If asset is `on-loan`, a confirmation warning is shown before proceeding.
-- **Notes:** Design decisions in `AGENTS/Maintenance.md`. New history status values: `to_maintenance`, `to_retired`. Files: `includes/class-alm-loan-manager.php`, `templates/shortcodes/asset-view.php`, `assets/js/frontend-assets.js`, `includes/class-alm-frontend-manager.php`.
+- **Expected behavior:** Add a collapsible section in the asset detail page (operator-only) with two actions: set to maintenance / set to retired. Kit propagates state to all components (components stay in kit). A component in a kit gets removed from the kit. Owner is cleared to 0 in all cases. A history row is written (`to_maintenance` / `to_retired`). If asset is `on-loan`, a confirmation warning is shown before proceeding. A "Restore to available" button is shown when asset is in `maintenance` or `retired`; restores state, re-adds component to previous kit(s), writes `to_available` history.
+- **Notes:** New history status values: `to_maintenance`, `to_retired`, `to_available`. New post meta: `_alm_removed_from_kit_ids`. Files: `includes/class-alm-loan-manager.php`, `templates/shortcodes/asset-view.php`, `assets/js/frontend-assets.js`, `assets/css/frontend-assets.css`, `assets/css/asset-history-table.css`, `includes/class-alm-frontend-manager.php`, `plugin-config.php`.
+
+### [High] Integration test suite for core AJAX and workflow state transitions
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Feature
+- **Description:** The plugin currently lacks a complete integration test suite covering real WordPress bootstrap, real DB operations, custom ALM tables, and end-to-end AJAX handlers for loan workflows. This leaves critical state transitions under-tested (`request`, `approve`, `reject`, `direct assign`, `change state`) and increases regression risk.
+- **Expected behavior:** Implement the integration testing strategy defined in `AGENTS/TESTS_INTRODUCTION.md` using `PHPUnit + WP_UnitTestCase`, including fixture/factory helpers and prioritized coverage of core scenarios (T1-T17), with initial focus on blocking/security paths and main happy paths.
+- **Notes:** Priority is explicitly marked as highest among test initiatives in `AGENTS/TESTS_INTRODUCTION.md` (phases 1-4).
 
 ### [Medium] Member dashboard for "My requests" and "My active loans"
 - **Status:** Open
@@ -304,6 +344,22 @@ Last update: 2026-03-08
 - **Description:** External tools may need programmatic access.
 - **Expected behavior:** Authenticated endpoints for assets and loan workflow operations.
 - **Notes:** Strict capability checks required.
+
+### [Low] Incremental unit test coverage for extracted domain logic
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Feature
+- **Description:** Unit test coverage is currently missing for pure business rules (state transition guards, permission policies, payload validation). Without targeted unit tests, refactors on isolated logic are slower and less safe.
+- **Expected behavior:** Introduce unit tests incrementally, following `AGENTS/TESTS_INTRODUCTION.md`: extract small pure functions/methods from WP-coupled code and test them with `Brain Monkey`, without large rewrites.
+- **Notes:** Planned after integration baseline stability (phase 5), with micro-refactors only.
+
+### [Medium] Functional E2E test suite for critical user journeys
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Feature
+- **Description:** There is no browser-level functional verification of end-user workflows across roles (`alm_member`, `alm_operator`). Integration tests alone cannot catch all UI/runtime integration failures.
+- **Expected behavior:** Add a compact `Playwright` E2E suite covering only critical narratives from `AGENTS/TESTS_INTRODUCTION.md` (about 5-6 scenarios), including at least concurrent request cancellation, kit conflict rollback, and kit retirement propagation.
+- **Notes:** Low-priority and optional phase after integration/unit consolidation (phase 6).
 
 ---
 

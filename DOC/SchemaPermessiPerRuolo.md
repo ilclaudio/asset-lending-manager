@@ -27,13 +27,14 @@ Questo documento riassume le operazioni disponibili per ciascun ruolo nel plugin
 | Vedere richieste di prestito asset | No | Si (solo se proprietario corrente) | Si (anche monitoraggio read-only se non proprietario) | Si |
 | Assegnamento diretto | No | No | Si | Si |
 | Cambiare stato asset (maintenance/retired) da frontend | No | No | Si | Si |
+| Ripristinare asset a disponibile da frontend | No | No | Si | Si |
 | Vedere storico prestiti (UI attuale) | No | No | Si | Si |
 
 ---
 
 ## Relazioni sintetiche (role -> azioni)
 
-- Operatore -> Inserimento e modifica risorse; gestione tassonomie; richiesta prestito; monitoraggio richieste; assegnamento diretto; cambio stato asset (maintenance/retired) da frontend.
+- Operatore -> Inserimento e modifica risorse; gestione tassonomie; richiesta prestito; monitoraggio richieste; assegnamento diretto; cambio stato asset (maintenance/retired) da frontend; ripristino asset a disponibile da frontend.
 - Socio -> Richiesta prestito; approvazione/rifiuto solo se proprietario corrente.
 - Amministratore -> Stesso perimetro operativo dell'operatore (piu' privilegi WordPress generali).
 

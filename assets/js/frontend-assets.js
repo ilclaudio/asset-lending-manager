@@ -43,6 +43,7 @@
 			this.initRequestActions();
 			this.initDirectAssignForm();
 			this.initChangeStateForm();
+			this.initRestoreStateForm();
 			this.showActionResultMessage();
 		},
 
@@ -491,13 +492,92 @@
 		},
 
 		/**
+		 * Initialize restore asset state form (operator only).
+		 *
+		 * Handles form submission for restoring an asset from maintenance or retired to available.
+		 */
+		initRestoreStateForm: function() {
+			var form = document.getElementById('alm-restore-state-form');
+
+			if (!form) {
+				return;
+			}
+
+			// Character counter for notes field.
+			var notesField = document.getElementById('alm-restore-state-notes');
+			var charCount  = document.getElementById('alm-restore-state-char-count');
+
+			if (notesField && charCount) {
+				notesField.addEventListener('input', function() {
+					var length = notesField.value.length;
+					charCount.textContent = length + ' / ' + notesField.getAttribute('maxlength');
+				});
+			}
+
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+
+				var responseDiv = document.getElementById('alm-restore-state-response');
+				var submitBtn   = form.querySelector('button[type="submit"]');
+
+				if (typeof window.almFrontend === 'undefined' || !window.almFrontend.restoreStateNonce) {
+					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
+					return;
+				}
+
+				var assetId = ALM_Frontend.getAssetIdFromPage();
+				if (!assetId) {
+					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
+					return;
+				}
+
+				var originalBtnText  = submitBtn ? submitBtn.textContent : '';
+				if (submitBtn) {
+					submitBtn.disabled    = true;
+					submitBtn.textContent = __( 'Restoring...', 'asset-lending-manager' );
+				}
+				responseDiv.style.display = 'none';
+
+				var formData = new FormData();
+				formData.append('action',   'alm_restore_asset_state');
+				formData.append('nonce',    window.almFrontend.restoreStateNonce);
+				formData.append('asset_id', assetId);
+				formData.append('notes',    notesField ? notesField.value.trim() : '');
+
+				fetch(window.almFrontend.ajaxUrl, { method: 'POST', body: formData })
+					.then(function(response) { return response.json(); })
+					.then(function(data) {
+						if (data.success) {
+							var currentUrl = window.location.href.split('?')[0];
+							window.location.href = currentUrl + '?alm_action=restore_state&alm_status=success';
+						} else {
+							var errorMsg = data.data && data.data.message ? data.data.message : __( 'Restore failed. Please try again.', 'asset-lending-manager' );
+							ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
+							if (submitBtn) {
+								submitBtn.disabled    = false;
+								submitBtn.textContent = originalBtnText;
+							}
+						}
+					})
+					.catch(function(error) {
+						ALM_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
+						console.error('*** Restore state AJAX error:', error);
+						if (submitBtn) {
+							submitBtn.disabled    = false;
+							submitBtn.textContent = originalBtnText;
+						}
+					});
+			});
+		},
+
+		/**
 		 * Initialize approve/reject request actions.
 		 *
 		 * Handle approve and reject buttons in the requests table.
 		 */
 		initRequestActions: function() {
-			var approveButtons = document.querySelectorAll('.alm-button--approve');
-			var rejectButtons = document.querySelectorAll('.alm-button--reject');
+			var approveButtons = document.querySelectorAll('[data-action="approve"]');
+			var rejectButtons  = document.querySelectorAll('[data-action="reject"]');
 
 			if (!approveButtons.length && !rejectButtons.length) {
 				return;
@@ -1066,6 +1146,10 @@
 				message = __( 'Asset state updated successfully.', 'asset-lending-manager' );
 			} else if (action === 'change_state' && status === 'error') {
 				message = __( 'Failed to update asset state. Please try again.', 'asset-lending-manager' );
+			} else if (action === 'restore_state' && status === 'success') {
+				message = __( 'Asset restored to available successfully.', 'asset-lending-manager' );
+			} else if (action === 'restore_state' && status === 'error') {
+				message = __( 'Failed to restore asset. Please try again.', 'asset-lending-manager' );
 			}
 
 			if (message) {

@@ -212,8 +212,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		</details>
 	</section>
 
-	<!-- V section: Loan request form -->
-	<?php if ( ! $alm_is_current_owner ) : ?>
+	<!-- V section: Loan request form (hidden for maintenance/retired assets) -->
+	<?php if ( ! $alm_is_current_owner && in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) ) : ?>
 		<section class="alm-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
 			<details class="alm-collapsible alm-collapsible--requestbutton" id="alm-loan-request-section">
 				<summary class="alm-collapsible__summary">
@@ -274,9 +274,10 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		</section>
 	<?php endif; ?>
 
-	<!-- VI section: Loan requests -->
+	<!-- VI section: Loan requests (hidden for maintenance/retired assets) -->
 	<?php
 	if (
+				in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) &&
 				is_user_logged_in() &&
 				(
 					$alm_is_operator ||
@@ -418,8 +419,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	}
 	?>
 
-	<!-- VIII section: Direct assignment (operator only) -->
-	<?php if ( $alm_is_operator ) : ?>
+	<!-- VIII section: Direct assignment (operator only, hidden for maintenance/retired assets) -->
+	<?php if ( $alm_is_operator && ! in_array( $alm_state_slug, array( 'maintenance', 'retired' ), true ) ) : ?>
 	<section class="alm-asset-view__direct-assign" aria-label="<?php esc_attr_e( 'Direct assignment', 'asset-lending-manager' ); ?>">
 		<details class="alm-collapsible alm-collapsible--directassign">
 			<summary class="alm-collapsible__summary">
@@ -484,60 +485,100 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	</section>
 	<?php endif; ?>
 
-	<!-- VII section: Change asset state (operator only, available/on-loan assets) -->
-	<?php if ( $alm_is_operator && in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) ) : ?>
-		<section class="alm-asset-view__change-state" aria-label="<?php esc_attr_e( 'Change asset state', 'asset-lending-manager' ); ?>">
+	<!-- VII section: Asset state management (operator only) -->
+	<?php if ( $alm_is_operator ) : ?>
+		<section class="alm-asset-view__change-state" aria-label="<?php esc_attr_e( 'Asset state management', 'asset-lending-manager' ); ?>">
 			<details class="alm-collapsible alm-collapsible--changestate">
 				<summary class="alm-collapsible__summary">
 					<span class="alm-collapsible__title">
-						<?php esc_html_e( 'Change asset state', 'asset-lending-manager' ); ?>
+						<?php esc_html_e( 'Asset state management', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="alm-collapsible__hint" aria-hidden="true">
 						<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 					</span>
 				</summary>
 				<div class="alm-collapsible__body">
-					<?php if ( 'on-loan' === $alm_state_slug ) : ?>
-						<p class="alm-notice alm-notice--warning">
+					<?php if ( in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) ) : ?>
+						<!-- Sub-form: set to maintenance or retired -->
+						<?php if ( 'on-loan' === $alm_state_slug ) : ?>
+							<p class="alm-notice alm-notice--warning">
+								<?php
+								$alm_owner_display = $alm_owner_name ? $alm_owner_name : __( 'an unknown user', 'asset-lending-manager' );
+								echo wp_kses_post(
+									sprintf(
+										/* translators: %s: current owner display name */
+										__( '<strong>Warning:</strong> this asset is currently on loan to %s. Changing state will terminate the active loan.', 'asset-lending-manager' ),
+										esc_html( $alm_owner_display )
+									)
+								);
+								?>
+							</p>
+						<?php endif; ?>
+						<form id="alm-change-state-form" class="alm-loan-form" method="post">
+							<?php wp_nonce_field( 'alm_change_state_nonce', 'nonce' ); ?>
+							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $alm_asset_id ); ?>" />
+							<div class="alm-form-field">
+								<label for="alm-change-state-notes">
+									<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>
+								</label>
+								<textarea
+									id="alm-change-state-notes"
+									name="notes"
+									rows="3"
+									maxlength="500"
+									placeholder="<?php esc_attr_e( 'Describe the reason for this state change...', 'asset-lending-manager' ); ?>"
+									aria-describedby="alm-change-state-char-count"
+								></textarea>
+								<div class="alm-char-count" id="alm-change-state-char-count">0 / 500</div>
+							</div>
+							<div class="alm-form-actions alm-form-actions--row">
+								<button type="submit" class="alm-button alm-button--warning" data-target-state="maintenance">
+									<?php esc_html_e( 'Set to maintenance', 'asset-lending-manager' ); ?>
+								</button>
+								<button type="submit" class="alm-button alm-button--danger" data-target-state="retired">
+									<?php esc_html_e( 'Set to retired', 'asset-lending-manager' ); ?>
+								</button>
+							</div>
+							<div id="alm-change-state-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
+						</form>
+					<?php elseif ( in_array( $alm_state_slug, array( 'maintenance', 'retired' ), true ) ) : ?>
+						<!-- Sub-form: restore to available -->
+						<p class="alm-notice alm-notice--info">
 							<?php
-							$alm_owner_display = $alm_owner_name ? $alm_owner_name : __( 'an unknown user', 'asset-lending-manager' );
 							echo wp_kses_post(
 								sprintf(
-									/* translators: %s: current owner display name */
-									__( '<strong>Warning:</strong> this asset is currently on loan to %s. Changing state will terminate the active loan.', 'asset-lending-manager' ),
-									esc_html( $alm_owner_display )
+									/* translators: %s: current asset state label */
+									__( 'This asset is currently <strong>%s</strong>. Restoring it will set it back to available.', 'asset-lending-manager' ),
+									esc_html( $alm_state_label )
 								)
 							);
 							?>
 						</p>
+						<form id="alm-restore-state-form" class="alm-loan-form" method="post">
+							<?php wp_nonce_field( 'alm_restore_state_nonce', 'nonce' ); ?>
+							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $alm_asset_id ); ?>" />
+							<div class="alm-form-field">
+								<label for="alm-restore-state-notes">
+									<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>
+								</label>
+								<textarea
+									id="alm-restore-state-notes"
+									name="notes"
+									rows="3"
+									maxlength="500"
+									placeholder="<?php esc_attr_e( 'Describe the reason for restoring this asset...', 'asset-lending-manager' ); ?>"
+									aria-describedby="alm-restore-state-char-count"
+								></textarea>
+								<div class="alm-char-count" id="alm-restore-state-char-count">0 / 500</div>
+							</div>
+							<div class="alm-form-actions">
+								<button type="submit" class="alm-button alm-button--approve">
+									<?php esc_html_e( 'Make available', 'asset-lending-manager' ); ?>
+								</button>
+							</div>
+							<div id="alm-restore-state-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
+						</form>
 					<?php endif; ?>
-					<form id="alm-change-state-form" class="alm-loan-form">
-						<?php wp_nonce_field( 'alm_change_state_nonce', 'nonce' ); ?>
-						<input type="hidden" name="asset_id" value="<?php echo esc_attr( $alm_asset_id ); ?>" />
-						<div class="alm-form-field">
-							<label for="alm-change-state-notes">
-								<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>
-							</label>
-							<textarea
-								id="alm-change-state-notes"
-								name="notes"
-								rows="3"
-								maxlength="500"
-								placeholder="<?php esc_attr_e( 'Describe the reason for this state change...', 'asset-lending-manager' ); ?>"
-								aria-describedby="alm-change-state-char-count"
-							></textarea>
-							<div class="alm-char-count" id="alm-change-state-char-count">0 / 500</div>
-						</div>
-						<div class="alm-form-actions alm-form-actions--row">
-							<button type="submit" class="alm-button alm-button--warning" data-target-state="maintenance">
-								<?php esc_html_e( 'Set to maintenance', 'asset-lending-manager' ); ?>
-							</button>
-							<button type="submit" class="alm-button alm-button--danger" data-target-state="retired">
-								<?php esc_html_e( 'Set to retired', 'asset-lending-manager' ); ?>
-							</button>
-						</div>
-						<div id="alm-change-state-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
-					</form>
 				</div>
 			</details>
 		</section>

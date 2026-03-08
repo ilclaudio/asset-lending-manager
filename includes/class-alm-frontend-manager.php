@@ -240,6 +240,7 @@ class ALM_Frontend_Manager {
 				'loanRequestNonce'  => wp_create_nonce( 'alm_loan_request_nonce' ),
 				'directAssignNonce' => wp_create_nonce( 'alm_direct_assign_nonce' ),
 				'changeStateNonce'  => wp_create_nonce( 'alm_change_state_nonce' ),
+				'restoreStateNonce' => wp_create_nonce( 'alm_restore_state_nonce' ),
 			)
 		);
 

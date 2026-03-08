@@ -140,5 +140,6 @@ function alm_get_loan_status_labels() {
 		'direct_assign'  => __( 'Direct assignment', 'asset-lending-manager' ),
 		'to_maintenance' => __( 'Set to maintenance', 'asset-lending-manager' ),
 		'to_retired'     => __( 'Set to retired', 'asset-lending-manager' ),
+		'to_available'   => __( 'Restored to available', 'asset-lending-manager' ),
 	);
 }

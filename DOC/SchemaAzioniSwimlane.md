@@ -28,10 +28,12 @@ flowchart TB
     O5[Approva o rifiuta richiesta]
     O6[Assegnamento diretto]
     O7[Cambia stato asset - maintenance o retired]
+    O8[Ripristina asset a disponibile]
     O1 --> O2 --> O3 --> O4
     O4 -- Si --> O5
     O4 -- No --> O6
     O3 --> O7
+    O7 --> O8
   end
 
   S2 --> O3

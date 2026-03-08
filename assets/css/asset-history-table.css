@@ -109,28 +109,43 @@
 }
 
 .alm-status-badge.alm-status--pending {
-	background-color: #e8e8e8;
-	color: #3c3c3c;
+	background-color: var(--alm-status-pending-bg);
+	color: var(--alm-status-pending-text);
 }
 
 .alm-status-badge.alm-status--approved {
-	background-color: #d6f1df;
-	color: #155724;
+	background-color: var(--alm-status-approved-bg);
+	color: var(--alm-status-approved-text);
 }
 
 .alm-status-badge.alm-status--rejected {
-	background-color: #f9dce0;
-	color: #721c24;
+	background-color: var(--alm-status-rejected-bg);
+	color: var(--alm-status-rejected-text);
 }
 
 .alm-status-badge.alm-status--canceled {
-	background-color: #fff1ce;
-	color: #7c5600;
+	background-color: var(--alm-status-canceled-bg);
+	color: var(--alm-status-canceled-text);
 }
 
 .alm-status-badge.alm-status--direct_assign {
-	background-color: #d6e6ff;
-	color: #084298;
+	background-color: var(--alm-status-direct-assign-bg);
+	color: var(--alm-status-direct-assign-text);
+}
+
+.alm-status-badge.alm-status--to_maintenance {
+	background-color: var(--alm-status-to-maintenance-bg);
+	color: var(--alm-status-to-maintenance-text);
+}
+
+.alm-status-badge.alm-status--to_retired {
+	background-color: var(--alm-status-to-retired-bg);
+	color: var(--alm-status-to-retired-text);
+}
+
+.alm-status-badge.alm-status--to_available {
+	background-color: var(--alm-status-to-available-bg);
+	color: var(--alm-status-to-available-text);
 }
 
 .alm-history-message {
