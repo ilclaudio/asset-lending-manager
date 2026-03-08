@@ -97,6 +97,30 @@ Last update: 2026-03-08
 - **Expected behavior:** Lock target rows before processing and require exactly one deleted row per request; rollback if row count is not `1`.
 - **Notes:** `includes/class-alm-loan-manager.php:1188` (function), `includes/class-alm-loan-manager.php:1225` (history insert), `includes/class-alm-loan-manager.php:1246` (delete), `includes/class-alm-loan-manager.php:1252` (check `false` only)
 
+### [Medium] Direct assignment reason is always mandatory in frontend, ignoring settings
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Bug
+- **Description:** Backend validation requires assignment reason only when `direct_assign.require_reason` is enabled, but frontend template/JS always mark reason as required and block empty submissions. This creates a config mismatch where operators cannot submit valid backend-allowed requests.
+- **Expected behavior:** Localize the `direct_assign.require_reason` setting to frontend and enforce required reason in UI/JS only when enabled.
+- **Notes:** `includes/class-alm-loan-manager.php:1480-1482` (conditional backend check), `templates/shortcodes/asset-view.php:462-471` (always `required`), `assets/js/frontend-assets.js:346-350` (always blocks empty reason).
+
+### [Medium] Asset state-change endpoint does not enforce source-state constraints
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Bug
+- **Description:** UI shows change-state controls only for assets in `available` or `on-loan`, but `ajax_change_asset_state()` accepts any current source state and only validates the target (`maintenance`/`retired`). A crafted request can bypass UI flow constraints and create inconsistent state-transition history.
+- **Expected behavior:** Validate current asset state server-side and reject transitions when source state is outside the allowed workflow.
+- **Notes:** `templates/shortcodes/asset-view.php:487-488` (UI guard), `includes/class-alm-loan-manager.php:1660-1705` (AJAX handler without source-state validation).
+
+### [Medium] Component removal from kit ignores ACF write failures
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Bug
+- **Description:** `remove_component_from_kit()` calls `update_field()` but does not check its return value. If the ACF write fails, the state-change transaction can still commit, leaving the component logically moved to maintenance/retired while still referenced by parent kit data.
+- **Expected behavior:** Check `update_field()` result and throw on failure so `change_asset_state()` can rollback atomically.
+- **Notes:** `includes/class-alm-loan-manager.php:1761-1765` (caller), `includes/class-alm-loan-manager.php:1848-1863` (unchecked `update_field`).
+
 ---
 
 ## Refactoring
@@ -168,6 +192,30 @@ Last update: 2026-03-08
 - **Description:** To detect kit membership, `get_asset_custom_fields()` runs a `WP_Query` with `meta_query` `LIKE` against serialized component data. This pattern is expensive and non-scalable for larger datasets.
 - **Expected behavior:** Replace reverse `LIKE` lookup with normalized relation storage (e.g., dedicated relation meta/table) or maintain a direct parent-kit reference index.
 - **Notes:** `includes/class-alm-asset-manager.php:350`, `includes/class-alm-asset-manager.php:355`, `includes/class-alm-asset-manager.php:363`
+
+### [Medium] Active-loan limit check performs full asset scan on each request
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Performance
+- **Description:** `count_active_loans_for_user()` executes a `WP_Query` with `posts_per_page = -1` and meta filter on every loan request submission. This scales poorly as asset volume grows and increases latency of the request endpoint.
+- **Expected behavior:** Replace with a bounded/count query (or cached counter) and avoid full ID scans for simple cardinality checks.
+- **Notes:** `includes/class-alm-loan-manager.php:764-780`.
+
+### [Medium] Parent kit lookup in state-change flow uses uncached full-scan meta LIKE query
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Performance
+- **Description:** `get_parent_kit_ids()` uses `WP_Query` with `posts_per_page = -1` and `meta_query` `LIKE` on serialized components to find all kits containing a component. During repeated state-change operations this introduces expensive full scans.
+- **Expected behavior:** Use a normalized relationship/index (or cache strategy) to avoid repeated serialized `LIKE` scans.
+- **Notes:** `includes/class-alm-loan-manager.php:1820-1837`.
+
+### [Low] User autocomplete assets are enqueued on all asset pages, even when unused
+- **Status:** Open
+- **Date:** 2026-03-08
+- **Category:** Performance
+- **Description:** `enqueue_frontend_assets()` always enqueues `alm-user-autocomplete` and localizes REST data on asset pages. However, direct assignment UI is operator-only, so most visitors download and parse unused JS.
+- **Expected behavior:** Enqueue user-autocomplete assets only when the page context requires them (operator-visible direct assignment or explicit owner-filter UI).
+- **Notes:** `includes/class-alm-frontend-manager.php:246-267`.
 
 ---
 
