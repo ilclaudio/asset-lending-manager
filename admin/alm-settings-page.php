@@ -292,6 +292,26 @@ $placeholders = array(
 
 		<?php elseif ( 'loans' === $active_tab ) : ?>
 
+			<h2><?php esc_html_e( 'Loan Requests', 'asset-lending-manager' ); ?></h2>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Enable loan requests', 'asset-lending-manager' ); ?>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								name="alm_loans_loan_requests_enabled"
+								value="1"
+								<?php checked( $settings->get( 'loans.loan_requests_enabled' ) ); ?>
+							>
+							<?php esc_html_e( 'Members can submit loan requests. When disabled, assets can only change ownership via direct assignment by an operator.', 'asset-lending-manager' ); ?>
+						</label>
+					</td>
+				</tr>
+			</table>
+
 			<h2><?php esc_html_e( 'Loan Limits', 'asset-lending-manager' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<tr>

@@ -90,6 +90,14 @@ class ALM_Loan_Manager {
 	public function ajax_submit_loan_request() {
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+		// Check whether loan requests are enabled by the admin.
+		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Check user capabilities.
 		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
 			wp_send_json_error(
@@ -234,6 +242,14 @@ class ALM_Loan_Manager {
 	public function ajax_reject_loan_request() {
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+		// Check whether loan requests are enabled by the admin.
+		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Fail-fast capability check.
 		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
 			wp_send_json_error(
@@ -538,6 +554,14 @@ class ALM_Loan_Manager {
 	public function ajax_approve_loan_request() {
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+		// Check whether loan requests are enabled by the admin.
+		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Fail-fast capability check.
 		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
 			wp_send_json_error(

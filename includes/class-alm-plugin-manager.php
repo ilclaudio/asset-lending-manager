@@ -397,6 +397,7 @@ class ALM_Plugin_Manager {
 
 		if ( 'loans' === $active_tab ) {
 			// [A/O] fields.
+			$changes['loans.loan_requests_enabled']   = isset( $_POST['alm_loans_loan_requests_enabled'] );
 			$changes['loans.max_active_per_user']     = max( 0, (int) wp_unslash( $_POST['alm_loans_max_active_per_user'] ?? 0 ) );
 			$changes['loans.allow_multiple_requests'] = isset( $_POST['alm_loans_allow_multiple_requests'] );
 			// [A]-only fields.

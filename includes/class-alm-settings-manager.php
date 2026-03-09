@@ -70,6 +70,7 @@ class ALM_Settings_Manager {
 				'body'    => $templates['body'],
 			),
 			'loans'         => array(
+				'loan_requests_enabled'              => true,
 				'max_active_per_user'                => 0,
 				'allow_multiple_requests'            => true,
 				'approver_policy_for_unowned_assets' => 'none',

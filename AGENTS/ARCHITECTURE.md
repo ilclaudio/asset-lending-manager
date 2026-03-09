@@ -25,7 +25,7 @@ Main content model:
 - **ALM_Asset_Manager**: Registers `alm_asset`, related taxonomies, and asset-level helper methods.
 - **ALM_ACF_Asset_Adapter**: Registers ACF field groups attached to `alm_asset`.
 - **ALM_Loan_Manager**: Handles request/approve/reject loan workflow, owner transitions, history persistence, and operator-driven state change (maintenance/retired) with kit propagation.
-- **ALM_Notification_Manager**: Notification layer placeholder; currently mostly stub/logging behavior.
+- **ALM_Notification_Manager**: Sends transactional email notifications via `wp_mail()` for all loan workflow events (request submitted, approved, rejected, canceled, direct assignment). Sender config via settings/constants; templates via `alm_get_email_templates()`.
 - **ALM_Frontend_Manager**: Frontend templates/shortcodes, frontend asset enqueue, and login/logout redirects by role.
 - **ALM_Admin_Manager**: Admin-area restrictions, menu cleanup, and admin asset enqueue.
 - **ALM_Autocomplete_Manager**: Registers autocomplete REST endpoint and frontend autocomplete assets.

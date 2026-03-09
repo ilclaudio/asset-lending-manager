@@ -18,9 +18,11 @@ if ( $alm_asset_id <= 0 ) {
 	return;
 }
 
-$alm_asset_fields     = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
-$alm_loan_manager     = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
-$alm_owner_id         = $alm_loan_manager->get_current_owner( $alm_asset_id );
+$alm_asset_fields          = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
+$alm_loan_manager          = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
+$alm_settings              = ALM_Plugin_Manager::get_instance()->get_module( 'settings' );
+$alm_loan_requests_enabled = (bool) $alm_settings->get( 'loans.loan_requests_enabled', true );
+$alm_owner_id              = $alm_loan_manager->get_current_owner( $alm_asset_id );
 $alm_asset_title      = isset( $asset->title ) ? (string) $asset->title : '';
 $alm_asset_content    = isset( $asset->content ) ? (string) $asset->content : '';
 $alm_owner_name       = '';
@@ -212,8 +214,8 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		</details>
 	</section>
 
-	<!-- V section: Loan request form (hidden for maintenance/retired assets) -->
-	<?php if ( ! $alm_is_current_owner && in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) ) : ?>
+	<!-- V section: Loan request form (hidden for maintenance/retired assets and when loan requests are disabled) -->
+	<?php if ( $alm_loan_requests_enabled && ! $alm_is_current_owner && in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) ) : ?>
 		<section class="alm-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
 			<details class="alm-collapsible alm-collapsible--requestbutton" id="alm-loan-request-section">
 				<summary class="alm-collapsible__summary">
@@ -274,9 +276,10 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		</section>
 	<?php endif; ?>
 
-	<!-- VI section: Loan requests (hidden for maintenance/retired assets) -->
+	<!-- VI section: Loan requests (hidden for maintenance/retired assets and when loan requests are disabled) -->
 	<?php
 	if (
+				$alm_loan_requests_enabled &&
 				in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) &&
 				is_user_logged_in() &&
 				(
