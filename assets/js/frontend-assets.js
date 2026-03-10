@@ -45,6 +45,7 @@
 			this.initChangeStateForm();
 			this.initRestoreStateForm();
 			this.showActionResultMessage();
+			this.initQrCode();
 		},
 
 		/**
@@ -1162,8 +1163,77 @@
 		},
 
 		/**
+		 * Initialize QR code generation for the asset detail page.
+		 *
+		 * Reads data-scan-url and data-asset-code from the QR container element,
+		 * generates the QR code using qrcode-generator, and handles the print button.
+		 */
+		initQrCode: function() {
+			if (typeof window.qrcode === 'undefined') {
+				return;
+			}
+
+			// Find all QR canvas elements on the page.
+			const containers = document.querySelectorAll('.alm-qr-canvas');
+			if (!containers.length) {
+				return;
+			}
+
+			// Read scan data from the first container.
+			const firstContainer = containers[0];
+			const scanUrl        = firstContainer.dataset.scanUrl;
+			const assetCode      = firstContainer.dataset.assetCode;
+
+			if (!scanUrl) {
+				return;
+			}
+
+			// Generate QR code once (type 0 = auto, error correction level M).
+			const qr = window.qrcode(0, 'M');
+			qr.addData(scanUrl);
+			qr.make();
+			const svgMarkup = qr.createSvgTag({ scalable: true });
+
+			// Inject the same SVG into every canvas element on the page.
+			containers.forEach(function(container) {
+				container.innerHTML = svgMarkup;
+			});
+
+			// Print button (first one found).
+			const printBtn = document.querySelector('.alm-qr-print');
+			if (printBtn) {
+				printBtn.addEventListener('click', function() {
+					window.print();
+				});
+			}
+
+			// Build the print label card (hidden in normal view, shown only when printing).
+			const printCard = document.createElement('div');
+			printCard.className = 'alm-qr-print-card';
+			printCard.setAttribute('aria-hidden', 'true');
+
+			const printQr = document.createElement('div');
+			printQr.className = 'alm-qr-print-card__qr';
+			printQr.innerHTML = svgMarkup;
+
+			const printTitle = document.createElement('p');
+			printTitle.className = 'alm-qr-print-card__title';
+			const titleEl = document.querySelector('.alm-asset-title');
+			printTitle.textContent = titleEl ? titleEl.textContent.trim() : '';
+
+			const printCode = document.createElement('p');
+			printCode.className = 'alm-qr-print-card__code';
+			printCode.textContent = assetCode || '';
+
+			printCard.appendChild(printQr);
+			printCard.appendChild(printTitle);
+			printCard.appendChild(printCode);
+			document.body.appendChild(printCard);
+		},
+
+		/**
 		 * Show global message at the top of the page.
-		 * 
+		 *
 		 * @param {string} message Message text
 		 * @param {string} type 'success' or 'error'
 		 */

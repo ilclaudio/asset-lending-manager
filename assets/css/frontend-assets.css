@@ -1,4 +1,4 @@
-	/**
+/**
 	* Frontend styles for ALM assets
 	*
 	* Loaded only on asset archive, single, and pages with asset shortcodes.
@@ -817,7 +817,7 @@
 			gap: 8px;
 			font-size: 0.8em;
 		}
-		
+
 		.alm-asset-taxonomy {
 			min-width: 45%;
 		}
@@ -888,7 +888,7 @@
 		.alm-search-input-wrap {
 			width: 100%;
 		}
-		
+
 		.alm-asset-search-form button {
 			width: 100%;
 			padding: 10px 16px;
@@ -1291,3 +1291,88 @@
 			animation: none;
 		}
 	}
+
+/* =========================================================
+	QR Code section
+	========================================================= */
+
+/* QR canvas inside the additional fields collapsible */
+.alm-qr-canvas {
+	width: 120px;
+	height: 120px;
+}
+
+.alm-qr-canvas svg {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.alm-qr-canvas--small {
+	width: 80px;
+	height: 80px;
+}
+
+/* QR + print button side by side */
+.alm-qr-inline {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+/* Print label card — hidden in normal view, shown only when printing */
+.alm-qr-print-card {
+	display: none;
+}
+
+/* =========================================================
+	@media print — show only the label card
+	========================================================= */
+
+@media print {
+
+	body > *:not(.alm-qr-print-card) {
+		display: none !important;
+	}
+
+	.alm-qr-print-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 50mm;
+		height: 30mm;
+		padding: 2mm;
+		box-sizing: border-box;
+		font-family: sans-serif;
+		page-break-inside: avoid;
+	}
+
+	.alm-qr-print-card__qr {
+		width: 20mm;
+		height: 20mm;
+	}
+
+	.alm-qr-print-card__qr svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	.alm-qr-print-card__title {
+		margin: 1mm 0 0;
+		font-size: 6pt;
+		text-align: center;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		max-width: 46mm;
+	}
+
+	.alm-qr-print-card__code {
+		margin: 0;
+		font-size: 5pt;
+		font-family: monospace;
+		text-align: center;
+	}
+}

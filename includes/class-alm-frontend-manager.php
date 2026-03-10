@@ -58,6 +58,8 @@ class ALM_Frontend_Manager {
 		add_shortcode( 'alm_asset_view', array( $this, 'shortcode_asset_view' ) );
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
+		// Handle QR scan redirect (?alm_scan=AAGG-00000052).
+		add_action( 'template_redirect', array( $this, 'handle_alm_scan_redirect' ) );
 		// Login and logout redirect for operators and members.
 		add_filter( 'login_redirect', array( $this, 'redirect_login_by_role' ), 10, 3 );
 		add_filter( 'logout_redirect', array( $this, 'redirect_logout_by_role' ), 10, 3 );
@@ -243,6 +245,17 @@ class ALM_Frontend_Manager {
 				'restoreStateNonce' => wp_create_nonce( 'alm_restore_state_nonce' ),
 			)
 		);
+
+		// Enqueue QR code generator library only on asset detail pages.
+		if ( $this->is_asset_view_page() ) {
+			wp_enqueue_script(
+				'alm-qrcode-generator',
+				ALM_PLUGIN_URL . 'assets/js/vendor/qrcode-generator.js',
+				array(),
+				'1.4.4',
+				true
+			);
+		}
 
 		// Enqueue user autocomplete assets (used by the direct assignment form for operators).
 			wp_enqueue_script(
@@ -563,9 +576,49 @@ class ALM_Frontend_Manager {
 			}
 		}
 		wp_reset_postdata();
-		$alm_current_search      = $search_term;
+		$alm_current_search       = $search_term;
 		$alm_default_filters_open = (bool) $this->settings->get( 'frontend.default_filters_open', false );
 		include ALM_PLUGIN_DIR . 'templates/shortcodes/asset-list.php';
+	}
+
+	/**
+	 * Handle the ?alm_scan=CODE redirect.
+	 *
+	 * Reads the alm_scan query parameter, resolves the asset post ID from the
+	 * code, and redirects to the asset permalink. Redirects to home on failure.
+	 *
+	 * @return void
+	 */
+	public function handle_alm_scan_redirect() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
+		if ( ! isset( $_GET['alm_scan'] ) ) {
+			return;
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
+		$code    = sanitize_text_field( wp_unslash( $_GET['alm_scan'] ) );
+		$post_id = ALM_Asset_Manager::get_asset_id_from_code( $code );
+		if ( $post_id > 0 ) {
+			wp_safe_redirect( get_permalink( $post_id ) );
+			exit;
+		}
+		wp_safe_redirect( home_url( '/' ) );
+		exit;
+	}
+
+	/**
+	 * Check if the current page shows a single asset detail view.
+	 *
+	 * @return bool
+	 */
+	private function is_asset_view_page() {
+		if ( is_singular( ALM_ASSET_CPT_SLUG ) ) {
+			return true;
+		}
+		global $post;
+		if ( $post && has_shortcode( $post->post_content, 'alm_asset_view' ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

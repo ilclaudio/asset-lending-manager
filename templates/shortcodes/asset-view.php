@@ -23,11 +23,11 @@ $alm_loan_manager          = ALM_Plugin_Manager::get_instance()->get_module( 'lo
 $alm_settings              = ALM_Plugin_Manager::get_instance()->get_module( 'settings' );
 $alm_loan_requests_enabled = (bool) $alm_settings->get( 'loans.loan_requests_enabled', true );
 $alm_owner_id              = $alm_loan_manager->get_current_owner( $alm_asset_id );
-$alm_asset_title      = isset( $asset->title ) ? (string) $asset->title : '';
-$alm_asset_content    = isset( $asset->content ) ? (string) $asset->content : '';
-$alm_owner_name       = '';
-$alm_is_current_owner = is_user_logged_in() && $alm_owner_id > 0 && ( $alm_current_user_id === (int) $alm_owner_id );
-$alm_is_operator      = is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
+$alm_asset_title           = isset( $asset->title ) ? (string) $asset->title : '';
+$alm_asset_content         = isset( $asset->content ) ? (string) $asset->content : '';
+$alm_owner_name            = '';
+$alm_is_current_owner      = is_user_logged_in() && $alm_owner_id > 0 && ( $alm_current_user_id === (int) $alm_owner_id );
+$alm_is_operator           = is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
 if ( $alm_owner_id > 0 ) {
 	$alm_owner_data = get_userdata( $alm_owner_id );
 	$alm_owner_name = $alm_owner_data ? $alm_owner_data->display_name : '';
@@ -50,6 +50,11 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	<header class="alm-asset-view__title">
 		<h1 class="alm-asset-title"><?php echo esc_html( $alm_asset_title ); ?></h1>
 	</header>
+
+	<?php
+	$alm_asset_code_str = ALM_Asset_Manager::get_asset_code( $alm_asset_id );
+	$alm_scan_url       = home_url( '/?alm_scan=' . rawurlencode( $alm_asset_code_str ) );
+	?>
 
 	<!-- II section: FOTO (sx) + Taxonomies box (dx) -->
 	<section class="alm-asset-view__hero" aria-label="<?php esc_attr_e( 'Asset overview', 'asset-lending-manager' ); ?>">
@@ -177,9 +182,9 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 											echo '<ul class="alm-asset-components">';
 											foreach ( $alm_asset_row['value'] as $alm_component_post ) {
 												if ( is_object( $alm_component_post ) && ! empty( $alm_component_post->ID ) ) {
-													$alm_asset_title = get_the_title( $alm_component_post->ID );
-													$alm_asset_link  = get_permalink( $alm_component_post->ID );
-													echo '<li><a class="alm-link" href="' . esc_url( $alm_asset_link ) . '">' . esc_html( $alm_asset_title ) . '</a></li>';
+													$alm_component_title = get_the_title( $alm_component_post->ID );
+													$alm_component_link  = get_permalink( $alm_component_post->ID );
+													echo '<li><a class="alm-link" href="' . esc_url( $alm_component_link ) . '">' . esc_html( $alm_component_title ) . '</a></li>';
 												}
 											}
 											echo '</ul>';
@@ -203,7 +208,27 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 								<?php esc_html_e( 'Code', 'asset-lending-manager' ); ?>
 							</dt>
 							<dd class="alm-asset-acf-value">
-								<?php echo esc_html( ALM_Asset_Manager::get_asset_code( $alm_asset_id ) ); ?>
+								<?php echo esc_html( $alm_asset_code_str ); ?>
+							</dd>
+						</div>
+						<!-- QR code row -->
+						<div class="alm-asset-acf-row alm-acf-qr">
+							<dt class="alm-asset-acf-label">
+								<?php esc_html_e( 'QR code', 'asset-lending-manager' ); ?>
+							</dt>
+							<dd class="alm-asset-acf-value">
+								<div class="alm-qr-inline">
+									<div
+										class="alm-qr-canvas alm-qr-canvas--small"
+										data-scan-url="<?php echo esc_url( $alm_scan_url ); ?>"
+										data-asset-code="<?php echo esc_attr( $alm_asset_code_str ); ?>"
+										aria-label="<?php esc_attr_e( 'QR code for this asset', 'asset-lending-manager' ); ?>"
+										role="img"
+									></div>
+									<button type="button" class="alm-button alm-button--secondary alm-qr-print">
+										<?php esc_html_e( 'Print QR code', 'asset-lending-manager' ); ?>
+									</button>
+								</div>
 							</dd>
 						</div>
 					</dl>
@@ -348,9 +373,9 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										? mb_substr( $alm_full_message, 0, 80 ) . '...'
 										: $alm_full_message;
 									/* translators: %s: loan requester display name. */
-									$alm_approve_label    = esc_attr( sprintf( __( 'Approve request from %s', 'asset-lending-manager' ), $alm_requester_name ) );
+									$alm_approve_label = sprintf( __( 'Approve request from %s', 'asset-lending-manager' ), $alm_requester_name );
 									/* translators: %s: loan requester display name. */
-									$alm_reject_label     = esc_attr( sprintf( __( 'Reject request from %s', 'asset-lending-manager' ), $alm_requester_name ) );
+									$alm_reject_label = sprintf( __( 'Reject request from %s', 'asset-lending-manager' ), $alm_requester_name );
 									?>
 								<tr class="alm-request-row" role="row" data-request-id="<?php echo esc_attr( $alm_request->id ); ?>">
 										<td class="alm-request-requester" role="cell" data-label="<?php esc_attr_e( 'Requester', 'asset-lending-manager' ); ?>">
@@ -387,7 +412,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 												data-action="approve" 
 												data-request-id="<?php echo esc_attr( $alm_request->id ); ?>"
 												data-asset-id="<?php echo esc_attr( $alm_asset_id ); ?>"
-												aria-label="<?php echo $alm_approve_label; ?>"
+												aria-label="<?php echo esc_attr( $alm_approve_label ); ?>"
 											>
 												<?php esc_html_e( 'Approve', 'asset-lending-manager' ); ?>
 											</button>
@@ -397,7 +422,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 												data-action="reject" 
 												data-request-id="<?php echo esc_attr( $alm_request->id ); ?>"
 												data-asset-id="<?php echo esc_attr( $alm_asset_id ); ?>"
-												aria-label="<?php echo $alm_reject_label; ?>"
+												aria-label="<?php echo esc_attr( $alm_reject_label ); ?>"
 											>
 												<?php esc_html_e( 'Reject', 'asset-lending-manager' ); ?>
 											</button>
@@ -422,7 +447,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	}
 	?>
 
-	<!-- VIII section: Direct assignment (operator only, hidden for maintenance/retired assets) -->
+	<!-- VII section: Direct assignment (operator only, hidden for maintenance/retired assets) -->
 	<?php if ( $alm_is_operator && ! in_array( $alm_state_slug, array( 'maintenance', 'retired' ), true ) ) : ?>
 	<section class="alm-asset-view__direct-assign" aria-label="<?php esc_attr_e( 'Direct assignment', 'asset-lending-manager' ); ?>">
 		<details class="alm-collapsible alm-collapsible--directassign">
@@ -488,7 +513,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	</section>
 	<?php endif; ?>
 
-	<!-- VII section: Asset state management (operator only) -->
+	<!-- VIII section: Asset state management (operator only) -->
 	<?php if ( $alm_is_operator ) : ?>
 		<section class="alm-asset-view__change-state" aria-label="<?php esc_attr_e( 'Asset state management', 'asset-lending-manager' ); ?>">
 			<details class="alm-collapsible alm-collapsible--changestate">
@@ -587,7 +612,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		</section>
 	<?php endif; ?>
 
-	<!-- VIII section: Loan history -->
+	<!-- IX section: Loan history -->
 	<?php if ( is_user_logged_in() && current_user_can( ALM_EDIT_ASSET ) ) : ?>
 		<section class="alm-asset-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
 			<details class="alm-collapsible alm-collapsible--history">
@@ -669,12 +694,12 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									$alm_status_label = $alm_loan_labels[ $alm_entry_status ] ?? $alm_entry_status;
 									$alm_status_class = 'alm-status--' . $alm_entry_status;
 
-										// Handle message (truncate for display, full in expandable details).
-										$alm_full_message     = sanitize_text_field( (string) $alm_entry->message );
-										$alm_has_long_message = mb_strlen( $alm_full_message ) > 80;
-										$alm_short_message    = $alm_has_long_message
-											? mb_substr( $alm_full_message, 0, 80 ) . '...'
-											: $alm_full_message;
+									// Handle message (truncate for display, full in expandable details).
+									$alm_full_message     = sanitize_text_field( (string) $alm_entry->message );
+									$alm_has_long_message = mb_strlen( $alm_full_message ) > 80;
+									$alm_short_message    = $alm_has_long_message
+										? mb_substr( $alm_full_message, 0, 80 ) . '...'
+										: $alm_full_message;
 									?>
 									<tr class="alm-history-row" role="row">
 										<td class="alm-history-requester" role="cell" data-label="<?php esc_attr_e( 'Recipient', 'asset-lending-manager' ); ?>">

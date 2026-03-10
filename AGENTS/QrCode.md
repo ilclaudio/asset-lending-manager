@@ -35,9 +35,10 @@ dell'asset. Se il codice non è valido, redirect alla home. Nessuna query var cu
 
 ### Librerie
 
-- **Generazione QR** — `qrcode-generator` (Kazuhiko Arase, MIT, ~15 KB): JS puro, zero dipendenze,
-  funziona offline, supporta SVG via `createSvgTag()`. Sostituisce `qrcodejs` (davidshimjs),
-  abbandonato dal 2014.
+- **Generazione QR** — `qrcode-generator` (kazuhikoarase, MIT): Vanilla JS puro, zero dipendenze,
+  zero build step, file `.js` scaricabile direttamente da GitHub e usabile nel browser as-is.
+  Sostituisce `qrcodejs` (davidshimjs), abbandonato dal 2014.
+  Repository: https://github.com/kazuhikoarase/qrcode-generator
 - **Lettura QR da fotocamera** — `jsQR` (MIT, ~25 KB): necessaria solo per Fase 2.
 - Entrambe vengono scaricate in `assets/js/vendor/` e enqueued tramite `wp_enqueue_script()`.
 - Nessuna dipendenza PHP di produzione: la generazione avviene interamente lato client.

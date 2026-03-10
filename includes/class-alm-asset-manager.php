@@ -321,7 +321,7 @@ class ALM_Asset_Manager {
 			'notes'                => __( 'Notes', 'asset-lending-manager' ),
 			'components'           => __( 'Components', 'asset-lending-manager' ),
 		);
-		$field_objects = ALM_ACF_Asset_Adapter::get_custom_fields( $asset_id );
+		$field_objects     = ALM_ACF_Asset_Adapter::get_custom_fields( $asset_id );
 		// Build an array with the fields ordered based on $order.
 		if ( ! empty( $field_objects ) ) {
 			foreach ( $order as $field_name ) {
@@ -397,6 +397,32 @@ class ALM_Asset_Manager {
 			}
 		}
 		return sprintf( ALM_ASSET_CODE_FORMAT, $prefix, (int) $asset_id );
+	}
+
+	/**
+	 * Return the WordPress post ID from a human-readable asset code.
+	 *
+	 * Reverse of get_asset_code(). Extracts the numeric part after the last
+	 * hyphen, validates the post exists and is a published alm_asset.
+	 *
+	 * @param string $code Human-readable asset code (e.g. "AAGG-00000052").
+	 * @return int Post ID on success, 0 on failure.
+	 */
+	public static function get_asset_id_from_code( $code ) {
+		$code = sanitize_text_field( $code );
+		$pos  = strrpos( $code, '-' );
+		if ( false === $pos ) {
+			return 0;
+		}
+		$post_id = absint( substr( $code, $pos + 1 ) );
+		if ( $post_id <= 0 ) {
+			return 0;
+		}
+		$post = get_post( $post_id );
+		if ( ! $post || ALM_ASSET_CPT_SLUG !== $post->post_type || 'publish' !== $post->post_status ) {
+			return 0;
+		}
+		return $post_id;
 	}
 
 	/**

@@ -94,7 +94,7 @@ if ( $filter_owner > 0 ) {
 		</div>
 
 		<!-- Advanced Filters -->
-		<details class="alm-filters-collapsible"<?php if ( ! empty( $alm_default_filters_open ) ) echo ' open'; ?>>
+		<details class="alm-filters-collapsible"<?php echo ! empty( $alm_default_filters_open ) ? ' open' : ''; ?>>
 			<summary class="alm-filters-toggle">
 				<?php esc_html_e( 'Advanced Filters', 'asset-lending-manager' ); ?>
 				<?php if ( $alm_active_filters_count > 0 ) : ?>
@@ -287,40 +287,40 @@ if ( $filter_owner > 0 ) {
 			<?php endforeach; ?>
 		</div>
 
-			<?php if ( $total_pages > 1 ) : ?>
-				<nav class="alm-pagination" aria-label="<?php esc_attr_e( 'Asset list pagination', 'asset-lending-manager' ); ?>">
-					<?php
-					echo wp_kses_post(
-						paginate_links(
-							array(
-								'base'      => add_query_arg( 'alm_paged', '%#%' ),
-								'format'    => '',
-								'current'   => $current_page,
-								'total'     => $total_pages,
-								'prev_text' => '<span aria-hidden="true">&laquo;</span><span class="screen-reader-text">' . esc_html__( 'Previous page', 'asset-lending-manager' ) . '</span>',
-								'next_text' => '<span aria-hidden="true">&raquo;</span><span class="screen-reader-text">' . esc_html__( 'Next page', 'asset-lending-manager' ) . '</span>',
-							)
+		<?php if ( $total_pages > 1 ) : ?>
+			<nav class="alm-pagination" aria-label="<?php esc_attr_e( 'Asset list pagination', 'asset-lending-manager' ); ?>">
+				<?php
+				echo wp_kses_post(
+					paginate_links(
+						array(
+							'base'      => add_query_arg( 'alm_paged', '%#%' ),
+							'format'    => '',
+							'current'   => $current_page,
+							'total'     => $total_pages,
+							'prev_text' => '<span aria-hidden="true">&laquo;</span><span class="screen-reader-text">' . esc_html__( 'Previous page', 'asset-lending-manager' ) . '</span>',
+							'next_text' => '<span aria-hidden="true">&raquo;</span><span class="screen-reader-text">' . esc_html__( 'Next page', 'asset-lending-manager' ) . '</span>',
 						)
-					);
-					?>
-				</nav>
-			<?php endif; ?>
-
-		<?php else : ?>
-
-			<p class="alm-no-results">
-			<?php
-			if ( ! empty( $alm_current_search ) ) {
-				printf(
-					/* translators: %s: Search term entered by the user. */
-					esc_html__( 'No results found for "%s".', 'asset-lending-manager' ),
-					esc_html( $alm_current_search )
+					)
 				);
-			} else {
-				esc_html_e( 'No assets found.', 'asset-lending-manager' );
-			}
-			?>
-			</p>
+				?>
+			</nav>
+		<?php endif; ?>
+
+	<?php else : ?>
+
+		<p class="alm-no-results">
+		<?php
+		if ( ! empty( $alm_current_search ) ) {
+			printf(
+				/* translators: %s: Search term entered by the user. */
+				esc_html__( 'No results found for "%s".', 'asset-lending-manager' ),
+				esc_html( $alm_current_search )
+			);
+		} else {
+			esc_html_e( 'No assets found.', 'asset-lending-manager' );
+		}
+		?>
+		</p>
 
 	<?php endif; ?>
 </div>
