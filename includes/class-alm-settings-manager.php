@@ -83,8 +83,7 @@ class ALM_Settings_Manager {
 			'direct_assign' => array(
 				'enabled'              => true,
 				'allowed_target_roles' => array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ),
-				'require_reason'       => false,
-			),
+				),
 			'workflow'      => array(
 				'cancel_concurrent_requests_on_assign' => true,
 				'cancel_component_requests_when_kit_assigned' => true,
