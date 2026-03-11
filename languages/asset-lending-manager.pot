@@ -1490,10 +1490,6 @@ msgstr ""
 msgid "Requester"
 msgstr ""
 
-#: admin/alm-settings-page.php:483
-msgid "Require reason"
-msgstr ""
-
 #: templates/shortcodes/asset-list.php:220
 msgid "Reset Filters"
 msgstr ""
@@ -1693,10 +1689,6 @@ msgstr ""
 
 #: includes/class-alm-plugin-manager.php:95
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
-msgstr ""
-
-#: admin/alm-settings-page.php:493
-msgid "The assignor must enter a reason when performing a direct assignment"
 msgstr ""
 
 #: includes/class-alm-loan-manager.php:173

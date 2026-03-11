@@ -409,8 +409,6 @@ class ALM_Plugin_Manager {
 		}
 
 		if ( 'direct_assign' === $active_tab ) {
-			// [A/O] field.
-			$changes['direct_assign.require_reason'] = isset( $_POST['alm_direct_assign_require_reason'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
 				$changes['direct_assign.enabled']              = isset( $_POST['alm_direct_assign_enabled'] );

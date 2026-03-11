@@ -122,12 +122,10 @@ Last update: 2026-03-11 (rev 2)
 - **Notes:** `includes/class-alm-loan-manager.php:1188` (function), `includes/class-alm-loan-manager.php:1225` (history insert), `includes/class-alm-loan-manager.php:1246` (delete), `includes/class-alm-loan-manager.php:1252` (check `false` only)
 
 ### [Medium] Direct assignment reason is always mandatory in frontend, ignoring settings
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-03-08
 - **Category:** Bug
-- **Description:** Backend validation requires assignment reason only when `direct_assign.require_reason` is enabled, but frontend template/JS always mark reason as required and block empty submissions. This creates a config mismatch where operators cannot submit valid backend-allowed requests.
-- **Expected behavior:** Localize the `direct_assign.require_reason` setting to frontend and enforce required reason in UI/JS only when enabled.
-- **Notes:** `includes/class-alm-loan-manager.php:1480-1482` (conditional backend check), `templates/shortcodes/asset-view.php:462-471` (always `required`), `assets/js/frontend-assets.js:346-350` (always blocks empty reason).
+- **Resolution:** Removed `direct_assign.require_reason` setting entirely. Assignment reason is now always required, consistent with how request message and rejection message work. Removed from: `class-alm-settings-manager.php` (default), `class-alm-loan-manager.php` (conditional guard → always validates), `class-alm-plugin-manager.php` (save handler), `admin/alm-settings-page.php` (UI checkbox), and all three translation files.
 
 ### [High] Unowned-assets approver policy is inconsistent across settings, UI, and backend flow
 - **Status:** Done

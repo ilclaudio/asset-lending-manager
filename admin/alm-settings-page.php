@@ -448,22 +448,6 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<?php esc_html_e( 'Require reason', 'asset-lending-manager' ); ?>
-					</th>
-					<td>
-						<label>
-							<input
-								type="checkbox"
-								name="alm_direct_assign_require_reason"
-								value="1"
-								<?php checked( $settings->get( 'direct_assign.require_reason' ) ); ?>
-							>
-							<?php esc_html_e( 'The assignor must enter a reason when performing a direct assignment', 'asset-lending-manager' ); ?>
-						</label>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row">
 						<?php esc_html_e( 'Allowed target roles', 'asset-lending-manager' ); ?>
 						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>

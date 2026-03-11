@@ -1607,10 +1607,6 @@ msgstr "Richiesta rifiutata"
 msgid "Requester"
 msgstr "Richiedente"
 
-#: admin/alm-settings-page.php:483
-msgid "Require reason"
-msgstr "Richiedi motivo"
-
 #: templates/shortcodes/asset-list.php:220
 msgid "Reset Filters"
 msgstr "Rimuovi Filtri"
@@ -1823,10 +1819,6 @@ msgstr "Telescopio"
 #: includes/class-alm-plugin-manager.php:95
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr "Il plugin ALM richiede che il plugin ACF sia installato e abilitato."
-
-#: admin/alm-settings-page.php:493
-msgid "The assignor must enter a reason when performing a direct assignment"
-msgstr "L'assegnante deve inserire un motivo durante un assegnamento diretto"
 
 #: includes/class-alm-loan-manager.php:173
 msgid ""

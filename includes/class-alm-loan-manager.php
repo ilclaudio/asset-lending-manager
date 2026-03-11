@@ -1493,7 +1493,7 @@ class ALM_Loan_Manager {
 			wp_send_json_error( array( 'message' => __( 'Invalid assignee ID.', 'asset-lending-manager' ) ) );
 		}
 
-		if ( $this->settings->get( 'direct_assign.require_reason', false ) && empty( $reason ) ) {
+		if ( empty( $reason ) ) {
 			wp_send_json_error( array( 'message' => __( 'Assignment reason is required.', 'asset-lending-manager' ) ) );
 		}
 
