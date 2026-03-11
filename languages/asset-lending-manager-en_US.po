@@ -184,14 +184,6 @@ msgstr ""
 msgid "an unknown user"
 msgstr ""
 
-#: admin/alm-settings-page.php:377
-msgid "Any ALM user"
-msgstr ""
-
-#: admin/alm-settings-page.php:374
-msgid "Any operator"
-msgstr ""
-
 #: admin/alm-settings-page.php:790
 msgid "API Access"
 msgstr ""
@@ -216,14 +208,6 @@ msgstr ""
 
 #: plugin-config.php:137
 msgid "Approved"
-msgstr ""
-
-#: admin/alm-settings-page.php:360
-msgid "Approver for unowned assets"
-msgstr ""
-
-#: admin/alm-settings-page.php:355
-msgid "Approver Policy"
 msgstr ""
 
 #: assets/js/frontend-assets.js:742
@@ -1163,10 +1147,6 @@ msgstr ""
 msgid "No results found for \"%s\"."
 msgstr ""
 
-#: admin/alm-settings-page.php:371
-msgid "None — requests are auto-approved"
-msgstr ""
-
 #: templates/shortcodes/asset-view.php:660
 msgid "Note:"
 msgstr ""
@@ -1808,11 +1788,6 @@ msgstr ""
 
 #: admin/alm-settings-page.php:523
 msgid "Which user roles can be selected as the target of a direct assignment."
-msgstr ""
-
-#: admin/alm-settings-page.php:381
-msgid ""
-"Who can approve loan requests for assets that have no current owner assigned."
 msgstr ""
 
 #: admin/alm-settings-page.php:589

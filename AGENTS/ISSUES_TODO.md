@@ -49,16 +49,8 @@ Last update: 2026-03-11 (rev 2)
 
 ## Bug
 
-### [Medium] Disabling loan requests blocks approve/reject of existing pending requests
-- **Status:** Open
-- **Date:** 2026-03-11
-- **Category:** Bug
-- **Description:** `ajax_approve_loan_request()` and `ajax_reject_loan_request()` both check `loans.loan_requests_enabled` and return an error if it is `false`. This means that when an admin disables loan requests (e.g., to halt new submissions), any pending requests created before the setting was toggled become permanently stuck: operators cannot approve or reject them. The flag is clearly intended to block new submissions, not to freeze the processing of existing ones.
-- **Expected behavior:** The `loan_requests_enabled` guard should apply only to `ajax_submit_loan_request()`. Approve and reject handlers should remain operational regardless of this setting.
-- **Notes:** `includes/class-alm-loan-manager.php:246-252` (reject guard), `includes/class-alm-loan-manager.php:558-564` (approve guard), `includes/class-alm-loan-manager.php:94-100` (submit guard — correct).
-
 ### [Medium] `?alm_scan=` on any page silently redirects to home on invalid code
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-03-11
 - **Category:** Bug
 - **Description:** `handle_alm_scan_redirect()` is hooked to `template_redirect` and fires on every WordPress page load. When `$_GET['alm_scan']` is present but the code is invalid (e.g. `?alm_scan=foo` appended to any URL), the handler unconditionally calls `wp_safe_redirect( home_url('/') )` and exits, discarding the intended page. Any URL on the site can be silently hijacked to a home-page redirect by appending `?alm_scan=anything_invalid`, disrupting navigation for users who follow links with stray query parameters or for QR codes that encode a malformed code.
@@ -138,12 +130,10 @@ Last update: 2026-03-11 (rev 2)
 - **Notes:** `includes/class-alm-loan-manager.php:1480-1482` (conditional backend check), `templates/shortcodes/asset-view.php:462-471` (always `required`), `assets/js/frontend-assets.js:346-350` (always blocks empty reason).
 
 ### [High] Unowned-assets approver policy is inconsistent across settings, UI, and backend flow
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-03-11
 - **Category:** Bug
-- **Description:** The setting `loans.approver_policy_for_unowned_assets` exposes options `none`, `operator`, `any_alm_user`, but runtime behavior is inconsistent: submission blocks when policy is `none` (despite UI label "auto-approved"), and policy `any_alm_user` is not honored in approval/rejection permission checks or in request management UI visibility (owner/operator only). This can create dead-end pending requests or impossible approval flows for unowned assets.
-- **Expected behavior:** Implement policy semantics end-to-end (submission, visibility of pending requests, approval/rejection permission checks) and align labels with actual behavior. If `none` means auto-approve, the request should be immediately fulfilled instead of rejected.
-- **Notes:** `admin/alm-settings-page.php:370-376` (policy labels/options), `includes/class-alm-loan-manager.php:168-174` (submission block when `none`), `includes/class-alm-loan-manager.php:385-403` and `926-944` (permission checks ignore policy), `templates/shortcodes/asset-view.php:306-314` and `408` (request management/actions shown only to operator/current owner).
+- **Resolution:** Removed the `loans.approver_policy_for_unowned_assets` setting entirely. Unowned assets can always receive loan requests; only operators can approve them (consistent with the existing permission model). Removed from: `class-alm-settings-manager.php` (default), `class-alm-loan-manager.php` (submission guard), `class-alm-plugin-manager.php` (save handler), `admin/alm-settings-page.php` (UI section), and all three translation files (.pot, en_US.po, it_IT.po).
 
 ### [Medium] Rejection message max length is hardcoded in frontend modal
 - **Status:** Open

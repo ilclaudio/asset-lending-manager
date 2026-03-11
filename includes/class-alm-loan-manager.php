@@ -165,15 +165,6 @@ class ALM_Loan_Manager {
 				)
 			);
 		}
-		// Block submission for unowned assets if no approver policy is configured.
-		$approver_policy = $this->settings->get( 'loans.approver_policy_for_unowned_assets', 'none' );
-		if ( 0 === $owner_id && 'none' === $approver_policy ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'This asset has no current owner and cannot receive loan requests at this time.', 'asset-lending-manager' ),
-				)
-			);
-		}
 		// Check if user already has a pending request for this asset.
 		if ( $this->has_pending_request( $asset_id, $requester_id ) ) {
 			wp_send_json_error(

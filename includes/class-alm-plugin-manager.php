@@ -402,9 +402,6 @@ class ALM_Plugin_Manager {
 			$changes['loans.allow_multiple_requests'] = isset( $_POST['alm_loans_allow_multiple_requests'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$policy_whitelist = array( 'none', 'operator', 'any_alm_user' );
-				$raw_policy       = sanitize_key( wp_unslash( $_POST['alm_loans_approver_policy'] ?? 'none' ) );
-				$changes['loans.approver_policy_for_unowned_assets'] = in_array( $raw_policy, $policy_whitelist, true ) ? $raw_policy : 'none';
 				$changes['loans.request_message_max_length']         = max( 0, (int) wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) );
 				$changes['loans.rejection_message_max_length']       = max( 0, (int) wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 255 ) );
 				$changes['loans.direct_assign_reason_max_length']    = max( 0, (int) wp_unslash( $_POST['alm_loans_direct_assign_reason_max_length'] ?? 500 ) );

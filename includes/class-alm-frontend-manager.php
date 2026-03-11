@@ -614,8 +614,7 @@ class ALM_Frontend_Manager {
 			wp_safe_redirect( get_permalink( $post_id ) );
 			exit;
 		}
-		wp_safe_redirect( home_url( '/' ) );
-		exit;
+		// Invalid or unresolvable code: do not redirect; let WordPress render the current page normally.
 	}
 
 	/**

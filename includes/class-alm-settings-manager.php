@@ -76,7 +76,6 @@ class ALM_Settings_Manager {
 				'loan_requests_enabled'              => true,
 				'max_active_per_user'                => 0,
 				'allow_multiple_requests'            => true,
-				'approver_policy_for_unowned_assets' => 'none',
 				'request_message_max_length'         => 500,
 				'rejection_message_max_length'       => 255,
 				'direct_assign_reason_max_length'    => 500,

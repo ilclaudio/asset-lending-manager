@@ -352,38 +352,6 @@ $placeholders = array(
 				</tr>
 			</table>
 
-			<h2><?php esc_html_e( 'Approver Policy', 'asset-lending-manager' ); ?></h2>
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row">
-						<label for="alm_loans_approver_policy">
-							<?php esc_html_e( 'Approver for unowned assets', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
-						</label>
-					</th>
-					<td>
-						<select
-							id="alm_loans_approver_policy"
-							name="alm_loans_approver_policy"
-							<?php disabled( ! $is_admin ); ?>
-						>
-							<option value="none" <?php selected( $settings->get( 'loans.approver_policy_for_unowned_assets' ), 'none' ); ?>>
-								<?php esc_html_e( 'None — requests are auto-approved', 'asset-lending-manager' ); ?>
-							</option>
-							<option value="operator" <?php selected( $settings->get( 'loans.approver_policy_for_unowned_assets' ), 'operator' ); ?>>
-								<?php esc_html_e( 'Any operator', 'asset-lending-manager' ); ?>
-							</option>
-							<option value="any_alm_user" <?php selected( $settings->get( 'loans.approver_policy_for_unowned_assets' ), 'any_alm_user' ); ?>>
-								<?php esc_html_e( 'Any ALM user', 'asset-lending-manager' ); ?>
-							</option>
-						</select>
-						<p class="description">
-							<?php esc_html_e( 'Who can approve loan requests for assets that have no current owner assigned.', 'asset-lending-manager' ); ?>
-						</p>
-					</td>
-				</tr>
-			</table>
-
 			<h2><?php esc_html_e( 'Message Length Limits', 'asset-lending-manager' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<tr>

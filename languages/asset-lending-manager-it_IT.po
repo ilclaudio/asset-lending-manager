@@ -195,14 +195,6 @@ msgstr ""
 msgid "an unknown user"
 msgstr "un utente sconosciuto"
 
-#: admin/alm-settings-page.php:377
-msgid "Any ALM user"
-msgstr "Qualsiasi utente ALM"
-
-#: admin/alm-settings-page.php:374
-msgid "Any operator"
-msgstr "Qualsiasi operatore"
-
 #: admin/alm-settings-page.php:790
 msgid "API Access"
 msgstr "Accesso API"
@@ -228,14 +220,6 @@ msgstr "Approva la richiesta di %s"
 #: plugin-config.php:137
 msgid "Approved"
 msgstr "Approvata"
-
-#: admin/alm-settings-page.php:360
-msgid "Approver for unowned assets"
-msgstr "Approvatore per risorse senza proprietario"
-
-#: admin/alm-settings-page.php:355
-msgid "Approver Policy"
-msgstr "Politica di approvazione"
 
 #: assets/js/frontend-assets.js:742
 msgid "Approving..."
@@ -1260,10 +1244,6 @@ msgstr "Nessuna richiesta in sospeso per questa risorsa."
 msgid "No results found for \"%s\"."
 msgstr "Nessun risultato per \"%s\"."
 
-#: admin/alm-settings-page.php:371
-msgid "None — requests are auto-approved"
-msgstr "Nessuno — le richieste vengono approvate automaticamente"
-
 #: templates/shortcodes/asset-view.php:660
 msgid "Note:"
 msgstr "Nota:"
@@ -1950,13 +1930,6 @@ msgid "Which user roles can be selected as the target of a direct assignment."
 msgstr ""
 "Quali ruoli utente possono essere selezionati come destinatario di un "
 "assegnamento diretto."
-
-#: admin/alm-settings-page.php:381
-msgid ""
-"Who can approve loan requests for assets that have no current owner assigned."
-msgstr ""
-"Chi può approvare le richieste di prestito per le risorse che non hanno un "
-"proprietario assegnato."
 
 #: admin/alm-settings-page.php:589
 msgid ""
