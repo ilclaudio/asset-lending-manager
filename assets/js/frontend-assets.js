@@ -46,6 +46,7 @@
 			this.initRestoreStateForm();
 			this.showActionResultMessage();
 			this.initQrCode();
+			this.initQrScanner();
 		},
 
 		/**
@@ -1229,6 +1230,149 @@
 			printCard.appendChild(printTitle);
 			printCard.appendChild(printCode);
 			document.body.appendChild(printCard);
+		},
+
+		/**
+		 * Initialize QR code scanner for the asset list page.
+		 *
+		 * Shows a "Scan QR" button next to the search input. On click, opens a
+		 * full-screen overlay with the device camera. jsQR decodes each video frame;
+		 * when a valid same-origin URL is found the browser navigates to it, which
+		 * triggers the handle_alm_scan_redirect() PHP handler and lands on the asset
+		 * detail page. Foreign-origin URLs are silently ignored.
+		 */
+		initQrScanner: function() {
+			var btn = document.querySelector('.alm-qr-scan-btn');
+			if (!btn) {
+				return;
+			}
+
+			// Hide the button if QR scan is disabled via settings.
+			if (typeof window.almFrontend !== 'undefined' && window.almFrontend.qrScanEnabled === false) {
+				btn.style.display = 'none';
+				return;
+			}
+
+			// Hide the button if the required APIs are not available.
+			if (typeof window.jsQR === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+				btn.style.display = 'none';
+				return;
+			}
+
+			btn.addEventListener('click', function() {
+				var overlay    = document.createElement('div');
+				var inner      = document.createElement('div');
+				var video      = document.createElement('video');
+				var canvas     = document.createElement('canvas');
+				var statusEl   = document.createElement('p');
+				var closeBtn   = document.createElement('button');
+				var stream     = null;
+				var rafId      = null;
+				var stopped    = false;
+
+				overlay.className  = 'alm-qr-scanner-overlay';
+				inner.className    = 'alm-qr-scanner-overlay__inner';
+				video.className    = 'alm-qr-scanner-overlay__video';
+				statusEl.className = 'alm-qr-scanner-overlay__status';
+				closeBtn.className = 'alm-qr-scanner-overlay__close alm-button alm-button--secondary';
+
+				video.setAttribute('playsinline', '');
+				video.setAttribute('muted', '');
+				video.setAttribute('autoplay', '');
+				canvas.hidden      = true;
+				statusEl.textContent = __( 'Point the camera at the QR code', 'asset-lending-manager' );
+				closeBtn.textContent = __( 'Close', 'asset-lending-manager' );
+				closeBtn.setAttribute('type', 'button');
+				closeBtn.setAttribute('aria-label', __( 'Close QR scanner', 'asset-lending-manager' ));
+
+				inner.appendChild(closeBtn);
+				inner.appendChild(video);
+				inner.appendChild(canvas);
+				inner.appendChild(statusEl);
+				overlay.appendChild(inner);
+				document.body.appendChild(overlay);
+
+				// Stop camera and remove overlay.
+				function stopScanner() {
+					if (stopped) {
+						return;
+					}
+					stopped = true;
+					if (rafId) {
+						cancelAnimationFrame(rafId);
+					}
+					if (stream) {
+						stream.getTracks().forEach(function(track) {
+							track.stop();
+						});
+					}
+					if (overlay.parentNode) {
+						overlay.parentNode.removeChild(overlay);
+					}
+				}
+
+				closeBtn.addEventListener('click', stopScanner);
+
+				// Close on click outside the inner panel.
+				overlay.addEventListener('click', function(e) {
+					if (e.target === overlay) {
+						stopScanner();
+					}
+				});
+
+				// Close on Escape key.
+				function onKeyDown(e) {
+					if (e.key === 'Escape') {
+						stopScanner();
+						document.removeEventListener('keydown', onKeyDown);
+					}
+				}
+				document.addEventListener('keydown', onKeyDown);
+
+				// Start camera stream.
+				navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+					.then(function(mediaStream) {
+						stream      = mediaStream;
+						video.srcObject = mediaStream;
+
+						// Decode loop: read one frame per animation frame.
+						function tick() {
+							if (stopped) {
+								return;
+							}
+							if (video.readyState === video.HAVE_ENOUGH_DATA) {
+								canvas.width  = video.videoWidth;
+								canvas.height = video.videoHeight;
+								var ctx  = canvas.getContext('2d');
+								ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+								var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+								var code      = window.jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+
+								if (code && code.data) {
+									// Validate that the decoded URL belongs to this site.
+									try {
+										var decoded = code.data;
+										var parsed  = new URL(decoded);
+										if (parsed.origin === window.location.origin) {
+											stopScanner();
+											window.location.href = decoded;
+											return;
+										}
+										// Foreign-origin QR: ignore and keep scanning.
+									} catch (err) {
+										// Not a valid URL: ignore and keep scanning.
+									}
+								}
+							}
+							rafId = requestAnimationFrame(tick);
+						}
+						rafId = requestAnimationFrame(tick);
+					})
+					.catch(function() {
+						statusEl.textContent = __( 'Camera access denied. Please allow camera permissions.', 'asset-lending-manager' );
+						statusEl.classList.add('alm-qr-scanner-overlay__status--error');
+					});
+			});
 		},
 
 		/**

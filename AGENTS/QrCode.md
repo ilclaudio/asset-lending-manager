@@ -1,7 +1,7 @@
 # QRCode.md
 
 Documento di progetto per la funzionalità QR code in Asset Lending Manager.
-Last update: 2026-03-10
+Last update: 2026-03-11
 
 ---
 
@@ -87,15 +87,15 @@ L'endpoint `alm_direct_assign_asset` è già transazionale: riusarlo in loop è 
 | 6 | Aggiungere hook `template_redirect` per redirect `alm_scan` | `class-alm-frontend-manager.php` |
 | 7 | Traduzioni nuove stringhe | `.pot`, `it_IT.po` |
 
-### Fase 2a — Ricerca Tramite QR
+### Fase 2a — Ricerca Tramite QR ✅ Completata (2026-03-11)
 
 | Step | Cosa fare | File |
 |---|---|---|
-| 1 | Scaricare `jsqr.min.js` in `assets/js/vendor/` | nuovo file |
-| 2 | Enqueue `jsQR` sulle pagine lista asset | `class-alm-frontend-manager.php` |
-| 3 | Aggiungere pulsante "Scansiona QR" nella barra di ricerca | `asset-list.php` |
-| 4 | Aggiungere `initQrScanner()` in `frontend-assets.js`: overlay fotocamera, decodifica, redirect | `frontend-assets.js` |
-| 5 | Stili overlay scanner | `frontend-assets.css` |
+| 1 | ✅ `jsqr.min.js` presente in `assets/js/vendor/` | `assets/js/vendor/jsqr.min.js` |
+| 2 | ✅ Enqueue `jsQR` sulle pagine lista asset + `is_asset_list_page()` | `class-alm-frontend-manager.php` |
+| 3 | ✅ Pulsante "Scan QR" nella barra di ricerca | `asset-list.php` |
+| 4 | ✅ `initQrScanner()`: overlay fotocamera, decodifica same-origin, redirect | `frontend-assets.js` |
+| 5 | ✅ Stili overlay scanner + `.alm-qr-scan-btn` | `frontend-assets.css` |
 
 ### Fase 2b — Assegnamento Diretto Tramite QR
 

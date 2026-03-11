@@ -3,9 +3,9 @@
  * ALM Settings Page template.
  *
  * Renders the plugin settings page in the WordPress admin.
- * Implements 10 tabs: Email & Notifications, Email Templates, Loan Rules,
- * Direct Assignment, Workflow, Frontend, Autocomplete & API, Logging & Audit,
- * Asset Identification, Maintenance.
+ * Implements 10 tabs: Notifications, Email Templates, Loan Rules,
+ * Direct Assignment, Workflow, Frontend, Research, Logging,
+ * Advanced Settings, Maintenance.
  *
  * Access: any user with ALM_EDIT_ASSET capability can view the page.
  * Fields marked [A] are disabled for non-administrators (manage_options).
@@ -25,15 +25,15 @@ $settings = new ALM_Settings_Manager();
 $is_admin = current_user_can( 'manage_options' );
 
 $tabs = array(
-	'email'         => __( 'Email & Notifications', 'asset-lending-manager' ),
+	'email'         => __( 'Notifications', 'asset-lending-manager' ),
 	'templates'     => __( 'Email Templates', 'asset-lending-manager' ),
 	'loans'         => __( 'Loan Rules', 'asset-lending-manager' ),
 	'direct_assign' => __( 'Direct Assignment', 'asset-lending-manager' ),
 	'workflow'      => __( 'Workflow', 'asset-lending-manager' ),
 	'frontend'      => __( 'Frontend', 'asset-lending-manager' ),
-	'autocomplete'  => __( 'Autocomplete & API', 'asset-lending-manager' ),
-	'logging'       => __( 'Logging & Audit', 'asset-lending-manager' ),
-	'asset'         => __( 'Asset Identification', 'asset-lending-manager' ),
+	'autocomplete'  => __( 'Search Settings', 'asset-lending-manager' ),
+	'logging'       => __( 'Logging', 'asset-lending-manager' ),
+	'asset'         => __( 'Advanced Settings', 'asset-lending-manager' ),
 );
 
 // Validate active tab.
@@ -808,6 +808,26 @@ $placeholders = array(
 						</td>
 					</tr>
 				</table>
+
+			<h2><?php esc_html_e( 'QR Code', 'asset-lending-manager' ); ?></h2>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Enable QR code search', 'asset-lending-manager' ); ?>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								name="alm_autocomplete_qr_scan_enabled"
+								value="1"
+								<?php checked( $settings->get( 'autocomplete.qr_scan_enabled' ) ); ?>
+							>
+							<?php esc_html_e( 'Show the "Scan QR" button on the asset list page, allowing users to find an asset by scanning its QR code with the device camera.', 'asset-lending-manager' ); ?>
+						</label>
+					</td>
+				</tr>
+			</table>
 
 			<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
 

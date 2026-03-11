@@ -389,10 +389,18 @@
 		width: 100%;
 	}
 
+	/* Search row: input + Scan QR button on the same line */
+	.alm-search-row {
+		display: flex;
+		align-items: stretch;
+		gap: 8px;
+	}
+
 	/* wrapper per input + icona + dropdown */
 	.alm-search-input-wrap {
 		position: relative;
 		flex: 1;
+		min-width: 0;
 	}
 
 	.alm-asset-search-form input[name="s"] {
@@ -1223,7 +1231,18 @@
 	}
 
 	/* Small screens */
-	@media (max-width: 480px) {
+	@media (max-width: 768px) {
+		/* Scan QR button: stacks below the search input */
+		.alm-search-row {
+			display: block;
+		}
+
+		.alm-qr-scan-btn {
+			display: block;
+			width: 100%;
+			margin-top: 8px;
+		}
+
 		.alm-filters-toggle {
 			padding: 8px 12px;
 			font-size: 0.9em;
@@ -1375,4 +1394,58 @@
 		font-family: monospace;
 		text-align: center;
 	}
+}
+
+/* ==========================================================================
+   QR Scanner button and overlay
+   ========================================================================== */
+
+/* Scan QR button in the search row */
+.alm-qr-scan-btn {
+	flex: 0 0 auto;
+	white-space: nowrap;
+}
+
+/* Full-screen scanner overlay */
+.alm-qr-scanner-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.88);
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+}
+
+.alm-qr-scanner-overlay__inner {
+	position: relative;
+	width: 100%;
+	max-width: 480px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+}
+
+.alm-qr-scanner-overlay__video {
+	width: 100%;
+	border-radius: 8px;
+	display: block;
+	background: #000;
+}
+
+.alm-qr-scanner-overlay__status {
+	margin: 0;
+	color: #fff;
+	font-size: 0.95rem;
+	text-align: center;
+}
+
+.alm-qr-scanner-overlay__status--error {
+	color: #ff6b6b;
+}
+
+.alm-qr-scanner-overlay__close {
+	align-self: flex-end;
 }

@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-03-08
+Last update: 2026-03-11
 
 ---
 
@@ -36,6 +36,14 @@ Last update: 2026-03-08
 - **Description:** `send_notification_email()` logs recipient (`to`) and email subject in plaintext via `ALM_Logger::info()`. With `WP_DEBUG` enabled, this can persist personal data and workflow details in server logs.
 - **Expected behavior:** Avoid logging recipient addresses/subjects (or mask them), and keep verbose mail tracing behind an explicit opt-in debug setting.
 - **Notes:** `includes/class-alm-notification-manager.php:382` (attempt log), `includes/class-alm-notification-manager.php:395` (failure log)
+
+### [Medium] QR scanner accepts arbitrary same-origin URLs
+- **Status:** Open
+- **Date:** 2026-03-11
+- **Category:** Security
+- **Description:** `initQrScanner()` validates only `parsed.origin === window.location.origin` and then navigates to the decoded URL. A malicious QR code can therefore force navigation to any same-origin route, not just ALM scan targets, increasing abuse surface for GET endpoints with side effects or sensitive admin routes.
+- **Expected behavior:** Accept only ALM scan URLs (for example, `?alm_scan=...` or a dedicated allowlisted path) and reject all other same-origin URLs.
+- **Notes:** `assets/js/frontend-assets.js:1350-1359` (origin-only check and redirect).
 
 ---
 
@@ -112,6 +120,22 @@ Last update: 2026-03-08
 - **Description:** Backend validation requires assignment reason only when `direct_assign.require_reason` is enabled, but frontend template/JS always mark reason as required and block empty submissions. This creates a config mismatch where operators cannot submit valid backend-allowed requests.
 - **Expected behavior:** Localize the `direct_assign.require_reason` setting to frontend and enforce required reason in UI/JS only when enabled.
 - **Notes:** `includes/class-alm-loan-manager.php:1480-1482` (conditional backend check), `templates/shortcodes/asset-view.php:462-471` (always `required`), `assets/js/frontend-assets.js:346-350` (always blocks empty reason).
+
+### [High] Unowned-assets approver policy is inconsistent across settings, UI, and backend flow
+- **Status:** Open
+- **Date:** 2026-03-11
+- **Category:** Bug
+- **Description:** The setting `loans.approver_policy_for_unowned_assets` exposes options `none`, `operator`, `any_alm_user`, but runtime behavior is inconsistent: submission blocks when policy is `none` (despite UI label "auto-approved"), and policy `any_alm_user` is not honored in approval/rejection permission checks or in request management UI visibility (owner/operator only). This can create dead-end pending requests or impossible approval flows for unowned assets.
+- **Expected behavior:** Implement policy semantics end-to-end (submission, visibility of pending requests, approval/rejection permission checks) and align labels with actual behavior. If `none` means auto-approve, the request should be immediately fulfilled instead of rejected.
+- **Notes:** `admin/alm-settings-page.php:370-376` (policy labels/options), `includes/class-alm-loan-manager.php:168-174` (submission block when `none`), `includes/class-alm-loan-manager.php:385-403` and `926-944` (permission checks ignore policy), `templates/shortcodes/asset-view.php:306-314` and `408` (request management/actions shown only to operator/current owner).
+
+### [Medium] Rejection message max length is hardcoded in frontend modal
+- **Status:** Open
+- **Date:** 2026-03-11
+- **Category:** Bug
+- **Description:** Rejection modal validation in frontend JS is hardcoded to `255` chars (`maxlength`, counter, and guard), while backend validation uses the configurable setting `loans.rejection_message_max_length`. Changing the setting can cause frontend/backend divergence and confusing error flows.
+- **Expected behavior:** Localize `loans.rejection_message_max_length` to frontend and use it consistently in modal attributes, character counter, and client-side validation.
+- **Notes:** `assets/js/frontend-assets.js:874-893` (hardcoded `255`), `includes/class-alm-loan-manager.php:293-303` (settings-driven backend limit).
 
 ### [Medium] Asset state-change endpoint does not enforce source-state constraints
 - **Status:** Open

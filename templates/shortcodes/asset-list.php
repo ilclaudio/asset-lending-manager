@@ -91,6 +91,15 @@ if ( $filter_owner > 0 ) {
 					aria-label="<?php esc_attr_e( 'Search suggestions', 'asset-lending-manager' ); ?>"
 				></div>
 			</div>
+		<?php if ( ! empty( $alm_qr_scan_enabled ) ) : ?>
+			<button
+				type="button"
+				class="alm-button alm-button--secondary alm-qr-scan-btn"
+				aria-label="<?php esc_attr_e( 'Scan QR code to find an asset', 'asset-lending-manager' ); ?>"
+			>
+				<?php esc_html_e( 'Scan QR', 'asset-lending-manager' ); ?>
+			</button>
+		<?php endif; ?>
 		</div>
 
 		<!-- Advanced Filters -->

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-03-10 23:24+0000\n"
+"PO-Revision-Date: 2026-03-11 18:26+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -118,6 +118,10 @@ msgstr "Avanzato"
 #: templates/shortcodes/asset-list.php:99
 msgid "Advanced Filters"
 msgstr "Filtri Avanzati"
+
+#: admin/alm-settings-page.php:36
+msgid "Advanced Settings"
+msgstr "Avanzate"
 
 #: templates/shortcodes/asset-list.php:154
 msgid "All levels"
@@ -268,10 +272,6 @@ msgstr "ID risorsa non corrispondente."
 msgid "Asset ID not found."
 msgstr "ID risorsa non trovato."
 
-#: admin/alm-settings-page.php:36
-msgid "Asset Identification"
-msgstr "Identificazione risorsa"
-
 #: includes/class-alm-loan-manager.php:1958
 msgid "Asset is not in a restorable state."
 msgstr "La risorsa non è in uno stato ripristinabile."
@@ -411,10 +411,6 @@ msgstr "Il motivo dell'assegnamento è obbligatorio."
 msgid "Assignment reason must not exceed %d characters."
 msgstr "Il motivo dell'assegnamento non deve superare i %d caratteri."
 
-#: admin/alm-settings-page.php:34
-msgid "Autocomplete & API"
-msgstr "Autocomplete e API"
-
 #: admin/alm-settings-page.php:533
 msgid "Automatic Cancellations"
 msgstr "Cancellazioni automatiche"
@@ -446,6 +442,10 @@ msgstr "Corpo"
 #: includes/class-alm-installer.php:235
 msgid "Book"
 msgstr "Libro"
+
+#: assets/js/frontend-assets.js
+msgid "Camera access denied. Please allow camera permissions."
+msgstr "Accesso alla fotocamera negato. Controlla i permessi del browser."
 
 #: assets/js/frontend-assets.js:668 assets/js/frontend-assets.js:915
 msgid "Cancel"
@@ -485,6 +485,10 @@ msgstr "Chiudi finestra di dialogo"
 #: templates/shortcodes/asset-view.php:730 assets/js/frontend-assets.js:1258
 msgid "Close message"
 msgstr "Chiudi messaggio"
+
+#: assets/js/frontend-assets.js
+msgid "Close QR scanner"
+msgstr "Chiudi scanner QR"
 
 #: templates/shortcodes/asset-view.php:208
 msgid "Code"
@@ -1427,6 +1431,10 @@ msgstr "Seleziona un tipo di risorsa."
 msgid "Please select a user from the list."
 msgstr "Seleziona un utente dalla lista."
 
+#: assets/js/frontend-assets.js
+msgid "Point the camera at the QR code"
+msgstr "Punta la fotocamera sul QR code"
+
 #: templates/shortcodes/asset-list.php:300
 msgid "Previous page"
 msgstr "Pagina precedente"
@@ -1643,6 +1651,14 @@ msgstr "Ritirato"
 msgid "Save Settings"
 msgstr "Salva impostazioni"
 
+#: templates/shortcodes/asset-list.php
+msgid "Scan QR"
+msgstr "Scansiona QR"
+
+#: templates/shortcodes/asset-list.php
+msgid "Scan QR code to find an asset"
+msgstr "Scansiona QR code per trovare una risorsa"
+
 #: templates/shortcodes/asset-list.php:214
 msgid "Search"
 msgstr "Cerca"
@@ -1666,6 +1682,10 @@ msgstr "Comportamento di ricerca"
 #: templates/shortcodes/asset-view.php:476
 msgid "Search member or operator..."
 msgstr "Cerca socio o operatore..."
+
+#: admin/alm-settings-page.php:34
+msgid "Search Settings"
+msgstr "Ricerca"
 
 #: templates/shortcodes/asset-list.php:91
 msgid "Search suggestions"

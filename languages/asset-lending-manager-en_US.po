@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-03-10 23:24+0000\n"
+"PO-Revision-Date: 2026-03-11 18:26+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -114,6 +114,10 @@ msgstr ""
 #: templates/shortcodes/asset-list.php:99
 msgid "Advanced Filters"
 msgstr ""
+
+#: admin/alm-settings-page.php:36
+msgid "Advanced Settings"
+msgstr "Advanced"
 
 #: templates/shortcodes/asset-list.php:154
 msgid "All levels"
@@ -257,10 +261,6 @@ msgstr ""
 msgid "Asset ID not found."
 msgstr ""
 
-#: admin/alm-settings-page.php:36
-msgid "Asset Identification"
-msgstr ""
-
 #: includes/class-alm-loan-manager.php:1958
 msgid "Asset is not in a restorable state."
 msgstr ""
@@ -400,10 +400,6 @@ msgstr ""
 msgid "Assignment reason must not exceed %d characters."
 msgstr ""
 
-#: admin/alm-settings-page.php:34
-msgid "Autocomplete & API"
-msgstr ""
-
 #: admin/alm-settings-page.php:533
 msgid "Automatic Cancellations"
 msgstr ""
@@ -434,6 +430,10 @@ msgstr ""
 
 #: includes/class-alm-installer.php:235
 msgid "Book"
+msgstr ""
+
+#: assets/js/frontend-assets.js
+msgid "Camera access denied. Please allow camera permissions."
 msgstr ""
 
 #: assets/js/frontend-assets.js:668 assets/js/frontend-assets.js:915
@@ -472,6 +472,10 @@ msgstr ""
 #: templates/shortcodes/asset-view.php:395
 #: templates/shortcodes/asset-view.php:730 assets/js/frontend-assets.js:1258
 msgid "Close message"
+msgstr ""
+
+#: assets/js/frontend-assets.js
+msgid "Close QR scanner"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:208
@@ -1310,6 +1314,10 @@ msgstr ""
 msgid "Please select a user from the list."
 msgstr ""
 
+#: assets/js/frontend-assets.js
+msgid "Point the camera at the QR code"
+msgstr ""
+
 #: templates/shortcodes/asset-list.php:300
 msgid "Previous page"
 msgstr ""
@@ -1525,6 +1533,14 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
+#: templates/shortcodes/asset-list.php
+msgid "Scan QR"
+msgstr ""
+
+#: templates/shortcodes/asset-list.php
+msgid "Scan QR code to find an asset"
+msgstr ""
+
 #: templates/shortcodes/asset-list.php:214
 msgid "Search"
 msgstr ""
@@ -1548,6 +1564,10 @@ msgstr ""
 #: templates/shortcodes/asset-view.php:476
 msgid "Search member or operator..."
 msgstr ""
+
+#: admin/alm-settings-page.php:34
+msgid "Search Settings"
+msgstr "Search"
 
 #: templates/shortcodes/asset-list.php:91
 msgid "Search suggestions"

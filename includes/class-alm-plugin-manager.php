@@ -452,6 +452,7 @@ class ALM_Plugin_Manager {
 			$changes['autocomplete.min_chars']          = min( 10, max( 1, (int) wp_unslash( $_POST['alm_autocomplete_min_chars'] ?? 3 ) ) );
 			$changes['autocomplete.max_results']        = min( 20, max( 1, (int) wp_unslash( $_POST['alm_autocomplete_max_results'] ?? ALM_AUTOCOMPLETE_MAX_RESULTS ) ) );
 			$changes['autocomplete.description_length'] = min( 200, max( 0, (int) wp_unslash( $_POST['alm_autocomplete_description_length'] ?? ALM_AUTOCOMPLETE_DESC_LENGTH ) ) );
+			$changes['autocomplete.qr_scan_enabled']    = isset( $_POST['alm_autocomplete_qr_scan_enabled'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
 				$changes['autocomplete.public_assets_endpoint_enabled'] = isset( $_POST['alm_autocomplete_public_endpoint'] );

@@ -243,6 +243,7 @@ class ALM_Frontend_Manager {
 				'directAssignNonce' => wp_create_nonce( 'alm_direct_assign_nonce' ),
 				'changeStateNonce'  => wp_create_nonce( 'alm_change_state_nonce' ),
 				'restoreStateNonce' => wp_create_nonce( 'alm_restore_state_nonce' ),
+				'qrScanEnabled'     => (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true ),
 			)
 		);
 
@@ -253,6 +254,17 @@ class ALM_Frontend_Manager {
 				ALM_PLUGIN_URL . 'assets/js/vendor/qrcode-generator.js',
 				array(),
 				'1.4.4',
+				true
+			);
+		}
+
+		// Enqueue jsQR library only on asset list pages (used by the QR scanner button).
+		if ( $this->is_asset_list_page() ) {
+			wp_enqueue_script(
+				'alm-jsqr',
+				ALM_PLUGIN_URL . 'assets/js/vendor/jsqr.min.js',
+				array(),
+				'1.4.0',
 				true
 			);
 		}
@@ -578,6 +590,7 @@ class ALM_Frontend_Manager {
 		wp_reset_postdata();
 		$alm_current_search       = $search_term;
 		$alm_default_filters_open = (bool) $this->settings->get( 'frontend.default_filters_open', false );
+		$alm_qr_scan_enabled      = (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true );
 		include ALM_PLUGIN_DIR . 'templates/shortcodes/asset-list.php';
 	}
 
@@ -603,6 +616,22 @@ class ALM_Frontend_Manager {
 		}
 		wp_safe_redirect( home_url( '/' ) );
 		exit;
+	}
+
+	/**
+	 * Check if the current page shows the asset list.
+	 *
+	 * @return bool
+	 */
+	private function is_asset_list_page() {
+		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) ) {
+			return true;
+		}
+		global $post;
+		if ( $post && has_shortcode( $post->post_content, 'alm_asset_list' ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

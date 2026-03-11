@@ -259,7 +259,7 @@ msgid "Asset ID not found."
 msgstr ""
 
 #: admin/alm-settings-page.php:36
-msgid "Asset Identification"
+msgid "Advanced Settings"
 msgstr ""
 
 #: includes/class-alm-loan-manager.php:1958
@@ -402,7 +402,7 @@ msgid "Assignment reason must not exceed %d characters."
 msgstr ""
 
 #: admin/alm-settings-page.php:34
-msgid "Autocomplete & API"
+msgid "Search Settings"
 msgstr ""
 
 #: admin/alm-settings-page.php:533
@@ -1342,6 +1342,26 @@ msgstr ""
 
 #: templates/shortcodes/asset-view.php:225
 msgid "QR code for this asset"
+msgstr ""
+
+#: templates/shortcodes/asset-list.php
+msgid "Scan QR code to find an asset"
+msgstr ""
+
+#: templates/shortcodes/asset-list.php
+msgid "Scan QR"
+msgstr ""
+
+#: assets/js/frontend-assets.js
+msgid "Point the camera at the QR code"
+msgstr ""
+
+#: assets/js/frontend-assets.js
+msgid "Close QR scanner"
+msgstr ""
+
+#: assets/js/frontend-assets.js
+msgid "Camera access denied. Please allow camera permissions."
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:143

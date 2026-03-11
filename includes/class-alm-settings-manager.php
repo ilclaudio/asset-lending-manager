@@ -103,6 +103,7 @@ class ALM_Settings_Manager {
 				'max_results'                    => ALM_AUTOCOMPLETE_MAX_RESULTS,
 				'description_length'             => ALM_AUTOCOMPLETE_DESC_LENGTH,
 				'public_assets_endpoint_enabled' => true,
+				'qr_scan_enabled'                => true,
 			),
 			'logging'       => array(
 				'enabled'            => false,
