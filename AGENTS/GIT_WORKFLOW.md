@@ -32,6 +32,9 @@ Examples:
 - Run `npm run lint:php` when possible.
 - Do not commit secrets, API keys, or `.env` files.
 - Do not include unrelated changes in the same commit.
+- Automatic secret scan is enforced by `.githooks/pre-commit`.
+- Install once per clone: `git config core.hooksPath .githooks`.
+- Manual fallback: `SETUP/check-staged-secrets.sh`.
 
 ## Pull Requests
 
