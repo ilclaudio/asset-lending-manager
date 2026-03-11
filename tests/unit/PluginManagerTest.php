@@ -41,5 +41,4 @@ class Plugin_Manager_Test extends TestCase {
 		$this->expectException( Exception::class );
 		unserialize( serialize( $instance ) ); // Unserialization should throw an exception.
 	}
-
 }

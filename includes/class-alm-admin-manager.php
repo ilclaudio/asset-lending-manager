@@ -67,7 +67,7 @@ class ALM_Admin_Manager {
 	 * Remove menus for restricted users.
 	 *
 	 * @return void
-	*/
+	 */
 	public function remove_menus() {
 		if ( $this->is_restricted_user() ) {
 			remove_menu_page( 'index.php' ); // Dashboard.
@@ -171,5 +171,4 @@ class ALM_Admin_Manager {
 		}
 		return false;
 	}
-
 }

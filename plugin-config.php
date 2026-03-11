@@ -133,10 +133,10 @@ function alm_get_email_templates() {
  */
 function alm_get_loan_status_labels() {
 	return array(
-		'pending'       => __( 'Pending', 'asset-lending-manager' ),
-		'approved'      => __( 'Approved', 'asset-lending-manager' ),
-		'rejected'      => __( 'Rejected', 'asset-lending-manager' ),
-		'canceled'      => __( 'Canceled', 'asset-lending-manager' ),
+		'pending'        => __( 'Pending', 'asset-lending-manager' ),
+		'approved'       => __( 'Approved', 'asset-lending-manager' ),
+		'rejected'       => __( 'Rejected', 'asset-lending-manager' ),
+		'canceled'       => __( 'Canceled', 'asset-lending-manager' ),
 		'direct_assign'  => __( 'Direct assignment', 'asset-lending-manager' ),
 		'to_maintenance' => __( 'Set to maintenance', 'asset-lending-manager' ),
 		'to_retired'     => __( 'Set to retired', 'asset-lending-manager' ),

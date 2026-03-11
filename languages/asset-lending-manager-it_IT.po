@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-03-09 22:59+0000\n"
+"PO-Revision-Date: 2026-03-10 23:24+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -15,12 +15,12 @@ msgstr ""
 "X-Loco-Version: 2.8.2; wp-6.9.1; php-8.4.10\n"
 "X-Domain: asset-lending-manager"
 
-#: templates/shortcodes/asset-view.php:172
+#: templates/shortcodes/asset-view.php:177
 msgid "(opens in new tab)"
 msgstr "(si apre in una nuova scheda)"
 
 #. %s: current owner display name
-#: templates/shortcodes/asset-view.php:513
+#: templates/shortcodes/asset-view.php:538
 #, php-format
 msgid ""
 "<strong>Warning:</strong> this asset is currently on loan to %s. Changing "
@@ -76,8 +76,8 @@ msgstr "Accessorio"
 msgid "ACF is not available. Cannot update kit components."
 msgstr "ACF non è disponibile. Impossibile aggiornare i componenti del kit."
 
-#: templates/shortcodes/asset-view.php:333
-#: templates/shortcodes/asset-view.php:382
+#: templates/shortcodes/asset-view.php:358
+#: templates/shortcodes/asset-view.php:407
 msgid "Actions"
 msgstr "Azioni"
 
@@ -94,7 +94,7 @@ msgstr "Aggiungi nuova"
 msgid "Add New Asset"
 msgstr "Aggiungi nuova risorsa"
 
-#: templates/shortcodes/asset-view.php:134
+#: templates/shortcodes/asset-view.php:139
 msgid "Additional fields"
 msgstr "Campi aggiuntivi"
 
@@ -187,7 +187,7 @@ msgid "An error occurred while loading default terms."
 msgstr ""
 "Si è verificato un errore durante il caricamento dei termini predefiniti."
 
-#: templates/shortcodes/asset-view.php:509
+#: templates/shortcodes/asset-view.php:534
 msgid "an unknown user"
 msgstr "un utente sconosciuto"
 
@@ -203,20 +203,20 @@ msgstr "Qualsiasi operatore"
 msgid "API Access"
 msgstr "Accesso API"
 
-#: assets/js/frontend-assets.js:777
+#: assets/js/frontend-assets.js:778
 msgid "Approval failed. Please try again."
 msgstr "Approvazione non riuscita. Riprova."
 
-#: assets/js/frontend-assets.js:794
+#: assets/js/frontend-assets.js:795
 msgid "Approval request failed. Please try again."
 msgstr "Richiesta di approvazione non riuscita. Riprova."
 
-#: templates/shortcodes/asset-view.php:392
+#: templates/shortcodes/asset-view.php:417
 msgid "Approve"
 msgstr "Approva"
 
 #. %s: loan requester display name.
-#: templates/shortcodes/asset-view.php:351
+#: templates/shortcodes/asset-view.php:376
 #, php-format
 msgid "Approve request from %s"
 msgstr "Approva la richiesta di %s"
@@ -233,11 +233,11 @@ msgstr "Approvatore per risorse senza proprietario"
 msgid "Approver Policy"
 msgstr "Politica di approvazione"
 
-#: assets/js/frontend-assets.js:740
+#: assets/js/frontend-assets.js:741
 msgid "Approving..."
 msgstr "In approvazione..."
 
-#: assets/js/frontend-assets.js:626
+#: assets/js/frontend-assets.js:627
 msgid "Are you sure you want to approve this loan request?"
 msgstr "Sei sicuro di voler approvare questa richiesta di prestito?"
 
@@ -250,7 +250,7 @@ msgid "Asset archive page"
 msgstr "Pagina archivio risorse"
 
 #: includes/class-alm-loan-manager.php:1570
-#: includes/class-alm-loan-manager.php:1656 assets/js/frontend-assets.js:1142
+#: includes/class-alm-loan-manager.php:1656 assets/js/frontend-assets.js:1143
 msgid "Asset assigned successfully."
 msgstr "Risorsa assegnata con successo."
 
@@ -263,8 +263,8 @@ msgstr "Codice risorsa"
 msgid "Asset ID mismatch."
 msgstr "ID risorsa non corrispondente."
 
-#: assets/js/frontend-assets.js:221 assets/js/frontend-assets.js:337
-#: assets/js/frontend-assets.js:450 assets/js/frontend-assets.js:530
+#: assets/js/frontend-assets.js:222 assets/js/frontend-assets.js:338
+#: assets/js/frontend-assets.js:451 assets/js/frontend-assets.js:531
 msgid "Asset ID not found."
 msgstr "ID risorsa non trovato."
 
@@ -303,8 +303,8 @@ msgstr "Paginazione della lista delle risorse"
 msgid "Asset name is required."
 msgstr "Il nome della risorsa e obbligatorio."
 
-#: includes/class-alm-frontend-manager.php:389
-#: includes/class-alm-frontend-manager.php:582
+#: includes/class-alm-frontend-manager.php:402
+#: includes/class-alm-frontend-manager.php:635
 #: includes/class-alm-loan-manager.php:144
 #: includes/class-alm-loan-manager.php:1133
 #: includes/class-alm-loan-manager.php:1525
@@ -313,11 +313,11 @@ msgstr "Il nome della risorsa e obbligatorio."
 msgid "Asset not found."
 msgstr "Risorsa non trovata."
 
-#: templates/shortcodes/asset-view.php:55
+#: templates/shortcodes/asset-view.php:60
 msgid "Asset overview"
 msgstr "Anteprima della risorsa"
 
-#: includes/class-alm-loan-manager.php:2055 assets/js/frontend-assets.js:1150
+#: includes/class-alm-loan-manager.php:2055 assets/js/frontend-assets.js:1151
 msgid "Asset restored to available successfully."
 msgstr "Risorsa ripristinata a disponibile con successo."
 
@@ -327,12 +327,12 @@ msgstr "Risorsa ripristinata a disponibile con successo."
 msgid "Asset State"
 msgstr "Stato risorsa"
 
-#: templates/shortcodes/asset-view.php:493
-#: templates/shortcodes/asset-view.php:497
+#: templates/shortcodes/asset-view.php:518
+#: templates/shortcodes/asset-view.php:522
 msgid "Asset state management"
 msgstr "Gestione stato risorsa"
 
-#: includes/class-alm-loan-manager.php:1819 assets/js/frontend-assets.js:1146
+#: includes/class-alm-loan-manager.php:1819 assets/js/frontend-assets.js:1147
 msgid "Asset state updated successfully."
 msgstr "Stato della risorsa aggiornato con successo."
 
@@ -350,7 +350,7 @@ msgstr "Struttura risorsa"
 msgid "Asset Structures"
 msgstr "Strutture risorsa"
 
-#: templates/shortcodes/asset-view.php:84
+#: templates/shortcodes/asset-view.php:89
 msgid "Asset taxonomies"
 msgstr "Tassonomie della risorsa"
 
@@ -382,11 +382,11 @@ msgstr "Risorse trovate: %d"
 msgid "Assets per page"
 msgstr "Risorse per pagina"
 
-#: templates/shortcodes/asset-view.php:481
+#: templates/shortcodes/asset-view.php:506
 msgid "Assign asset"
 msgstr "Assegna risorsa"
 
-#: templates/shortcodes/asset-view.php:443
+#: templates/shortcodes/asset-view.php:468
 msgid "Assign to user:"
 msgstr "Assegna a utente:"
 
@@ -394,11 +394,11 @@ msgstr "Assegna a utente:"
 msgid "Assignee user not found."
 msgstr "Utente destinatario non trovato."
 
-#: assets/js/frontend-assets.js:367
+#: assets/js/frontend-assets.js:368
 msgid "Assigning..."
 msgstr "Assegnazione in corso..."
 
-#: assets/js/frontend-assets.js:391
+#: assets/js/frontend-assets.js:392
 msgid "Assignment failed. Please try again."
 msgstr "Assegnazione non riuscita. Riprova."
 
@@ -447,7 +447,7 @@ msgstr "Corpo"
 msgid "Book"
 msgstr "Libro"
 
-#: assets/js/frontend-assets.js:667 assets/js/frontend-assets.js:914
+#: assets/js/frontend-assets.js:668 assets/js/frontend-assets.js:915
 msgid "Cancel"
 msgstr "Annulla"
 
@@ -472,21 +472,21 @@ msgstr ""
 msgid "Cannot assign an asset that is in maintenance or retired state."
 msgstr "Impossibile assegnare una risorsa in stato di manutenzione o ritirata."
 
-#: templates/shortcodes/asset-view.php:646
-#: templates/shortcodes/asset-view.php:683
+#: templates/shortcodes/asset-view.php:671
+#: templates/shortcodes/asset-view.php:708
 msgid "Changed by"
 msgstr "Eseguito da"
 
-#: assets/js/frontend-assets.js:854
+#: assets/js/frontend-assets.js:855
 msgid "Close dialog"
 msgstr "Chiudi finestra di dialogo"
 
-#: templates/shortcodes/asset-view.php:370
-#: templates/shortcodes/asset-view.php:705 assets/js/frontend-assets.js:1188
+#: templates/shortcodes/asset-view.php:395
+#: templates/shortcodes/asset-view.php:730 assets/js/frontend-assets.js:1258
 msgid "Close message"
 msgstr "Chiudi messaggio"
 
-#: templates/shortcodes/asset-view.php:203
+#: templates/shortcodes/asset-view.php:208
 msgid "Code"
 msgstr "Codice"
 
@@ -523,11 +523,11 @@ msgstr ""
 msgid "Components"
 msgstr "Componenti"
 
-#: assets/js/frontend-assets.js:672
+#: assets/js/frontend-assets.js:673
 msgid "Confirm"
 msgstr "Conferma"
 
-#: assets/js/frontend-assets.js:625
+#: assets/js/frontend-assets.js:626
 msgid "Confirm Approval"
 msgstr "Conferma approvazione"
 
@@ -536,11 +536,11 @@ msgstr "Conferma approvazione"
 msgid "Cost"
 msgstr "Costo"
 
-#: assets/js/frontend-assets.js:439
+#: assets/js/frontend-assets.js:440
 msgid "Could not determine target state."
 msgstr "Impossibile determinare lo stato di destinazione."
 
-#: templates/shortcodes/asset-view.php:150
+#: templates/shortcodes/asset-view.php:155
 msgid "Current owner"
 msgstr "Proprietario corrente"
 
@@ -554,8 +554,8 @@ msgstr ""
 "tra parentesi graffe vengono sostituiti al momento dell'invio. Lascia un "
 "campo vuoto per usare il testo predefinito."
 
-#: templates/shortcodes/asset-view.php:332
-#: templates/shortcodes/asset-view.php:379
+#: templates/shortcodes/asset-view.php:357
+#: templates/shortcodes/asset-view.php:404
 msgid "Date"
 msgstr "Data"
 
@@ -567,11 +567,11 @@ msgstr "Debug — tutti gli eventi"
 msgid "Default terms loaded successfully."
 msgstr "Termini predefiniti caricati correttamente."
 
-#: templates/shortcodes/asset-view.php:572
+#: templates/shortcodes/asset-view.php:597
 msgid "Describe the reason for restoring this asset..."
 msgstr "Descrivi il motivo del ripristino di questa risorsa..."
 
-#: templates/shortcodes/asset-view.php:532
+#: templates/shortcodes/asset-view.php:557
 msgid "Describe the reason for this state change..."
 msgstr "Descrivi il motivo di questo cambio di stato..."
 
@@ -592,8 +592,8 @@ msgstr "L'assegnazione diretta delle risorse è attualmente disabilitata."
 msgid "Direct Assignment"
 msgstr "Assegnamento diretto"
 
-#: plugin-config.php:140 templates/shortcodes/asset-view.php:427
-#: templates/shortcodes/asset-view.php:431
+#: plugin-config.php:140 templates/shortcodes/asset-view.php:452
+#: templates/shortcodes/asset-view.php:456
 msgid "Direct assignment"
 msgstr "Assegnamento diretto"
 
@@ -649,7 +649,7 @@ msgstr "Abilita notifiche"
 msgid "Error — errors only"
 msgstr "Error — solo errori"
 
-#: templates/shortcodes/asset-view.php:471
+#: templates/shortcodes/asset-view.php:496
 msgid "Explain the reason for this assignment..."
 msgstr "Spiega il motivo di questo assegnamento..."
 
@@ -658,11 +658,11 @@ msgstr "Spiega il motivo di questo assegnamento..."
 msgid "External code"
 msgstr "Codice esterno"
 
-#: assets/js/frontend-assets.js:1136
+#: assets/js/frontend-assets.js:1137
 msgid "Failed to approve loan request. Please try again."
 msgstr "Impossibile approvare la richiesta di prestito. Riprova."
 
-#: assets/js/frontend-assets.js:1144
+#: assets/js/frontend-assets.js:1145
 msgid "Failed to assign asset. Please try again."
 msgstr "Impossibile assegnare la risorsa. Riprova."
 
@@ -706,19 +706,19 @@ msgstr "Impossibile registrare la voce nello storico."
 msgid "Failed to reject loan request."
 msgstr "Impossibile rifiutare la richiesta di prestito."
 
-#: assets/js/frontend-assets.js:1132
+#: assets/js/frontend-assets.js:1133
 msgid "Failed to reject loan request. Please try again."
 msgstr "Impossibile rifiutare la richiesta di prestito. Riprova."
 
-#: assets/js/frontend-assets.js:1036
+#: assets/js/frontend-assets.js:1037
 msgid "Failed to reject request. Please try again."
 msgstr "Impossibile rifiutare la richiesta. Riprova."
 
-#: assets/js/frontend-assets.js:1152
+#: assets/js/frontend-assets.js:1153
 msgid "Failed to restore asset. Please try again."
 msgstr "Ripristino della risorsa non riuscito. Riprova."
 
-#: assets/js/frontend-assets.js:1140
+#: assets/js/frontend-assets.js:1141
 msgid "Failed to send loan request. Please try again."
 msgstr "Impossibile inviare la richiesta di prestito. Riprova."
 
@@ -734,7 +734,7 @@ msgstr "Impossibile impostare il proprietario per la risorsa ID %d."
 msgid "Failed to set state for asset ID %1$d: %2$s"
 msgstr "Impossibile impostare lo stato per la risorsa ID %d: %s"
 
-#: assets/js/frontend-assets.js:1148
+#: assets/js/frontend-assets.js:1149
 msgid "Failed to update asset state. Please try again."
 msgstr "Aggiornamento dello stato della risorsa non riuscito. Riprova."
 
@@ -762,7 +762,7 @@ msgstr "Nome mittente"
 msgid "Frontend"
 msgstr "Frontend"
 
-#: templates/shortcodes/asset-view.php:126
+#: templates/shortcodes/asset-view.php:131
 msgid "Full description"
 msgstr "Descrizione completa"
 
@@ -971,7 +971,7 @@ msgstr "Kit"
 
 #: templates/shortcodes/asset-list.php:152
 #: templates/shortcodes/asset-list.php:272
-#: templates/shortcodes/asset-view.php:104
+#: templates/shortcodes/asset-view.php:109
 msgid "Level"
 msgstr "Livello"
 
@@ -979,8 +979,8 @@ msgstr "Livello"
 msgid "Loan confirmation"
 msgstr "Conferma prestito"
 
-#: templates/shortcodes/asset-view.php:592
-#: templates/shortcodes/asset-view.php:596
+#: templates/shortcodes/asset-view.php:617
+#: templates/shortcodes/asset-view.php:621
 msgid "Loan history"
 msgstr "Storico dei prestiti"
 
@@ -988,11 +988,11 @@ msgstr "Storico dei prestiti"
 msgid "Loan Limits"
 msgstr "Limiti prestiti"
 
-#: templates/shortcodes/asset-view.php:219
+#: templates/shortcodes/asset-view.php:244
 msgid "Loan request"
 msgstr "Richiesta di prestito"
 
-#: includes/class-alm-loan-manager.php:1199 assets/js/frontend-assets.js:1134
+#: includes/class-alm-loan-manager.php:1199 assets/js/frontend-assets.js:1135
 msgid "Loan request approved successfully."
 msgstr "Richiesta di prestito approvata con successo."
 
@@ -1012,7 +1012,7 @@ msgstr "Decisione sulla richiesta di prestito"
 msgid "Loan request not found."
 msgstr "Richiesta di prestito non trovata."
 
-#: includes/class-alm-loan-manager.php:373 assets/js/frontend-assets.js:1130
+#: includes/class-alm-loan-manager.php:373 assets/js/frontend-assets.js:1131
 msgid "Loan request rejected successfully."
 msgstr "Richiesta di prestito rifiutata con successo."
 
@@ -1020,7 +1020,7 @@ msgstr "Richiesta di prestito rifiutata con successo."
 msgid "Loan request sent successfully!"
 msgstr "Richiesta di prestito inviata con successo!"
 
-#: assets/js/frontend-assets.js:1138
+#: assets/js/frontend-assets.js:1139
 msgid "Loan request sent successfully."
 msgstr "Richiesta di prestito inviata con successo."
 
@@ -1040,8 +1040,8 @@ msgstr "Richiesta di prestito — al richiedente"
 msgid "Loan Requests"
 msgstr "Richieste di prestito"
 
-#: templates/shortcodes/asset-view.php:311
-#: templates/shortcodes/asset-view.php:315
+#: templates/shortcodes/asset-view.php:336
+#: templates/shortcodes/asset-view.php:340
 msgid "Loan requests"
 msgstr "Richieste di prestito"
 
@@ -1096,7 +1096,7 @@ msgstr "Pagina principale del plugin"
 msgid "Maintenance"
 msgstr "In manutenzione"
 
-#: templates/shortcodes/asset-view.php:579
+#: templates/shortcodes/asset-view.php:604
 msgid "Make available"
 msgstr "Rendi disponibile"
 
@@ -1185,14 +1185,14 @@ msgstr ""
 msgid "Membership kit"
 msgstr "Kit di appartenenza"
 
-#: templates/shortcodes/asset-view.php:331
-#: templates/shortcodes/asset-view.php:359
-#: templates/shortcodes/asset-view.php:649
-#: templates/shortcodes/asset-view.php:694
+#: templates/shortcodes/asset-view.php:356
+#: templates/shortcodes/asset-view.php:384
+#: templates/shortcodes/asset-view.php:674
+#: templates/shortcodes/asset-view.php:719
 msgid "Message"
 msgstr "Messaggio"
 
-#: templates/shortcodes/asset-view.php:244
+#: templates/shortcodes/asset-view.php:269
 msgid "Message for the current owner:"
 msgstr "Messaggio per l'attuale proprietario:"
 
@@ -1226,7 +1226,7 @@ msgstr "Nuova risorsa"
 msgid "Next page"
 msgstr "Pagina successiva"
 
-#: templates/shortcodes/asset-view.php:211
+#: templates/shortcodes/asset-view.php:236
 msgid "No additional details available."
 msgstr "Non sono disponibili ulteriori dettagli."
 
@@ -1242,11 +1242,11 @@ msgstr "Nessuna risorsa nel cestino"
 msgid "No assets found."
 msgstr "Nessuna risorsa trovata."
 
-#: templates/shortcodes/asset-view.php:720
+#: templates/shortcodes/asset-view.php:745
 msgid "No loan history available for this asset."
 msgstr "Nessuno storico prestiti disponibile per questa risorsa."
 
-#: templates/shortcodes/asset-view.php:414
+#: templates/shortcodes/asset-view.php:439
 msgid "No pending requests for this asset."
 msgstr "Nessuna richiesta in sospeso per questa risorsa."
 
@@ -1260,7 +1260,7 @@ msgstr "Nessun risultato per \"%s\"."
 msgid "None — requests are auto-approved"
 msgstr "Nessuno — le richieste vengono approvate automaticamente"
 
-#: templates/shortcodes/asset-view.php:635
+#: templates/shortcodes/asset-view.php:660
 msgid "Note:"
 msgstr "Nota:"
 
@@ -1269,8 +1269,8 @@ msgstr "Nota:"
 msgid "Notes"
 msgstr "Note"
 
-#: templates/shortcodes/asset-view.php:525
-#: templates/shortcodes/asset-view.php:565
+#: templates/shortcodes/asset-view.php:550
+#: templates/shortcodes/asset-view.php:590
 msgid "Notes (optional):"
 msgstr "Note (facoltative):"
 
@@ -1327,12 +1327,12 @@ msgstr ""
 "Strumento open-source per gestire risorse fisiche condivise e flussi di "
 "prestito per"
 
-#: templates/shortcodes/asset-view.php:141
-#: templates/shortcodes/asset-view.php:226
-#: templates/shortcodes/asset-view.php:318
-#: templates/shortcodes/asset-view.php:434
-#: templates/shortcodes/asset-view.php:500
-#: templates/shortcodes/asset-view.php:599
+#: templates/shortcodes/asset-view.php:146
+#: templates/shortcodes/asset-view.php:251
+#: templates/shortcodes/asset-view.php:343
+#: templates/shortcodes/asset-view.php:459
+#: templates/shortcodes/asset-view.php:525
+#: templates/shortcodes/asset-view.php:624
 msgid "Open/Close"
 msgstr "Apri/chiudi"
 
@@ -1391,19 +1391,19 @@ msgstr ""
 msgid "Pending"
 msgstr "In attesa"
 
-#: templates/shortcodes/asset-view.php:326
+#: templates/shortcodes/asset-view.php:351
 msgid "Pending loan requests for this asset"
 msgstr "Richieste di prestito in sospeso per questo asset"
 
-#: assets/js/frontend-assets.js:227
+#: assets/js/frontend-assets.js:228
 msgid "Please enter a message."
 msgstr "Inserisci un messaggio."
 
-#: assets/js/frontend-assets.js:985
+#: assets/js/frontend-assets.js:986
 msgid "Please enter a rejection reason."
 msgstr "Inserisci un motivo di rifiuto."
 
-#: assets/js/frontend-assets.js:349
+#: assets/js/frontend-assets.js:350
 msgid "Please enter the assignment reason."
 msgstr "Inserisci il motivo dell'assegnazione."
 
@@ -1415,7 +1415,7 @@ msgstr ""
 "Correggi i seguenti errori:\n"
 "\n"
 
-#: assets/js/frontend-assets.js:880
+#: assets/js/frontend-assets.js:881
 msgid "Please provide a reason for rejecting this loan request..."
 msgstr "Fornisci un motivo per rifiutare questa richiesta di prestito..."
 
@@ -1423,7 +1423,7 @@ msgstr "Fornisci un motivo per rifiutare questa richiesta di prestito..."
 msgid "Please select a asset type."
 msgstr "Seleziona un tipo di risorsa."
 
-#: assets/js/frontend-assets.js:343
+#: assets/js/frontend-assets.js:344
 msgid "Please select a user from the list."
 msgstr "Seleziona un utente dalla lista."
 
@@ -1431,11 +1431,15 @@ msgstr "Seleziona un utente dalla lista."
 msgid "Previous page"
 msgstr "Pagina precedente"
 
+#: templates/shortcodes/asset-view.php:229
+msgid "Print QR code"
+msgstr "Stampa QR code"
+
 #: admin/alm-settings-page.php:867
 msgid "Privacy"
 msgstr "Privacy"
 
-#: assets/js/frontend-assets.js:712 assets/js/frontend-assets.js:1003
+#: assets/js/frontend-assets.js:713 assets/js/frontend-assets.js:1004
 msgid "Processing..."
 msgstr "Elaborazione in corso..."
 
@@ -1448,26 +1452,34 @@ msgstr "Endpoint di ricerca risorse pubblico"
 msgid "Purchase date"
 msgstr "Data acquisto"
 
-#: templates/shortcodes/asset-view.php:138
-#: templates/shortcodes/asset-view.php:367
-#: templates/shortcodes/asset-view.php:702
+#: templates/shortcodes/asset-view.php:217
+msgid "QR code"
+msgstr "QR code"
+
+#: templates/shortcodes/asset-view.php:225
+msgid "QR code for this asset"
+msgstr "Codice QR per questa risorsa"
+
+#: templates/shortcodes/asset-view.php:143
+#: templates/shortcodes/asset-view.php:392
+#: templates/shortcodes/asset-view.php:727
 msgid "Read details"
 msgstr "Leggi i dettagli"
 
-#: assets/js/frontend-assets.js:354
+#: assets/js/frontend-assets.js:355
 msgid "Reason must not exceed 500 characters."
 msgstr "Il motivo non deve superare i 500 caratteri."
 
-#: templates/shortcodes/asset-view.php:464
+#: templates/shortcodes/asset-view.php:489
 msgid "Reason:"
 msgstr "Motivo:"
 
-#: templates/shortcodes/asset-view.php:641
+#: templates/shortcodes/asset-view.php:666
 msgid "Recent loan history entries for this asset"
 msgstr "Voci recenti della cronologia dei prestiti per questa risorsa"
 
-#: templates/shortcodes/asset-view.php:645
-#: templates/shortcodes/asset-view.php:680
+#: templates/shortcodes/asset-view.php:670
+#: templates/shortcodes/asset-view.php:705
 msgid "Recipient"
 msgstr "Destinatario"
 
@@ -1483,20 +1495,20 @@ msgstr "Oscura nomi utente e indirizzi email nelle voci del log"
 msgid "Refractor"
 msgstr "Rifrattore"
 
-#: templates/shortcodes/asset-view.php:402
+#: templates/shortcodes/asset-view.php:427
 msgid "Reject"
 msgstr "Rifiuta"
 
-#: assets/js/frontend-assets.js:850
+#: assets/js/frontend-assets.js:851
 msgid "Reject Loan Request"
 msgstr "Rifiuta richiesta di prestito"
 
-#: assets/js/frontend-assets.js:922
+#: assets/js/frontend-assets.js:923
 msgid "Reject Request"
 msgstr "Rifiuta richiesta"
 
 #. %s: loan requester display name.
-#: templates/shortcodes/asset-view.php:353
+#: templates/shortcodes/asset-view.php:378
 #, php-format
 msgid "Reject request from %s"
 msgstr "Rifiuta la richiesta di %s"
@@ -1518,11 +1530,11 @@ msgstr "Lunghezza massima messaggio di rifiuto"
 msgid "Rejection message must not exceed %d characters."
 msgstr "Il messaggio di rifiuto non deve superare i %d caratteri."
 
-#: assets/js/frontend-assets.js:872
+#: assets/js/frontend-assets.js:873
 msgid "Rejection reason (required, max 255 characters):"
 msgstr "Motivo del rifiuto (obbligatorio, max 255 caratteri):"
 
-#: assets/js/frontend-assets.js:990
+#: assets/js/frontend-assets.js:991
 msgid "Rejection reason must not exceed 255 characters."
 msgstr "Il motivo del rifiuto non deve superare i 255 caratteri."
 
@@ -1553,14 +1565,14 @@ msgstr "Richiesta annullata: risorsa assegnata direttamente dall'operatore."
 msgid "Request canceled: component assigned as part of kit \"%s\"."
 msgstr "Richiesta annullata: componente assegnato come parte del kit \"%s\"."
 
-#: templates/shortcodes/asset-view.php:647
-#: templates/shortcodes/asset-view.php:686
+#: templates/shortcodes/asset-view.php:672
+#: templates/shortcodes/asset-view.php:711
 msgid "Request Date"
 msgstr "Data richiesta"
 
-#: assets/js/frontend-assets.js:280 assets/js/frontend-assets.js:290
-#: assets/js/frontend-assets.js:398 assets/js/frontend-assets.js:484
-#: assets/js/frontend-assets.js:563 assets/js/frontend-assets.js:1046
+#: assets/js/frontend-assets.js:281 assets/js/frontend-assets.js:291
+#: assets/js/frontend-assets.js:399 assets/js/frontend-assets.js:485
+#: assets/js/frontend-assets.js:564 assets/js/frontend-assets.js:1047
 msgid "Request failed. Please try again."
 msgstr "Richiesta non riuscita. Riprova."
 
@@ -1569,7 +1581,7 @@ msgstr "Richiesta non riuscita. Riprova."
 msgid "Request is not pending."
 msgstr "La richiesta non è in sospeso."
 
-#: templates/shortcodes/asset-view.php:223
+#: templates/shortcodes/asset-view.php:248
 msgid "Request loan"
 msgstr "Richiedi prestito"
 
@@ -1586,7 +1598,7 @@ msgstr "Lunghezza massima messaggio di richiesta"
 msgid "Request message must not exceed %d characters."
 msgstr "Il messaggio della richiesta non deve superare i %d caratteri."
 
-#: assets/js/frontend-assets.js:233
+#: assets/js/frontend-assets.js:234
 msgid "Request message must not exceed 500 characters."
 msgstr "Il messaggio della richiesta non deve superare i 500 caratteri."
 
@@ -1594,8 +1606,8 @@ msgstr "Il messaggio della richiesta non deve superare i 500 caratteri."
 msgid "Request rejected"
 msgstr "Richiesta rifiutata"
 
-#: templates/shortcodes/asset-view.php:330
-#: templates/shortcodes/asset-view.php:356
+#: templates/shortcodes/asset-view.php:355
+#: templates/shortcodes/asset-view.php:381
 msgid "Requester"
 msgstr "Richiedente"
 
@@ -1607,7 +1619,7 @@ msgstr "Richiedi motivo"
 msgid "Reset Filters"
 msgstr "Rimuovi Filtri"
 
-#: assets/js/frontend-assets.js:554
+#: assets/js/frontend-assets.js:555
 msgid "Restore failed. Please try again."
 msgstr "Ripristino non riuscito. Riprova."
 
@@ -1615,7 +1627,7 @@ msgstr "Ripristino non riuscito. Riprova."
 msgid "Restored to available"
 msgstr "Ripristinata a disponibile"
 
-#: assets/js/frontend-assets.js:537
+#: assets/js/frontend-assets.js:538
 msgid "Restoring..."
 msgstr "Ripristino in corso..."
 
@@ -1651,7 +1663,7 @@ msgstr "Cerca le risorse..."
 msgid "Search Behaviour"
 msgstr "Comportamento di ricerca"
 
-#: templates/shortcodes/asset-view.php:451
+#: templates/shortcodes/asset-view.php:476
 msgid "Search member or operator..."
 msgstr "Cerca socio o operatore..."
 
@@ -1663,9 +1675,9 @@ msgstr "Suggerimenti di ricerca"
 msgid "Search user..."
 msgstr "Cerca l'utente..."
 
-#: assets/js/frontend-assets.js:254 assets/js/frontend-assets.js:360
-#: assets/js/frontend-assets.js:444 assets/js/frontend-assets.js:524
-#: assets/js/frontend-assets.js:733 assets/js/frontend-assets.js:996
+#: assets/js/frontend-assets.js:255 assets/js/frontend-assets.js:361
+#: assets/js/frontend-assets.js:445 assets/js/frontend-assets.js:525
+#: assets/js/frontend-assets.js:734 assets/js/frontend-assets.js:997
 msgid "Security token not found. Please reload the page."
 msgstr "Token di sicurezza non trovato. Ricarica la pagina."
 
@@ -1681,7 +1693,7 @@ msgstr ""
 msgid "Send email notifications"
 msgstr "Invia notifiche email"
 
-#: templates/shortcodes/asset-view.php:260
+#: templates/shortcodes/asset-view.php:285
 msgid "Send request"
 msgstr "Invia richiesta"
 
@@ -1701,7 +1713,7 @@ msgstr ""
 "Nome del mittente mostrato nelle email in uscita. Lascia vuoto per usare il "
 "nome del sito."
 
-#: assets/js/frontend-assets.js:240
+#: assets/js/frontend-assets.js:241
 msgid "Sending..."
 msgstr "Invio in corso..."
 
@@ -1710,11 +1722,11 @@ msgstr "Invio in corso..."
 msgid "Serial number"
 msgstr "Numero seriale"
 
-#: plugin-config.php:141 templates/shortcodes/asset-view.php:539
+#: plugin-config.php:141 templates/shortcodes/asset-view.php:564
 msgid "Set to maintenance"
 msgstr "Imposta in manutenzione"
 
-#: plugin-config.php:142 templates/shortcodes/asset-view.php:542
+#: plugin-config.php:142 templates/shortcodes/asset-view.php:567
 msgid "Set to retired"
 msgstr "Imposta come ritirata"
 
@@ -1740,28 +1752,28 @@ msgstr ""
 "Mostra il pannello di ricerca/filtri espanso al caricamento della lista "
 "risorse"
 
-#: templates/shortcodes/asset-view.php:636
+#: templates/shortcodes/asset-view.php:661
 msgid "Showing the last 10 loan history entries for this asset."
 msgstr ""
 "Vengono mostrate le ultime 10 voci dello storico prestiti per questa risorsa."
 
 #: templates/shortcodes/asset-list.php:139
-#: templates/shortcodes/asset-view.php:112
+#: templates/shortcodes/asset-view.php:117
 msgid "State"
 msgstr "Stato"
 
-#: assets/js/frontend-assets.js:475
+#: assets/js/frontend-assets.js:476
 msgid "State change failed. Please try again."
 msgstr "Cambio di stato non riuscito. Riprova."
 
-#: templates/shortcodes/asset-view.php:648
-#: templates/shortcodes/asset-view.php:689
+#: templates/shortcodes/asset-view.php:673
+#: templates/shortcodes/asset-view.php:714
 msgid "Status"
 msgstr "Stato"
 
 #: templates/shortcodes/asset-list.php:110
 #: templates/shortcodes/asset-list.php:261
-#: templates/shortcodes/asset-view.php:88
+#: templates/shortcodes/asset-view.php:93
 msgid "Structure"
 msgstr "Struttura"
 
@@ -1770,7 +1782,7 @@ msgid "Subject"
 msgstr "Oggetto"
 
 #: includes/class-alm-notification-manager.php:291
-#: templates/shortcodes/asset-view.php:662
+#: templates/shortcodes/asset-view.php:687
 msgid "System"
 msgstr "Sistema"
 
@@ -1808,7 +1820,7 @@ msgstr ""
 "richieste di prestito."
 
 #. %s: current asset state label
-#: templates/shortcodes/asset-view.php:554
+#: templates/shortcodes/asset-view.php:579
 #, php-format
 msgid ""
 "This asset is currently <strong>%s</strong>. Restoring it will set it back "
@@ -1825,7 +1837,7 @@ msgstr "Questo bene non è disponibile per il prestito."
 msgid "This user is not eligible to receive asset assignments."
 msgstr "Questo utente non è idoneo a ricevere assegnazioni di risorse."
 
-#: templates/shortcodes/asset-view.php:270
+#: templates/shortcodes/asset-view.php:295
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 "Per richiedere un prestito, è necessario effettuare l'accesso come socio."
@@ -1840,7 +1852,7 @@ msgstr "Treppiede"
 
 #: templates/shortcodes/asset-list.php:123
 #: templates/shortcodes/asset-list.php:266
-#: templates/shortcodes/asset-view.php:96
+#: templates/shortcodes/asset-view.php:101
 msgid "Type"
 msgstr "Tipo"
 
@@ -1849,8 +1861,8 @@ msgstr "Tipo"
 msgid "Unauthorized action."
 msgstr "Azione non autorizzata."
 
-#: templates/shortcodes/asset-view.php:342
-#: templates/shortcodes/asset-view.php:659
+#: templates/shortcodes/asset-view.php:367
+#: templates/shortcodes/asset-view.php:684
 msgid "Unknown"
 msgstr "Sconosciuto"
 
@@ -1922,7 +1934,7 @@ msgstr ""
 msgid "Workflow"
 msgstr "Workflow"
 
-#: templates/shortcodes/asset-view.php:251
+#: templates/shortcodes/asset-view.php:276
 msgid "Write a brief message explaining why you need this asset..."
 msgstr ""
 "Scrivi un breve messaggio per spiegare perché hai bisogno di questa risorsa.."
@@ -1992,7 +2004,7 @@ msgstr "Non hai i permessi per ripristinare gli stati delle risorse."
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Non hai autorizzazioni sufficienti per accedere a questa pagina."
 
-#: templates/shortcodes/asset-view.php:236
+#: templates/shortcodes/asset-view.php:261
 msgid "You have already requested a loan for this asset."
 msgstr "Hai già richiesto un prestito per questa risorsa."
 

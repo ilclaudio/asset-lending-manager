@@ -22,7 +22,7 @@ require_once $alm_tests_dir . '/includes/functions.php';
  * Manually load the plugin being tested.
  */
 function alm_manually_load_plugin() {
-	require dirname( __FILE__, 2 ) . '/asset-lending-manager.php';
+	require dirname( __DIR__, 1 ) . '/asset-lending-manager.php';
 }
 
 // Add filter to load plugin before WordPress loads.

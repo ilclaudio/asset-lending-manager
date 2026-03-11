@@ -32,7 +32,7 @@ class ALM_Settings_Manager_Test extends WP_UnitTestCase {
 	public function tearDown(): void {
 		// Clean up options from database
 		delete_option( 'alm_settings' );
-		
+
 		parent::tearDown();
 	}
 
@@ -101,7 +101,7 @@ class ALM_Settings_Manager_Test extends WP_UnitTestCase {
 
 		// Create new instance to verify persistence
 		$new_settings = new ALM_Settings_Manager();
-		$result = $new_settings->get( 'email.from_name' );
+		$result       = $new_settings->get( 'email.from_name' );
 
 		$this->assertSame( 'Test Name', $result );
 	}

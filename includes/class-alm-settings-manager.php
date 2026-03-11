@@ -52,7 +52,10 @@ class ALM_Settings_Manager {
 		// alm_get_email_templates() uses __() and must not be called before the 'init'
 		// action (WordPress 6.7 JIT textdomain loading). Templates are only needed when
 		// sending emails, which always happens after 'init', so empty arrays are safe before.
-		$templates = did_action( 'init' ) ? alm_get_email_templates() : array( 'subject' => array(), 'body' => array() );
+		$templates = did_action( 'init' ) ? alm_get_email_templates() : array(
+			'subject' => array(),
+			'body'    => array(),
+		);
 		return array(
 			'email'         => array(
 				'from_name'    => '',
@@ -84,9 +87,9 @@ class ALM_Settings_Manager {
 				'require_reason'       => false,
 			),
 			'workflow'      => array(
-				'cancel_concurrent_requests_on_assign'        => true,
+				'cancel_concurrent_requests_on_assign' => true,
 				'cancel_component_requests_when_kit_assigned' => true,
-				'automatic_operations_actor_user_id'          => 1,
+				'automatic_operations_actor_user_id'   => 1,
 			),
 			'frontend'      => array(
 				'assets_page_id'          => 0,
@@ -168,7 +171,7 @@ class ALM_Settings_Manager {
 	 */
 	public function get( $key, $default = null ) {
 		$settings = $this->get_all();
-		$keys = explode( '.', $key );
+		$keys     = explode( '.', $key );
 
 		foreach ( $keys as $segment ) {
 			if ( ! is_array( $settings ) || ! array_key_exists( $segment, $settings ) ) {

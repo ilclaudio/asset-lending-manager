@@ -64,15 +64,15 @@ class ALM_Logger {
 	 * @return void
 	 */
 	public static function configure( ALM_Settings_Manager $settings ) {
-		self::$enabled      = (bool) $settings->get( 'logging.enabled', true );
-		$level_map          = array(
+		self::$enabled       = (bool) $settings->get( 'logging.enabled', true );
+		$level_map           = array(
 			'debug'   => self::DEBUG,
 			'info'    => self::INFO,
 			'warning' => self::WARNING,
 			'error'   => self::ERROR,
 		);
-		$level_key          = $settings->get( 'logging.level', 'error' );
-		self::$min_level    = isset( $level_map[ $level_key ] ) ? $level_map[ $level_key ] : self::ERROR;
+		$level_key           = $settings->get( 'logging.level', 'error' );
+		self::$min_level     = isset( $level_map[ $level_key ] ) ? $level_map[ $level_key ] : self::ERROR;
 		self::$mask_personal = (bool) $settings->get( 'logging.mask_personal_data', false );
 	}
 

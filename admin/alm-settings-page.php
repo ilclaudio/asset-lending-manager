@@ -501,13 +501,13 @@ $placeholders = array(
 					</th>
 					<td>
 						<?php
-						$allowed_roles     = (array) $settings->get( 'direct_assign.allowed_target_roles' );
-						$available_roles   = array(
+						$allowed_roles   = (array) $settings->get( 'direct_assign.allowed_target_roles' );
+						$available_roles = array(
 							ALM_MEMBER_ROLE   => __( 'Member', 'asset-lending-manager' ),
 							ALM_OPERATOR_ROLE => __( 'Operator', 'asset-lending-manager' ),
 						);
 						foreach ( $available_roles as $role_slug => $role_label ) :
-						?>
+							?>
 							<label style="display:block; margin-bottom:4px;">
 								<input
 									type="checkbox"
@@ -609,12 +609,12 @@ $placeholders = array(
 						<?php
 						wp_dropdown_pages(
 							array(
-								'name'             => 'alm_frontend_assets_page_id',
-								'id'               => 'alm_frontend_assets_page_id',
-								'selected'         => (int) $settings->get( 'frontend.assets_page_id' ),
-								'show_option_none' => __( '— Not set —', 'asset-lending-manager' ),
+								'name'              => 'alm_frontend_assets_page_id',
+								'id'                => 'alm_frontend_assets_page_id',
+								'selected'          => (int) $settings->get( 'frontend.assets_page_id' ),
+								'show_option_none'  => __( '— Not set —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
-								'disabled'         => ! $is_admin,
+								'disabled'          => ! $is_admin,
 							)
 						);
 						?>
@@ -854,7 +854,7 @@ $placeholders = array(
 								'error'   => __( 'Error — errors only', 'asset-lending-manager' ),
 							);
 							foreach ( $log_levels as $level_value => $level_label ) :
-							?>
+								?>
 								<option value="<?php echo esc_attr( $level_value ); ?>" <?php selected( $settings->get( 'logging.level' ), $level_value ); ?>>
 									<?php echo esc_html( $level_label ); ?>
 								</option>

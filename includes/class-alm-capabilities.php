@@ -68,5 +68,4 @@ class ALM_Capabilities {
 			self::get_asset_domain_caps()
 		);
 	}
-
 }
