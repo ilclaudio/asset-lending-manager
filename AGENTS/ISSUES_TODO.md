@@ -12,12 +12,10 @@ Last update: 2026-03-11 (rev 2)
 - **Resolution:** Replaced `str_replace()` with `strtr()` in `format_template()`. `strtr()` performs all substitutions in a single pass so replacement values are never re-scanned as keys, eliminating the iterative substitution vulnerability. (`includes/class-alm-notification-manager.php:419`)
 
 ### [Medium] Email header injection risk when settings UI exposes From fields
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-02-22
 - **Category:** Security
-- **Description:** The `From:` header is built by direct string concatenation of `$from_name` and `$from_address`: `'From: ' . $from_name . ' <' . $from_address . '>'`. `$from_name` is now read from `$this->settings->get('email.from_name', '')` (settings are live), so an admin saving `\r\n` in that field would inject arbitrary mail headers. Risk is real, not just pre-emptive.
-- **Expected behavior:** Sanitize `from_name` and `from_address` before building the header by stripping newline/carriage-return characters. Use `sanitize_email()` for the address and a CRLF-stripping sanitizer for the name.
-- **Notes:** `includes/class-alm-notification-manager.php:374` (settings read), `includes/class-alm-notification-manager.php:378` (header build). Now active risk since settings UI is complete.
+- **Resolution:** Applied `sanitize_email()` to `$from_address` and `str_replace(["\r","\n"], '', ...)` to `$from_name` before building the `From:` header. (`includes/class-alm-notification-manager.php:376-379`)
 
 ### [Medium] `insertAdjacentHTML` with unvalidated DOM data in admin JS
 - **Status:** Open

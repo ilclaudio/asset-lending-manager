@@ -373,9 +373,10 @@ class ALM_Notification_Manager {
 		$body    = $this->format_template( $body_tpl, $placeholders );
 
 		// Build email headers: plain text encoding and custom From address.
-		$from_address = $this->get_from_address();
+		$from_address = sanitize_email( $this->get_from_address() );
 		$from_name    = $this->settings->get( 'email.from_name', '' );
 		$from_name    = $from_name ? $from_name : get_bloginfo( 'name' );
+		$from_name    = str_replace( array( "\r", "\n" ), '', $from_name );
 		$headers      = array(
 			'Content-Type: text/plain; charset=UTF-8',
 			'From: ' . $from_name . ' <' . $from_address . '>',
