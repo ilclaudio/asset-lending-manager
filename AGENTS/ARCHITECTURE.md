@@ -114,5 +114,5 @@ State transition rules (enforced by `ALM_Loan_Manager`):
 - On activation, administrators/operators receive all ALM caps; members receive view caps.
 
 ## Templates and Shortcodes
-- Templates: `templates/archive-alm_asset.php`, `templates/single-alm_asset.php`, `templates/shortcodes/asset-list.php`, `templates/shortcodes/asset-view.php`.
+- Templates: `templates/archive-alm-asset.php`, `templates/single-alm_asset.php`, `templates/shortcodes/asset-list.php`, `templates/shortcodes/asset-view.php`.
 - Shortcodes: `[alm_asset_list]`, `[alm_asset_view]`.

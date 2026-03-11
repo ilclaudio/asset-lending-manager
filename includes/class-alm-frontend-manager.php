@@ -74,7 +74,7 @@ class ALM_Frontend_Manager {
 	 */
 	public function load_asset_template( $template ) {
 		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) ) {
-			return $this->locate_template( 'archive-alm_asset.php', $template );
+			return $this->locate_template( 'archive-alm-asset.php', $template );
 		}
 		if ( is_singular( ALM_ASSET_CPT_SLUG ) ) {
 			return $this->locate_template( 'single-alm_asset.php', $template );
