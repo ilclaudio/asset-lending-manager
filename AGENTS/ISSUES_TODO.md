@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-03-11
+Last update: 2026-03-11 (rev 2)
 
 ---
 
@@ -48,6 +48,22 @@ Last update: 2026-03-11
 ---
 
 ## Bug
+
+### [Medium] Disabling loan requests blocks approve/reject of existing pending requests
+- **Status:** Open
+- **Date:** 2026-03-11
+- **Category:** Bug
+- **Description:** `ajax_approve_loan_request()` and `ajax_reject_loan_request()` both check `loans.loan_requests_enabled` and return an error if it is `false`. This means that when an admin disables loan requests (e.g., to halt new submissions), any pending requests created before the setting was toggled become permanently stuck: operators cannot approve or reject them. The flag is clearly intended to block new submissions, not to freeze the processing of existing ones.
+- **Expected behavior:** The `loan_requests_enabled` guard should apply only to `ajax_submit_loan_request()`. Approve and reject handlers should remain operational regardless of this setting.
+- **Notes:** `includes/class-alm-loan-manager.php:246-252` (reject guard), `includes/class-alm-loan-manager.php:558-564` (approve guard), `includes/class-alm-loan-manager.php:94-100` (submit guard — correct).
+
+### [Medium] `?alm_scan=` on any page silently redirects to home on invalid code
+- **Status:** Open
+- **Date:** 2026-03-11
+- **Category:** Bug
+- **Description:** `handle_alm_scan_redirect()` is hooked to `template_redirect` and fires on every WordPress page load. When `$_GET['alm_scan']` is present but the code is invalid (e.g. `?alm_scan=foo` appended to any URL), the handler unconditionally calls `wp_safe_redirect( home_url('/') )` and exits, discarding the intended page. Any URL on the site can be silently hijacked to a home-page redirect by appending `?alm_scan=anything_invalid`, disrupting navigation for users who follow links with stray query parameters or for QR codes that encode a malformed code.
+- **Expected behavior:** On invalid code, do not redirect — simply return and let WordPress render the current page normally. Only redirect to the asset permalink on a valid, resolvable code.
+- **Notes:** `includes/class-alm-frontend-manager.php:605-619` (`handle_alm_scan_redirect`). Fix: remove the fallback `wp_safe_redirect( home_url('/') )` and replace it with a plain `return`.
 
 ### [Low] wp_redirect() used instead of wp_safe_redirect()
 - **Status:** Open
