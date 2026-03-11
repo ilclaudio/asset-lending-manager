@@ -6,12 +6,10 @@ Last update: 2026-03-11 (rev 2)
 ## Security
 
 ### [Medium] Email template placeholder injection via user display names
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-02-22
 - **Category:** Security
-- **Description:** `format_template()` uses `str_replace()` with arrays, which processes replacement pairs left-to-right. User-controlled values (e.g., `display_name`, request message) are used as replacement values. If a user sets their display name to a placeholder token used later in the array (e.g., `{REQUEST_MESSAGE}`), PHP's iterative `str_replace` will substitute that token in the next pass, causing a later placeholder's value to appear in the wrong position in the email.
-- **Expected behavior:** Placeholder replacement values should be sanitized to remove or escape `{...}` tokens before substitution, or the template engine should be replaced with one that is not vulnerable to recursive substitution (e.g., replace all tokens in a single pass using `strtr()`).
-- **Notes:** `includes/class-alm-notification-manager.php:414` (`format_template`). Impact: data leakage / wrong data in wrong email field. No code execution possible (plain-text emails).
+- **Resolution:** Replaced `str_replace()` with `strtr()` in `format_template()`. `strtr()` performs all substitutions in a single pass so replacement values are never re-scanned as keys, eliminating the iterative substitution vulnerability. (`includes/class-alm-notification-manager.php:419`)
 
 ### [Medium] Email header injection risk when settings UI exposes From fields
 - **Status:** Open

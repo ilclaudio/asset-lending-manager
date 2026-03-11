@@ -417,7 +417,7 @@ class ALM_Notification_Manager {
 	 * @return string Template with all known tokens replaced.
 	 */
 	private function format_template( $template, $placeholders ) {
-		return str_replace( array_keys( $placeholders ), array_values( $placeholders ), $template );
+		return strtr( $template, $placeholders );
 	}
 
 	/**
