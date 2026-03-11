@@ -24,8 +24,10 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 == Features ==
 * Asset and kit management (kits cannot contain other kits)
 * Frontend asset browsing with filters
+* QR code generation and print label from asset detail page
+* QR scanner from asset list (camera-based quick lookup)
 * Loan request workflow (submit, approve, reject)
-* Direct assignment by operator/admin (with mandatory reason)
+* Direct assignment by operator/admin (reason requirement configurable)
 * Automatic cancellation of concurrent pending requests after assignment
 * Email notifications for requests and assignment outcomes
 * Loan history tracking
@@ -34,6 +36,9 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 == Requirements ==
 This plugin requires the Advanced Custom Fields plugin (free).
+QR features use bundled JavaScript libraries:
+* qrcode-generator (MIT)
+* jsQR (Apache-2.0)
 
 
 == Loan Workflow ==
@@ -71,7 +76,7 @@ Any organization that manages a shared pool of physical objects: associations, s
 No. Asset delivery and handover are handled offline. The plugin tracks requests and assignments only.
 
 = Is there a full plugin settings UI in wp-admin? =
-Not yet. The settings manager exists in code, but a complete settings UI is not currently exposed in wp-admin.
+Yes. A settings page is available in wp-admin under the ALM menu.
 
 = Is the plugin translation-ready? =
 Yes. All user-facing strings are prepared for translation using standard WordPress internationalization functions.

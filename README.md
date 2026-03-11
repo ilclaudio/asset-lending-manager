@@ -14,8 +14,10 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 - Asset and kit management (kits cannot contain other kits)
 - Frontend asset browsing with filters
+- QR code generation and print label from asset detail page
+- QR scanner from asset list (camera-based quick lookup)
 - Loan request workflow (submit, approve, reject)
-- Direct assignment by operator/admin (with mandatory reason)
+- Direct assignment by operator/admin (reason requirement configurable)
 - Automatic cancellation of concurrent pending requests after assignment
 - Email notifications for requests and assignment outcomes
 - Loan history tracking
@@ -27,6 +29,9 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 ## Requirements
 
 This plugin requires the Advanced Custom Fields plugin (free).
+QR features use bundled JavaScript libraries:
+- `qrcode-generator` (MIT)
+- `jsQR` (Apache-2.0)
 
 ---
 
@@ -60,7 +65,7 @@ For detailed role/action and notification schemas, see:
    - `ALM_EMAIL_FROM_ADDRESS`
    - `ALM_EMAIL_SYSTEM_ADDRESS`
 
-Note: `ALM_Settings_Manager` exists in code, but a full settings UI is not currently exposed in wp-admin.
+Settings UI is available in wp-admin under the ALM menu.
 
 ## Development
 

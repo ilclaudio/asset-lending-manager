@@ -1,7 +1,11 @@
 
-*** Libraries used in the theme ***
+*** Libraries used in the plugin ***
 
+** JavaScript libraries used by the plugin ***
 
-** Plugins used by the theme ***
+- [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) — MIT License
+- [jsQR](https://github.com/cozmo/jsQR) — Apache-2.0 License
+
+** Plugins used by the plugin ***
 
 - [Advanced Custom Fields](https://wordpress.org/plugins/advanced-custom-fields/)
