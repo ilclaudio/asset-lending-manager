@@ -34,12 +34,10 @@ Last update: 2026-03-11 (rev 2)
 - **Notes:** `includes/class-alm-notification-manager.php:382` (attempt log), `includes/class-alm-notification-manager.php:395` (failure log)
 
 ### [Medium] QR scanner accepts arbitrary same-origin URLs
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-03-11
 - **Category:** Security
-- **Description:** `initQrScanner()` validates only `parsed.origin === window.location.origin` and then navigates to the decoded URL. A malicious QR code can therefore force navigation to any same-origin route, not just ALM scan targets, increasing abuse surface for GET endpoints with side effects or sensitive admin routes.
-- **Expected behavior:** Accept only ALM scan URLs (for example, `?alm_scan=...` or a dedicated allowlisted path) and reject all other same-origin URLs.
-- **Notes:** `assets/js/frontend-assets.js:1350-1359` (origin-only check and redirect).
+- **Resolution:** Added `&& parsed.searchParams.has('alm_scan')` to the origin check in `initQrScanner()`. Only same-origin URLs containing the `alm_scan` parameter are now accepted; all other same-origin URLs are ignored. (`assets/js/frontend-assets.js:1356`)
 
 ---
 

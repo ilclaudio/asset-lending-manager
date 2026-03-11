@@ -1353,12 +1353,12 @@
 									try {
 										var decoded = code.data;
 										var parsed  = new URL(decoded);
-										if (parsed.origin === window.location.origin) {
+										if (parsed.origin === window.location.origin && parsed.searchParams.has('alm_scan')) {
 											stopScanner();
 											window.location.href = decoded;
 											return;
 										}
-										// Foreign-origin QR: ignore and keep scanning.
+										// Non-ALM or foreign-origin QR: ignore and keep scanning.
 									} catch (err) {
 										// Not a valid URL: ignore and keep scanning.
 									}
