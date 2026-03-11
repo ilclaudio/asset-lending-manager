@@ -304,12 +304,10 @@ Last update: 2026-03-11 (rev 2)
 ## Feature
 
 ### [High] Loan closure flow (return/check-in) for assets and kits
-- **Status:** Open
+- **Status:** Won't fix
 - **Date:** 2026-02-14
 - **Category:** Feature
-- **Description:** Current workflow supports request/approve/reject, but there is no explicit return/check-in flow to close an active loan.
-- **Expected behavior:** Add operator/owner-driven return flow that sets state back to `available`, clears or updates current owner correctly, propagates to kit components, and writes auditable history entries.
-- **Notes:** Required for realistic end-to-end user testing of the lending lifecycle.
+- **Resolution:** By design: an asset remains assigned to the current owner indefinitely until a new loan request is approved and the asset is transferred. Explicit return/check-in is not part of the intended workflow for this association.
 
 ### [High] Asset state change (maintenance/retired/restore) from frontend
 - **Status:** Done

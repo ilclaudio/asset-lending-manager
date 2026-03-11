@@ -23,8 +23,8 @@ Questo documento riassume le operazioni disponibili per ciascun ruolo nel plugin
 | Inserire/modificare risorse | No | No | Si | Si |
 | Gestire tassonomie/stati/livelli | No | No | Si | Si |
 | Richiedere prestito | No | Si | Si | Si |
-| Approvare/rifiutare richiesta | No | Si (solo se proprietario corrente) | Si (solo se proprietario corrente) | Si (solo se proprietario corrente) |
-| Vedere richieste di prestito asset | No | Si (solo se proprietario corrente) | Si (anche monitoraggio read-only se non proprietario) | Si |
+| Approvare/rifiutare richiesta | No | Si (solo se proprietario corrente) | Si (anche se non proprietario) | Si (anche se non proprietario) |
+| Vedere richieste di prestito asset | No | Si (solo se proprietario corrente) | Si (con azioni approva/rifiuta anche se non proprietario) | Si (con azioni approva/rifiuta anche se non proprietario) |
 | Assegnamento diretto | No | No | Si | Si |
 | Cambiare stato asset (maintenance/retired) da frontend | No | No | Si | Si |
 | Ripristinare asset a disponibile da frontend | No | No | Si | Si |
@@ -34,7 +34,7 @@ Questo documento riassume le operazioni disponibili per ciascun ruolo nel plugin
 
 ## Relazioni sintetiche (role -> azioni)
 
-- Operatore -> Inserimento e modifica risorse; gestione tassonomie; richiesta prestito; monitoraggio richieste; assegnamento diretto; cambio stato asset (maintenance/retired) da frontend; ripristino asset a disponibile da frontend.
+- Operatore -> Inserimento e modifica risorse; gestione tassonomie; richiesta prestito; gestione richieste prestito (approva/rifiuta anche se non proprietario); assegnamento diretto; cambio stato asset (maintenance/retired) da frontend; ripristino asset a disponibile da frontend.
 - Socio -> Richiesta prestito; approvazione/rifiuto solo se proprietario corrente.
 - Amministratore -> Stesso perimetro operativo dell'operatore (piu' privilegi WordPress generali).
 
@@ -59,9 +59,8 @@ OPERATORE / AMMINISTRATORE
 [Inserisce o modifica risorsa]
   -> [Gestisce tassonomie]
   -> [Visualizza richieste prestito]
-  -> <Proprietario corrente?>
-       |-- Si --> [Approva o rifiuta richiesta]
-       `-- No --> [Assegnamento diretto]
+  -> [Approva o rifiuta richiesta]
+  -> [Assegnamento diretto]
 
 COLLEGAMENTI TRA SWIMLANE
 Socio: [Invia richiesta prestito] ------------> Operatore/Admin: [Visualizza richieste prestito]
@@ -74,10 +73,10 @@ Operatore/Admin: [Assegnamento diretto]        /
 
 ## Note importanti
 
-- Le azioni di approvazione/rifiuto sono consentite al proprietario corrente dell'asset, non in base al ruolo puro.
+- Le azioni di approvazione/rifiuto sono consentite al socio solo se proprietario corrente; per operatore/amministratore sono consentite anche se non proprietario (capability `alm_edit_asset`).
 - L'assegnamento diretto e' consentito solo a chi ha capability `alm_edit_asset` (operatore/amministratore).
 - Nella UI corrente, lo storico prestiti e' mostrato solo a operatore/amministratore.
 
 ---
 
-*Ultimo aggiornamento: 2026-03-08*
+*Ultimo aggiornamento: 2026-03-11*
