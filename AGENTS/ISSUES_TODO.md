@@ -58,12 +58,10 @@ Last update: 2026-03-11 (rev 2)
 - **Notes:** `includes/class-alm-frontend-manager.php:605-619` (`handle_alm_scan_redirect`). Fix: remove the fallback `wp_safe_redirect( home_url('/') )` and replace it with a plain `return`.
 
 ### [Low] wp_redirect() used instead of wp_safe_redirect()
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-02-15
 - **Category:** Bug
-- **Description:** `redirect_restricted_users()` calls `wp_redirect( home_url() )`. While `home_url()` is normally safe, `wp_safe_redirect()` is the WordPress-recommended function for internal redirects as it validates the destination against the allowed hosts list.
-- **Expected behavior:** Replace `wp_redirect()` with `wp_safe_redirect()`.
-- **Notes:** `includes/class-alm-admin-manager.php`, line 60.
+- **Resolution:** Replaced `wp_redirect()` with `wp_safe_redirect()` in `redirect_restricted_users()` (`includes/class-alm-admin-manager.php:60`).
 
 ### [Medium] Loan request form is visible for non-loanable asset states
 - **Status:** Done
@@ -142,20 +140,16 @@ Last update: 2026-03-11 (rev 2)
 - **Notes:** `assets/js/frontend-assets.js:874-893` (hardcoded `255`), `includes/class-alm-loan-manager.php:293-303` (settings-driven backend limit).
 
 ### [Medium] Asset state-change endpoint does not enforce source-state constraints
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-03-08
 - **Category:** Bug
-- **Description:** UI shows change-state controls only for assets in `available` or `on-loan`, but `ajax_change_asset_state()` accepts any current source state and only validates the target (`maintenance`/`retired`). A crafted request can bypass UI flow constraints and create inconsistent state-transition history.
-- **Expected behavior:** Validate current asset state server-side and reject transitions when source state is outside the allowed workflow.
-- **Notes:** `templates/shortcodes/asset-view.php:487-488` (UI guard), `includes/class-alm-loan-manager.php:1660-1705` (AJAX handler without source-state validation).
+- **Resolution:** Added source-state guard in `ajax_change_asset_state()`: reads current state via `get_asset_state_slug()` and rejects with error if not `available` or `on-loan`. (`includes/class-alm-loan-manager.php`).
 
 ### [Medium] Restore state endpoint does not enforce source-state constraints
-- **Status:** Open
+- **Status:** Done
 - **Date:** 2026-03-08
 - **Category:** Bug
-- **Description:** UI shows the restore form only for assets in `maintenance` or `retired`, but `ajax_restore_asset_state()` relies on `restore_asset_state()` which re-validates state internally. If `restore_asset_state()` is called in a different context or via crafted request it could attempt to "restore" an `available` or `on-loan` asset.
-- **Expected behavior:** Add explicit server-side guard in `ajax_restore_asset_state()` to reject requests where current state is not `maintenance` or `retired`.
-- **Notes:** `includes/class-alm-loan-manager.php` (`ajax_restore_asset_state`, `restore_asset_state`).
+- **Resolution:** Guard already present in `ajax_restore_asset_state()` at lines 1947-1950: reads current state via `get_asset_state_slug()` and rejects if not `maintenance` or `retired`. No change needed.
 
 ### [Medium] Component removal from kit ignores ACF write failures
 - **Status:** Open

@@ -1711,6 +1711,11 @@ class ALM_Loan_Manager {
 			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
 		}
 
+		$current_state = $this->get_asset_state_slug( $asset_id );
+		if ( ! in_array( $current_state, array( 'available', 'on-loan' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Asset state cannot be changed from its current state.', 'asset-lending-manager' ) ) );
+		}
+
 		$actor_id = get_current_user_id();
 		$result   = $this->change_asset_state( $asset_id, $target_state, $notes, $actor_id );
 

@@ -57,7 +57,7 @@ class ALM_Admin_Manager {
 			global $pagenow;
 			$restricted_pages = array( 'index.php', 'profile.php', 'tools.php' );
 			if ( in_array( $pagenow, $restricted_pages, true ) ) {
-				wp_redirect( home_url() );
+				wp_safe_redirect( home_url() );
 				exit;
 			}
 		}
