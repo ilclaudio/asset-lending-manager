@@ -294,15 +294,12 @@ if ( $filter_owner > 0 ) {
 					</a>
 					<?php if ( ! empty( $alm_asset->parent_kits ) ) : ?>
 						<div class="alm-card-kit-footer" role="note" aria-label="<?php esc_attr_e( 'Kit membership', 'asset-lending-manager' ); ?>">
-							<span class="alm-card-kit-label"><?php echo esc_html( _n( 'Kit', 'Kits', count( $alm_asset->parent_kits ), 'asset-lending-manager' ) . ':' ); ?></span>
+							<span class="alm-card-kit-label"><?php esc_html_e( 'Kit', 'asset-lending-manager' ); ?>:</span>
 							<?php foreach ( $alm_asset->parent_kits as $alm_ki => $alm_kit ) : ?>
-								<a class="alm-card-kit-link" href="<?php echo esc_url( $alm_kit['permalink'] ); ?>">
-									<?php echo esc_html( $alm_kit['title'] ); ?>
-								</a>
-								<?php
-								if ( $alm_ki < count( $alm_asset->parent_kits ) - 1 ) :
-									?>
-									<span aria-hidden="true">,</span><?php endif; ?>
+								<a class="alm-card-kit-link" href="<?php echo esc_url( $alm_kit['permalink'] ); ?>"><?php echo esc_html( $alm_kit['title'] ); ?></a>
+								<?php if ( $alm_ki < count( $alm_asset->parent_kits ) - 1 ) : ?>
+									<span aria-hidden="true">,</span>
+								<?php endif; ?>
 							<?php endforeach; ?>
 						</div>
 					<?php endif; ?>

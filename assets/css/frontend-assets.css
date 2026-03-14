@@ -518,14 +518,14 @@
 		font-size: 0.85em;
 	}
 
-	/* "Kit:" label in the footer */
+	/* "Kit:" label */
 	.alm-card-kit-label {
 		color: #5b3ea6;
 		font-weight: 600;
 		flex-shrink: 0;
 	}
 
-	/* Clickable kit name link — #5b3ea6 on #fff → contrast ~5.8:1 (WCAG AA) */
+	/* Clickable kit name — #5b3ea6 on #fff → contrast ~5.8:1 (WCAG AA) */
 	.alm-card-kit-link {
 		color: #5b3ea6;
 		text-decoration: underline;
@@ -824,7 +824,7 @@
 		margin: 20px 0;
 	}
 
-	/* Asset card - column layout: main link on top, optional kit footer below */
+	/* Asset card — column layout: main link on top, optional kit footer below */
 	.alm-asset-card {
 		background: #fff;
 		border: 1px solid #ddd;

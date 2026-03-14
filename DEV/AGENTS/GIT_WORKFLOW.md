@@ -34,7 +34,7 @@ Examples:
 - Do not include unrelated changes in the same commit.
 - Automatic secret scan is enforced by `.githooks/pre-commit`.
 - Install once per clone: `git config core.hooksPath .githooks`.
-- Manual fallback: `SETUP/check-staged-secrets.sh`.
+- Manual fallback: `DEV/SETUP/check-staged-secrets.sh`.
 
 ## Pull Requests
 
