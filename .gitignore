@@ -49,3 +49,6 @@ Thumbs.db
 # Custom directives
 # AI tool temporary directories
 .codex-tmp/
+
+# Local development workspace
+/DEV/
