@@ -12,6 +12,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ## [DEV-0.0.3] - 2026-03-15
 ### Changed
 ### Added
+- The list os assets shows if a component is part of kit
 ### Fixed
 ### Security
 

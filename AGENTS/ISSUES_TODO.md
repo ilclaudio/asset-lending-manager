@@ -1,5 +1,5 @@
 # ISSUES TODO
-Last update: 2026-03-11 (rev 2)
+Last update: 2026-03-14 (rev 3)
 
 ---
 
@@ -233,13 +233,27 @@ Last update: 2026-03-11 (rev 2)
 - **Expected behavior:** Cache filter term datasets (object cache/transient) and invalidate on term changes, or build them once in controller with shared cached helpers.
 - **Notes:** `templates/shortcodes/asset-list.php:25`, `templates/shortcodes/asset-list.php:31`, `templates/shortcodes/asset-list.php:37`, `templates/shortcodes/asset-list.php:43`
 
-### [High] Reverse kit lookup uses expensive meta LIKE query in asset detail
+### [High] Reverse kit lookup uses expensive meta LIKE query — now also in asset list
 - **Status:** Open
-- **Date:** 2026-02-18
+- **Date:** 2026-02-18 (updated 2026-03-14)
 - **Category:** Performance
-- **Description:** To detect kit membership, `get_asset_custom_fields()` runs a `WP_Query` with `meta_query` `LIKE` against serialized component data. This pattern is expensive and non-scalable for larger datasets.
-- **Expected behavior:** Replace reverse `LIKE` lookup with normalized relation storage (e.g., dedicated relation meta/table) or maintain a direct parent-kit reference index.
-- **Notes:** `includes/class-alm-asset-manager.php:350`, `includes/class-alm-asset-manager.php:355`, `includes/class-alm-asset-manager.php:363`
+- **Description:** To detect kit membership, `get_asset_custom_fields()` runs a `WP_Query` with `meta_query` `LIKE` against serialized component data. This pattern is expensive and non-scalable for larger datasets. As of 2026-03-14, `get_asset_wrapper()` also runs the same LIKE query to populate `parent_kits` — this means **one extra query per component asset on every list page render**, amplifying the scalability concern.
+- **Expected behavior:** Replace reverse `LIKE` lookup with normalized relation storage (e.g., a `_alm_parent_kit_ids` post meta written when kit components are saved via ACF) or maintain a direct parent-kit reference index. This would reduce the lookup to a single cheap `get_post_meta()` call per asset.
+- **Notes:** `includes/class-alm-asset-manager.php` — `get_asset_custom_fields()` (detail view, 1 query per asset) and `get_asset_wrapper()` (list and detail view, 1 query per component). Also `includes/class-alm-loan-manager.php:1820-1837` (`get_parent_kit_ids` in state-change flow).
+
+### [Medium] Implement normalized `_alm_parent_kit_ids` meta to replace reverse LIKE kit lookup
+- **Status:** Open
+- **Date:** 2026-03-14
+- **Category:** Performance
+- **Description:** All reverse kit lookups (list view, detail view, state-change flow) currently use `WP_Query` with `meta_query LIKE` against serialized ACF data. The fix is to maintain a `_alm_parent_kit_ids` post meta directly on each component, written whenever kit composition changes (ACF save hook). Lookups then become a single `get_post_meta()` call with no SQL LIKE scan.
+- **Expected behavior:** On ACF save of a kit asset (`acf/save_post`, priority after ACF default), read the `components` field and write `_alm_parent_kit_ids` (serialized int array) on each listed component. Remove this meta from components no longer in the kit. Replace all three LIKE query sites with `get_post_meta( $component_id, '_alm_parent_kit_ids', true )`. Delete meta when a component is permanently removed from all kits.
+- **Steps to implement:**
+  1. Add `acf/save_post` hook in `ALM_ACF_Asset_Adapter` or `ALM_Asset_Manager`: on save of a kit asset, diff old vs new `components` list and update `_alm_parent_kit_ids` on added/removed components.
+  2. Replace `WP_Query` in `get_asset_wrapper()` with `get_post_meta()`.
+  3. Replace `WP_Query` in `get_asset_custom_fields()` with `get_post_meta()`.
+  4. Replace `WP_Query` in `ALM_Loan_Manager::get_parent_kit_ids()` with `get_post_meta()`.
+  5. Add a one-time migration (admin action or activation hook) to backfill `_alm_parent_kit_ids` on existing components from current ACF data.
+- **Notes:** Depends on ACF being active (already a hard dependency). Migration must be idempotent. Related issue: `[High] Reverse kit lookup uses expensive meta LIKE query`.
 
 ### [Medium] Active-loan limit check performs full asset scan on each request
 - **Status:** Open

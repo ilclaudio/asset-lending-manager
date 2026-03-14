@@ -276,6 +276,35 @@ class ALM_Asset_Manager {
 		$owner_data          = $owner_id > 0 ? get_userdata( $owner_id ) : false;
 		$wrapper->owner_name = $owner_data ? $owner_data->display_name : '';
 
+		// Load parent kit membership (only populated when this asset is a component).
+		$wrapper->parent_kits = array();
+		if ( has_term( ALM_ASSET_COMPONENT_SLUG, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
+			$alm_kit_query = new WP_Query(
+				array(
+					'post_type'      => ALM_ASSET_CPT_SLUG,
+					'post_status'    => 'publish',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+						array(
+							'key'     => 'components',
+							'value'   => '"' . $asset_id . '"',
+							'compare' => 'LIKE',
+						),
+					),
+				)
+			);
+			foreach ( $alm_kit_query->posts as $alm_kit_id ) {
+				$alm_kit_id             = (int) $alm_kit_id;
+				$wrapper->parent_kits[] = array(
+					'id'        => $alm_kit_id,
+					'title'     => get_the_title( $alm_kit_id ),
+					'permalink' => get_permalink( $alm_kit_id ),
+				);
+			}
+			wp_reset_postdata();
+		}
+
 		return $wrapper;
 	}
 
@@ -351,7 +380,7 @@ class ALM_Asset_Manager {
 					'post_type'      => ALM_ASSET_CPT_SLUG,
 					'post_status'    => 'publish',
 					'posts_per_page' => 1,
-					'meta_query'     => array(
+					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 						array(
 							'key'     => 'components',
 							'value'   => '"' . $asset_id . '"',

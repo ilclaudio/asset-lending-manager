@@ -241,6 +241,40 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 
 	<!-- V section: Loan request form (hidden for maintenance/retired assets and when loan requests are disabled) -->
 	<?php if ( $alm_loan_requests_enabled && ! $alm_is_current_owner && in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) ) : ?>
+		<?php
+		// Check if this component belongs to one or more kits.
+		// Show only to users who can actually request a loan (logged-in members/operators).
+		$alm_parent_kits = isset( $asset->parent_kits ) ? $asset->parent_kits : array();
+		if ( ! empty( $alm_parent_kits ) && is_user_logged_in() && current_user_can( ALM_VIEW_ASSET ) ) :
+			?>
+			<div class="alm-notice alm-notice--info alm-kit-notice" role="note">
+				<strong><?php esc_html_e( 'Note:', 'asset-lending-manager' ); ?></strong>
+				<?php
+				$alm_kit_links = array();
+				foreach ( $alm_parent_kits as $alm_parent_kit ) {
+					$alm_kit_links[] = '<a class="alm-link" href="' . esc_url( $alm_parent_kit['permalink'] ) . '">'
+						. esc_html( $alm_parent_kit['title'] ) . '</a>';
+				}
+				if ( 1 === count( $alm_kit_links ) ) {
+					echo wp_kses_post(
+						sprintf(
+							/* translators: %s: kit name as a link. */
+							__( 'This component is part of the kit %s. You may also request the entire kit instead.', 'asset-lending-manager' ),
+							$alm_kit_links[0]
+						)
+					);
+				} else {
+					echo wp_kses_post(
+						sprintf(
+							/* translators: %s: comma-separated kit names as links. */
+							__( 'This component is part of the following kits: %s. You may also request an entire kit instead.', 'asset-lending-manager' ),
+							implode( ', ', $alm_kit_links )
+						)
+					);
+				}
+				?>
+			</div>
+		<?php endif; ?>
 		<section class="alm-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
 			<details class="alm-collapsible alm-collapsible--requestbutton" id="alm-loan-request-section">
 				<summary class="alm-collapsible__summary">
