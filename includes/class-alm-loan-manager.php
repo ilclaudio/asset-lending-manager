@@ -956,7 +956,10 @@ class ALM_Loan_Manager {
 	 * @param bool   $check_component_conflicts Whether to throw if a kit component is already on-loan.
 	 * @param array  $canceled_notification_events Collected notification events to dispatch post-commit.
 	 * @throws Exception When any operation fails.
-	 * @return int[] Component IDs processed (empty array if asset is not a kit).
+	 * @return array {
+	 *     @type int[] $component_ids            Component IDs processed (empty if not a kit).
+	 *     @type array $component_previous_owners Map of component_id => previous owner user ID.
+	 * }
 	 */
 	private function execute_ownership_transfer(
 		$asset_id,
@@ -1021,7 +1024,11 @@ class ALM_Loan_Manager {
 				}
 
 				// 5. Propagate owner and state to all components.
+				// Capture each component's previous owner before overwriting it so callers
+				// can write accurate per-component history entries.
+				$component_previous_owners = array();
 				foreach ( $component_ids as $component_id ) {
+					$component_previous_owners[ $component_id ] = $this->get_current_owner( $component_id );
 					$this->set_asset_owner( $component_id, $new_owner_id );
 					$this->set_asset_state( $component_id, 'on-loan' );
 				}
@@ -1056,7 +1063,10 @@ class ALM_Loan_Manager {
 			}
 		}
 
-		return $component_ids;
+		return array(
+			'component_ids'            => $component_ids,
+			'component_previous_owners' => isset( $component_previous_owners ) ? $component_previous_owners : array(),
+		);
 	}
 
 	/**
@@ -1134,7 +1144,7 @@ class ALM_Loan_Manager {
 
 			// 2–6. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
 			$canceled_notification_events = array();
-			$component_ids                = $this->execute_ownership_transfer(
+			$transfer_result              = $this->execute_ownership_transfer(
 				$asset_id,
 				$requester_id,
 				$loan_request->id,
@@ -1142,6 +1152,8 @@ class ALM_Loan_Manager {
 				true,
 				$canceled_notification_events
 			);
+			$component_ids            = $transfer_result['component_ids'];
+			$component_prev_owners    = $transfer_result['component_previous_owners'];
 
 			// 8. Update request status to approved and delete from requests table.
 			$deleted = $wpdb->delete(
@@ -1167,6 +1179,22 @@ class ALM_Loan_Manager {
 
 			if ( ! $history_logged ) {
 				throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+			}
+
+			// 10. Insert history entries for each kit component.
+			foreach ( $component_prev_owners as $component_id => $component_prev_owner ) {
+				$component_logged = $this->log_history_entry(
+					$loan_request->id,
+					$component_id,
+					$requester_id,
+					$component_prev_owner,
+					'approved',
+					$loan_request->request_message,
+					$approved_by
+				);
+				if ( ! $component_logged ) {
+					throw new Exception( __( 'Failed to log history entry for kit component.', 'asset-lending-manager' ) );
+				}
 			}
 
 			// Commit transaction.
@@ -1603,7 +1631,7 @@ class ALM_Loan_Manager {
 
 			// 3–7. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
 			$canceled_notification_events = array();
-			$component_ids                = $this->execute_ownership_transfer(
+			$transfer_result              = $this->execute_ownership_transfer(
 				$asset_id,
 				$assignee_id,
 				0,
@@ -1611,6 +1639,8 @@ class ALM_Loan_Manager {
 				false,
 				$canceled_notification_events
 			);
+			$component_ids            = $transfer_result['component_ids'];
+			$component_prev_owners    = $transfer_result['component_previous_owners'];
 
 			// 8. Log history entry (loan_request_id = 0 for direct assignments).
 			$history_logged = $this->log_history_entry(
@@ -1625,6 +1655,22 @@ class ALM_Loan_Manager {
 
 			if ( ! $history_logged ) {
 				throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+			}
+
+			// 9. Insert history entries for each kit component.
+			foreach ( $component_prev_owners as $component_id => $component_prev_owner ) {
+				$component_logged = $this->log_history_entry(
+					0,
+					$component_id,
+					$assignee_id,
+					$component_prev_owner,
+					'direct_assign',
+					$reason,
+					$actor_id
+				);
+				if ( ! $component_logged ) {
+					throw new Exception( __( 'Failed to log history entry for kit component.', 'asset-lending-manager' ) );
+				}
 			}
 
 			// Commit transaction.
