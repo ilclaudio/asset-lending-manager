@@ -77,8 +77,9 @@ class ALM_Settings_Manager {
 				'max_active_per_user'                => 0,
 				'allow_multiple_requests'            => true,
 				'request_message_max_length'         => 500,
-				'rejection_message_max_length'       => 255,
+				'rejection_message_max_length'       => 500,
 				'direct_assign_reason_max_length'    => 500,
+				'change_state_notes_max_length'      => 500,
 			),
 			'direct_assign' => array(
 				'enabled'              => true,

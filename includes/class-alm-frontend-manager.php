@@ -237,13 +237,17 @@ class ALM_Frontend_Manager {
 			'alm-frontend-assets',
 			'almFrontend',
 			array(
-				'ajaxUrl'           => admin_url( 'admin-ajax.php' ),
-				'nonce'             => wp_create_nonce( 'alm_frontend_nonce' ),
-				'loanRequestNonce'  => wp_create_nonce( 'alm_loan_request_nonce' ),
-				'directAssignNonce' => wp_create_nonce( 'alm_direct_assign_nonce' ),
-				'changeStateNonce'  => wp_create_nonce( 'alm_change_state_nonce' ),
-				'restoreStateNonce' => wp_create_nonce( 'alm_restore_state_nonce' ),
-				'qrScanEnabled'     => (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true ),
+				'ajaxUrl'                     => admin_url( 'admin-ajax.php' ),
+				'nonce'                       => wp_create_nonce( 'alm_frontend_nonce' ),
+				'loanRequestNonce'            => wp_create_nonce( 'alm_loan_request_nonce' ),
+				'directAssignNonce'           => wp_create_nonce( 'alm_direct_assign_nonce' ),
+				'changeStateNonce'            => wp_create_nonce( 'alm_change_state_nonce' ),
+				'restoreStateNonce'           => wp_create_nonce( 'alm_restore_state_nonce' ),
+				'qrScanEnabled'               => (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true ),
+				'requestMessageMaxLength'     => (int) $this->settings->get( 'loans.request_message_max_length', 500 ),
+				'rejectionMessageMaxLength'   => (int) $this->settings->get( 'loans.rejection_message_max_length', 500 ),
+				'directAssignReasonMaxLength' => (int) $this->settings->get( 'loans.direct_assign_reason_max_length', 500 ),
+				'changeStateNotesMaxLength'   => (int) $this->settings->get( 'loans.change_state_notes_max_length', 500 ),
 			)
 		);
 

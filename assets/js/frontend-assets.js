@@ -11,6 +11,7 @@
 	var __ = (window.wp && window.wp.i18n && window.wp.i18n.__) ? window.wp.i18n.__ : function(text) {
 		return text;
 	};
+	var sprintf = (window.wp && window.wp.i18n && window.wp.i18n.sprintf) ? window.wp.i18n.sprintf : function(fmt) { return fmt; };
 
 	/**
 	 * Initialize when DOM is ready.
@@ -200,7 +201,7 @@
 			if (messageField && charCount) {
 				messageField.addEventListener('input', function() {
 					var length = messageField.value.length;
-					charCount.textContent = length + ' / 500';
+					charCount.textContent = length + ' / ' + (parseInt(almFrontend.directAssignReasonMaxLength, 10) || 500);
 					
 					if (length >= 500) {
 						charCount.style.color = '#dc3545';
@@ -230,9 +231,10 @@
 					return;
 				}
 
-				// Validate message length (max 500 characters)
-				if (messageField.value.length > 500) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Request message must not exceed 500 characters.', 'asset-lending-manager' ));
+				// Validate message length.
+				var requestMaxLen = parseInt(almFrontend.requestMessageMaxLength, 10) || 500;
+				if (messageField.value.length > requestMaxLen) {
+					ALM_Frontend.showResponse(responseDiv, 'error', sprintf(__( 'Request message must not exceed %d characters.', 'asset-lending-manager' ), requestMaxLen));
 					return;
 				}
 
@@ -352,8 +354,9 @@
 					return;
 				}
 
-				if (reasonField.value.length > 500) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Reason must not exceed 500 characters.', 'asset-lending-manager' ));
+				var directAssignMaxLen = parseInt(almFrontend.directAssignReasonMaxLength, 10) || 500;
+				if (reasonField.value.length > directAssignMaxLen) {
+					ALM_Frontend.showResponse(responseDiv, 'error', sprintf(__( 'Reason must not exceed %d characters.', 'asset-lending-manager' ), directAssignMaxLen));
 					return;
 				}
 
@@ -871,25 +874,26 @@
 
 			var label = document.createElement('label');
 			label.setAttribute('for', 'alm-rejection-message');
-			label.textContent = __( 'Rejection reason (required, max 255 characters):', 'asset-lending-manager' );
+			var rejMaxLen = parseInt(almFrontend.rejectionMessageMaxLength, 10) || 255;
+			label.textContent = sprintf(__( 'Rejection reason (required, max %d characters):', 'asset-lending-manager' ), rejMaxLen);
 
 			var textarea = document.createElement('textarea');
 			textarea.id = 'alm-rejection-message';
 			textarea.name = 'rejection_message';
 			textarea.rows = 4;
-			textarea.maxLength = 255;
+			textarea.maxLength = rejMaxLen;
 			textarea.required = true;
 			textarea.placeholder = __( 'Please provide a reason for rejecting this loan request...', 'asset-lending-manager' );
 
 			var charCount = document.createElement('div');
 			charCount.className = 'alm-char-count';
-			charCount.textContent = '0 / 255';
+			charCount.textContent = '0 / ' + rejMaxLen;
 
 			textarea.addEventListener('input', function() {
 				var length = textarea.value.length;
-				charCount.textContent = length + ' / 255';
+				charCount.textContent = length + ' / ' + rejMaxLen;
 				
-				if (length >= 255) {
+				if (length >= rejMaxLen) {
 					charCount.style.color = '#dc3545';
 				} else {
 					charCount.style.color = '#6c757d';

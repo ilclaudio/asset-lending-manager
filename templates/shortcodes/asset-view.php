@@ -21,7 +21,11 @@ if ( $alm_asset_id <= 0 ) {
 $alm_asset_fields          = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
 $alm_loan_manager          = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
 $alm_settings              = ALM_Plugin_Manager::get_instance()->get_module( 'settings' );
-$alm_loan_requests_enabled = (bool) $alm_settings->get( 'loans.loan_requests_enabled', true );
+$alm_loan_requests_enabled       = (bool) $alm_settings->get( 'loans.loan_requests_enabled', true );
+$alm_request_message_max         = (int) $alm_settings->get( 'loans.request_message_max_length', 500 );
+$alm_rejection_message_max       = (int) $alm_settings->get( 'loans.rejection_message_max_length', 255 );
+$alm_direct_assign_reason_max    = (int) $alm_settings->get( 'loans.direct_assign_reason_max_length', 500 );
+$alm_change_state_notes_max      = (int) $alm_settings->get( 'loans.change_state_notes_max_length', 500 );
 $alm_owner_id              = $alm_loan_manager->get_current_owner( $alm_asset_id );
 $alm_asset_title           = isset( $asset->title ) ? (string) $asset->title : '';
 $alm_asset_content         = isset( $asset->content ) ? (string) $asset->content : '';
@@ -306,13 +310,13 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 										id="alm-request-message"
 										name="message"
 										rows="4"
-										maxlength="500"
+										maxlength="<?php echo esc_attr( $alm_request_message_max ); ?>"
 										placeholder="<?php esc_attr_e( 'Write a brief message explaining why you need this asset...', 'asset-lending-manager' ); ?>"
 										aria-describedby="alm-request-char-count"
 										aria-required="true"
 										required
 									></textarea>
-									<div class="alm-char-count" id="alm-request-char-count">0 / 500</div>
+									<div class="alm-char-count" id="alm-request-char-count">0 / <?php echo esc_html( $alm_request_message_max ); ?></div>
 								</div>
 								<div class="alm-form-actions">
 									<button type="submit" class="alm-button alm-button--primary">
@@ -526,13 +530,13 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							id="alm-direct-assign-reason"
 							name="reason"
 							rows="3"
-							maxlength="500"
+							maxlength="<?php echo esc_attr( $alm_direct_assign_reason_max ); ?>"
 							placeholder="<?php esc_attr_e( 'Explain the reason for this assignment...', 'asset-lending-manager' ); ?>"
 							aria-describedby="alm-direct-assign-char-count"
 							aria-required="true"
 							required
 						></textarea>
-						<div class="alm-char-count" id="alm-direct-assign-char-count">0 / 500</div>
+						<div class="alm-char-count" id="alm-direct-assign-char-count">0 / <?php echo esc_html( $alm_direct_assign_reason_max ); ?></div>
 					</div>
 
 					<div class="alm-form-actions">
@@ -587,11 +591,11 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									id="alm-change-state-notes"
 									name="notes"
 									rows="3"
-									maxlength="500"
+									maxlength="<?php echo esc_attr( $alm_change_state_notes_max ); ?>"
 									placeholder="<?php esc_attr_e( 'Describe the reason for this state change...', 'asset-lending-manager' ); ?>"
 									aria-describedby="alm-change-state-char-count"
 								></textarea>
-								<div class="alm-char-count" id="alm-change-state-char-count">0 / 500</div>
+								<div class="alm-char-count" id="alm-change-state-char-count">0 / <?php echo esc_html( $alm_change_state_notes_max ); ?></div>
 							</div>
 							<div class="alm-form-actions alm-form-actions--row">
 								<button type="submit" class="alm-button alm-button--warning" data-target-state="maintenance">
@@ -627,11 +631,11 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									id="alm-restore-state-notes"
 									name="notes"
 									rows="3"
-									maxlength="500"
+									maxlength="<?php echo esc_attr( $alm_change_state_notes_max ); ?>"
 									placeholder="<?php esc_attr_e( 'Describe the reason for restoring this asset...', 'asset-lending-manager' ); ?>"
 									aria-describedby="alm-restore-state-char-count"
 								></textarea>
-								<div class="alm-char-count" id="alm-restore-state-char-count">0 / 500</div>
+								<div class="alm-char-count" id="alm-restore-state-char-count">0 / <?php echo esc_html( $alm_change_state_notes_max ); ?></div>
 							</div>
 							<div class="alm-form-actions">
 								<button type="submit" class="alm-button alm-button--approve">

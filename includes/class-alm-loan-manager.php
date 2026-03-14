@@ -17,7 +17,7 @@ class ALM_Loan_Manager {
 	/**
 	 * Maximum length for rejection message.
 	 */
-	const REJECTION_MESSAGE_MAX_LENGTH = 255;
+	const REJECTION_MESSAGE_MAX_LENGTH = 500;
 
 	/**
 	 * Maximum length for loan request message.
