@@ -9,6 +9,12 @@ This projects uses [Semantic Versioning](http://semver.org/).
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
+## [DEV-0.0.3] - 2026-03-15
+### Changed
+### Added
+### Fixed
+### Security
+
 
 ## [DEV-0.0.2] - 2026-03-11
 ### Changed
@@ -25,7 +31,6 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Fix of accessibility issues-
 ### Security
 - Many security fixes suggested.
-
 
 ## [DEV-0.0.1] - 2026-02-22
 - First develepoment version, ready for internal tests.

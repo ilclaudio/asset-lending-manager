@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Define constants.
-define( 'ALM_VERSION', 'DEV-0.0.2' );
+define( 'ALM_VERSION', 'DEV-0.0.3' );
 define( 'ALM_PLUGIN_FILE', __FILE__ );
 define( 'ALM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ALM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
