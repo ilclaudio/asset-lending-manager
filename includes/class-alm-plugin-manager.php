@@ -54,7 +54,6 @@ class ALM_Plugin_Manager {
 	 */
 	public function init() {
 		$this->check_dependencies();
-		$this->init_i18n();
 		// Configure logger with user settings (runs on plugins_loaded, safe because
 		// get_defaults() defers __() calls until after the 'init' action).
 		ALM_Logger::configure( $this->modules['settings'] );
@@ -99,24 +98,6 @@ class ALM_Plugin_Manager {
 				}
 			);
 		}
-	}
-
-	/**
-	 * Load plugin translations.
-	 *
-	 * @return void
-	 */
-	private function init_i18n() {
-		add_action(
-			'init',
-			static function () {
-				load_plugin_textdomain(
-					ALM_TEXT_DOMAIN,
-					false,
-					dirname( plugin_basename( ALM_PLUGIN_FILE ) ) . '/languages/'
-				);
-			}
-		);
 	}
 
 	/**
