@@ -403,7 +403,7 @@ class ALM_Plugin_Manager {
 			// [A]-only fields.
 			if ( $is_admin ) {
 				$changes['loans.request_message_max_length']         = max( 0, (int) wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) );
-				$changes['loans.rejection_message_max_length']       = max( 0, (int) wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 255 ) );
+				$changes['loans.rejection_message_max_length']       = max( 0, (int) wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 500 ) );
 				$changes['loans.direct_assign_reason_max_length']    = max( 0, (int) wp_unslash( $_POST['alm_loans_direct_assign_reason_max_length'] ?? 500 ) );
 			}
 		}
