@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-11 20:19+0000\n"
+"POT-Creation-Date: 2026-03-15 18:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,12 +16,12 @@ msgstr ""
 "X-Loco-Version: 2.8.0; wp-6.9; php-8.4.10\n"
 "X-Domain: asset-lending-manager"
 
-#: templates/shortcodes/asset-view.php:177
+#: templates/shortcodes/asset-view.php:181
 msgid "(opens in new tab)"
 msgstr ""
 
 #. %s: current owner display name
-#: templates/shortcodes/asset-view.php:538
+#: templates/shortcodes/asset-view.php:576
 #, php-format
 msgid ""
 "<strong>Warning:</strong> this asset is currently on loan to %s. Changing "
@@ -64,17 +64,17 @@ msgstr ""
 msgid "AAGG"
 msgstr ""
 
-#: includes/class-alm-installer.php:231
+#: includes/class-alm-installer.php:251
 msgid "Accessory"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1879
-#: includes/class-alm-loan-manager.php:1905
+#: includes/class-alm-loan-manager.php:1919
+#: includes/class-alm-loan-manager.php:1945
 msgid "ACF is not available. Cannot update kit components."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:358
-#: templates/shortcodes/asset-view.php:407
+#: templates/shortcodes/asset-view.php:396
+#: templates/shortcodes/asset-view.php:445
 msgid "Actions"
 msgstr ""
 
@@ -91,24 +91,24 @@ msgstr ""
 msgid "Add New Asset"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:139
+#: templates/shortcodes/asset-view.php:143
 msgid "Additional fields"
 msgstr ""
 
 #: admin/alm-settings-page.php:100 admin/alm-settings-page.php:121
 #: admin/alm-settings-page.php:142 admin/alm-settings-page.php:166
-#: admin/alm-settings-page.php:361 admin/alm-settings-page.php:393
-#: admin/alm-settings-page.php:415 admin/alm-settings-page.php:437
-#: admin/alm-settings-page.php:466 admin/alm-settings-page.php:500
-#: admin/alm-settings-page.php:575 admin/alm-settings-page.php:605
-#: admin/alm-settings-page.php:630 admin/alm-settings-page.php:655
-#: admin/alm-settings-page.php:795 admin/alm-settings-page.php:841
-#: admin/alm-settings-page.php:860 admin/alm-settings-page.php:892
-#: admin/alm-settings-page.php:910 admin/alm-settings-page.php:937
+#: admin/alm-settings-page.php:361 admin/alm-settings-page.php:383
+#: admin/alm-settings-page.php:405 admin/alm-settings-page.php:434
+#: admin/alm-settings-page.php:452 admin/alm-settings-page.php:527
+#: admin/alm-settings-page.php:557 admin/alm-settings-page.php:582
+#: admin/alm-settings-page.php:607 admin/alm-settings-page.php:747
+#: admin/alm-settings-page.php:793 admin/alm-settings-page.php:812
+#: admin/alm-settings-page.php:844 admin/alm-settings-page.php:862
+#: admin/alm-settings-page.php:889
 msgid "Administrator only"
 msgstr ""
 
-#: includes/class-alm-installer.php:289
+#: includes/class-alm-installer.php:309
 msgid "Advanced"
 msgstr ""
 
@@ -140,19 +140,19 @@ msgstr ""
 msgid "Allow multiple requests"
 msgstr ""
 
-#: admin/alm-settings-page.php:477
+#: admin/alm-settings-page.php:445
 msgid ""
 "Allow operators/administrators to assign an asset directly to a user without "
 "a loan request"
 msgstr ""
 
-#: admin/alm-settings-page.php:806
+#: admin/alm-settings-page.php:758
 msgid ""
 "Allow unauthenticated requests to the asset autocomplete REST endpoint (/wp-"
 "json/alm/v1/assets/autocomplete)"
 msgstr ""
 
-#: admin/alm-settings-page.php:499
+#: admin/alm-settings-page.php:451
 msgid "Allowed target roles"
 msgstr ""
 
@@ -170,7 +170,7 @@ msgid "ALM Tools"
 msgstr ""
 
 #. %s: example formatted code
-#: admin/alm-settings-page.php:954
+#: admin/alm-settings-page.php:906
 #, php-format
 msgid ""
 "Alphanumeric prefix prepended to the asset ID to form the human-readable "
@@ -181,28 +181,28 @@ msgstr ""
 msgid "An error occurred while loading default terms."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:534
+#: templates/shortcodes/asset-view.php:572
 msgid "an unknown user"
 msgstr ""
 
-#: admin/alm-settings-page.php:790
+#: admin/alm-settings-page.php:742
 msgid "API Access"
 msgstr ""
 
-#: assets/js/frontend-assets.js:779
+#: assets/js/frontend-assets.js:759
 msgid "Approval failed. Please try again."
 msgstr ""
 
-#: assets/js/frontend-assets.js:796
+#: assets/js/frontend-assets.js:776
 msgid "Approval request failed. Please try again."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:417
+#: templates/shortcodes/asset-view.php:455
 msgid "Approve"
 msgstr ""
 
 #. %s: loan requester display name.
-#: templates/shortcodes/asset-view.php:376
+#: templates/shortcodes/asset-view.php:414
 #, php-format
 msgid "Approve request from %s"
 msgstr ""
@@ -211,11 +211,11 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
-#: assets/js/frontend-assets.js:742
+#: assets/js/frontend-assets.js:725
 msgid "Approving..."
 msgstr ""
 
-#: assets/js/frontend-assets.js:628
+#: assets/js/frontend-assets.js:611
 msgid "Are you sure you want to approve this loan request?"
 msgstr ""
 
@@ -223,30 +223,30 @@ msgstr ""
 msgid "Asset"
 msgstr ""
 
-#: admin/alm-settings-page.php:604
+#: admin/alm-settings-page.php:556
 msgid "Asset archive page"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1570
-#: includes/class-alm-loan-manager.php:1656 assets/js/frontend-assets.js:1144
+#: includes/class-alm-loan-manager.php:1588
+#: includes/class-alm-loan-manager.php:1692 assets/js/frontend-assets.js:1119
 msgid "Asset assigned successfully."
 msgstr ""
 
-#: admin/alm-settings-page.php:931
+#: admin/alm-settings-page.php:883
 msgid "Asset Code"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:329
-#: includes/class-alm-loan-manager.php:618
+#: includes/class-alm-loan-manager.php:320
+#: includes/class-alm-loan-manager.php:609
 msgid "Asset ID mismatch."
 msgstr ""
 
-#: assets/js/frontend-assets.js:223 assets/js/frontend-assets.js:339
-#: assets/js/frontend-assets.js:452 assets/js/frontend-assets.js:532
+#: assets/js/frontend-assets.js:213 assets/js/frontend-assets.js:326
+#: assets/js/frontend-assets.js:440 assets/js/frontend-assets.js:520
 msgid "Asset ID not found."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1958
+#: includes/class-alm-loan-manager.php:1997
 msgid "Asset is not in a restorable state."
 msgstr ""
 
@@ -265,33 +265,33 @@ msgstr ""
 msgid "Asset Levels"
 msgstr ""
 
-#: admin/alm-settings-page.php:678
+#: admin/alm-settings-page.php:630
 msgid "Asset List"
 msgstr ""
 
-#: templates/shortcodes/asset-list.php:300
+#: templates/shortcodes/asset-list.php:311
 msgid "Asset list pagination"
 msgstr ""
 
-#: assets/js/admin-assets.js:121
+#: assets/js/admin-assets.js:115
 msgid "Asset name is required."
 msgstr ""
 
-#: includes/class-alm-frontend-manager.php:414
-#: includes/class-alm-frontend-manager.php:664
+#: includes/class-alm-frontend-manager.php:418
+#: includes/class-alm-frontend-manager.php:667
 #: includes/class-alm-loan-manager.php:144
-#: includes/class-alm-loan-manager.php:1133
-#: includes/class-alm-loan-manager.php:1525
-#: includes/class-alm-loan-manager.php:1720
-#: includes/class-alm-loan-manager.php:1953
+#: includes/class-alm-loan-manager.php:1134
+#: includes/class-alm-loan-manager.php:1543
+#: includes/class-alm-loan-manager.php:1755
+#: includes/class-alm-loan-manager.php:1992
 msgid "Asset not found."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:60
+#: templates/shortcodes/asset-view.php:64
 msgid "Asset overview"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:2055 assets/js/frontend-assets.js:1152
+#: includes/class-alm-loan-manager.php:2094 assets/js/frontend-assets.js:1127
 msgid "Asset restored to available successfully."
 msgstr ""
 
@@ -301,12 +301,16 @@ msgstr ""
 msgid "Asset State"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:518
-#: templates/shortcodes/asset-view.php:522
+#: includes/class-alm-loan-manager.php:1760
+msgid "Asset state cannot be changed from its current state."
+msgstr ""
+
+#: templates/shortcodes/asset-view.php:556
+#: templates/shortcodes/asset-view.php:560
 msgid "Asset state management"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1819 assets/js/frontend-assets.js:1148
+#: includes/class-alm-loan-manager.php:1859 assets/js/frontend-assets.js:1123
 msgid "Asset state updated successfully."
 msgstr ""
 
@@ -324,7 +328,7 @@ msgstr ""
 msgid "Asset Structures"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:89
+#: templates/shortcodes/asset-view.php:93
 msgid "Asset taxonomies"
 msgstr ""
 
@@ -352,48 +356,48 @@ msgstr ""
 msgid "Assets found: %d"
 msgstr ""
 
-#: admin/alm-settings-page.php:683
+#: admin/alm-settings-page.php:635
 msgid "Assets per page"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:506
+#: templates/shortcodes/asset-view.php:544
 msgid "Assign asset"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:468
+#: templates/shortcodes/asset-view.php:506
 msgid "Assign to user:"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1531
+#: includes/class-alm-loan-manager.php:1549
 msgid "Assignee user not found."
 msgstr ""
 
-#: assets/js/frontend-assets.js:369
+#: assets/js/frontend-assets.js:357
 msgid "Assigning..."
 msgstr ""
 
-#: assets/js/frontend-assets.js:393
+#: assets/js/frontend-assets.js:381
 msgid "Assignment failed. Please try again."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1506
+#: includes/class-alm-loan-manager.php:1524
 msgid "Assignment reason is required."
 msgstr ""
 
 #. %d: maximum number of characters allowed
-#: includes/class-alm-loan-manager.php:1515
+#: includes/class-alm-loan-manager.php:1533
 msgid "Assignment reason must not exceed %d characters."
 msgstr ""
 
-#: admin/alm-settings-page.php:533
+#: admin/alm-settings-page.php:485
 msgid "Automatic Cancellations"
 msgstr ""
 
-#: admin/alm-settings-page.php:574
+#: admin/alm-settings-page.php:526
 msgid "Automatic operations actor user ID"
 msgstr ""
 
-#: includes/class-alm-installer.php:262
+#: includes/class-alm-installer.php:282
 msgid "Available"
 msgstr ""
 
@@ -401,11 +405,11 @@ msgstr ""
 msgid "Available placeholders:"
 msgstr ""
 
-#: includes/class-alm-installer.php:281
+#: includes/class-alm-installer.php:301
 msgid "Basic"
 msgstr ""
 
-#: includes/class-alm-installer.php:219
+#: includes/class-alm-installer.php:239
 msgid "Binoculars"
 msgstr ""
 
@@ -413,23 +417,23 @@ msgstr ""
 msgid "Body"
 msgstr ""
 
-#: includes/class-alm-installer.php:235
+#: includes/class-alm-installer.php:255
 msgid "Book"
 msgstr ""
 
-#: assets/js/frontend-assets.js:1372
+#: assets/js/frontend-assets.js:1347
 msgid "Camera access denied. Please allow camera permissions."
 msgstr ""
 
-#: assets/js/frontend-assets.js:669 assets/js/frontend-assets.js:916
+#: assets/js/frontend-assets.js:652 assets/js/frontend-assets.js:894
 msgid "Cancel"
 msgstr ""
 
-#: admin/alm-settings-page.php:553
+#: admin/alm-settings-page.php:505
 msgid "Cancel component requests when kit assigned"
 msgstr ""
 
-#: admin/alm-settings-page.php:537
+#: admin/alm-settings-page.php:489
 msgid "Cancel concurrent requests on assign"
 msgstr ""
 
@@ -437,50 +441,50 @@ msgstr ""
 msgid "Canceled"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1140
+#: includes/class-alm-loan-manager.php:1141
 msgid "Cannot approve: asset is no longer available for loan."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1607
+#: includes/class-alm-loan-manager.php:1625
 msgid "Cannot assign an asset that is in maintenance or retired state."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:671
-#: templates/shortcodes/asset-view.php:708
+#: templates/shortcodes/asset-view.php:709
+#: templates/shortcodes/asset-view.php:746
 msgid "Changed by"
 msgstr ""
 
-#: assets/js/frontend-assets.js:1284
+#: assets/js/frontend-assets.js:1259
 msgid "Close"
 msgstr ""
 
-#: assets/js/frontend-assets.js:856
+#: assets/js/frontend-assets.js:833
 msgid "Close dialog"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:395
-#: templates/shortcodes/asset-view.php:730 assets/js/frontend-assets.js:1402
+#: templates/shortcodes/asset-view.php:433
+#: templates/shortcodes/asset-view.php:768 assets/js/frontend-assets.js:1377
 msgid "Close message"
 msgstr ""
 
-#: assets/js/frontend-assets.js:1286
+#: assets/js/frontend-assets.js:1261
 msgid "Close QR scanner"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:208
+#: templates/shortcodes/asset-view.php:212
 msgid "Code"
 msgstr ""
 
-#: admin/alm-settings-page.php:936
+#: admin/alm-settings-page.php:888
 msgid "Code prefix"
 msgstr ""
 
-#: includes/class-alm-installer.php:188
+#: includes/class-alm-installer.php:208
 msgid "Component"
 msgstr ""
 
 #. %s: kit component title
-#: includes/class-alm-loan-manager.php:1023
+#: includes/class-alm-loan-manager.php:1017
 #, php-format
 msgid ""
 "Component \"%s\" is already on loan and cannot be assigned as part of this "
@@ -488,7 +492,7 @@ msgid ""
 msgstr ""
 
 #. %s: kit component title
-#: includes/class-alm-loan-manager.php:1011
+#: includes/class-alm-loan-manager.php:1005
 #, php-format
 msgid ""
 "Component \"%s\" is in a non-loanable state and cannot be assigned as part "
@@ -496,28 +500,28 @@ msgid ""
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:34
-#: includes/class-alm-asset-manager.php:322
+#: includes/class-alm-asset-manager.php:351
 msgid "Components"
 msgstr ""
 
-#: assets/js/frontend-assets.js:674
+#: assets/js/frontend-assets.js:657
 msgid "Confirm"
 msgstr ""
 
-#: assets/js/frontend-assets.js:627
+#: assets/js/frontend-assets.js:610
 msgid "Confirm Approval"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:30
-#: includes/class-alm-asset-manager.php:313
+#: includes/class-alm-asset-manager.php:342
 msgid "Cost"
 msgstr ""
 
-#: assets/js/frontend-assets.js:441
+#: assets/js/frontend-assets.js:429
 msgid "Could not determine target state."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:155
+#: templates/shortcodes/asset-view.php:159
 msgid "Current owner"
 msgstr ""
 
@@ -528,12 +532,12 @@ msgid ""
 "translated default."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:357
-#: templates/shortcodes/asset-view.php:404
+#: templates/shortcodes/asset-view.php:395
+#: templates/shortcodes/asset-view.php:442
 msgid "Date"
 msgstr ""
 
-#: admin/alm-settings-page.php:871
+#: admin/alm-settings-page.php:823
 msgid "Debug — all events"
 msgstr ""
 
@@ -541,24 +545,24 @@ msgstr ""
 msgid "Default terms loaded successfully."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:597
+#: templates/shortcodes/asset-view.php:635
 msgid "Describe the reason for restoring this asset..."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:557
+#: templates/shortcodes/asset-view.php:595
 msgid "Describe the reason for this state change..."
 msgstr ""
 
-#: admin/alm-settings-page.php:770
+#: admin/alm-settings-page.php:722
 msgid "Description snippet length"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:31
-#: includes/class-alm-asset-manager.php:314
+#: includes/class-alm-asset-manager.php:343
 msgid "Dimensions"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1487
+#: includes/class-alm-loan-manager.php:1505
 msgid "Direct asset assignment is currently disabled."
 msgstr ""
 
@@ -566,12 +570,12 @@ msgstr ""
 msgid "Direct Assignment"
 msgstr ""
 
-#: plugin-config.php:140 templates/shortcodes/asset-view.php:452
-#: templates/shortcodes/asset-view.php:456
+#: plugin-config.php:140 templates/shortcodes/asset-view.php:490
+#: templates/shortcodes/asset-view.php:494
 msgid "Direct assignment"
 msgstr ""
 
-#: admin/alm-settings-page.php:461
+#: admin/alm-settings-page.php:429
 msgid "Direct Assignment Settings"
 msgstr ""
 
@@ -583,7 +587,7 @@ msgstr ""
 msgid "Direct assignment — to previous owner"
 msgstr ""
 
-#: admin/alm-settings-page.php:436
+#: admin/alm-settings-page.php:404
 msgid "Direct-assign reason max length"
 msgstr ""
 
@@ -599,11 +603,11 @@ msgstr ""
 msgid "Email templates can only be modified by administrators."
 msgstr ""
 
-#: admin/alm-settings-page.php:840
+#: admin/alm-settings-page.php:792
 msgid "Enable ALM logging"
 msgstr ""
 
-#: admin/alm-settings-page.php:465
+#: admin/alm-settings-page.php:433
 msgid "Enable direct assignment"
 msgstr ""
 
@@ -615,111 +619,116 @@ msgstr ""
 msgid "Enable notifications"
 msgstr ""
 
-#: admin/alm-settings-page.php:816
+#: admin/alm-settings-page.php:768
 msgid "Enable QR code search"
 msgstr ""
 
-#: admin/alm-settings-page.php:874
+#: admin/alm-settings-page.php:826
 msgid "Error — errors only"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:496
+#: templates/shortcodes/asset-view.php:534
 msgid "Explain the reason for this assignment..."
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:38
-#: includes/class-alm-asset-manager.php:320
+#: includes/class-alm-asset-manager.php:349
 msgid "External code"
 msgstr ""
 
-#: assets/js/frontend-assets.js:1138
+#: assets/js/frontend-assets.js:1113
 msgid "Failed to approve loan request. Please try again."
 msgstr ""
 
-#: assets/js/frontend-assets.js:1146
+#: assets/js/frontend-assets.js:1121
 msgid "Failed to assign asset. Please try again."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:213
+#: includes/class-alm-loan-manager.php:204
 msgid "Failed to create loan request."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:471
+#: includes/class-alm-loan-manager.php:462
 msgid "Failed to delete loan request."
 msgstr ""
 
 #. %d: loan request ID
-#: includes/class-alm-loan-manager.php:1416
+#: includes/class-alm-loan-manager.php:1435
 msgid "Failed to delete request ID %d."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:460
+#: includes/class-alm-loan-manager.php:451
 msgid "Failed to insert history record."
 msgstr ""
 
 #. %d: loan request ID
-#: includes/class-alm-loan-manager.php:1399
+#: includes/class-alm-loan-manager.php:1418
 msgid "Failed to log cancellation for request ID %d."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1782
-#: includes/class-alm-loan-manager.php:2018
+#: includes/class-alm-loan-manager.php:1822
+#: includes/class-alm-loan-manager.php:2057
 msgid "Failed to log history entry for component."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1178
-#: includes/class-alm-loan-manager.php:1636
-#: includes/class-alm-loan-manager.php:1772
-#: includes/class-alm-loan-manager.php:1801
-#: includes/class-alm-loan-manager.php:2008
-#: includes/class-alm-loan-manager.php:2036
+#: includes/class-alm-loan-manager.php:1196
+#: includes/class-alm-loan-manager.php:1671
+msgid "Failed to log history entry for kit component."
+msgstr ""
+
+#: includes/class-alm-loan-manager.php:1181
+#: includes/class-alm-loan-manager.php:1656
+#: includes/class-alm-loan-manager.php:1812
+#: includes/class-alm-loan-manager.php:1841
+#: includes/class-alm-loan-manager.php:2047
+#: includes/class-alm-loan-manager.php:2075
 msgid "Failed to log history entry."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:352
+#: includes/class-alm-loan-manager.php:343
 msgid "Failed to reject loan request."
 msgstr ""
 
-#: assets/js/frontend-assets.js:1134
+#: assets/js/frontend-assets.js:1109
 msgid "Failed to reject loan request. Please try again."
 msgstr ""
 
-#: assets/js/frontend-assets.js:1038
+#: assets/js/frontend-assets.js:1013
 msgid "Failed to reject request. Please try again."
 msgstr ""
 
-#: assets/js/frontend-assets.js:1154
+#: assets/js/frontend-assets.js:1129
 msgid "Failed to restore asset. Please try again."
 msgstr ""
 
-#: assets/js/frontend-assets.js:1142
+#: assets/js/frontend-assets.js:1117
 msgid "Failed to send loan request. Please try again."
 msgstr ""
 
 #. %d: asset post ID
-#: includes/class-alm-loan-manager.php:1240
+#: includes/class-alm-loan-manager.php:1259
 msgid "Failed to set owner for asset ID %d."
 msgstr ""
 
 #. 1: asset post ID, 2: taxonomy error message
-#: includes/class-alm-loan-manager.php:1276
+#: includes/class-alm-loan-manager.php:1295
 #, php-format
 msgid "Failed to set state for asset ID %1$d: %2$s"
 msgstr ""
 
-#: assets/js/frontend-assets.js:1150
+#: assets/js/frontend-assets.js:1125
 msgid "Failed to update asset state. Please try again."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1163
+#: includes/class-alm-loan-manager.php:1166
 msgid "Failed to update request status."
 msgstr ""
 
-#: includes/class-alm-installer.php:227
+#: includes/class-alm-installer.php:247
 msgid "Filter"
 msgstr ""
 
-#: admin/alm-settings-page.php:703
+#: admin/alm-settings-page.php:655
 msgid "Filters open by default"
 msgstr ""
 
@@ -735,11 +744,11 @@ msgstr ""
 msgid "Frontend"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:131
+#: templates/shortcodes/asset-view.php:135
 msgid "Full description"
 msgstr ""
 
-#: includes/class-alm-installer.php:247
+#: includes/class-alm-installer.php:267
 msgid "Generic"
 msgstr ""
 
@@ -839,52 +848,56 @@ msgstr ""
 msgid "https://www.astrofilipisani.it/"
 msgstr ""
 
-#: admin/alm-settings-page.php:872
+#: admin/alm-settings-page.php:824
 msgid "Info — informational and above"
 msgstr ""
 
-#: includes/class-alm-installer.php:285
+#: includes/class-alm-installer.php:305
 msgid "Intermediate"
 msgstr ""
 
 #: includes/class-alm-loan-manager.php:135
-#: includes/class-alm-loan-manager.php:279
-#: includes/class-alm-loan-manager.php:590
-#: includes/class-alm-loan-manager.php:1498
+#: includes/class-alm-loan-manager.php:270
+#: includes/class-alm-loan-manager.php:581
+#: includes/class-alm-loan-manager.php:1516
 msgid "Invalid asset ID."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1697
-#: includes/class-alm-loan-manager.php:1935
+#: includes/class-alm-loan-manager.php:1732
+#: includes/class-alm-loan-manager.php:1974
 msgid "Invalid asset."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1502
+#: includes/class-alm-loan-manager.php:1520
 msgid "Invalid assignee ID."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:271
-#: includes/class-alm-loan-manager.php:582
+#: includes/class-alm-loan-manager.php:262
+#: includes/class-alm-loan-manager.php:573
 msgid "Invalid request ID."
 msgstr ""
 
 #. %s: invalid asset state slug
-#: includes/class-alm-loan-manager.php:1264
+#: includes/class-alm-loan-manager.php:1283
 #, php-format
 msgid "Invalid state slug: %s"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1702
+#: includes/class-alm-loan-manager.php:1737
 msgid "Invalid target state."
 msgstr ""
 
-#: includes/class-alm-installer.php:192
+#: includes/class-alm-installer.php:212 templates/shortcodes/asset-list.php:297
 msgid "Kit"
+msgstr ""
+
+#: templates/shortcodes/asset-list.php:296
+msgid "Kit membership"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:161
 #: templates/shortcodes/asset-list.php:281
-#: templates/shortcodes/asset-view.php:109
+#: templates/shortcodes/asset-view.php:113
 msgid "Level"
 msgstr ""
 
@@ -892,8 +905,8 @@ msgstr ""
 msgid "Loan confirmation"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:617
-#: templates/shortcodes/asset-view.php:621
+#: templates/shortcodes/asset-view.php:655
+#: templates/shortcodes/asset-view.php:659
 msgid "Loan history"
 msgstr ""
 
@@ -901,15 +914,15 @@ msgstr ""
 msgid "Loan Limits"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:244
+#: templates/shortcodes/asset-view.php:282
 msgid "Loan request"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1199 assets/js/frontend-assets.js:1136
+#: includes/class-alm-loan-manager.php:1218 assets/js/frontend-assets.js:1111
 msgid "Loan request approved successfully."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:662
+#: includes/class-alm-loan-manager.php:653
 msgid "Loan request approved successfully. The page will reload."
 msgstr ""
 
@@ -917,22 +930,22 @@ msgstr ""
 msgid "Loan request decision"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:320
-#: includes/class-alm-loan-manager.php:441
-#: includes/class-alm-loan-manager.php:609
-#: includes/class-alm-loan-manager.php:1118
+#: includes/class-alm-loan-manager.php:311
+#: includes/class-alm-loan-manager.php:432
+#: includes/class-alm-loan-manager.php:600
+#: includes/class-alm-loan-manager.php:1119
 msgid "Loan request not found."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:373 assets/js/frontend-assets.js:1132
+#: includes/class-alm-loan-manager.php:364 assets/js/frontend-assets.js:1107
 msgid "Loan request rejected successfully."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:231
+#: includes/class-alm-loan-manager.php:222
 msgid "Loan request sent successfully!"
 msgstr ""
 
-#: assets/js/frontend-assets.js:1140
+#: assets/js/frontend-assets.js:1115
 msgid "Loan request sent successfully."
 msgstr ""
 
@@ -952,14 +965,14 @@ msgstr ""
 msgid "Loan Requests"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:336
-#: templates/shortcodes/asset-view.php:340
+#: templates/shortcodes/asset-view.php:374
+#: templates/shortcodes/asset-view.php:378
 msgid "Loan requests"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:97
-#: includes/class-alm-loan-manager.php:249
-#: includes/class-alm-loan-manager.php:561
+#: includes/class-alm-loan-manager.php:105
+#: includes/class-alm-loan-manager.php:248
+#: includes/class-alm-loan-manager.php:560
 msgid "Loan requests are currently disabled."
 msgstr ""
 
@@ -968,31 +981,31 @@ msgid "Loan Rules"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:33
-#: includes/class-alm-asset-manager.php:316
+#: includes/class-alm-asset-manager.php:345
 msgid "Location"
 msgstr ""
 
-#: admin/alm-settings-page.php:909
+#: admin/alm-settings-page.php:861
 msgid "Log email events"
 msgstr ""
 
-#: admin/alm-settings-page.php:859
+#: admin/alm-settings-page.php:811
 msgid "Log level"
 msgstr ""
 
-#: admin/alm-settings-page.php:35 admin/alm-settings-page.php:836
+#: admin/alm-settings-page.php:35 admin/alm-settings-page.php:788
 msgid "Logging"
 msgstr ""
 
-#: admin/alm-settings-page.php:629
+#: admin/alm-settings-page.php:581
 msgid "Login redirect page"
 msgstr ""
 
-#: admin/alm-settings-page.php:654
+#: admin/alm-settings-page.php:606
 msgid "Logout redirect page"
 msgstr ""
 
-#: includes/class-alm-installer.php:239
+#: includes/class-alm-installer.php:259
 msgid "Magazine"
 msgstr ""
 
@@ -1000,20 +1013,20 @@ msgstr ""
 msgid "Main page of the plugin"
 msgstr ""
 
-#: includes/class-alm-installer.php:266
+#: includes/class-alm-installer.php:286
 msgid "Maintenance"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:604
+#: templates/shortcodes/asset-view.php:642
 msgid "Make available"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:27
-#: includes/class-alm-asset-manager.php:310
+#: includes/class-alm-asset-manager.php:339
 msgid "Manufacturer"
 msgstr ""
 
-#: admin/alm-settings-page.php:891
+#: admin/alm-settings-page.php:843
 msgid "Mask personal data in logs"
 msgstr ""
 
@@ -1027,23 +1040,23 @@ msgstr ""
 msgid "Max active loans per user"
 msgstr ""
 
-#: admin/alm-settings-page.php:749
+#: admin/alm-settings-page.php:701
 msgid "Max results"
 msgstr ""
 
-#: admin/alm-settings-page.php:407
+#: admin/alm-settings-page.php:375
 msgid ""
 "Maximum character length of the message a member writes when submitting a "
 "loan request. Set to 0 for unlimited."
 msgstr ""
 
-#: admin/alm-settings-page.php:451
+#: admin/alm-settings-page.php:419
 msgid ""
 "Maximum character length of the reason field when performing a direct "
 "assignment. Set to 0 for unlimited."
 msgstr ""
 
-#: admin/alm-settings-page.php:429
+#: admin/alm-settings-page.php:397
 msgid ""
 "Maximum character length of the rejection reason an operator enters when "
 "declining a request. Set to 0 for unlimited."
@@ -1055,13 +1068,13 @@ msgid ""
 "0 for unlimited."
 msgstr ""
 
-#: admin/alm-settings-page.php:763
+#: admin/alm-settings-page.php:715
 msgid ""
 "Maximum number of suggestions returned by the autocomplete endpoint. Default:"
 " 5."
 msgstr ""
 
-#: admin/alm-settings-page.php:506
+#: admin/alm-settings-page.php:458
 #: includes/class-alm-autocomplete-manager.php:283
 #: includes/class-alm-role-manager.php:73
 msgid "Member"
@@ -1074,39 +1087,39 @@ msgid ""
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:40
-#: includes/class-alm-asset-manager.php:366
+#: includes/class-alm-asset-manager.php:395
 msgid "Membership kit"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:356
-#: templates/shortcodes/asset-view.php:384
-#: templates/shortcodes/asset-view.php:674
-#: templates/shortcodes/asset-view.php:719
+#: templates/shortcodes/asset-view.php:394
+#: templates/shortcodes/asset-view.php:422
+#: templates/shortcodes/asset-view.php:712
+#: templates/shortcodes/asset-view.php:757
 msgid "Message"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:269
+#: templates/shortcodes/asset-view.php:307
 msgid "Message for the current owner:"
 msgstr ""
 
-#: admin/alm-settings-page.php:387
+#: admin/alm-settings-page.php:355
 msgid "Message Length Limits"
 msgstr ""
 
-#: admin/alm-settings-page.php:728
+#: admin/alm-settings-page.php:680
 msgid "Minimum characters"
 msgstr ""
 
-#: admin/alm-settings-page.php:742
+#: admin/alm-settings-page.php:694
 msgid "Minimum characters typed before autocomplete activates. Default: 3."
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:28
-#: includes/class-alm-asset-manager.php:311
+#: includes/class-alm-asset-manager.php:340
 msgid "Model"
 msgstr ""
 
-#: includes/class-alm-installer.php:243
+#: includes/class-alm-installer.php:263
 msgid "Mount"
 msgstr ""
 
@@ -1114,11 +1127,11 @@ msgstr ""
 msgid "New Asset"
 msgstr ""
 
-#: templates/shortcodes/asset-list.php:310
+#: templates/shortcodes/asset-list.php:321
 msgid "Next page"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:236
+#: templates/shortcodes/asset-view.php:240
 msgid "No additional details available."
 msgstr ""
 
@@ -1130,41 +1143,42 @@ msgstr ""
 msgid "No assets found in Trash"
 msgstr ""
 
-#: templates/shortcodes/asset-list.php:329
+#: templates/shortcodes/asset-list.php:340
 msgid "No assets found."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:745
+#: templates/shortcodes/asset-view.php:783
 msgid "No loan history available for this asset."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:439
+#: templates/shortcodes/asset-view.php:477
 msgid "No pending requests for this asset."
 msgstr ""
 
 #. %s: Search term entered by the user.
-#: templates/shortcodes/asset-list.php:325
+#: templates/shortcodes/asset-list.php:336
 #, php-format
 msgid "No results found for \"%s\"."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:660
+#: templates/shortcodes/asset-view.php:255
+#: templates/shortcodes/asset-view.php:698
 msgid "Note:"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:39
-#: includes/class-alm-asset-manager.php:321
+#: includes/class-alm-asset-manager.php:350
 msgid "Notes"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:550
-#: templates/shortcodes/asset-view.php:590
+#: templates/shortcodes/asset-view.php:588
+#: templates/shortcodes/asset-view.php:628
 msgid "Notes (optional):"
 msgstr ""
 
 #. %d: maximum number of characters allowed
-#: includes/class-alm-loan-manager.php:1711
-#: includes/class-alm-loan-manager.php:1944
+#: includes/class-alm-loan-manager.php:1746
+#: includes/class-alm-loan-manager.php:1983
 msgid "Notes must not exceed %d characters."
 msgstr ""
 
@@ -1184,23 +1198,23 @@ msgstr ""
 msgid "Notify requester when a loan request is approved or rejected"
 msgstr ""
 
-#: admin/alm-settings-page.php:697
+#: admin/alm-settings-page.php:649
 msgid ""
 "Number of assets displayed per page in the frontend list. Minimum 1, maximum "
 "100."
 msgstr ""
 
-#: admin/alm-settings-page.php:784
+#: admin/alm-settings-page.php:736
 msgid ""
 "Number of characters of the asset description shown in each suggestion. Set "
 "to 0 to hide the description."
 msgstr ""
 
-#: includes/class-alm-installer.php:207
+#: includes/class-alm-installer.php:227
 msgid "Ocular"
 msgstr ""
 
-#: includes/class-alm-installer.php:258
+#: includes/class-alm-installer.php:278
 msgid "On loan"
 msgstr ""
 
@@ -1209,16 +1223,16 @@ msgid ""
 "Open-source tool to manage shared physical assets and loan workflows for"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:146
-#: templates/shortcodes/asset-view.php:251
-#: templates/shortcodes/asset-view.php:343
-#: templates/shortcodes/asset-view.php:459
-#: templates/shortcodes/asset-view.php:525
-#: templates/shortcodes/asset-view.php:624
+#: templates/shortcodes/asset-view.php:150
+#: templates/shortcodes/asset-view.php:289
+#: templates/shortcodes/asset-view.php:381
+#: templates/shortcodes/asset-view.php:497
+#: templates/shortcodes/asset-view.php:563
+#: templates/shortcodes/asset-view.php:662
 msgid "Open/Close"
 msgstr ""
 
-#: admin/alm-settings-page.php:507
+#: admin/alm-settings-page.php:459
 #: includes/class-alm-autocomplete-manager.php:282
 #: includes/class-alm-role-manager.php:83
 msgid "Operator"
@@ -1230,7 +1244,7 @@ msgid ""
 "Leave empty to disable."
 msgstr ""
 
-#: includes/class-alm-installer.php:215
+#: includes/class-alm-installer.php:235
 msgid "Optical Tube"
 msgstr ""
 
@@ -1239,23 +1253,23 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
-#: admin/alm-settings-page.php:599
+#: admin/alm-settings-page.php:551
 msgid "Page Links"
 msgstr ""
 
-#: admin/alm-settings-page.php:647
+#: admin/alm-settings-page.php:599
 msgid ""
 "Page members are redirected to after login. Leave empty to use the default "
 "asset archive URL (/asset/)."
 msgstr ""
 
-#: admin/alm-settings-page.php:672
+#: admin/alm-settings-page.php:624
 msgid ""
 "Page members are redirected to after logout. Leave empty to use the site "
 "home page."
 msgstr ""
 
-#: admin/alm-settings-page.php:622
+#: admin/alm-settings-page.php:574
 msgid ""
 "Page that contains the asset list. Used as the login redirect target for "
 "members with no specific destination."
@@ -1265,130 +1279,130 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:351
+#: templates/shortcodes/asset-view.php:389
 msgid "Pending loan requests for this asset"
 msgstr ""
 
-#: assets/js/frontend-assets.js:229
+#: assets/js/frontend-assets.js:219
 msgid "Please enter a message."
 msgstr ""
 
-#: assets/js/frontend-assets.js:987
+#: assets/js/frontend-assets.js:965
 msgid "Please enter a rejection reason."
 msgstr ""
 
-#: assets/js/frontend-assets.js:351
+#: assets/js/frontend-assets.js:338
 msgid "Please enter the assignment reason."
 msgstr ""
 
-#: assets/js/admin-assets.js:133
+#: assets/js/admin-assets.js:127
 msgid ""
 "Please fix the following errors:\n"
 "\n"
 msgstr ""
 
-#: assets/js/frontend-assets.js:882
+#: assets/js/frontend-assets.js:860
 msgid "Please provide a reason for rejecting this loan request..."
 msgstr ""
 
-#: assets/js/admin-assets.js:127
+#: assets/js/admin-assets.js:121
 msgid "Please select a asset type."
 msgstr ""
 
-#: assets/js/frontend-assets.js:345
+#: assets/js/frontend-assets.js:332
 msgid "Please select a user from the list."
 msgstr ""
 
-#: assets/js/frontend-assets.js:1283
+#: assets/js/frontend-assets.js:1258
 msgid "Point the camera at the QR code"
 msgstr ""
 
-#: templates/shortcodes/asset-list.php:309
+#: templates/shortcodes/asset-list.php:320
 msgid "Previous page"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:229
+#: templates/shortcodes/asset-view.php:233
 msgid "Print QR code"
 msgstr ""
 
-#: admin/alm-settings-page.php:887
+#: admin/alm-settings-page.php:839
 msgid "Privacy"
 msgstr ""
 
-#: assets/js/frontend-assets.js:714 assets/js/frontend-assets.js:1005
+#: assets/js/frontend-assets.js:697 assets/js/frontend-assets.js:983
 msgid "Processing..."
 msgstr ""
 
-#: admin/alm-settings-page.php:794
+#: admin/alm-settings-page.php:746
 msgid "Public asset search endpoint"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:29
-#: includes/class-alm-asset-manager.php:312
+#: includes/class-alm-asset-manager.php:341
 msgid "Purchase date"
 msgstr ""
 
-#: admin/alm-settings-page.php:812
+#: admin/alm-settings-page.php:764
 msgid "QR Code"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:217
+#: templates/shortcodes/asset-view.php:221
 msgid "QR code"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:225
+#: templates/shortcodes/asset-view.php:229
 msgid "QR code for this asset"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:143
-#: templates/shortcodes/asset-view.php:392
-#: templates/shortcodes/asset-view.php:727
+#: templates/shortcodes/asset-view.php:147
+#: templates/shortcodes/asset-view.php:430
+#: templates/shortcodes/asset-view.php:765
 msgid "Read details"
 msgstr ""
 
-#: assets/js/frontend-assets.js:356
-msgid "Reason must not exceed 500 characters."
+#: assets/js/frontend-assets.js:344
+msgid "Reason must not exceed %d characters."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:489
+#: templates/shortcodes/asset-view.php:527
 msgid "Reason:"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:666
+#: templates/shortcodes/asset-view.php:704
 msgid "Recent loan history entries for this asset"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:670
-#: templates/shortcodes/asset-view.php:705
+#: templates/shortcodes/asset-view.php:708
+#: templates/shortcodes/asset-view.php:743
 msgid "Recipient"
 msgstr ""
 
-#: admin/alm-settings-page.php:921
+#: admin/alm-settings-page.php:873
 msgid "Record each notification email dispatch attempt in the log"
 msgstr ""
 
-#: admin/alm-settings-page.php:903
+#: admin/alm-settings-page.php:855
 msgid "Redact user names and email addresses from log entries"
 msgstr ""
 
-#: includes/class-alm-installer.php:211
+#: includes/class-alm-installer.php:231
 msgid "Refractor"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:427
+#: templates/shortcodes/asset-view.php:465
 msgid "Reject"
 msgstr ""
 
-#: assets/js/frontend-assets.js:852
+#: assets/js/frontend-assets.js:829
 msgid "Reject Loan Request"
 msgstr ""
 
-#: assets/js/frontend-assets.js:924
+#: assets/js/frontend-assets.js:902
 msgid "Reject Request"
 msgstr ""
 
 #. %s: loan requester display name.
-#: templates/shortcodes/asset-view.php:378
+#: templates/shortcodes/asset-view.php:416
 #, php-format
 msgid "Reject request from %s"
 msgstr ""
@@ -1397,24 +1411,24 @@ msgstr ""
 msgid "Rejected"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:288
+#: includes/class-alm-loan-manager.php:279
 msgid "Rejection message is required."
 msgstr ""
 
-#: admin/alm-settings-page.php:414
+#: admin/alm-settings-page.php:382
 msgid "Rejection message max length"
 msgstr ""
 
 #. %d: maximum number of characters allowed in rejection message
-#: includes/class-alm-loan-manager.php:299
+#: includes/class-alm-loan-manager.php:290
 msgid "Rejection message must not exceed %d characters."
 msgstr ""
 
-#: assets/js/frontend-assets.js:874
-msgid "Rejection reason (required, max 255 characters):"
+#: assets/js/frontend-assets.js:852
+msgid "Rejection reason (required, max %d characters):"
 msgstr ""
 
-#: assets/js/frontend-assets.js:992
+#: assets/js/frontend-assets.js:970
 msgid "Rejection reason must not exceed 255 characters."
 msgstr ""
 
@@ -1426,7 +1440,7 @@ msgstr ""
 msgid "Request approved"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1150
+#: includes/class-alm-loan-manager.php:1151
 msgid "Request automatically canceled: asset approved for another user."
 msgstr ""
 
@@ -1434,33 +1448,33 @@ msgstr ""
 msgid "Request canceled"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1619
+#: includes/class-alm-loan-manager.php:1637
 msgid "Request canceled: asset directly assigned by operator."
 msgstr ""
 
 #. %s: kit asset title
-#: includes/class-alm-loan-manager.php:1060
+#: includes/class-alm-loan-manager.php:1058
 #, php-format
 msgid "Request canceled: component assigned as part of kit \"%s\"."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:672
-#: templates/shortcodes/asset-view.php:711
+#: templates/shortcodes/asset-view.php:710
+#: templates/shortcodes/asset-view.php:749
 msgid "Request Date"
 msgstr ""
 
-#: assets/js/frontend-assets.js:282 assets/js/frontend-assets.js:292
-#: assets/js/frontend-assets.js:400 assets/js/frontend-assets.js:486
-#: assets/js/frontend-assets.js:565 assets/js/frontend-assets.js:1048
+#: assets/js/frontend-assets.js:270 assets/js/frontend-assets.js:280
+#: assets/js/frontend-assets.js:388 assets/js/frontend-assets.js:474
+#: assets/js/frontend-assets.js:553 assets/js/frontend-assets.js:1023
 msgid "Request failed. Please try again."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:445
-#: includes/class-alm-loan-manager.php:1123
+#: includes/class-alm-loan-manager.php:436
+#: includes/class-alm-loan-manager.php:1124
 msgid "Request is not pending."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:248
+#: templates/shortcodes/asset-view.php:286
 msgid "Request loan"
 msgstr ""
 
@@ -1468,25 +1482,21 @@ msgstr ""
 msgid "Request message is required."
 msgstr ""
 
-#: admin/alm-settings-page.php:392
+#: admin/alm-settings-page.php:360
 msgid "Request message max length"
 msgstr ""
 
 #. %d: maximum number of characters allowed in request message
-#: includes/class-alm-loan-manager.php:126
+#: includes/class-alm-loan-manager.php:126 assets/js/frontend-assets.js:226
 msgid "Request message must not exceed %d characters."
-msgstr ""
-
-#: assets/js/frontend-assets.js:235
-msgid "Request message must not exceed 500 characters."
 msgstr ""
 
 #: admin/alm-settings-page.php:49
 msgid "Request rejected"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:355
-#: templates/shortcodes/asset-view.php:381
+#: templates/shortcodes/asset-view.php:393
+#: templates/shortcodes/asset-view.php:419
 msgid "Requester"
 msgstr ""
 
@@ -1494,7 +1504,7 @@ msgstr ""
 msgid "Reset Filters"
 msgstr ""
 
-#: assets/js/frontend-assets.js:556
+#: assets/js/frontend-assets.js:544
 msgid "Restore failed. Please try again."
 msgstr ""
 
@@ -1502,19 +1512,19 @@ msgstr ""
 msgid "Restored to available"
 msgstr ""
 
-#: assets/js/frontend-assets.js:539
+#: assets/js/frontend-assets.js:527
 msgid "Restoring..."
 msgstr ""
 
-#: includes/class-alm-installer.php:270
+#: includes/class-alm-installer.php:290
 msgid "Retired"
 msgstr ""
 
 #: admin/alm-settings-page.php:228 admin/alm-settings-page.php:290
-#: admin/alm-settings-page.php:457 admin/alm-settings-page.php:529
-#: admin/alm-settings-page.php:595 admin/alm-settings-page.php:719
-#: admin/alm-settings-page.php:832 admin/alm-settings-page.php:927
-#: admin/alm-settings-page.php:963
+#: admin/alm-settings-page.php:425 admin/alm-settings-page.php:481
+#: admin/alm-settings-page.php:547 admin/alm-settings-page.php:671
+#: admin/alm-settings-page.php:784 admin/alm-settings-page.php:879
+#: admin/alm-settings-page.php:915
 msgid "Save Settings"
 msgstr ""
 
@@ -1542,11 +1552,11 @@ msgstr ""
 msgid "Search assets..."
 msgstr ""
 
-#: admin/alm-settings-page.php:723
+#: admin/alm-settings-page.php:675
 msgid "Search Behaviour"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:476
+#: templates/shortcodes/asset-view.php:514
 msgid "Search member or operator..."
 msgstr ""
 
@@ -1562,9 +1572,9 @@ msgstr ""
 msgid "Search user..."
 msgstr ""
 
-#: assets/js/frontend-assets.js:256 assets/js/frontend-assets.js:362
-#: assets/js/frontend-assets.js:446 assets/js/frontend-assets.js:526
-#: assets/js/frontend-assets.js:735 assets/js/frontend-assets.js:998
+#: assets/js/frontend-assets.js:247 assets/js/frontend-assets.js:350
+#: assets/js/frontend-assets.js:434 assets/js/frontend-assets.js:514
+#: assets/js/frontend-assets.js:718 assets/js/frontend-assets.js:976
 msgid "Security token not found. Please reload the page."
 msgstr ""
 
@@ -1578,7 +1588,7 @@ msgstr ""
 msgid "Send email notifications"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:285
+#: templates/shortcodes/asset-view.php:323
 msgid "Send request"
 msgstr ""
 
@@ -1594,20 +1604,20 @@ msgstr ""
 msgid "Sender name shown in outgoing emails. Leave empty to use the site name."
 msgstr ""
 
-#: assets/js/frontend-assets.js:242
+#: assets/js/frontend-assets.js:233
 msgid "Sending..."
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:37
-#: includes/class-alm-asset-manager.php:319
+#: includes/class-alm-asset-manager.php:348
 msgid "Serial number"
 msgstr ""
 
-#: plugin-config.php:141 templates/shortcodes/asset-view.php:564
+#: plugin-config.php:141 templates/shortcodes/asset-view.php:602
 msgid "Set to maintenance"
 msgstr ""
 
-#: plugin-config.php:142 templates/shortcodes/asset-view.php:567
+#: plugin-config.php:142 templates/shortcodes/asset-view.php:605
 msgid "Set to retired"
 msgstr ""
 
@@ -1627,37 +1637,37 @@ msgstr ""
 msgid "Show only my assets"
 msgstr ""
 
-#: admin/alm-settings-page.php:826
+#: admin/alm-settings-page.php:778
 msgid ""
 "Show the \"Scan QR\" button on the asset list page, allowing users to find "
 "an asset by scanning its QR code with the device camera."
 msgstr ""
 
-#: admin/alm-settings-page.php:713
+#: admin/alm-settings-page.php:665
 msgid "Show the search/filter panel expanded when the asset list loads"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:661
+#: templates/shortcodes/asset-view.php:699
 msgid "Showing the last 10 loan history entries for this asset."
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:148
-#: templates/shortcodes/asset-view.php:117
+#: templates/shortcodes/asset-view.php:121
 msgid "State"
 msgstr ""
 
-#: assets/js/frontend-assets.js:477
+#: assets/js/frontend-assets.js:465
 msgid "State change failed. Please try again."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:673
-#: templates/shortcodes/asset-view.php:714
+#: templates/shortcodes/asset-view.php:711
+#: templates/shortcodes/asset-view.php:752
 msgid "Status"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:119
 #: templates/shortcodes/asset-list.php:270
-#: templates/shortcodes/asset-view.php:93
+#: templates/shortcodes/asset-view.php:97
 msgid "Structure"
 msgstr ""
 
@@ -1666,11 +1676,11 @@ msgid "Subject"
 msgstr ""
 
 #: includes/class-alm-notification-manager.php:291
-#: templates/shortcodes/asset-view.php:687
+#: templates/shortcodes/asset-view.php:725
 msgid "System"
 msgstr ""
 
-#: admin/alm-settings-page.php:569
+#: admin/alm-settings-page.php:521
 msgid "System Actor"
 msgstr ""
 
@@ -1679,11 +1689,11 @@ msgid "System email (BCC)"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:36
-#: includes/class-alm-asset-manager.php:318
+#: includes/class-alm-asset-manager.php:347
 msgid "Technical data sheet"
 msgstr ""
 
-#: includes/class-alm-installer.php:203
+#: includes/class-alm-installer.php:223
 msgid "Telescope"
 msgstr ""
 
@@ -1691,14 +1701,8 @@ msgstr ""
 msgid "The ALM plugin requires the plugin ACF installed and enabled."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:173
-msgid ""
-"This asset has no current owner and cannot receive loan requests at this "
-"time."
-msgstr ""
-
 #. %s: current asset state label
-#: templates/shortcodes/asset-view.php:579
+#: templates/shortcodes/asset-view.php:617
 #, php-format
 msgid ""
 "This asset is currently <strong>%s</strong>. Restoring it will set it back "
@@ -1709,11 +1713,27 @@ msgstr ""
 msgid "This asset is not available for loan."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1539
+#. %s: comma-separated kit names as links.
+#: templates/shortcodes/asset-view.php:274
+#, php-format
+msgid ""
+"This component is part of the following kits: %s. You may also request an "
+"entire kit instead."
+msgstr ""
+
+#. %s: kit name as a link.
+#: templates/shortcodes/asset-view.php:266
+#, php-format
+msgid ""
+"This component is part of the kit %s. You may also request the entire kit "
+"instead."
+msgstr ""
+
+#: includes/class-alm-loan-manager.php:1557
 msgid "This user is not eligible to receive asset assignments."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:295
+#: templates/shortcodes/asset-view.php:333
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 
@@ -1721,28 +1741,28 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
-#: includes/class-alm-installer.php:223
+#: includes/class-alm-installer.php:243
 msgid "Tripod"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:132
 #: templates/shortcodes/asset-list.php:275
-#: templates/shortcodes/asset-view.php:101
+#: templates/shortcodes/asset-view.php:105
 msgid "Type"
 msgstr ""
 
 #: includes/class-alm-plugin-manager.php:375
-#: includes/class-alm-plugin-manager.php:530
+#: includes/class-alm-plugin-manager.php:526
 msgid "Unauthorized action."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:367
-#: templates/shortcodes/asset-view.php:684
+#: templates/shortcodes/asset-view.php:405
+#: templates/shortcodes/asset-view.php:722
 msgid "Unknown"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:35
-#: includes/class-alm-asset-manager.php:317
+#: includes/class-alm-asset-manager.php:346
 msgid "User manual"
 msgstr ""
 
@@ -1754,36 +1774,36 @@ msgstr ""
 msgid "View Asset"
 msgstr ""
 
-#: assets/js/admin-assets.js:81
+#: assets/js/admin-assets.js:75
 msgid "View on Frontend"
 msgstr ""
 
-#: admin/alm-settings-page.php:873
+#: admin/alm-settings-page.php:825
 msgid "Warning — warnings and errors only"
 msgstr ""
 
 #: includes/class-alm-acf-asset-adapter.php:32
-#: includes/class-alm-asset-manager.php:315
+#: includes/class-alm-asset-manager.php:344
 msgid "Weight"
 msgstr ""
 
-#: admin/alm-settings-page.php:563
+#: admin/alm-settings-page.php:515
 msgid ""
 "When a kit is assigned, automatically cancel pending requests for its "
 "individual components"
 msgstr ""
 
-#: admin/alm-settings-page.php:547
+#: admin/alm-settings-page.php:499
 msgid ""
 "When an asset is assigned, automatically cancel all other pending loan "
 "requests for that asset"
 msgstr ""
 
-#: admin/alm-settings-page.php:523
+#: admin/alm-settings-page.php:475
 msgid "Which user roles can be selected as the target of a direct assignment."
 msgstr ""
 
-#: admin/alm-settings-page.php:589
+#: admin/alm-settings-page.php:541
 msgid ""
 "WordPress user ID recorded as the actor for automatic system operations (e.g."
 " auto-cancellations). Defaults to 1 (site administrator)."
@@ -1793,21 +1813,21 @@ msgstr ""
 msgid "Workflow"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:276
+#: templates/shortcodes/asset-view.php:314
 msgid "Write a brief message explaining why you need this asset..."
 msgstr ""
 
-#: admin/alm-settings-page.php:852
+#: admin/alm-settings-page.php:804
 msgid "Write ALM events to the debug log (requires WP_DEBUG to be enabled)"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:190
+#: includes/class-alm-loan-manager.php:181
 msgid ""
 "You already have a pending loan request. Only one request at a time is "
 "allowed."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:181
+#: includes/class-alm-loan-manager.php:172
 msgid "You already have a pending request for this asset."
 msgstr ""
 
@@ -1819,35 +1839,35 @@ msgstr ""
 msgid "You do not have permission to access asset autocomplete."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:569
+#: includes/class-alm-loan-manager.php:550
 msgid "You do not have permission to approve loan requests."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:630
+#: includes/class-alm-loan-manager.php:621
 msgid "You do not have permission to approve this request."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1478
+#: includes/class-alm-loan-manager.php:1494
 msgid "You do not have permission to assign assets."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1689
+#: includes/class-alm-loan-manager.php:1723
 msgid "You do not have permission to change asset states."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:257
+#: includes/class-alm-loan-manager.php:238
 msgid "You do not have permission to reject loan requests."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:341
+#: includes/class-alm-loan-manager.php:332
 msgid "You do not have permission to reject this request."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:105
+#: includes/class-alm-loan-manager.php:95
 msgid "You do not have permission to request loans."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1928
+#: includes/class-alm-loan-manager.php:1966
 msgid "You do not have permission to restore asset states."
 msgstr ""
 
@@ -1857,23 +1877,23 @@ msgstr ""
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:261
+#: templates/shortcodes/asset-view.php:299
 msgid "You have already requested a loan for this asset."
 msgstr ""
 
 #. %d: maximum number of active loans allowed
-#: includes/class-alm-loan-manager.php:202
+#: includes/class-alm-loan-manager.php:193
 msgid "You have reached the maximum number of active loans (%d)."
 msgstr ""
 
-#: admin/alm-settings-page.php:640
+#: admin/alm-settings-page.php:592
 msgid "— Default (/asset/) —"
 msgstr ""
 
-#: admin/alm-settings-page.php:665
+#: admin/alm-settings-page.php:617
 msgid "— Default (home) —"
 msgstr ""
 
-#: admin/alm-settings-page.php:615
+#: admin/alm-settings-page.php:567
 msgid "— Not set —"
 msgstr ""
