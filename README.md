@@ -67,6 +67,20 @@ For detailed role/action and notification schemas, see:
 
 Settings UI is available in wp-admin under the ALM menu.
 
+## Uninstall
+
+Uninstalling the plugin via the WordPress admin panel removes:
+
+- Plugin settings (`alm_settings` option)
+- Loan request history table (`wp_alm_loan_requests_history`)
+- Pending loan requests table (`wp_alm_loan_requests`)
+- Custom roles (`alm_member`, `alm_operator`) and their capabilities
+
+**Asset posts (`alm_asset`) and their metadata are intentionally preserved.**
+Your inventory data is not deleted on uninstall, so it can be recovered if the plugin is reinstalled later.
+
+---
+
 ## Development
 
 Install dependencies:
