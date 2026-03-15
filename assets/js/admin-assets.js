@@ -18,12 +18,6 @@
 		 * Initialize admin functionality.
 		 */
 		init: function() {
-			console.log('ALM Admin initialized');
-
-			if (typeof window.almAdmin !== 'undefined') {
-				console.log('AJAX URL:', window.almAdmin.ajaxUrl);
-			}
-
 			this.initAssetStatusBadges();
 			this.initQuickActions();
 			this.initFormValidation();

@@ -29,13 +29,6 @@
 		 * Initialize frontend functionality.
 		 */
 		init: function() {
-			console.log('*** ALM Frontend initialized');
-
-			// Access to data passed from PHP via wp_localize_script.
-			if (typeof window.almFrontend !== 'undefined') {
-				console.log('*** AJAX URL:', window.almFrontend.ajaxUrl);
-			}
-
 			// Initialize components.
 			this.initImageLightbox();
 			this.initAssetFilters();
@@ -147,7 +140,6 @@
 				});
 			});
 
-			console.log('*** Asset filters initialized');
 		},
 
 		/**
@@ -172,7 +164,6 @@
 
 				searchTimeout = setTimeout(function() {
 					if (query.length >= 3) {
-						console.log('*** Searching for:', query);
 						// Here you would implement AJAX search.
 						// For now, just a placeholder.
 					}
@@ -191,8 +182,6 @@
 			if (!form) {
 				return;
 			}
-
-			console.log('*** Loan request form found, initializing...');
 
 			// Character counter for request message
 			var messageField = document.getElementById('alm-request-message');
@@ -262,8 +251,6 @@
 					}
 				}
 
-				console.log('*** Sending loan request for asset:', assetId);
-
 				// Send AJAX request
 				fetch(window.almFrontend.ajaxUrl, {
 					method: 'POST',
@@ -275,7 +262,6 @@
 				})
 				.then(function(data) {
 					if (data.success) {
-						console.log('*** Loan request sent successfully, reloading page...');
 						
 						// Reload page with success message
 						var currentUrl = window.location.href.split('?')[0];
@@ -300,7 +286,6 @@
 				});
 			});
 
-			console.log('*** Loan request form initialized');
 		},
 
 		/**
@@ -588,8 +573,6 @@
 				return;
 			}
 
-			console.log('*** Request action buttons found, initializing...');
-
 			// Handle approve buttons
 			approveButtons.forEach(function(btn) {
 				btn.addEventListener('click', function(e) {
@@ -606,7 +589,6 @@
 				});
 			});
 
-			console.log('*** Request action buttons initialized');
 		},
 
 		/**
@@ -622,8 +604,6 @@
 				console.error('Missing request ID or asset ID');
 				return;
 			}
-
-			console.log('*** Approve button clicked for request:', requestId);
 
 			// Show confirmation modal
 			ALM_Frontend.showConfirmModal(
@@ -760,8 +740,6 @@
 			formData.append('request_id', requestId);
 			formData.append('asset_id', assetId);
 
-			console.log('*** Sending approval request:', requestId);
-
 			// Send AJAX request
 			fetch(window.almFrontend.ajaxUrl, {
 				method: 'POST',
@@ -773,7 +751,6 @@
 			})
 			.then(function(data) {
 				if (data.success) {
-					console.log('*** Approval successful, reloading page...');
 					
 					// Reload page with success message
 					var currentUrl = window.location.href.split('?')[0];
@@ -820,10 +797,7 @@
 		handleRejectRequest: function(btn) {
 			var requestId = btn.getAttribute('data-request-id');
 			var assetId = btn.getAttribute('data-asset-id');
-			
-			console.log('*** Reject request with id:', requestId);
-			console.log('*** Asset ID:', assetId);
-			
+
 			// Show rejection modal
 			this.showRejectionModal(requestId, assetId);
 		},
@@ -1017,8 +991,6 @@
 			formData.append('asset_id', assetId);
 			formData.append('rejection_message', message.trim());
 
-			console.log('*** Submitting rejection for request:', requestId);
-
 			// Send AJAX request
 			fetch(window.almFrontend.ajaxUrl, {
 				method: 'POST',
@@ -1030,7 +1002,6 @@
 			})
 			.then(function(data) {
 				if (data.success) {
-					console.log('*** Rejection successful, reloading page...');
 					
 					// Close modal
 					ALM_Frontend.closeModal(modal);

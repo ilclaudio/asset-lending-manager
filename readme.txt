@@ -80,6 +80,9 @@ Yes. A settings page is available in wp-admin under the ALM menu.
 = Is the plugin translation-ready? =
 Yes. All user-facing strings are prepared for translation using standard WordPress internationalization functions. A `.pot` file is included.
 
+= What data is removed when the plugin is uninstalled? =
+Uninstalling the plugin removes: the plugin settings, the loan request history table, the pending loan requests table, and the custom roles (alm_member, alm_operator). Asset posts and their metadata are intentionally preserved so that your inventory is not lost if you reinstall the plugin later.
+
 
 == Screenshots ==
 1. Asset list frontend view
