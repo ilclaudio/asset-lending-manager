@@ -1,6 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
-$alm_status = isset( $_GET['alm_status'] ) ? sanitize_key( $_GET['alm_status'] ) : '';
+$alm_status = isset( $_GET['alm_status'] ) ? sanitize_key( wp_unslash( $_GET['alm_status'] ) ) : '';
 ?>
 
 <div class="wrap">

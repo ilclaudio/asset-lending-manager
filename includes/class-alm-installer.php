@@ -106,10 +106,30 @@ class ALM_Installer {
 			$wpdb->prefix . 'alm_loan_requests',
 		);
 		foreach ( $tables as $table ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name identifier cannot be a prepared value.
-			$wpdb->query( "DROP TABLE IF EXISTS $table" );
+			if ( ! self::is_safe_table_identifier( $table ) ) {
+				ALM_Logger::warning(
+					'Skipping table drop due to invalid identifier.',
+					array( 'table' => $table )
+				);
+				continue;
+			}
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table identifier is internal and validated by is_safe_table_identifier().
+			$wpdb->query( "DROP TABLE IF EXISTS `$table`" );
 			ALM_Logger::info( "Dropped table $table" );
 		}
+	}
+
+	/**
+	 * Validate SQL table identifier used for schema operations.
+	 *
+	 * Accepts only alphanumeric characters, underscore, and dollar sign.
+	 *
+	 * @param string $table Table name to validate.
+	 * @return bool
+	 */
+	private static function is_safe_table_identifier( $table ) {
+		return 1 === preg_match( '/^[A-Za-z0-9_$]+$/', $table );
 	}
 
 

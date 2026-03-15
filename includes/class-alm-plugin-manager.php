@@ -398,13 +398,13 @@ class ALM_Plugin_Manager {
 		if ( 'loans' === $active_tab ) {
 			// [A/O] fields.
 			$changes['loans.loan_requests_enabled']   = isset( $_POST['alm_loans_loan_requests_enabled'] );
-			$changes['loans.max_active_per_user']     = max( 0, (int) wp_unslash( $_POST['alm_loans_max_active_per_user'] ?? 0 ) );
+			$changes['loans.max_active_per_user']     = max( 0, absint( wp_unslash( $_POST['alm_loans_max_active_per_user'] ?? 0 ) ) );
 			$changes['loans.allow_multiple_requests'] = isset( $_POST['alm_loans_allow_multiple_requests'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['loans.request_message_max_length']         = max( 0, (int) wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) );
-				$changes['loans.rejection_message_max_length']       = max( 0, (int) wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 500 ) );
-				$changes['loans.direct_assign_reason_max_length']    = max( 0, (int) wp_unslash( $_POST['alm_loans_direct_assign_reason_max_length'] ?? 500 ) );
+				$changes['loans.request_message_max_length']         = max( 0, absint( wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) ) );
+				$changes['loans.rejection_message_max_length']       = max( 0, absint( wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 500 ) ) );
+				$changes['loans.direct_assign_reason_max_length']    = max( 0, absint( wp_unslash( $_POST['alm_loans_direct_assign_reason_max_length'] ?? 500 ) ) );
 			}
 		}
 
@@ -413,9 +413,10 @@ class ALM_Plugin_Manager {
 			if ( $is_admin ) {
 				$changes['direct_assign.enabled']              = isset( $_POST['alm_direct_assign_enabled'] );
 				$valid_roles                                   = array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE );
-				$raw_roles                                     = isset( $_POST['alm_direct_assign_roles'] ) ? (array) wp_unslash( $_POST['alm_direct_assign_roles'] ) : array();
+				$posted_roles                                  = filter_input( INPUT_POST, 'alm_direct_assign_roles', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+				$raw_roles                                     = is_array( $posted_roles ) ? array_map( 'sanitize_key', $posted_roles ) : array();
 				$changes['direct_assign.allowed_target_roles'] = array_values(
-					array_intersect( array_map( 'sanitize_key', $raw_roles ), $valid_roles )
+					array_intersect( $raw_roles, $valid_roles )
 				);
 			}
 		}
@@ -426,27 +427,27 @@ class ALM_Plugin_Manager {
 			$changes['workflow.cancel_component_requests_when_kit_assigned'] = isset( $_POST['alm_workflow_cancel_component_requests'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['workflow.automatic_operations_actor_user_id'] = max( 1, (int) wp_unslash( $_POST['alm_workflow_actor_user_id'] ?? 1 ) );
+				$changes['workflow.automatic_operations_actor_user_id'] = max( 1, absint( wp_unslash( $_POST['alm_workflow_actor_user_id'] ?? 1 ) ) );
 			}
 		}
 
 		if ( 'frontend' === $active_tab ) {
 			// [A/O] fields.
-			$changes['frontend.asset_list_per_page']  = min( 100, max( 1, (int) wp_unslash( $_POST['alm_frontend_asset_list_per_page'] ?? ALM_ASSET_LIST_PER_PAGE ) ) );
+			$changes['frontend.asset_list_per_page']  = min( 100, max( 1, absint( wp_unslash( $_POST['alm_frontend_asset_list_per_page'] ?? ALM_ASSET_LIST_PER_PAGE ) ) ) );
 			$changes['frontend.default_filters_open'] = isset( $_POST['alm_frontend_default_filters_open'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['frontend.assets_page_id']          = max( 0, (int) wp_unslash( $_POST['alm_frontend_assets_page_id'] ?? 0 ) );
-				$changes['frontend.login_redirect_page_id']  = max( 0, (int) wp_unslash( $_POST['alm_frontend_login_redirect_page_id'] ?? 0 ) );
-				$changes['frontend.logout_redirect_page_id'] = max( 0, (int) wp_unslash( $_POST['alm_frontend_logout_redirect_page_id'] ?? 0 ) );
+				$changes['frontend.assets_page_id']          = max( 0, absint( wp_unslash( $_POST['alm_frontend_assets_page_id'] ?? 0 ) ) );
+				$changes['frontend.login_redirect_page_id']  = max( 0, absint( wp_unslash( $_POST['alm_frontend_login_redirect_page_id'] ?? 0 ) ) );
+				$changes['frontend.logout_redirect_page_id'] = max( 0, absint( wp_unslash( $_POST['alm_frontend_logout_redirect_page_id'] ?? 0 ) ) );
 			}
 		}
 
 		if ( 'autocomplete' === $active_tab ) {
 			// [A/O] fields.
-			$changes['autocomplete.min_chars']          = min( 10, max( 1, (int) wp_unslash( $_POST['alm_autocomplete_min_chars'] ?? 3 ) ) );
-			$changes['autocomplete.max_results']        = min( 20, max( 1, (int) wp_unslash( $_POST['alm_autocomplete_max_results'] ?? ALM_AUTOCOMPLETE_MAX_RESULTS ) ) );
-			$changes['autocomplete.description_length'] = min( 200, max( 0, (int) wp_unslash( $_POST['alm_autocomplete_description_length'] ?? ALM_AUTOCOMPLETE_DESC_LENGTH ) ) );
+			$changes['autocomplete.min_chars']          = min( 10, max( 1, absint( wp_unslash( $_POST['alm_autocomplete_min_chars'] ?? 3 ) ) ) );
+			$changes['autocomplete.max_results']        = min( 20, max( 1, absint( wp_unslash( $_POST['alm_autocomplete_max_results'] ?? ALM_AUTOCOMPLETE_MAX_RESULTS ) ) ) );
+			$changes['autocomplete.description_length'] = min( 200, max( 0, absint( wp_unslash( $_POST['alm_autocomplete_description_length'] ?? ALM_AUTOCOMPLETE_DESC_LENGTH ) ) ) );
 			$changes['autocomplete.qr_scan_enabled']    = isset( $_POST['alm_autocomplete_qr_scan_enabled'] );
 			// [A]-only fields.
 			if ( $is_admin ) {

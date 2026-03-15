@@ -88,6 +88,14 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_submit_loan_request() {
+		// Check user capabilities.
+		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You do not have permission to request loans.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
 		// Check whether loan requests are enabled by the admin.
@@ -95,14 +103,6 @@ class ALM_Loan_Manager {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Check user capabilities.
-		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'You do not have permission to request loans.', 'asset-lending-manager' ),
 				)
 			);
 		}
@@ -231,6 +231,14 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_reject_loan_request() {
+		// Fail-fast capability check.
+		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You do not have permission to reject loan requests.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
 		// Check whether loan requests are enabled by the admin.
@@ -238,14 +246,6 @@ class ALM_Loan_Manager {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Fail-fast capability check.
-		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'You do not have permission to reject loan requests.', 'asset-lending-manager' ),
 				)
 			);
 		}
@@ -543,6 +543,14 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_approve_loan_request() {
+		// Fail-fast capability check.
+		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You do not have permission to approve loan requests.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Verify nonce.
 		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
 		// Check whether loan requests are enabled by the admin.
@@ -550,14 +558,6 @@ class ALM_Loan_Manager {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Fail-fast capability check.
-		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'You do not have permission to approve loan requests.', 'asset-lending-manager' ),
 				)
 			);
 		}
@@ -1487,9 +1487,6 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_direct_assign_asset() {
-		// Verify nonce.
-		check_ajax_referer( 'alm_direct_assign_nonce', 'nonce' );
-
 		// Operator-only capability check.
 		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
 			wp_send_json_error(
@@ -1498,6 +1495,8 @@ class ALM_Loan_Manager {
 				)
 			);
 		}
+		// Verify nonce.
+		check_ajax_referer( 'alm_direct_assign_nonce', 'nonce' );
 
 		// Block if direct assignment is disabled.
 		if ( ! $this->settings->get( 'direct_assign.enabled', true ) ) {
@@ -1720,14 +1719,13 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_change_asset_state() {
-		check_ajax_referer( 'alm_change_state_nonce', 'nonce' );
-
 		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to change asset states.', 'asset-lending-manager' ) ) );
 		}
+		check_ajax_referer( 'alm_change_state_nonce', 'nonce' );
 
 		$asset_id     = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
-		$target_state = isset( $_POST['target_state'] ) ? sanitize_key( $_POST['target_state'] ) : '';
+		$target_state = isset( $_POST['target_state'] ) ? sanitize_key( wp_unslash( $_POST['target_state'] ) ) : '';
 		$notes        = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
 
 		if ( $asset_id <= 0 ) {
@@ -1964,11 +1962,10 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_restore_asset_state() {
-		check_ajax_referer( 'alm_restore_state_nonce', 'nonce' );
-
 		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to restore asset states.', 'asset-lending-manager' ) ) );
 		}
+		check_ajax_referer( 'alm_restore_state_nonce', 'nonce' );
 
 		$asset_id = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
 		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';

@@ -17,8 +17,8 @@
 defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only GET params for tab navigation and notice display.
-$active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'email';
-$saved      = isset( $_GET['saved'] ) && '1' === $_GET['saved'];
+$active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'email';
+$saved      = isset( $_GET['saved'] ) && '1' === wp_unslash( $_GET['saved'] );
 // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 $settings = new ALM_Settings_Manager();
@@ -564,7 +564,7 @@ $placeholders = array(
 								'name'              => 'alm_frontend_assets_page_id',
 								'id'                => 'alm_frontend_assets_page_id',
 								'selected'          => (int) $settings->get( 'frontend.assets_page_id' ),
-								'show_option_none'  => __( '— Not set —', 'asset-lending-manager' ),
+								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
 								'disabled'          => ! $is_admin,
 							)
@@ -589,7 +589,7 @@ $placeholders = array(
 								'name'              => 'alm_frontend_login_redirect_page_id',
 								'id'                => 'alm_frontend_login_redirect_page_id',
 								'selected'          => (int) $settings->get( 'frontend.login_redirect_page_id' ),
-								'show_option_none'  => __( '— Default (/asset/) —', 'asset-lending-manager' ),
+								'show_option_none'  => esc_html__( '— Default (/asset/) —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
 								'disabled'          => ! $is_admin,
 							)
@@ -614,7 +614,7 @@ $placeholders = array(
 								'name'              => 'alm_frontend_logout_redirect_page_id',
 								'id'                => 'alm_frontend_logout_redirect_page_id',
 								'selected'          => (int) $settings->get( 'frontend.logout_redirect_page_id' ),
-								'show_option_none'  => __( '— Default (home) —', 'asset-lending-manager' ),
+								'show_option_none'  => esc_html__( '— Default (home) —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
 								'disabled'          => ! $is_admin,
 							)
