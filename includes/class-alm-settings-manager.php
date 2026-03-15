@@ -73,18 +73,18 @@ class ALM_Settings_Manager {
 				'body'    => $templates['body'],
 			),
 			'loans'         => array(
-				'loan_requests_enabled'              => true,
-				'max_active_per_user'                => 0,
-				'allow_multiple_requests'            => true,
-				'request_message_max_length'         => 500,
-				'rejection_message_max_length'       => 500,
-				'direct_assign_reason_max_length'    => 500,
-				'change_state_notes_max_length'      => 500,
+				'loan_requests_enabled'           => true,
+				'max_active_per_user'             => 0,
+				'allow_multiple_requests'         => true,
+				'request_message_max_length'      => 500,
+				'rejection_message_max_length'    => 500,
+				'direct_assign_reason_max_length' => 500,
+				'change_state_notes_max_length'   => 500,
 			),
 			'direct_assign' => array(
 				'enabled'              => true,
 				'allowed_target_roles' => array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ),
-				),
+			),
 			'workflow'      => array(
 				'cancel_concurrent_requests_on_assign' => true,
 				'cancel_component_requests_when_kit_assigned' => true,
@@ -169,7 +169,7 @@ class ALM_Settings_Manager {
 	 * @param mixed  $default Default value returned if the setting is not found.
 	 * @return mixed Setting value or default.
 	 */
-	public function get( $key, $default = null ) {
+	public function get( $key, $default = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- $default is the conventional name for this parameter.
 		$settings = $this->get_all();
 		$keys     = explode( '.', $key );
 
@@ -240,8 +240,8 @@ class ALM_Settings_Manager {
 	/**
 	 * Deep merge two arrays preserving defaults.
 	 *
-	 * @param array $defaults
-	 * @param array $saved
+	 * @param array $defaults Base defaults array.
+	 * @param array $saved    Saved values to merge over defaults.
 	 * @return array
 	 */
 	private function deep_merge( array $defaults, array $saved ) {

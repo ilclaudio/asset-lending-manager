@@ -163,6 +163,8 @@ class ALM_Plugin_Manager {
 
 	/**
 	 * Return a specific module.
+	 *
+	 * @param string $name Module key.
 	 */
 	public function get_module( $name ) {
 		return $this->modules[ $name ] ?? null;
@@ -314,13 +316,13 @@ class ALM_Plugin_Manager {
 	/**
 	 * Return the name of the parent of a taxonomy in the menu.
 	 *
-	 * @param [type] $parent_file
-	 * @return void
+	 * @param string $parent_file Current parent file slug.
+	 * @return string
 	 */
 	public function keep_alm_taxonomy_menu_open( $parent_file ) {
 		global $current_screen;
 		$taxonomy = $current_screen->taxonomy;
-		if ( in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES ) ) {
+		if ( in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES, true ) ) {
 			$parent_file = ALM_SLUG_MAIN_MENU;
 		}
 		return $parent_file;
@@ -402,9 +404,9 @@ class ALM_Plugin_Manager {
 			$changes['loans.allow_multiple_requests'] = isset( $_POST['alm_loans_allow_multiple_requests'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['loans.request_message_max_length']         = max( 0, absint( wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) ) );
-				$changes['loans.rejection_message_max_length']       = max( 0, absint( wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 500 ) ) );
-				$changes['loans.direct_assign_reason_max_length']    = max( 0, absint( wp_unslash( $_POST['alm_loans_direct_assign_reason_max_length'] ?? 500 ) ) );
+				$changes['loans.request_message_max_length']      = max( 0, absint( wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) ) );
+				$changes['loans.rejection_message_max_length']    = max( 0, absint( wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 500 ) ) );
+				$changes['loans.direct_assign_reason_max_length'] = max( 0, absint( wp_unslash( $_POST['alm_loans_direct_assign_reason_max_length'] ?? 500 ) ) );
 			}
 		}
 

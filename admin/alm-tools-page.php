@@ -1,5 +1,12 @@
 <?php
+/**
+ * ALM Tools Page template.
+ *
+ * @package AssetLendingManager
+ */
+
 defined( 'ABSPATH' ) || exit;
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param for status display.
 $alm_status = isset( $_GET['alm_status'] ) ? sanitize_key( wp_unslash( $_GET['alm_status'] ) ) : '';
 ?>
 

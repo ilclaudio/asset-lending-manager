@@ -1,12 +1,18 @@
 <?php
-defined( 'ABSPATH' ) || exit;
-
 /**
  * Centralized definition of all ALM capabilities.
  *
  * This class defines:
  * - CPT-level WordPress capabilities (used by core for CPT access control)
  * - Domain-level ALM capabilities (used by menus, frontend, business logic)
+ *
+ * @package AssetLendingManager
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Centralized definition of all ALM capabilities.
  */
 class ALM_Capabilities {
 

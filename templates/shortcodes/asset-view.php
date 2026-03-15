@@ -18,20 +18,20 @@ if ( $alm_asset_id <= 0 ) {
 	return;
 }
 
-$alm_asset_fields          = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
-$alm_loan_manager          = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
-$alm_settings              = ALM_Plugin_Manager::get_instance()->get_module( 'settings' );
-$alm_loan_requests_enabled       = (bool) $alm_settings->get( 'loans.loan_requests_enabled', true );
-$alm_request_message_max         = (int) $alm_settings->get( 'loans.request_message_max_length', 500 );
-$alm_rejection_message_max       = (int) $alm_settings->get( 'loans.rejection_message_max_length', 500 );
-$alm_direct_assign_reason_max    = (int) $alm_settings->get( 'loans.direct_assign_reason_max_length', 500 );
-$alm_change_state_notes_max      = (int) $alm_settings->get( 'loans.change_state_notes_max_length', 500 );
-$alm_owner_id              = $alm_loan_manager->get_current_owner( $alm_asset_id );
-$alm_asset_title           = isset( $asset->title ) ? (string) $asset->title : '';
-$alm_asset_content         = isset( $asset->content ) ? (string) $asset->content : '';
-$alm_owner_name            = '';
-$alm_is_current_owner      = is_user_logged_in() && $alm_owner_id > 0 && ( $alm_current_user_id === (int) $alm_owner_id );
-$alm_is_operator           = is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
+$alm_asset_fields             = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
+$alm_loan_manager             = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
+$alm_settings                 = ALM_Plugin_Manager::get_instance()->get_module( 'settings' );
+$alm_loan_requests_enabled    = (bool) $alm_settings->get( 'loans.loan_requests_enabled', true );
+$alm_request_message_max      = (int) $alm_settings->get( 'loans.request_message_max_length', 500 );
+$alm_rejection_message_max    = (int) $alm_settings->get( 'loans.rejection_message_max_length', 500 );
+$alm_direct_assign_reason_max = (int) $alm_settings->get( 'loans.direct_assign_reason_max_length', 500 );
+$alm_change_state_notes_max   = (int) $alm_settings->get( 'loans.change_state_notes_max_length', 500 );
+$alm_owner_id                 = $alm_loan_manager->get_current_owner( $alm_asset_id );
+$alm_asset_title              = isset( $asset->title ) ? (string) $asset->title : '';
+$alm_asset_content            = isset( $asset->content ) ? (string) $asset->content : '';
+$alm_owner_name               = '';
+$alm_is_current_owner         = is_user_logged_in() && $alm_owner_id > 0 && ( $alm_current_user_id === (int) $alm_owner_id );
+$alm_is_operator              = is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
 if ( $alm_owner_id > 0 ) {
 	$alm_owner_data = get_userdata( $alm_owner_id );
 	$alm_owner_name = $alm_owner_data ? $alm_owner_data->display_name : '';

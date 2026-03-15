@@ -103,7 +103,7 @@ class ALM_Logger {
 		if ( ! empty( $context ) ) {
 			$entry .= ' ' . wp_json_encode( self::maybe_mask_context( $context ) );
 		}
-		error_log( $entry );
+		error_log( $entry ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- intentional logging utility.
 	}
 
 	/**

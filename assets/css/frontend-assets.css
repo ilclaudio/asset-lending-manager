@@ -21,7 +21,7 @@
 		--alm-state-on-loan-text:         #ffffff;
 		--alm-state-maintenance-bg:       #fff3cd;  /* contrast vs #7c5600: ~5.8:1 */
 		--alm-state-maintenance-text:     #7c5600;
-		--alm-state-retired-bg:           #5a6268;  /* #5a6268 not #6c757d: #6c757d fails AA (3.9:1), #5a6268 passes (4.6:1) */
+		--alm-state-retired-bg:           #5a6268;  /* chosen over #6c757d: passes WCAG AA at 4.6:1, the lighter shade fails at 3.9:1 */
 		--alm-state-retired-text:         #ffffff;
 
 		/* Loan history status colors.

@@ -12,6 +12,9 @@
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/dist/*</exclude-pattern>
+	<exclude-pattern>*/DEV/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
+	<exclude-pattern>*/languages/*</exclude-pattern>
 
 	<rule ref="WordPress"/>
 
@@ -40,4 +43,23 @@
 
 
 	<config name="minimum_supported_wp_version" value="6.0"/>
+
+	<!-- Loan manager uses direct DB queries for transactional integrity; caching would be incorrect. -->
+	<rule ref="WordPress.DB.DirectDatabaseQuery.DirectQuery">
+		<exclude-pattern>*/includes/class-alm-loan-manager.php</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.DB.DirectDatabaseQuery.NoCaching">
+		<exclude-pattern>*/includes/class-alm-loan-manager.php</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_query">
+		<exclude-pattern>*/includes/class-alm-loan-manager.php</exclude-pattern>
+	</rule>
+
+	<!-- Template files included inside a method scope: local variables are not global. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
+		<exclude-pattern>*/admin/alm-settings-page.php</exclude-pattern>
+		<exclude-pattern>*/admin/alm-tools-page.php</exclude-pattern>
+		<exclude-pattern>*/admin/plugin-main-page.php</exclude-pattern>
+		<exclude-pattern>*/templates/*</exclude-pattern>
+	</rule>
 </ruleset>

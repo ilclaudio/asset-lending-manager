@@ -1064,7 +1064,7 @@ class ALM_Loan_Manager {
 		}
 
 		return array(
-			'component_ids'            => $component_ids,
+			'component_ids'             => $component_ids,
 			'component_previous_owners' => isset( $component_previous_owners ) ? $component_previous_owners : array(),
 		);
 	}
@@ -1152,8 +1152,8 @@ class ALM_Loan_Manager {
 				true,
 				$canceled_notification_events
 			);
-			$component_ids            = $transfer_result['component_ids'];
-			$component_prev_owners    = $transfer_result['component_previous_owners'];
+			$component_ids                = $transfer_result['component_ids'];
+			$component_prev_owners        = $transfer_result['component_previous_owners'];
 
 			// 8. Update request status to approved and delete from requests table.
 			$deleted = $wpdb->delete(
@@ -1638,8 +1638,8 @@ class ALM_Loan_Manager {
 				false,
 				$canceled_notification_events
 			);
-			$component_ids            = $transfer_result['component_ids'];
-			$component_prev_owners    = $transfer_result['component_previous_owners'];
+			$component_ids                = $transfer_result['component_ids'];
+			$component_prev_owners        = $transfer_result['component_previous_owners'];
 
 			// 8. Log history entry (loan_request_id = 0 for direct assignments).
 			$history_logged = $this->log_history_entry(
@@ -1788,6 +1788,7 @@ class ALM_Loan_Manager {
 	 * @param string $target_state Target state slug ('maintenance' or 'retired').
 	 * @param string $notes        Operator notes.
 	 * @param int    $actor_id     Operator user ID performing the action.
+	 * @throws Exception When a database error occurs during the state change.
 	 * @return array ['success' => bool, 'message' => string]
 	 */
 	private function change_asset_state( $asset_id, $target_state, $notes, $actor_id ) {
@@ -1916,7 +1917,7 @@ class ALM_Loan_Manager {
 	 */
 	private function remove_component_from_kit( $component_id, $kit_id ) {
 		if ( ! function_exists( 'update_field' ) ) {
-			throw new Exception( __( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
+			throw new Exception( esc_html__( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
 		}
 
 		$current_ids = $this->get_kit_components( $kit_id );
@@ -1942,7 +1943,7 @@ class ALM_Loan_Manager {
 	 */
 	private function add_component_to_kit( $component_id, $kit_id ) {
 		if ( ! function_exists( 'update_field' ) ) {
-			throw new Exception( __( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
+			throw new Exception( esc_html__( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
 		}
 
 		$current_ids = $this->get_kit_components( $kit_id );
@@ -2025,6 +2026,7 @@ class ALM_Loan_Manager {
 	 * @param int    $asset_id Asset ID.
 	 * @param string $notes    Operator notes.
 	 * @param int    $actor_id Operator user ID performing the action.
+	 * @throws Exception When a database error occurs during the state restore.
 	 * @return array ['success' => bool, 'message' => string]
 	 */
 	private function restore_asset_state( $asset_id, $notes, $actor_id ) {

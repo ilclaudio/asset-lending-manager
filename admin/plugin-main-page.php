@@ -1,4 +1,10 @@
 <?php
+/**
+ * ALM Main Page template.
+ *
+ * @package AssetLendingManager
+ */
+
 defined( 'ABSPATH' ) || exit;
 ?>
 

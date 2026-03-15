@@ -23,8 +23,8 @@ $alm_roles_to_modify = array(
 foreach ( $alm_roles_to_modify as $alm_role_name ) {
 	$alm_role = get_role( $alm_role_name );
 	if ( $alm_role ) {
-		foreach ( ALM_Capabilities::get_all_asset_caps() as $cap ) {
-			$alm_role->remove_cap( $cap );
+		foreach ( ALM_Capabilities::get_all_asset_caps() as $alm_cap ) {
+			$alm_role->remove_cap( $alm_cap );
 		}
 	}
 }

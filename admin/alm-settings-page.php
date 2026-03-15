@@ -18,13 +18,13 @@ defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only GET params for tab navigation and notice display.
 $active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'email';
-$saved      = isset( $_GET['saved'] ) && '1' === wp_unslash( $_GET['saved'] );
+$saved      = isset( $_GET['saved'] ) && '1' === sanitize_key( wp_unslash( $_GET['saved'] ) );
 // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 $settings = new ALM_Settings_Manager();
 $is_admin = current_user_can( 'manage_options' );
 
-$tabs = array(
+$alm_tabs = array(
 	'email'         => __( 'Notifications', 'asset-lending-manager' ),
 	'templates'     => __( 'Email Templates', 'asset-lending-manager' ),
 	'loans'         => __( 'Loan Rules', 'asset-lending-manager' ),
@@ -37,7 +37,7 @@ $tabs = array(
 );
 
 // Validate active tab.
-if ( ! array_key_exists( $active_tab, $tabs ) ) {
+if ( ! array_key_exists( $active_tab, $alm_tabs ) ) {
 	$active_tab = 'email';
 }
 
@@ -74,7 +74,7 @@ $placeholders = array(
 	<?php endif; ?>
 
 	<nav class="nav-tab-wrapper" aria-label="<?php esc_attr_e( 'Settings sections', 'asset-lending-manager' ); ?>">
-		<?php foreach ( $tabs as $tab_slug => $tab_label ) : ?>
+		<?php foreach ( $alm_tabs as $tab_slug => $tab_label ) : ?>
 			<a
 				href="<?php echo esc_url( admin_url( 'admin.php?page=alm-settings&tab=' . $tab_slug ) ); ?>"
 				class="nav-tab<?php echo $active_tab === $tab_slug ? ' nav-tab-active' : ''; ?>"
@@ -239,24 +239,24 @@ $placeholders = array(
 				<?php esc_html_e( 'Customize the subject and body of each notification email. Placeholders in curly braces are replaced at send time. Leave a field empty to use the translated default.', 'asset-lending-manager' ); ?>
 			</p>
 
-			<?php foreach ( $email_type_labels as $type => $type_label ) : ?>
+			<?php foreach ( $email_type_labels as $alm_type => $alm_type_label ) : ?>
 				<details class="alm-settings-template-section" open>
 					<summary class="alm-settings-template-summary">
-						<strong><?php echo esc_html( $type_label ); ?></strong>
+						<strong><?php echo esc_html( $alm_type_label ); ?></strong>
 					</summary>
 					<table class="form-table" role="presentation">
 						<tr>
 							<th scope="row">
-								<label for="alm_tpl_subject_<?php echo esc_attr( $type ); ?>">
+								<label for="alm_tpl_subject_<?php echo esc_attr( $alm_type ); ?>">
 									<?php esc_html_e( 'Subject', 'asset-lending-manager' ); ?>
 								</label>
 							</th>
 							<td>
 								<input
 									type="text"
-									id="alm_tpl_subject_<?php echo esc_attr( $type ); ?>"
-									name="alm_tpl_subject_<?php echo esc_attr( $type ); ?>"
-									value="<?php echo esc_attr( $settings->get( 'template.subject.' . $type ) ); ?>"
+									id="alm_tpl_subject_<?php echo esc_attr( $alm_type ); ?>"
+									name="alm_tpl_subject_<?php echo esc_attr( $alm_type ); ?>"
+									value="<?php echo esc_attr( $settings->get( 'template.subject.' . $alm_type ) ); ?>"
 									class="large-text"
 									<?php disabled( ! $is_admin ); ?>
 								>
@@ -264,21 +264,21 @@ $placeholders = array(
 						</tr>
 						<tr>
 							<th scope="row">
-								<label for="alm_tpl_body_<?php echo esc_attr( $type ); ?>">
+								<label for="alm_tpl_body_<?php echo esc_attr( $alm_type ); ?>">
 									<?php esc_html_e( 'Body', 'asset-lending-manager' ); ?>
 								</label>
 							</th>
 							<td>
 								<textarea
-									id="alm_tpl_body_<?php echo esc_attr( $type ); ?>"
-									name="alm_tpl_body_<?php echo esc_attr( $type ); ?>"
+									id="alm_tpl_body_<?php echo esc_attr( $alm_type ); ?>"
+									name="alm_tpl_body_<?php echo esc_attr( $alm_type ); ?>"
 									rows="6"
 									class="large-text"
 									<?php disabled( ! $is_admin ); ?>
-								><?php echo esc_textarea( $settings->get( 'template.body.' . $type ) ); ?></textarea>
+								><?php echo esc_textarea( $settings->get( 'template.body.' . $alm_type ) ); ?></textarea>
 								<p class="description">
 									<?php esc_html_e( 'Available placeholders:', 'asset-lending-manager' ); ?>
-									<code><?php echo esc_html( $placeholders[ $type ] ); ?></code>
+									<code><?php echo esc_html( $placeholders[ $alm_type ] ); ?></code>
 								</p>
 							</td>
 						</tr>
@@ -566,7 +566,7 @@ $placeholders = array(
 								'selected'          => (int) $settings->get( 'frontend.assets_page_id' ),
 								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
-								'disabled'          => ! $is_admin,
+								'disabled'          => ! $is_admin, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- boolean value, not user input.
 							)
 						);
 						?>
@@ -591,7 +591,7 @@ $placeholders = array(
 								'selected'          => (int) $settings->get( 'frontend.login_redirect_page_id' ),
 								'show_option_none'  => esc_html__( '— Default (/asset/) —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
-								'disabled'          => ! $is_admin,
+								'disabled'          => ! $is_admin, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- boolean value, not user input.
 							)
 						);
 						?>
@@ -616,7 +616,7 @@ $placeholders = array(
 								'selected'          => (int) $settings->get( 'frontend.logout_redirect_page_id' ),
 								'show_option_none'  => esc_html__( '— Default (home) —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
-								'disabled'          => ! $is_admin,
+								'disabled'          => ! $is_admin, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- boolean value, not user input.
 							)
 						);
 						?>

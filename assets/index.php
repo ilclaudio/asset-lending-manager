@@ -1,4 +1,8 @@
 <?php
-defined( 'ABSPATH' ) || exit;
+/**
+ * Silence is golden.
+ *
+ * @package AssetLendingManager
+ */
 
-// Silence is golden
+defined( 'ABSPATH' ) || exit;
