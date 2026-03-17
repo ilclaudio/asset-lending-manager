@@ -82,7 +82,7 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_loan_request_submitted_notification( $requester_id, $owner_id, $asset_id, $message ) {
-		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+		if ( ! $this->settings->get( 'notifications.enabled', false ) ) {
 			return;
 		}
 		if ( ! $this->settings->get( 'notifications.loan_request', true ) ) {
@@ -147,7 +147,7 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_loan_request_approved_notification( $loan_request ) {
-		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+		if ( ! $this->settings->get( 'notifications.enabled', false ) ) {
 			return;
 		}
 		if ( ! $this->settings->get( 'notifications.loan_decision', true ) ) {
@@ -184,7 +184,7 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_loan_request_rejected_notification( $loan_request, $rejection_message ) {
-		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+		if ( ! $this->settings->get( 'notifications.enabled', false ) ) {
 			return;
 		}
 		if ( ! $this->settings->get( 'notifications.loan_decision', true ) ) {
@@ -225,7 +225,7 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_loan_request_canceled_notification( $requester_id, $asset_id ) {
-		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+		if ( ! $this->settings->get( 'notifications.enabled', false ) ) {
 			return;
 		}
 		if ( ! $this->settings->get( 'notifications.loan_request', true ) ) {
@@ -270,7 +270,7 @@ class ALM_Notification_Manager {
 	 * @return void
 	 */
 	public function send_direct_assign_notification( $asset_id, $assignee_id, $actor_id, $reason, $previous_owner_id = 0 ) {
-		if ( ! $this->settings->get( 'notifications.enabled', true ) ) {
+		if ( ! $this->settings->get( 'notifications.enabled', false ) ) {
 			return;
 		}
 		if ( ! $this->settings->get( 'notifications.loan_confirmation', true ) ) {

@@ -63,7 +63,7 @@ class ALM_Settings_Manager {
 				'system_email' => '',
 			),
 			'notifications' => array(
-				'enabled'           => true,
+				'enabled'           => false,
 				'loan_request'      => true,
 				'loan_decision'     => true,
 				'loan_confirmation' => true,

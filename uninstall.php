@@ -11,6 +11,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 require_once __DIR__ . '/plugin-config.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-capabilities.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-logger.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-installer.php';
 
 // Remove ALM capabilities from roles that can receive plugin caps.
