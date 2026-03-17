@@ -21,6 +21,8 @@ Members can browse available assets and submit loan requests, while operators an
 
 The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof. Born within the AAGG astronomy association to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
 
+**Requires the Advanced Custom Fields (ACF) plugin** (free version) to store and manage asset custom fields.
+
 
 == Features ==
 * Asset and kit management (kits cannot contain other kits)
@@ -102,6 +104,16 @@ Uninstalling the plugin removes: the plugin settings, the loan request history t
 * Asset state management (available, on-loan, maintenance, retired) with kit propagation.
 * Translation-ready with English and Italian included.
 * Settings page in wp-admin.
+
+
+== Credits ==
+
+This plugin bundles the following third-party JavaScript libraries:
+
+* **qrcode-generator** by Kazuhiko Arase (http://www.d-project.com/) — MIT License
+* **jsQR** by cozmo (https://github.com/cozmo/jsQR) — Apache License 2.0
+
+Both licenses are compatible with GPLv2 or later. License files are included in `assets/js/vendor/`.
 
 
 == Upgrade Notice ==

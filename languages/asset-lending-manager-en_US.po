@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-03-15 18:21+0000\n"
+"PO-Revision-Date: 2026-03-17 17:46+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -17,6 +17,15 @@ msgstr ""
 
 #: templates/shortcodes/asset-view.php:181
 msgid "(opens in new tab)"
+msgstr ""
+
+#. %s: URL to the WordPress plugin installer search page for ACF.
+#: includes/class-alm-plugin-manager.php:119
+#, php-format
+msgid ""
+"<strong>Asset Lending Manager</strong> requires <strong>Advanced Custom "
+"Fields</strong> to be installed and active. <a href=\"%s\">Install it now</a>"
+"."
 msgstr ""
 
 #. %s: current owner display name
@@ -67,8 +76,8 @@ msgstr ""
 msgid "Accessory"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1919
-#: includes/class-alm-loan-manager.php:1945
+#: includes/class-alm-loan-manager.php:1920
+#: includes/class-alm-loan-manager.php:1946
 msgid "ACF is not available. Cannot update kit components."
 msgstr ""
 
@@ -77,8 +86,8 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:251
-#: includes/class-alm-plugin-manager.php:252
+#: includes/class-alm-plugin-manager.php:261
+#: includes/class-alm-plugin-manager.php:262
 msgid "Add a asset"
 msgstr ""
 
@@ -156,15 +165,15 @@ msgid "Allowed target roles"
 msgstr ""
 
 #. Page title.
-#: includes/class-alm-plugin-manager.php:231
+#: includes/class-alm-plugin-manager.php:241
 msgid "ALM"
 msgstr ""
 
-#: admin/alm-settings-page.php:68 includes/class-alm-plugin-manager.php:296
+#: admin/alm-settings-page.php:68 includes/class-alm-plugin-manager.php:306
 msgid "ALM Settings"
 msgstr ""
 
-#: admin/alm-tools-page.php:7 includes/class-alm-plugin-manager.php:306
+#: admin/alm-tools-page.php:14 includes/class-alm-plugin-manager.php:316
 msgid "ALM Tools"
 msgstr ""
 
@@ -176,7 +185,7 @@ msgid ""
 "asset code (e.g. %s)."
 msgstr ""
 
-#: admin/alm-tools-page.php:16
+#: admin/alm-tools-page.php:23
 msgid "An error occurred while loading default terms."
 msgstr ""
 
@@ -245,18 +254,18 @@ msgstr ""
 msgid "Asset ID not found."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1997
+#: includes/class-alm-loan-manager.php:1998
 msgid "Asset is not in a restorable state."
 msgstr ""
 
 #. Name of the plugin
-#: includes/class-alm-plugin-manager.php:230
+#: includes/class-alm-plugin-manager.php:240
 msgid "Asset Lending Manager"
 msgstr ""
 
 #: includes/class-alm-asset-manager.php:202
-#: includes/class-alm-plugin-manager.php:287
-#: includes/class-alm-plugin-manager.php:288
+#: includes/class-alm-plugin-manager.php:297
+#: includes/class-alm-plugin-manager.php:298
 msgid "Asset Level"
 msgstr ""
 
@@ -272,7 +281,7 @@ msgstr ""
 msgid "Asset list pagination"
 msgstr ""
 
-#: assets/js/admin-assets.js:115
+#: assets/js/admin-assets.js:127
 msgid "Asset name is required."
 msgstr ""
 
@@ -282,7 +291,7 @@ msgstr ""
 #: includes/class-alm-loan-manager.php:1134
 #: includes/class-alm-loan-manager.php:1543
 #: includes/class-alm-loan-manager.php:1755
-#: includes/class-alm-loan-manager.php:1992
+#: includes/class-alm-loan-manager.php:1993
 msgid "Asset not found."
 msgstr ""
 
@@ -290,13 +299,13 @@ msgstr ""
 msgid "Asset overview"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:2094 assets/js/frontend-assets.js:1127
+#: includes/class-alm-loan-manager.php:2096 assets/js/frontend-assets.js:1127
 msgid "Asset restored to available successfully."
 msgstr ""
 
 #: includes/class-alm-asset-manager.php:180
-#: includes/class-alm-plugin-manager.php:278
-#: includes/class-alm-plugin-manager.php:279
+#: includes/class-alm-plugin-manager.php:288
+#: includes/class-alm-plugin-manager.php:289
 msgid "Asset State"
 msgstr ""
 
@@ -309,7 +318,7 @@ msgstr ""
 msgid "Asset state management"
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1859 assets/js/frontend-assets.js:1123
+#: includes/class-alm-loan-manager.php:1860 assets/js/frontend-assets.js:1123
 msgid "Asset state updated successfully."
 msgstr ""
 
@@ -318,8 +327,8 @@ msgid "Asset States"
 msgstr ""
 
 #: includes/class-alm-asset-manager.php:136
-#: includes/class-alm-plugin-manager.php:260
-#: includes/class-alm-plugin-manager.php:261
+#: includes/class-alm-plugin-manager.php:270
+#: includes/class-alm-plugin-manager.php:271
 msgid "Asset Structure"
 msgstr ""
 
@@ -332,8 +341,8 @@ msgid "Asset taxonomies"
 msgstr ""
 
 #: includes/class-alm-asset-manager.php:158
-#: includes/class-alm-plugin-manager.php:269
-#: includes/class-alm-plugin-manager.php:270
+#: includes/class-alm-plugin-manager.php:279
+#: includes/class-alm-plugin-manager.php:280
 msgid "Asset Type"
 msgstr ""
 
@@ -345,8 +354,8 @@ msgstr ""
 #. page title.
 #: includes/class-alm-asset-manager.php:92
 #: includes/class-alm-asset-manager.php:102
-#: includes/class-alm-plugin-manager.php:242
-#: includes/class-alm-plugin-manager.php:243
+#: includes/class-alm-plugin-manager.php:252
+#: includes/class-alm-plugin-manager.php:253
 msgid "Assets"
 msgstr ""
 
@@ -540,7 +549,7 @@ msgstr ""
 msgid "Debug — all events"
 msgstr ""
 
-#: admin/alm-tools-page.php:12
+#: admin/alm-tools-page.php:19
 msgid "Default terms loaded successfully."
 msgstr ""
 
@@ -665,8 +674,8 @@ msgstr ""
 msgid "Failed to log cancellation for request ID %d."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1822
-#: includes/class-alm-loan-manager.php:2057
+#: includes/class-alm-loan-manager.php:1823
+#: includes/class-alm-loan-manager.php:2059
 msgid "Failed to log history entry for component."
 msgstr ""
 
@@ -677,10 +686,10 @@ msgstr ""
 
 #: includes/class-alm-loan-manager.php:1181
 #: includes/class-alm-loan-manager.php:1656
-#: includes/class-alm-loan-manager.php:1812
-#: includes/class-alm-loan-manager.php:1841
-#: includes/class-alm-loan-manager.php:2047
-#: includes/class-alm-loan-manager.php:2075
+#: includes/class-alm-loan-manager.php:1813
+#: includes/class-alm-loan-manager.php:1842
+#: includes/class-alm-loan-manager.php:2049
+#: includes/class-alm-loan-manager.php:2077
 msgid "Failed to log history entry."
 msgstr ""
 
@@ -863,7 +872,7 @@ msgid "Invalid asset ID."
 msgstr ""
 
 #: includes/class-alm-loan-manager.php:1732
-#: includes/class-alm-loan-manager.php:1974
+#: includes/class-alm-loan-manager.php:1975
 msgid "Invalid asset."
 msgstr ""
 
@@ -1008,7 +1017,7 @@ msgstr ""
 msgid "Magazine"
 msgstr ""
 
-#: admin/plugin-main-page.php:7
+#: admin/plugin-main-page.php:13
 msgid "Main page of the plugin"
 msgstr ""
 
@@ -1177,7 +1186,7 @@ msgstr ""
 
 #. %d: maximum number of characters allowed
 #: includes/class-alm-loan-manager.php:1746
-#: includes/class-alm-loan-manager.php:1983
+#: includes/class-alm-loan-manager.php:1984
 msgid "Notes must not exceed %d characters."
 msgstr ""
 
@@ -1294,7 +1303,7 @@ msgstr ""
 msgid "Please enter the assignment reason."
 msgstr ""
 
-#: assets/js/admin-assets.js:127
+#: assets/js/admin-assets.js:139
 msgid ""
 "Please fix the following errors:\n"
 "\n"
@@ -1304,7 +1313,7 @@ msgstr ""
 msgid "Please provide a reason for rejecting this loan request..."
 msgstr ""
 
-#: assets/js/admin-assets.js:121
+#: assets/js/admin-assets.js:133
 msgid "Please select a asset type."
 msgstr ""
 
@@ -1431,7 +1440,7 @@ msgstr ""
 msgid "Rejection reason must not exceed 255 characters."
 msgstr ""
 
-#: admin/alm-tools-page.php:24
+#: admin/alm-tools-page.php:31
 msgid "Reload Default Taxonomies Terms"
 msgstr ""
 
@@ -1620,7 +1629,7 @@ msgstr ""
 msgid "Set to retired"
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:297
+#: includes/class-alm-plugin-manager.php:307
 msgid "Settings"
 msgstr ""
 
@@ -1696,10 +1705,6 @@ msgstr ""
 msgid "Telescope"
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:95
-msgid "The ALM plugin requires the plugin ACF installed and enabled."
-msgstr ""
-
 #. %s: current asset state label
 #: templates/shortcodes/asset-view.php:617
 #, php-format
@@ -1736,7 +1741,7 @@ msgstr ""
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:307
+#: includes/class-alm-plugin-manager.php:317
 msgid "Tools"
 msgstr ""
 
@@ -1750,8 +1755,8 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:375
-#: includes/class-alm-plugin-manager.php:526
+#: includes/class-alm-plugin-manager.php:385
+#: includes/class-alm-plugin-manager.php:536
 msgid "Unauthorized action."
 msgstr ""
 
@@ -1773,7 +1778,7 @@ msgstr ""
 msgid "View Asset"
 msgstr ""
 
-#: assets/js/admin-assets.js:75
+#: assets/js/admin-assets.js:79
 msgid "View on Frontend"
 msgstr ""
 
@@ -1866,13 +1871,13 @@ msgstr ""
 msgid "You do not have permission to request loans."
 msgstr ""
 
-#: includes/class-alm-loan-manager.php:1966
+#: includes/class-alm-loan-manager.php:1967
 msgid "You do not have permission to restore asset states."
 msgstr ""
 
-#: includes/class-alm-plugin-manager.php:336
-#: includes/class-alm-plugin-manager.php:348
-#: includes/class-alm-plugin-manager.php:360
+#: includes/class-alm-plugin-manager.php:346
+#: includes/class-alm-plugin-manager.php:358
+#: includes/class-alm-plugin-manager.php:370
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
