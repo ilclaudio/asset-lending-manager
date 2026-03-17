@@ -77,7 +77,7 @@ $placeholders = array(
 		<?php foreach ( $alm_tabs as $tab_slug => $tab_label ) : ?>
 			<a
 				href="<?php echo esc_url( admin_url( 'admin.php?page=alm-settings&tab=' . $tab_slug ) ); ?>"
-				class="nav-tab<?php echo $active_tab === $tab_slug ? ' nav-tab-active' : ''; ?>"
+				class="nav-tab<?php echo esc_attr( $active_tab === $tab_slug ? ' nav-tab-active' : '' ); ?>"
 			>
 				<?php echo esc_html( $tab_label ); ?>
 			</a>

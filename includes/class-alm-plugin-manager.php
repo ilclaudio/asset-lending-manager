@@ -53,7 +53,9 @@ class ALM_Plugin_Manager {
 	 * Called once from the main plugin file.
 	 */
 	public function init() {
-		$this->check_dependencies();
+		if ( ! $this->check_dependencies() ) {
+			return;
+		}
 		// Configure logger with user settings (runs on plugins_loaded, safe because
 		// get_defaults() defers __() calls until after the 'init' action).
 		ALM_Logger::configure( $this->modules['settings'] );
@@ -82,22 +84,47 @@ class ALM_Plugin_Manager {
 	}
 
 	/**
-	 * Check if all dependencies are satisfied, if not show an admin notice.
+	 * Check if all dependencies are satisfied.
+	 *
+	 * Registers an admin notice and returns false when a required dependency
+	 * is missing so that init() can abort module registration early.
+	 *
+	 * @return bool True if all dependencies are present, false otherwise.
+	 */
+	private function check_dependencies(): bool {
+		if ( ! class_exists( 'ACF' ) ) {
+			add_action( 'admin_notices', array( $this, 'notice_acf_missing' ) );
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Admin notice shown when Advanced Custom Fields is not active.
+	 *
+	 * Visible to administrators only.
 	 *
 	 * @return void
 	 */
-	private function check_dependencies() {
-		if ( ! class_exists( 'ACF' ) ) {
-			add_action(
-				'admin_notices',
-				function () {
-					$msg = __( 'The ALM plugin requires the plugin ACF installed and enabled.', 'asset-lending-manager' );
-					echo '<div class="notice notice-error"><p>';
-					echo esc_html( $msg );
-					echo '</p></div>';
-				}
-			);
+	public function notice_acf_missing() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
 		}
+		$install_url = admin_url( 'plugin-install.php?s=advanced+custom+fields&tab=search&type=term' );
+		printf(
+			'<div class="notice notice-error"><p>%s</p></div>',
+			wp_kses(
+				sprintf(
+					/* translators: %s: URL to the WordPress plugin installer search page for ACF. */
+					__( '<strong>Asset Lending Manager</strong> requires <strong>Advanced Custom Fields</strong> to be installed and active. <a href="%s">Install it now</a>.', 'asset-lending-manager' ),
+					esc_url( $install_url )
+				),
+				array(
+					'strong' => array(),
+					'a'      => array( 'href' => array() ),
+				)
+			)
+		);
 	}
 
 	/**
