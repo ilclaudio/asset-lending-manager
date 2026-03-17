@@ -671,7 +671,22 @@ class ALM_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 		try {
 			$table_name = $wpdb->prefix . 'alm_loan_requests';
-			$result     = $wpdb->insert(
+
+			// Re-check for an existing pending request inside the transaction with a row-level
+			// lock (FOR UPDATE) to prevent duplicates under concurrent submissions.
+			$existing = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
+					"SELECT COUNT(*) FROM $table_name WHERE asset_id = %d AND requester_id = %d AND status = 'pending' FOR UPDATE",
+					$asset_id,
+					$requester_id
+				)
+			);
+			if ( $existing > 0 ) {
+				throw new Exception( 'Duplicate pending request' );
+			}
+
+			$result = $wpdb->insert(
 				$table_name,
 				array(
 					'asset_id'        => $asset_id,
@@ -1369,14 +1384,16 @@ class ALM_Loan_Manager {
 		$table_name = $wpdb->prefix . 'alm_loan_requests';
 
 		// Get all pending requests for this asset (excluding the approved one).
+		// FOR UPDATE locks the selected rows within the caller's transaction so that a
+		// concurrent approval cannot read and double-cancel the same requests.
 		if ( $exclude_request_id > 0 ) {
 			$requests = $wpdb->get_results(
 				$wpdb->prepare(
 					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT * FROM $table_name 
-						WHERE asset_id = %d 
-						AND id != %d 
-					AND status = 'pending'",
+					"SELECT * FROM $table_name
+						WHERE asset_id = %d
+						AND id != %d
+					AND status = 'pending' FOR UPDATE",
 					$asset_id,
 					$exclude_request_id
 				)
@@ -1385,9 +1402,9 @@ class ALM_Loan_Manager {
 			$requests = $wpdb->get_results(
 				$wpdb->prepare(
 					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT * FROM $table_name 
-						WHERE asset_id = %d 
-						AND status = 'pending'",
+					"SELECT * FROM $table_name
+						WHERE asset_id = %d
+						AND status = 'pending' FOR UPDATE",
 					$asset_id
 				)
 			);
@@ -1428,7 +1445,7 @@ class ALM_Loan_Manager {
 				array( '%d' )
 			);
 
-			if ( false === $deleted ) {
+			if ( $deleted < 1 ) {
 				throw new Exception(
 					sprintf(
 						/* translators: %d: loan request ID */
