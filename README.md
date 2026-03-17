@@ -100,3 +100,19 @@ composer test:unit
 composer test:integration
 composer test:all
 ```
+
+### Build distribution ZIP
+
+Run from the repository root (or from `DEV/`):
+
+```bash
+bash DEV/build-zip.sh
+```
+
+Output: `DEV/dist/asset-lending-manager-<version>.zip`
+
+The version is read automatically from the plugin header in `asset-lending-manager.php`.
+Dev-only files are stripped from the archive: `tests/`, `composer.json`, `phpcs.xml.dist`,
+`phpunit*.xml`, `.gitignore`, `.githooks/`, `.vscode/`, `DEV/`, `DOC/`, `TODO.txt`.
+The script prints a full file list and size on completion.
+Requires one of: `zip` (Unix), PowerShell, or `python3`.
