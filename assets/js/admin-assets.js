@@ -72,12 +72,24 @@
 				}
 
 				var postId = row.id.replace('post-', '');
-				var viewLabel = __( 'View on Frontend', 'asset-lending-manager' );
-				var viewLink = '<span class="alm-view-frontend"> | ' +
-					'<a href="' + ALM_Admin.getAssetPermalink(postId) + '" target="_blank">' +
-					viewLabel + '</a></span>';
+				if (!/^\d+$/.test(postId)) {
+					return;
+				}
 
-				actions.insertAdjacentHTML('beforeend', viewLink);
+				var viewLabel = __( 'View on Frontend', 'asset-lending-manager' );
+				var viewWrapper = document.createElement('span');
+				var separator = document.createTextNode(' | ');
+				var viewLink = document.createElement('a');
+
+				viewWrapper.className = 'alm-view-frontend';
+				viewLink.href = ALM_Admin.getAssetPermalink(postId);
+				viewLink.target = '_blank';
+				viewLink.rel = 'noopener noreferrer';
+				viewLink.textContent = viewLabel;
+
+				viewWrapper.appendChild(separator);
+				viewWrapper.appendChild(viewLink);
+				actions.appendChild(viewWrapper);
 			});
 		},
 
