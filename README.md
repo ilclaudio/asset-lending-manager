@@ -106,7 +106,7 @@ composer test:all
 Run from the repository root (or from `DEV/`):
 
 ```bash
-bash DEV/build-zip.sh
+bash DEV/SETUP/AIScripts/build-zip.sh
 ```
 
 Output: `DEV/dist/asset-lending-manager-<version>.zip`

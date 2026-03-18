@@ -57,3 +57,6 @@ DEV
 # AI agent entry points — local symlinks pointing into DEV/
 AGENTS.md
 CLAUDE.md
+tmp-alm-php-path-test.out
+tmp-alm-php-path-test.php
+tmp/
