@@ -19,31 +19,28 @@ Designed for clubs, associations, schools, public bodies, libraries, laboratorie
 
 Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
-The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof. Born within the AAGG astronomy association to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
+Born within the AAGG astronomy association to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
 
-**Requires the Advanced Custom Fields (ACF) plugin** (free version) to store and manage asset custom fields.
+**Requires the Advanced Custom Fields (ACF) plugin** (free version) to store and manage asset details.
 
 
 == Features ==
-* Asset and kit management (kits cannot contain other kits)
-* Frontend asset browsing with filters
-* QR code generation and print label from asset detail page
-* QR scanner from asset list (camera-based quick lookup)
-* Loan request workflow (submit, approve, reject)
-* Direct assignment by operator/admin (reason required)
-* Automatic cancellation of concurrent pending requests after assignment
+* Asset and kit management (a kit is a group of items lent together as a set)
+* Public browsing page with search and category filters
+* QR code generation and printable label from the asset detail page
+* QR scanner from the asset list (camera-based quick lookup)
+* Loan request workflow: members submit requests, operators approve or reject
+* Direct assignment by operators and admins (a reason is always required)
+* When an asset is assigned, all other pending requests for it are automatically canceled
 * Email notifications for requests and assignment outcomes
-* Loan history tracking per asset and per kit component
-* Role-based permissions (alm_member, alm_operator)
+* Full loan history for each asset
+* Two user roles included: Member (can browse and request loans) and Operator (can manage assignments and history)
 * Translation-ready
 
 
 == Requirements ==
-This plugin requires the Advanced Custom Fields plugin (free version is sufficient).
-
-QR features use bundled JavaScript libraries:
-* qrcode-generator (MIT license)
-* jsQR (Apache-2.0 license)
+This plugin requires the **Advanced Custom Fields** plugin (free version is sufficient).
+You can install it for free from the WordPress plugin directory.
 
 
 == Loan Workflow ==
@@ -51,18 +48,18 @@ QR features use bundled JavaScript libraries:
 * A loan request is submitted for a selected asset.
 * Notification emails are sent to the requester and, when applicable, to the current owner.
 * The current owner can approve or reject the request.
-* On approval, ownership is transferred and asset state is updated to on-loan.
-* Operators/admins can directly assign non-retired assets at any time.
+* On approval, the asset is marked as on loan and the new borrower is recorded.
+* Operators and admins can also directly assign any available asset without a prior request.
 * All decisions and assignments are recorded in loan history.
 
 
 == Installation ==
-1. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
-2. Activate the plugin through the "Plugins" menu in WordPress.
-3. Ensure Advanced Custom Fields (ACF) is installed and active.
-4. Add one or both shortcodes to a page:
-   * `[alm_asset_list]` — displays the browsable asset list with filters
-   * `[alm_asset_view]` — displays the asset detail view with loan request form
+1. In your WordPress admin, go to Plugins > Add New > Upload Plugin.
+2. Upload the plugin ZIP file and click Install Now, then Activate.
+3. Install and activate the **Advanced Custom Fields** (ACF) plugin — the free version is sufficient and available in the WordPress plugin directory.
+4. Create a new page and add one or both shortcodes to its content:
+   * `[alm_asset_list]` — displays the browsable asset list with search and filters
+   * `[alm_asset_view]` — displays the asset detail page with the loan request form
 
 
 == Frequently Asked Questions ==
@@ -77,13 +74,22 @@ Yes. ACF (free version) is required to store and retrieve custom asset fields. T
 No. Asset delivery and handover are handled offline. The plugin tracks requests and assignments only.
 
 = Is there a settings page in wp-admin? =
-Yes. A settings page is available in wp-admin under the ALM menu.
+Yes. Under the **ALM** menu in wp-admin you can configure the email sender, loan rules (maximum active loans per member, message length limits), and other workflow options.
 
 = Is the plugin translation-ready? =
-Yes. All user-facing strings are prepared for translation using standard WordPress internationalization functions. A `.pot` file is included.
+Yes. English and Italian are included out of the box. Other languages can be added using standard WordPress translation tools.
 
 = What data is removed when the plugin is uninstalled? =
-Uninstalling the plugin removes: the plugin settings, the loan request history table, the pending loan requests table, and the custom roles (alm_member, alm_operator). Asset posts and their metadata are intentionally preserved so that your inventory is not lost if you reinstall the plugin later.
+Uninstalling the plugin removes the plugin settings, the loan request history, the pending loan requests, and the custom user roles. Your asset inventory (posts and their data) is intentionally preserved so that it is not lost if you reinstall the plugin later.
+
+= What is the difference between an asset and a kit? =
+An asset is a single physical item (for example, a telescope, a book, or a camera). A kit is a collection of items that are lent together as a group (for example, a telescope with its eyepieces and carrying case). Managing kits allows you to track all components under a single loan request.
+
+= Can multiple members request the same asset at the same time? =
+Yes. Multiple members can submit requests for the same asset simultaneously. When a request is approved or the asset is directly assigned, all other pending requests for that asset are automatically canceled and the requesters are notified by email.
+
+= Do I need a developer to set up this plugin? =
+Basic setup only requires installing the plugin, activating ACF, and adding a shortcode to a page — no coding needed. Some advanced customization such as theme integration or user role adjustments may benefit from developer support.
 
 
 == Screenshots ==
