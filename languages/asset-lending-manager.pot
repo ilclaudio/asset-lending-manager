@@ -854,7 +854,7 @@ msgid "https://github.com/ilclaudio/asset-lending-manager"
 msgstr ""
 
 #. Author URI of the plugin
-msgid "https://www.astrofilipisani.it/"
+msgid "https://www.claudiobattaglino.it/"
 msgstr ""
 
 #: admin/alm-settings-page.php:824

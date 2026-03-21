@@ -58,7 +58,7 @@ class ALM_Frontend_Manager {
 		add_shortcode( 'alm_asset_view', array( $this, 'shortcode_asset_view' ) );
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
-		// Handle QR scan redirect (?alm_scan=AAGG-00000052).
+		// Handle QR scan redirect (?alm_scan=ALM-00000052).
 		add_action( 'template_redirect', array( $this, 'handle_alm_scan_redirect' ) );
 		// Login and logout redirect for operators and members.
 		add_filter( 'login_redirect', array( $this, 'redirect_login_by_role' ), 10, 3 );

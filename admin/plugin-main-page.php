@@ -1,15 +1,92 @@
 <?php
 /**
- * ALM Main Page template.
+ * ALM Main Page template — About section.
+ *
+ * Displays plugin identity, metadata, quick links and shortcode reference.
  *
  * @package AssetLendingManager
  */
 
 defined( 'ABSPATH' ) || exit;
-?>
 
+$alm_data = get_file_data(
+	ALM_PLUGIN_DIR . 'asset-lending-manager.php',
+	array(
+		'Name'        => 'Plugin Name',
+		'PluginURI'   => 'Plugin URI',
+		'Version'     => 'Version',
+		'Description' => 'Description',
+		'AuthorURI'   => 'Author URI',
+		'RequiresWP'  => 'Requires at least',
+		'License'     => 'License',
+	)
+);
+$alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
+?>
 <div class="wrap">
-	<h2>
-		<?php esc_html_e( 'Main page of the plugin', 'asset-lending-manager' ); ?>
-	</h2>
-</div>
+
+	<div class="card alm-about">
+
+		<!-- Header: logo + name + description -->
+		<div class="alm-about__header">
+			<img
+				src="<?php echo esc_url( $alm_logo_url ); ?>"
+				alt="<?php esc_attr_e( 'Asset Lending Manager logo', 'asset-lending-manager' ); ?>"
+				class="alm-about__logo"
+			/>
+			<div class="alm-about__intro">
+				<h1><?php echo esc_html( $alm_data['Name'] ); ?></h1>
+				<p><?php echo esc_html( $alm_data['Description'] ); ?></p>
+			</div>
+		</div>
+
+		<!-- Metadata row -->
+		<p class="alm-about__meta">
+			<span><?php printf( esc_html__( 'Version %s', 'asset-lending-manager' ), esc_html( $alm_data['Version'] ) ); ?></span>
+			<span class="alm-about__sep" aria-hidden="true">&middot;</span>
+			<span><?php printf( esc_html__( 'Requires WordPress %s', 'asset-lending-manager' ), esc_html( $alm_data['RequiresWP'] ) ); ?></span>
+			<span class="alm-about__sep" aria-hidden="true">&middot;</span>
+			<span><?php echo esc_html( $alm_data['License'] ); ?></span>
+		</p>
+
+		<!-- Quick links -->
+		<div class="alm-about__links">
+			<a href="<?php echo esc_url( $alm_data['PluginURI'] ); ?>" class="button" target="_blank" rel="noopener noreferrer">
+				<?php esc_html_e( 'GitHub repository', 'asset-lending-manager' ); ?> <span aria-hidden="true">&#8599;</span>
+			</a>
+			<a href="<?php echo esc_url( $alm_data['AuthorURI'] ); ?>" class="button" target="_blank" rel="noopener noreferrer">
+				<?php esc_html_e( 'Author site', 'asset-lending-manager' ); ?> <span aria-hidden="true">&#8599;</span>
+			</a>
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=alm-settings' ) ); ?>" class="button button-primary">
+				<?php esc_html_e( 'Settings', 'asset-lending-manager' ); ?> <span aria-hidden="true">&rarr;</span>
+			</a>
+		</div>
+
+		<hr class="alm-about__divider" />
+
+		<!-- Shortcode reference -->
+		<h2><?php esc_html_e( 'Quick start', 'asset-lending-manager' ); ?></h2>
+		<p><?php esc_html_e( 'Add these shortcodes to any WordPress page.', 'asset-lending-manager' ); ?></p>
+
+		<table class="widefat striped alm-about__shortcodes">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Shortcode', 'asset-lending-manager' ); ?></th>
+					<th><?php esc_html_e( 'Description', 'asset-lending-manager' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>[alm_asset_list]</code></td>
+					<td><?php esc_html_e( 'Displays the full asset catalog with search filters. Place it on the main asset page.', 'asset-lending-manager' ); ?></td>
+				</tr>
+				<tr>
+					<td><code>[alm_asset_view]</code></td>
+					<td><?php esc_html_e( 'Displays the detail view for a single asset. Used automatically on the asset permalink page.', 'asset-lending-manager' ); ?></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div><!-- .alm-about -->
+
+</div><!-- .wrap -->

@@ -1,7 +1,7 @@
 === Asset Lending Manager ===
 Contributors: ilclaudio
-Author URI: https://www.astrofilipisani.it/
-Author: AAGG
+Author URI: https://www.claudiobattaglino.it/
+Author: IoClaudio
 Tags: asset management, loans, library, equipment, organization
 Requires at least: 6.2
 Tested up to: 6.9
@@ -65,7 +65,8 @@ You can install it for free from the WordPress plugin directory.
 == Frequently Asked Questions ==
 
 = Who is this plugin for? =
-Any organization that manages a shared pool of physical objects: associations, schools, public bodies, libraries, laboratories, makerspaces, sports clubs, and more. The plugin was originally created for an astronomy association (AAGG, Italy) but is designed to be generic and suitable for any context.
+Any organization that manages a shared pool of physical objects: associations, schools, public bodies, libraries, laboratories, makerspaces, sports clubs, and more.
+The plugin was originally created for an astronomy association (AAGG, Italy) but is designed to be generic and suitable for any context.
 
 = Does this plugin require Advanced Custom Fields? =
 Yes. ACF (free version) is required to store and retrieve custom asset fields. The plugin will display an admin notice if ACF is not active.

@@ -7,8 +7,8 @@
  * Requires at least: 6.2
  * Requires Plugins: advanced-custom-fields
  * Version:     0.1.0
- * Author:      AAGG
- * Author URI:  https://www.astrofilipisani.it/
+ * Author:      IoClaudio
+ * Author URI:  https://www.claudiobattaglino.it
  * Text Domain: asset-lending-manager
  * Domain Path: /languages
  * License:     GPLv2 or later
