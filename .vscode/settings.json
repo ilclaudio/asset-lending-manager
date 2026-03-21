@@ -31,6 +31,7 @@
     "termitem"
   ],
   "cSpell.enabled": false,
+  "files.eol": "\n",
   "terminal.integrated.env.windows": {
     "TEMP": "${workspaceFolder}\\.codex-tmp",
     "TMP": "${workspaceFolder}\\.codex-tmp",

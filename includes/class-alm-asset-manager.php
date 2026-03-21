@@ -58,7 +58,8 @@ class ALM_Asset_Manager {
 	 * @return void
 	 */
 	public function deactivate() {
-		// Do nothing.
+		// Flush rewrite rules so the CPT slug is removed from WordPress routing.
+		flush_rewrite_rules();
 	}
 
 	/**

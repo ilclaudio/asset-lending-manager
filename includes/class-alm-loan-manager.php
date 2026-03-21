@@ -299,8 +299,8 @@ class ALM_Loan_Manager {
 		$table_name       = $wpdb->prefix . 'alm_loan_requests';
 			$loan_request = $wpdb->get_row(
 				$wpdb->prepare(
-					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT * FROM $table_name WHERE id = %d",
+					"SELECT * FROM %i WHERE id = %d",
+					$table_name,
 					$request_id
 				)
 			);
@@ -420,10 +420,10 @@ class ALM_Loan_Manager {
 			// Re-read and lock the target request row inside the transaction.
 			$locked_request = $wpdb->get_row(
 				$wpdb->prepare(
-					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT * FROM $table_name
+					"SELECT * FROM %i
 					WHERE id = %d
 					FOR UPDATE",
+					$table_name,
 					$loan_request->id
 				)
 			);
@@ -588,8 +588,8 @@ class ALM_Loan_Manager {
 		$table_name       = $wpdb->prefix . 'alm_loan_requests';
 			$loan_request = $wpdb->get_row(
 				$wpdb->prepare(
-					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT * FROM $table_name WHERE id = %d",
+					"SELECT * FROM %i WHERE id = %d",
+					$table_name,
 					$request_id
 				)
 			);
@@ -676,8 +676,8 @@ class ALM_Loan_Manager {
 			// lock (FOR UPDATE) to prevent duplicates under concurrent submissions.
 			$existing = (int) $wpdb->get_var(
 				$wpdb->prepare(
-					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT COUNT(*) FROM $table_name WHERE asset_id = %d AND requester_id = %d AND status = 'pending' FOR UPDATE",
+					"SELECT COUNT(*) FROM %i WHERE asset_id = %d AND requester_id = %d AND status = 'pending' FOR UPDATE",
+					$table_name,
 					$asset_id,
 					$requester_id
 				)
@@ -754,11 +754,11 @@ class ALM_Loan_Manager {
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-				"SELECT COUNT(*) FROM $table_name 
+				"SELECT COUNT(*) FROM %i 
 				WHERE asset_id = %d 
 				AND requester_id = %d 
 				AND status = 'pending'",
+				$table_name,
 				$asset_id,
 				$user_id
 			)
@@ -778,8 +778,8 @@ class ALM_Loan_Manager {
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-				"SELECT COUNT(*) FROM $table_name WHERE requester_id = %d AND status = 'pending'",
+				"SELECT COUNT(*) FROM %i WHERE requester_id = %d AND status = 'pending'",
+				$table_name,
 				$user_id
 			)
 		);
@@ -799,6 +799,7 @@ class ALM_Loan_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- No alternative: active-loan count requires owner meta filter. To be replaced with a counter cache when _alm_parent_kit_ids normalization lands.
 				'meta_query'     => array(
 					array(
 						'key'   => '_alm_current_owner',
@@ -824,11 +825,11 @@ class ALM_Loan_Manager {
 
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-				"SELECT * FROM $table_name 
+				"SELECT * FROM %i 
 				WHERE asset_id = %d 
 				AND status = %s 
 				ORDER BY request_date DESC",
+				$table_name,
 				$asset_id,
 				$status
 			)
@@ -849,21 +850,21 @@ class ALM_Loan_Manager {
 		if ( empty( $status ) ) {
 			return $wpdb->get_results(
 				$wpdb->prepare(
-					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT * FROM $table_name 
+					"SELECT * FROM %i 
 					WHERE requester_id = %d 
 					ORDER BY request_date DESC",
+					$table_name,
 					$user_id
 				)
 			);
 		}
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-				"SELECT * FROM $table_name 
+				"SELECT * FROM %i 
 				WHERE requester_id = %d 
 				AND status = %s 
 				ORDER BY request_date DESC",
+				$table_name,
 				$user_id,
 				$status
 			)
@@ -891,11 +892,11 @@ class ALM_Loan_Manager {
 			// Operators see all entries for this asset.
 				return $wpdb->get_results(
 					$wpdb->prepare(
-						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-						"SELECT * FROM $table_name 
+						"SELECT * FROM %i 
 						WHERE asset_id = %d 
 						ORDER BY changed_at DESC 
 					LIMIT 10",
+						$table_name,
 						$asset_id
 					)
 				);
@@ -904,8 +905,7 @@ class ALM_Loan_Manager {
 		// Members see only entries where they are involved.
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-				"SELECT * FROM $table_name 
+				"SELECT * FROM %i 
 				WHERE asset_id = %d 
 				AND (
 					requester_id = %d 
@@ -914,6 +914,7 @@ class ALM_Loan_Manager {
 				)
 				ORDER BY changed_at DESC 
 				LIMIT 10",
+				$table_name,
 				$asset_id,
 				$user_id,
 				$user_id,
@@ -1111,10 +1112,10 @@ class ALM_Loan_Manager {
 			// Lock all pending requests for this asset to serialize concurrent approvals.
 				$wpdb->get_results(
 					$wpdb->prepare(
-						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-						"SELECT id FROM $table_name
+						"SELECT id FROM %i
 						WHERE asset_id = %d
 						FOR UPDATE",
+						$table_name,
 						$asset_id
 					)
 				);
@@ -1122,10 +1123,10 @@ class ALM_Loan_Manager {
 			// Re-read and lock the target request row inside the transaction.
 				$loan_request = $wpdb->get_row(
 					$wpdb->prepare(
-						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-						"SELECT * FROM $table_name
+						"SELECT * FROM %i
 						WHERE id = %d
 						FOR UPDATE",
+						$table_name,
 						$loan_request->id
 					)
 				);
@@ -1389,11 +1390,11 @@ class ALM_Loan_Manager {
 		if ( $exclude_request_id > 0 ) {
 			$requests = $wpdb->get_results(
 				$wpdb->prepare(
-					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT * FROM $table_name
+					"SELECT * FROM %i
 						WHERE asset_id = %d
 						AND id != %d
 					AND status = 'pending' FOR UPDATE",
+					$table_name,
 					$asset_id,
 					$exclude_request_id
 				)
@@ -1401,10 +1402,10 @@ class ALM_Loan_Manager {
 		} else {
 			$requests = $wpdb->get_results(
 				$wpdb->prepare(
-					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table name is built from trusted $wpdb->prefix.
-					"SELECT * FROM $table_name
+					"SELECT * FROM %i
 						WHERE asset_id = %d
 						AND status = 'pending' FOR UPDATE",
+					$table_name,
 					$asset_id
 				)
 			);
@@ -1911,6 +1912,7 @@ class ALM_Loan_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Reverse kit lookup via serialized LIKE. Known limitation tracked in ISSUES_TODO.md; will be replaced by _alm_parent_kit_ids normalized meta.
 				'meta_query'     => array(
 					array(
 						'key'     => 'components',
