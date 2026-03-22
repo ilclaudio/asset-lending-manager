@@ -17,8 +17,8 @@ Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginf
 | 1 | Richiesta di prestito inviata | Membro | Richiedente | `request_to_requester` | Sempre |
 | 1 | Richiesta di prestito inviata | Membro | Proprietario corrente | `request_to_owner` | Solo se asset già assegnato |
 | 1 | Richiesta di prestito inviata | Membro | Sistema | `request_to_owner` | Solo se `email.system_email` configurato |
-| 2 | Richiesta approvata | Proprietario corrente oppure operatore/admin | Richiedente | `approved` | Sempre |
-| 3 | Richiesta rifiutata | Proprietario corrente oppure operatore/admin | Richiedente | `rejected` | Sempre |
+| 2 | Richiesta approvata | Proprietario corrente | Richiedente | `approved` | Sempre |
+| 3 | Richiesta rifiutata | Proprietario corrente | Richiedente | `rejected` | Sempre |
 | 4 | Richiesta annullata automaticamente | Sistema | Richiedente (della richiesta cancellata) | `canceled` | Una email per ogni richiesta concorrente annullata |
 | 5 | Assegnamento diretto | Operatore | Nuovo proprietario | `direct_assign` | Sempre |
 | 5 | Assegnamento diretto | Operatore | Vecchio proprietario | `direct_assign_to_prev_owner` | Solo se esisteva un proprietario precedente diverso dal nuovo |

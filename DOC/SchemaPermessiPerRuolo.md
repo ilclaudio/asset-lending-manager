@@ -47,27 +47,32 @@ Diagramma Mermaid separato: `DOC/SchemaAzioniSwimlane.md`.
 
 ```text
 VISITATORE
-[Visualizza elenco risorse] -> [Visualizza dettaglio risorsa]
+  [Visualizza elenco risorse] -> [Visualizza dettaglio risorsa]
 
 SOCIO (alm_member)
-[Consulta elenco e dettaglio]
-  -> [Invia richiesta prestito]
-  -> <Proprietario corrente?>
-       |-- Si --> [Approva o rifiuta richiesta]
-       `-- No --> [Attende esito richiesta]
+  [Consulta elenco e dettaglio]
+    -> [Invia richiesta prestito]
+    -> <Proprietario corrente?>
+         |-- Si --> [Approva o rifiuta richiesta]
+         `-- No --> [Attende esito richiesta]
 
 OPERATORE / AMMINISTRATORE
-[Inserisce o modifica risorsa]
-  -> [Gestisce tassonomie]
-  -> [Visualizza richieste prestito]
-  -> [Approva o rifiuta richiesta]
-  -> [Assegnamento diretto]
+  [Inserisce o modifica risorsa]
+    -> [Gestisce tassonomie]
+    -> [Visualizza richieste prestito (solo se proprietario corrente)]
+    -> [Approva o rifiuta richiesta (solo se proprietario corrente)]
+    -> [Assegnamento diretto (asset non retired/maintenance)]
+    -> [Cambia stato: → maintenance / → retired] + location obbligatoria
+         `-> [Ripristina a disponibile da maintenance/retired] + location obbligatoria
+    -> [Restituzione forzata: on-loan → disponibile] + location obbligatoria
+         (chiude prestito aperto, notifica il socio)
 
 COLLEGAMENTI TRA SWIMLANE
-Socio: [Invia richiesta prestito] ------------> Operatore/Admin: [Visualizza richieste prestito]
-Operatore/Admin: [Approva o rifiuta richiesta] \
-                                                 +--> [Storico aggiornato]
-Operatore/Admin: [Assegnamento diretto]        /
+  Socio: [Invia richiesta prestito] -----------> Operatore: [Visualizza richieste prestito]
+  Socio/Proprietario: [Approva/rifiuta]  \
+  Operatore: [Assegnamento diretto]       +---> [Storico aggiornato]
+  Operatore: [Cambia/Ripristina stato]   /
+  Operatore: [Restituzione forzata]     /
 ```
 
 ---
@@ -80,4 +85,4 @@ Operatore/Admin: [Assegnamento diretto]        /
 
 ---
 
-*Ultimo aggiornamento: 2026-03-22 (rev 2)*
+*Ultimo aggiornamento: 2026-03-22 (rev 3)*
