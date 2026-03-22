@@ -61,6 +61,7 @@ class ALM_Notification_Manager {
 
 		// Notify the assignee, the previous owner (if any), and the system address when an asset is directly assigned.
 		add_action( 'alm_direct_assign', array( $this, 'send_direct_assign_notification' ), 10, 5 );
+		add_action( 'alm_asset_force_returned', array( $this, 'send_force_return_notification' ), 10, 4 );
 	}
 
 	// -------------------------------------------------------------------------
@@ -344,6 +345,51 @@ class ALM_Notification_Manager {
 	// -------------------------------------------------------------------------
 	// Private infrastructure methods.
 	// -------------------------------------------------------------------------
+
+	/**
+	 * Send notification to borrower when an operator force-returns an on-loan asset.
+	 *
+	 * @param int    $asset_id    Post ID of the asset.
+	 * @param int    $borrower_id WordPress user ID of the previous borrower.
+	 * @param int    $actor_id    WordPress user ID of the operator who performed the action.
+	 * @param string $notes       Optional operator notes.
+	 * @return void
+	 */
+	public function send_force_return_notification( $asset_id, $borrower_id, $actor_id, $notes ) {
+		if ( ! $this->settings->get( 'notifications.enabled', false ) ) {
+			return;
+		}
+		if ( ! $this->settings->get( 'notifications.loan_request', true ) ) {
+			return;
+		}
+
+		$borrower = get_userdata( $borrower_id );
+		if ( ! $borrower ) {
+			ALM_Logger::warning(
+				'[NOTIFICATION] send_force_return_notification: borrower not found.',
+				array( 'borrower_id' => $borrower_id )
+			);
+			return;
+		}
+
+		$actor = get_userdata( $actor_id );
+
+		$placeholders = array_merge(
+			$this->get_asset_base_placeholders( $asset_id ),
+			array(
+				'{BORROWER_NAME}' => $borrower->display_name,
+				'{ACTOR_NAME}'    => $actor ? $actor->display_name : __( 'an operator', 'asset-lending-manager' ),
+				'{NOTES}'         => $notes ? $notes : __( '—', 'asset-lending-manager' ),
+			)
+		);
+
+		$this->send_notification_email(
+			$borrower->user_email,
+			$this->get_email_template( 'subject', 'force_return' ),
+			$this->get_email_template( 'body', 'force_return' ),
+			$placeholders
+		);
+	}
 
 	/**
 	 * Send a single notification email.

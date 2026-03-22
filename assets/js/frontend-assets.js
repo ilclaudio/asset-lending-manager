@@ -448,11 +448,14 @@
 				});
 				responseDiv.style.display = 'none';
 
+				var locationField = document.getElementById('alm-change-state-location');
+
 				var formData = new FormData();
 				formData.append('action',       'alm_change_asset_state');
 				formData.append('nonce',        window.almFrontend.changeStateNonce);
 				formData.append('asset_id',     assetId);
 				formData.append('target_state', targetState);
+				formData.append('location',     locationField ? locationField.value.trim() : '');
 				formData.append('notes',        notesField ? notesField.value.trim() : '');
 
 				fetch(window.almFrontend.ajaxUrl, { method: 'POST', body: formData })
@@ -528,11 +531,14 @@
 				}
 				responseDiv.style.display = 'none';
 
+				var locationField = document.getElementById('alm-restore-state-location');
+
 				var formData = new FormData();
-				formData.append('action',   'alm_restore_asset_state');
-				formData.append('nonce',    window.almFrontend.restoreStateNonce);
-				formData.append('asset_id', assetId);
-				formData.append('notes',    notesField ? notesField.value.trim() : '');
+				formData.append('action',    'alm_restore_asset_state');
+				formData.append('nonce',     window.almFrontend.restoreStateNonce);
+				formData.append('asset_id',  assetId);
+				formData.append('location',  locationField ? locationField.value.trim() : '');
+				formData.append('notes',     notesField ? notesField.value.trim() : '');
 
 				fetch(window.almFrontend.ajaxUrl, { method: 'POST', body: formData })
 					.then(function(response) { return response.json(); })

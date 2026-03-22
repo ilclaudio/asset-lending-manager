@@ -88,6 +88,7 @@ function alm_get_email_templates() {
 			'canceled'                    => __( '[ALM] Loan request canceled: {ASSET_TITLE}', 'asset-lending-manager' ),
 			'direct_assign'               => __( '[ALM] Asset assigned to you: {ASSET_TITLE}', 'asset-lending-manager' ),
 			'direct_assign_to_prev_owner' => __( '[ALM] Asset reassigned: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'force_return'                => __( '[ALM] Asset returned: {ASSET_TITLE}', 'asset-lending-manager' ),
 		),
 		'body'    => array(
 			'request_to_requester'        => __(
@@ -116,6 +117,10 @@ function alm_get_email_templates() {
 			),
 			'direct_assign_to_prev_owner' => __(
 				"Hello {PREV_OWNER_NAME},\n\nThe asset \"{ASSET_TITLE}\" has been reassigned to {ASSIGNEE_NAME} by {ACTOR_NAME}.\n\nReason: {REASON}\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+			'force_return'                => __(
+				"Hello {BORROWER_NAME},\n\nThe loan for \"{ASSET_TITLE}\" has been closed by the operator {ACTOR_NAME}.\n\nNotes: {NOTES}\n\nView asset: {ASSET_URL}\n\n-- ALM",
 				'asset-lending-manager'
 			),
 		),

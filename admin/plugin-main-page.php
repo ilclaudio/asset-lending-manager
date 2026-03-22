@@ -25,6 +25,8 @@ $alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 ?>
 <div class="wrap">
 
+	<h1 class="screen-reader-text"><?php echo esc_html( $alm_data['Name'] ); ?></h1>
+
 	<div class="card alm-about">
 
 		<!-- Header: logo + name + description -->
@@ -35,7 +37,7 @@ $alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 				class="alm-about__logo"
 			/>
 			<div class="alm-about__intro">
-				<h1><?php echo esc_html( $alm_data['Name'] ); ?></h1>
+				<p class="alm-about__name"><?php echo esc_html( $alm_data['Name'] ); ?></p>
 				<p><?php echo esc_html( $alm_data['Description'] ); ?></p>
 			</div>
 		</div>
@@ -66,7 +68,15 @@ $alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 
 		<!-- Shortcode reference -->
 		<h2><?php esc_html_e( 'Quick start', 'asset-lending-manager' ); ?></h2>
-		<p><?php esc_html_e( 'Add these shortcodes to any WordPress page.', 'asset-lending-manager' ); ?></p>
+		<p>
+			<?php esc_html_e( 'The plugin works out of the box on both classic and block themes — no shortcodes required for normal use.', 'asset-lending-manager' ); ?>
+			<?php esc_html_e( 'Asset pages are served automatically via the plugin\'s built-in templates:', 'asset-lending-manager' ); ?>
+		</p>
+		<ul>
+			<li><code>/asset/</code> &mdash; <?php esc_html_e( 'asset catalog with search filters', 'asset-lending-manager' ); ?></li>
+			<li><code>/asset/asset-name/</code> &mdash; <?php esc_html_e( 'single asset detail page', 'asset-lending-manager' ); ?></li>
+		</ul>
+		<p><?php esc_html_e( 'Use the shortcodes below only if you need to embed a view inside an existing WordPress page:', 'asset-lending-manager' ); ?></p>
 
 		<table class="widefat striped alm-about__shortcodes">
 			<thead>
@@ -78,11 +88,11 @@ $alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 			<tbody>
 				<tr>
 					<td><code>[alm_asset_list]</code></td>
-					<td><?php esc_html_e( 'Displays the full asset catalog with search filters. Place it on the main asset page.', 'asset-lending-manager' ); ?></td>
+					<td><?php esc_html_e( 'Embeds the full asset catalog with search filters into any page or post.', 'asset-lending-manager' ); ?></td>
 				</tr>
 				<tr>
 					<td><code>[alm_asset_view]</code></td>
-					<td><?php esc_html_e( 'Displays the detail view for a single asset. Used automatically on the asset permalink page.', 'asset-lending-manager' ); ?></td>
+					<td><?php esc_html_e( 'Embeds the detail view for a single asset. Not needed on the standard asset permalink — use only for custom layouts.', 'asset-lending-manager' ); ?></td>
 				</tr>
 			</tbody>
 		</table>

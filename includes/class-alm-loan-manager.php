@@ -374,17 +374,12 @@ class ALM_Loan_Manager {
 	 * @return bool True if user can reject.
 	 */
 	private function can_user_reject_request( $loan_request, $user_id ) {
-		// Operators can reject any request, including unowned assets.
-		if ( user_can( $user_id, ALM_EDIT_ASSET ) ) {
-			return true;
-		}
-
-		// Current owner can reject requests for their assets.
+		// Only the current owner of the asset can reject requests for it.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;
 		}
 
-		// Check if user is the current assignee of the asset.
+		// Also check live meta in case owner changed after request was recorded.
 		$current_owner = $this->get_current_owner( $loan_request->asset_id );
 		if ( $current_owner === $user_id && $current_owner > 0 ) {
 			return true;
@@ -931,17 +926,12 @@ class ALM_Loan_Manager {
 	 * @return bool True if user can approve.
 	 */
 	private function can_user_approve_request( $loan_request, $user_id ) {
-		// Operators can approve any request, including unowned assets.
-		if ( user_can( $user_id, ALM_EDIT_ASSET ) ) {
-			return true;
-		}
-
-		// Current owner can approve requests for their assets.
+		// Only the current owner of the asset can approve requests for it.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;
 		}
 
-		// Check if user is the current assignee of the asset.
+		// Also check live meta in case owner changed after request was recorded.
 		$current_owner = $this->get_current_owner( $loan_request->asset_id );
 		if ( $current_owner === $user_id && $current_owner > 0 ) {
 			return true;
@@ -1745,12 +1735,20 @@ class ALM_Loan_Manager {
 		$asset_id     = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
 		$target_state = isset( $_POST['target_state'] ) ? sanitize_key( wp_unslash( $_POST['target_state'] ) ) : '';
 		$notes        = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
+		$location     = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
 
 		if ( $asset_id <= 0 ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
 		}
 
-		$allowed_states = array( 'maintenance', 'retired' );
+		if ( '' === $location ) {
+			wp_send_json_error( array( 'message' => __( 'Location is required.', 'asset-lending-manager' ) ) );
+		}
+		if ( mb_strlen( $location ) > 255 ) {
+			wp_send_json_error( array( 'message' => __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) ) );
+		}
+
+		$allowed_states = array( 'maintenance', 'retired', 'available' );
 		if ( ! in_array( $target_state, $allowed_states, true ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid target state.', 'asset-lending-manager' ) ) );
 		}
@@ -1774,12 +1772,15 @@ class ALM_Loan_Manager {
 		}
 
 		$current_state = $this->get_asset_state_slug( $asset_id );
-		if ( ! in_array( $current_state, array( 'available', 'on-loan' ), true ) ) {
+		if ( 'available' === $target_state && 'on-loan' !== $current_state ) {
+			wp_send_json_error( array( 'message' => __( 'Asset can only be force-returned when it is on loan.', 'asset-lending-manager' ) ) );
+		}
+		if ( 'available' !== $target_state && ! in_array( $current_state, array( 'available', 'on-loan' ), true ) ) {
 			wp_send_json_error( array( 'message' => __( 'Asset state cannot be changed from its current state.', 'asset-lending-manager' ) ) );
 		}
 
 		$actor_id = get_current_user_id();
-		$result   = $this->change_asset_state( $asset_id, $target_state, $notes, $actor_id );
+		$result   = $this->change_asset_state( $asset_id, $target_state, $notes, $actor_id, $location );
 
 		if ( ! $result['success'] ) {
 			wp_send_json_error( array( 'message' => $result['message'] ) );
@@ -1789,39 +1790,82 @@ class ALM_Loan_Manager {
 	}
 
 	/**
-	 * Change asset state to maintenance or retired.
+	 * Change asset state to maintenance, retired, or available (force return from on-loan).
 	 *
-	 * Operations for a kit:
-	 * 1. Change kit state to target state, clear owner.
-	 * 2. Write history entry for the kit.
-	 * 3. Propagate state and clear owner on all components (components stay in kit).
-	 * 4. Write history entry for each component.
+	 * When target is 'maintenance' or 'retired':
+	 * - Kit: change state + clear owner, propagate to all components (stay in kit).
+	 * - Component/standalone: remove from parent kit(s), change state + clear owner.
 	 *
-	 * Operations for a component/standalone:
-	 * 1. Remove component from parent kit(s) ACF field.
-	 * 2. Change component state to target state, clear owner.
-	 * 3. Write history entry.
+	 * When target is 'available' (forced return from on-loan):
+	 * - Kit: set kit + all components to available, clear owners.
+	 * - Component/standalone: set to available, clear owner. Kit membership unchanged.
+	 * - Fires 'alm_asset_force_returned' for borrower notification.
 	 *
 	 * @param int    $asset_id     Asset ID.
-	 * @param string $target_state Target state slug ('maintenance' or 'retired').
+	 * @param string $target_state Target state slug ('maintenance', 'retired', or 'available').
 	 * @param string $notes        Operator notes.
 	 * @param int    $actor_id     Operator user ID performing the action.
+	 * @param string $location     Physical location of the asset (required, max 255 chars).
 	 * @throws Exception When a database error occurs during the state change.
 	 * @return array ['success' => bool, 'message' => string]
 	 */
-	private function change_asset_state( $asset_id, $target_state, $notes, $actor_id ) {
+	private function change_asset_state( $asset_id, $target_state, $notes, $actor_id, $location = '' ) {
 		global $wpdb;
 
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
-			$is_kit         = $this->is_asset_kit( $asset_id );
-			$previous_owner = $this->get_current_owner( $asset_id );
-			$history_status = 'maintenance' === $target_state ? 'to_maintenance' : 'to_retired';
+			$is_kit           = $this->is_asset_kit( $asset_id );
+			$previous_owner   = $this->get_current_owner( $asset_id );
+			$location_targets = array(); // IDs to update location on after COMMIT.
 
-			if ( $is_kit ) {
+			if ( 'maintenance' === $target_state ) {
+				$history_status = 'to_maintenance';
+			} elseif ( 'retired' === $target_state ) {
+				$history_status = 'to_retired';
+			} else {
+				$history_status = 'to_available';
+			}
+
+			if ( 'available' === $target_state ) {
+				// Forced return from on-loan: restore state, clear owner. Kit membership unchanged.
+				if ( $is_kit ) {
+					$component_ids    = $this->get_kit_components( $asset_id );
+					$location_targets = array_merge( array( $asset_id ), $component_ids );
+
+					$this->set_asset_state( $asset_id, 'available' );
+					$this->set_asset_owner( $asset_id, 0 );
+
+					$logged = $this->log_history_entry( 0, $asset_id, 0, $previous_owner, 'to_available', $notes, $actor_id );
+					if ( ! $logged ) {
+						throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+					}
+
+					foreach ( $component_ids as $component_id ) {
+						$component_prev_owner = $this->get_current_owner( $component_id );
+						$this->set_asset_state( $component_id, 'available' );
+						$this->set_asset_owner( $component_id, 0 );
+
+						$logged = $this->log_history_entry( 0, $component_id, 0, $component_prev_owner, 'to_available', $notes, $actor_id );
+						if ( ! $logged ) {
+							throw new Exception( __( 'Failed to log history entry for component.', 'asset-lending-manager' ) );
+						}
+					}
+				} else {
+					$location_targets = array( $asset_id );
+
+					$this->set_asset_state( $asset_id, 'available' );
+					$this->set_asset_owner( $asset_id, 0 );
+
+					$logged = $this->log_history_entry( 0, $asset_id, 0, $previous_owner, 'to_available', $notes, $actor_id );
+					if ( ! $logged ) {
+						throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+					}
+				}
+			} elseif ( $is_kit ) {
 				// Kit: change state and clear owner, then propagate to components.
-				$component_ids = $this->get_kit_components( $asset_id );
+				$component_ids    = $this->get_kit_components( $asset_id );
+				$location_targets = array_merge( array( $asset_id ), $component_ids );
 
 				$this->set_asset_state( $asset_id, $target_state );
 				$this->set_asset_owner( $asset_id, 0 );
@@ -1843,7 +1887,8 @@ class ALM_Loan_Manager {
 				}
 			} else {
 				// Component or standalone: remove from parent kit(s), then change state.
-				$parent_kit_ids = $this->get_parent_kit_ids( $asset_id );
+				$location_targets = array( $asset_id );
+				$parent_kit_ids   = $this->get_parent_kit_ids( $asset_id );
 				if ( ! empty( $parent_kit_ids ) ) {
 					// Persist kit membership so it can be restored later via restore_asset_state().
 					update_post_meta( $asset_id, '_alm_removed_from_kit_ids', $parent_kit_ids );
@@ -1862,6 +1907,18 @@ class ALM_Loan_Manager {
 			}
 
 			$wpdb->query( 'COMMIT' );
+
+			// Update ACF location field on all affected assets (outside transaction).
+			if ( '' !== $location && function_exists( 'update_field' ) ) {
+				foreach ( $location_targets as $target_id ) {
+					update_field( 'location', $location, $target_id );
+				}
+			}
+
+			// Fire notification hook for forced return after transaction commits.
+			if ( 'available' === $target_state && $previous_owner ) {
+				do_action( 'alm_asset_force_returned', $asset_id, $previous_owner, $actor_id, $notes );
+			}
 
 			ALM_Logger::info(
 				'Asset state changed',
@@ -1989,9 +2046,17 @@ class ALM_Loan_Manager {
 
 		$asset_id = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
 		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
+		$location = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
 
 		if ( $asset_id <= 0 ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
+		}
+
+		if ( '' === $location ) {
+			wp_send_json_error( array( 'message' => __( 'Location is required.', 'asset-lending-manager' ) ) );
+		}
+		if ( mb_strlen( $location ) > 255 ) {
+			wp_send_json_error( array( 'message' => __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) ) );
 		}
 
 		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
@@ -2018,7 +2083,7 @@ class ALM_Loan_Manager {
 		}
 
 		$actor_id = get_current_user_id();
-		$result   = $this->restore_asset_state( $asset_id, $notes, $actor_id );
+		$result   = $this->restore_asset_state( $asset_id, $notes, $actor_id, $location );
 
 		if ( ! $result['success'] ) {
 			wp_send_json_error( array( 'message' => $result['message'] ) );
@@ -2045,20 +2110,23 @@ class ALM_Loan_Manager {
 	 * @param int    $asset_id Asset ID.
 	 * @param string $notes    Operator notes.
 	 * @param int    $actor_id Operator user ID performing the action.
+	 * @param string $location Physical location of the asset (required, max 255 chars).
 	 * @throws Exception When a database error occurs during the state restore.
 	 * @return array ['success' => bool, 'message' => string]
 	 */
-	private function restore_asset_state( $asset_id, $notes, $actor_id ) {
+	private function restore_asset_state( $asset_id, $notes, $actor_id, $location = '' ) {
 		global $wpdb;
 
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
-			$is_kit = $this->is_asset_kit( $asset_id );
+			$is_kit           = $this->is_asset_kit( $asset_id );
+			$location_targets = array();
 
 			if ( $is_kit ) {
 				// Kit: restore kit and all components to available.
-				$component_ids = $this->get_kit_components( $asset_id );
+				$component_ids    = $this->get_kit_components( $asset_id );
+				$location_targets = array_merge( array( $asset_id ), $component_ids );
 
 				$this->set_asset_state( $asset_id, 'available' );
 				$this->set_asset_owner( $asset_id, 0 );
@@ -2080,6 +2148,7 @@ class ALM_Loan_Manager {
 				}
 			} else {
 				// Component or standalone: re-add to previous kit(s) if applicable, then restore state.
+				$location_targets = array( $asset_id );
 				$previous_kit_ids = get_post_meta( $asset_id, '_alm_removed_from_kit_ids', true );
 
 				if ( ! empty( $previous_kit_ids ) && is_array( $previous_kit_ids ) ) {
@@ -2100,6 +2169,13 @@ class ALM_Loan_Manager {
 			}
 
 			$wpdb->query( 'COMMIT' );
+
+			// Update ACF location field on all affected assets (outside transaction).
+			if ( '' !== $location && function_exists( 'update_field' ) ) {
+				foreach ( $location_targets as $target_id ) {
+					update_field( 'location', $location, $target_id );
+				}
+			}
 
 			ALM_Logger::info(
 				'Asset state restored to available',

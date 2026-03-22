@@ -23,6 +23,7 @@ Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginf
 | 5 | Assegnamento diretto | Operatore | Nuovo proprietario | `direct_assign` | Sempre |
 | 5 | Assegnamento diretto | Operatore | Vecchio proprietario | `direct_assign_to_prev_owner` | Solo se esisteva un proprietario precedente diverso dal nuovo |
 | 5 | Assegnamento diretto | Operatore | Sistema | `direct_assign_to_prev_owner` | Solo se `email.system_email` configurato |
+| 6 | Restituzione forzata (on-loan → available) | Operatore | Socio che aveva il prestito | `force_return` | Sempre (se notifiche abilitate) |
 
 ---
 
@@ -49,6 +50,9 @@ Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginf
 | `{ACTOR_NAME}` | direct_assign, direct_assign_to_prev_owner | Nome dell'operatore che ha eseguito l'assegnamento |
 | `{REASON}` | direct_assign, direct_assign_to_prev_owner | Motivo dell'assegnamento diretto |
 | `{PREV_OWNER_NAME}` | direct_assign_to_prev_owner | Nome del precedente proprietario |
+| `{BORROWER_NAME}` | force_return | Nome del socio che aveva il prestito |
+| `{ACTOR_NAME}` | force_return | Nome dell'operatore che ha eseguito la restituzione forzata |
+| `{NOTES}` | force_return | Note opzionali dell'operatore (— se assenti) |
 
 ---
 
@@ -66,4 +70,4 @@ Nota: nel flusso corrente `ALM_Notification_Manager` usa i settings runtime; le 
 
 ---
 
-*Ultimo aggiornamento: 2026-03-11*
+*Ultimo aggiornamento: 2026-03-22*

@@ -26,6 +26,7 @@ $alm_request_message_max      = (int) $alm_settings->get( 'loans.request_message
 $alm_rejection_message_max    = (int) $alm_settings->get( 'loans.rejection_message_max_length', 500 );
 $alm_direct_assign_reason_max = (int) $alm_settings->get( 'loans.direct_assign_reason_max_length', 500 );
 $alm_change_state_notes_max   = (int) $alm_settings->get( 'loans.change_state_notes_max_length', 500 );
+$alm_asset_location           = function_exists( 'get_field' ) ? (string) get_field( 'location', $alm_asset_id ) : '';
 $alm_owner_id                 = $alm_loan_manager->get_current_owner( $alm_asset_id );
 $alm_asset_title              = isset( $asset->title ) ? (string) $asset->title : '';
 $alm_asset_content            = isset( $asset->content ) ? (string) $asset->content : '';
@@ -345,10 +346,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 				$alm_loan_requests_enabled &&
 				in_array( $alm_state_slug, array( 'available', 'on-loan' ), true ) &&
 				is_user_logged_in() &&
-				(
-					$alm_is_operator ||
-					( (int) $alm_owner_id === (int) $alm_current_user_id )
-				)
+				( (int) $alm_owner_id === (int) $alm_current_user_id )
 			) {
 		$alm_requests        = $alm_loan_manager->get_asset_requests( $alm_asset_id );
 		$alm_requester_names = array();
@@ -443,7 +441,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 											<?php echo esc_html( $alm_request_date ); ?>
 										</td>
 										<td class="alm-request-actions" role="cell" data-label="<?php esc_attr_e( 'Actions', 'asset-lending-manager' ); ?>">
-										<?php if ( 'pending' === $alm_request_status && ( $alm_is_current_owner || $alm_is_operator ) ) : ?>
+										<?php if ( 'pending' === $alm_request_status && $alm_is_current_owner ) : ?>
 											<button 
 												type="button" 
 												class="alm-button alm-button--small alm-button--approve" 
@@ -584,6 +582,20 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							<?php wp_nonce_field( 'alm_change_state_nonce', 'nonce' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $alm_asset_id ); ?>" />
 							<div class="alm-form-field">
+								<label for="alm-change-state-location">
+									<?php esc_html_e( 'Location (required):', 'asset-lending-manager' ); ?>
+								</label>
+								<input
+									type="text"
+									id="alm-change-state-location"
+									name="location"
+									value="<?php echo esc_attr( $alm_asset_location ); ?>"
+									maxlength="255"
+									required
+									placeholder="<?php esc_attr_e( "e.g. Room A, shelf 3 or at David's house", 'asset-lending-manager' ); ?>"
+								/>
+							</div>
+							<div class="alm-form-field">
 								<label for="alm-change-state-notes">
 									<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>
 								</label>
@@ -598,6 +610,11 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 								<div class="alm-char-count" id="alm-change-state-char-count">0 / <?php echo esc_html( $alm_change_state_notes_max ); ?></div>
 							</div>
 							<div class="alm-form-actions alm-form-actions--row">
+								<?php if ( 'on-loan' === $alm_state_slug ) : ?>
+									<button type="submit" class="alm-button alm-button--approve" data-target-state="available">
+										<?php esc_html_e( 'Set to available', 'asset-lending-manager' ); ?>
+									</button>
+								<?php endif; ?>
 								<button type="submit" class="alm-button alm-button--warning" data-target-state="maintenance">
 									<?php esc_html_e( 'Set to maintenance', 'asset-lending-manager' ); ?>
 								</button>
@@ -623,6 +640,20 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 						<form id="alm-restore-state-form" class="alm-loan-form" method="post">
 							<?php wp_nonce_field( 'alm_restore_state_nonce', 'nonce' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $alm_asset_id ); ?>" />
+							<div class="alm-form-field">
+								<label for="alm-restore-state-location">
+									<?php esc_html_e( 'Location (required):', 'asset-lending-manager' ); ?>
+								</label>
+								<input
+									type="text"
+									id="alm-restore-state-location"
+									name="location"
+									value="<?php echo esc_attr( $alm_asset_location ); ?>"
+									maxlength="255"
+									required
+									placeholder="<?php esc_attr_e( 'e.g. Room A, shelf 3', 'asset-lending-manager' ); ?>"
+								/>
+							</div>
 							<div class="alm-form-field">
 								<label for="alm-restore-state-notes">
 									<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>

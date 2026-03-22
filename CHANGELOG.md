@@ -29,6 +29,8 @@ First public release.
 - Configurable message max lengths (loan request, rejection, direct assign reason, state change notes) propagated to frontend.
 - Translation-ready: English and Italian included, `.pot` file provided.
 - Frontend shortcodes: `[alm_asset_list]`, `[alm_asset_view]`.
+- An operator cannot approve the lending request sent to a member.
+- Changing the state from on loan to available, in maintenance or dismissed you ha to specify a location and a note.
 
 ### Fixed
 - All message max length limits (loan request, rejection, state-change notes) are now read from settings and passed to frontend, eliminating frontend/backend divergence.
