@@ -97,12 +97,6 @@ Yes. Multiple members can submit requests for the same asset simultaneously. Whe
 Basic setup only requires installing the plugin and activating ACF — no shortcodes or coding needed for standard use. Asset pages are served automatically by the plugin on both classic and block themes. Some advanced customization such as theme template overrides or user role adjustments may benefit from developer support.
 
 
-== Screenshots ==
-1. Asset list frontend view
-2. Asset detail page with loan request form
-3. Loan management in the admin area
-
-
 == Changelog ==
 
 = 0.1.0 =

@@ -566,7 +566,7 @@ $placeholders = array(
 								'selected'          => (int) $settings->get( 'frontend.assets_page_id' ),
 								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
-								'disabled'          => ! $is_admin, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- boolean value, not user input.
+								'disabled'          => absint( ! $is_admin ),
 							)
 						);
 						?>
@@ -591,7 +591,7 @@ $placeholders = array(
 								'selected'          => (int) $settings->get( 'frontend.login_redirect_page_id' ),
 								'show_option_none'  => esc_html__( '— Default (/asset/) —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
-								'disabled'          => ! $is_admin, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- boolean value, not user input.
+								'disabled'          => absint( ! $is_admin ),
 							)
 						);
 						?>
@@ -616,7 +616,7 @@ $placeholders = array(
 								'selected'          => (int) $settings->get( 'frontend.logout_redirect_page_id' ),
 								'show_option_none'  => esc_html__( '— Default (home) —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
-								'disabled'          => ! $is_admin, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- boolean value, not user input.
+								'disabled'          => absint( ! $is_admin ),
 							)
 						);
 						?>
