@@ -409,7 +409,7 @@ class ALM_Asset_Manager {
 	 *
 	 * The code is composed of the ALM_ASSET_CODE_PREFIX constant followed by a
 	 * hyphen and the WordPress post ID zero-padded to 8 digits.
-	 * Example: prefix "AAGG" + asset ID 45 → "AAGG-00000045".
+	 * Example: prefix "ALM" + asset ID 45 → "ALM-00000045".
 	 *
 	 * The code is always computed at runtime from the post ID (which never
 	 * changes in WordPress) so no storage is needed.
@@ -435,7 +435,7 @@ class ALM_Asset_Manager {
 	 * Reverse of get_asset_code(). Extracts the numeric part after the last
 	 * hyphen, validates the post exists and is a published alm_asset.
 	 *
-	 * @param string $code Human-readable asset code (e.g. "AAGG-00000052").
+	 * @param string $code Human-readable asset code (e.g. "ALM-00000052").
 	 * @return int Post ID on success, 0 on failure.
 	 */
 	public static function get_asset_id_from_code( $code ) {

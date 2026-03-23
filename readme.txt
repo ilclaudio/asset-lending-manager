@@ -19,7 +19,7 @@ Designed for clubs, associations, schools, public bodies, libraries, laboratorie
 
 Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
-Born within the AAGG astronomy association to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
+Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
 
 **Requires the Advanced Custom Fields (ACF) plugin** (free version) to store and manage asset details.
 

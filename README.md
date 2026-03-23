@@ -6,7 +6,7 @@ Designed for clubs, associations, schools, public bodies, libraries, laboratorie
 
 Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
-The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof. Born within the [AAGG astronomy association](https://www.astrofilipisani.it/) to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
+The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof. Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
 
 ---
 
