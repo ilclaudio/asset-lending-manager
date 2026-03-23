@@ -27,6 +27,25 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 ---
 
+## Screenshots
+
+1. Asset list in the frontend view (`assets/screenshots/frontend_assets_list.png`)
+   ![Asset list in the frontend view](assets/screenshots/frontend_assets_list.png)
+
+2. Advanced search in the frontend view (`assets/screenshots/advanced_search_fontend.png`)
+   ![Advanced search in the frontend view](assets/screenshots/advanced_search_fontend.png)
+
+3. Asset detail page in the frontend view (`assets/screenshots/fronted_asset_detail.png`)
+   ![Asset detail page in the frontend view](assets/screenshots/fronted_asset_detail.png)
+
+4. Loan request form in the frontend view (`assets/screenshots/backoffice_loan_form.png`)
+   ![Loan request form in the frontend view](assets/screenshots/backoffice_loan_form.png)
+
+5. Settings in the backoffice view (`assets/screenshots/backoffice_settings.png`)
+   ![Settings in the backoffice view](assets/screenshots/backoffice_settings.png)
+
+---
+
 ## Requirements
 
 This plugin requires the Advanced Custom Fields plugin (free).

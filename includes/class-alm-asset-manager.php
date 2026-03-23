@@ -258,10 +258,24 @@ class ALM_Asset_Manager {
 		foreach ( $taxonomies as $taxonomy ) {
 			$terms = get_the_terms( $asset, $taxonomy );
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-				$wrapper->{$taxonomy} = wp_list_pluck( $terms, 'name' );
-				// Also expose slugs for the state taxonomy so templates can map to badge CSS classes.
+				// State labels are translated at runtime from slug, not from stored term name.
 				if ( ALM_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
+					$wrapper->alm_state       = array();
 					$wrapper->alm_state_slugs = wp_list_pluck( $terms, 'slug' );
+					foreach ( $terms as $term ) {
+						$term_slug            = (string) $term->slug;
+						$term_name            = (string) $term->name;
+						$wrapper->alm_state[] = self::get_state_label( $term_slug, $term_name );
+					}
+				} elseif ( ALM_ASSET_LEVEL_TAXONOMY_SLUG === $taxonomy ) {
+					$wrapper->alm_level = array();
+					foreach ( $terms as $term ) {
+						$term_slug            = (string) $term->slug;
+						$term_name            = (string) $term->name;
+						$wrapper->alm_level[] = self::get_level_label( $term_slug, $term_name );
+					}
+				} else {
+					$wrapper->{$taxonomy} = wp_list_pluck( $terms, 'name' );
 				}
 			} else {
 				$wrapper->{$taxonomy} = array();
@@ -467,5 +481,57 @@ class ALM_Asset_Manager {
 			'maintenance' => 'alm-state-maintenance',
 			'retired'     => 'alm-state-retired',
 		);
+	}
+
+	/**
+	 * Return translated state label from state slug.
+	 *
+	 * This avoids locale-dependent display issues when taxonomy terms were created
+	 * in a different language and their DB names are not aligned with current locale.
+	 *
+	 * @param string $state_slug State slug (e.g. available, on-loan, maintenance, retired).
+	 * @param string $fallback   Fallback label (usually stored term name).
+	 * @return string
+	 */
+	public static function get_state_label( $state_slug, $fallback = '' ) {
+		$state_slug = (string) $state_slug;
+		$fallback   = (string) $fallback;
+
+		$labels = array(
+			'available'   => __( 'Available', 'asset-lending-manager' ),
+			'on-loan'     => __( 'On loan', 'asset-lending-manager' ),
+			'maintenance' => __( 'Maintenance', 'asset-lending-manager' ),
+			'retired'     => __( 'Retired', 'asset-lending-manager' ),
+		);
+
+		if ( isset( $labels[ $state_slug ] ) ) {
+			return $labels[ $state_slug ];
+		}
+
+		return '' !== $fallback ? $fallback : $state_slug;
+	}
+
+	/**
+	 * Return translated level label from level slug.
+	 *
+	 * @param string $level_slug Level slug (e.g. basic, intermediate, advanced).
+	 * @param string $fallback   Fallback label (usually stored term name).
+	 * @return string
+	 */
+	public static function get_level_label( $level_slug, $fallback = '' ) {
+		$level_slug = (string) $level_slug;
+		$fallback   = (string) $fallback;
+
+		$labels = array(
+			'basic'        => __( 'Basic', 'asset-lending-manager' ),
+			'intermediate' => __( 'Intermediate', 'asset-lending-manager' ),
+			'advanced'     => __( 'Advanced', 'asset-lending-manager' ),
+		);
+
+		if ( isset( $labels[ $level_slug ] ) ) {
+			return $labels[ $level_slug ];
+		}
+
+		return '' !== $fallback ? $fallback : $level_slug;
 	}
 }

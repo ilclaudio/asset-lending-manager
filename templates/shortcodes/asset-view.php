@@ -83,7 +83,10 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		$alm_state_label = '';
 		if ( ! is_wp_error( $alm_state_terms ) && ! empty( $alm_state_terms ) ) {
 			$alm_state_slug  = (string) $alm_state_terms[0]->slug;
-			$alm_state_label = (string) $alm_state_terms[0]->name;
+			$alm_state_label = ALM_Asset_Manager::get_state_label(
+				$alm_state_slug,
+				(string) $alm_state_terms[0]->name
+			);
 		}
 		$alm_state_class_map = ALM_Asset_Manager::get_state_classes();
 		$alm_state_css_class = '';

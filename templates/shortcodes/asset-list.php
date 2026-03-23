@@ -148,26 +148,26 @@ if ( $filter_owner > 0 ) {
 							<label for="alm_filter_state"><?php esc_html_e( 'State', 'asset-lending-manager' ); ?></label>
 							<select name="alm_state" id="alm_filter_state">
 								<option value=""><?php esc_html_e( 'All states', 'asset-lending-manager' ); ?></option>
-									<?php if ( ! is_wp_error( $alm_terms_state ) && ! empty( $alm_terms_state ) ) : ?>
-										<?php foreach ( $alm_terms_state as $alm_term ) : ?>
-											<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_state, $alm_term->slug ); ?>>
-												<?php echo esc_html( $alm_term->name ); ?>
-											</option>
-										<?php endforeach; ?>
-									<?php endif; ?>
+										<?php if ( ! is_wp_error( $alm_terms_state ) && ! empty( $alm_terms_state ) ) : ?>
+											<?php foreach ( $alm_terms_state as $alm_term ) : ?>
+												<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_state, $alm_term->slug ); ?>>
+													<?php echo esc_html( ALM_Asset_Manager::get_state_label( (string) $alm_term->slug, (string) $alm_term->name ) ); ?>
+												</option>
+											<?php endforeach; ?>
+										<?php endif; ?>
 							</select>
 						</div>
 						<div class="alm-filter-field">
 							<label for="alm_filter_level"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?></label>
 							<select name="alm_level" id="alm_filter_level">
 								<option value=""><?php esc_html_e( 'All levels', 'asset-lending-manager' ); ?></option>
-									<?php if ( ! is_wp_error( $alm_terms_level ) && ! empty( $alm_terms_level ) ) : ?>
-										<?php foreach ( $alm_terms_level as $alm_term ) : ?>
-											<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_level, $alm_term->slug ); ?>>
-												<?php echo esc_html( $alm_term->name ); ?>
-											</option>
-										<?php endforeach; ?>
-									<?php endif; ?>
+										<?php if ( ! is_wp_error( $alm_terms_level ) && ! empty( $alm_terms_level ) ) : ?>
+											<?php foreach ( $alm_terms_level as $alm_term ) : ?>
+												<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_level, $alm_term->slug ); ?>>
+													<?php echo esc_html( ALM_Asset_Manager::get_level_label( (string) $alm_term->slug, (string) $alm_term->name ) ); ?>
+												</option>
+											<?php endforeach; ?>
+										<?php endif; ?>
 							</select>
 						</div>
 					</div>
