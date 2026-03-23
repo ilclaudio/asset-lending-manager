@@ -70,7 +70,8 @@ You can install it for free from the WordPress plugin directory.
 
 = Who is this plugin for? =
 Any organization that manages a shared pool of physical objects: associations, schools, public bodies, libraries, laboratories, makerspaces, sports clubs, and more.
-The plugin was originally created for an astronomy association (AAGG, Italy) but is designed to be generic and suitable for any context.
+The plugin was originally created for an association of amateur astronomers but is designed to be generic and suitable for any context.
+
 
 = Does this plugin require Advanced Custom Fields? =
 Yes. ACF (free version) is required to store and retrieve custom asset fields. The plugin will display an admin notice if ACF is not active.
