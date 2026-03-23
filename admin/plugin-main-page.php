@@ -44,9 +44,19 @@ $alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 
 		<!-- Metadata row -->
 		<p class="alm-about__meta">
-			<span><?php printf( esc_html__( 'Version %s', 'asset-lending-manager' ), esc_html( $alm_data['Version'] ) ); ?></span>
+			<span>
+				<?php
+				/* translators: %s: plugin version string. */
+				printf( esc_html__( 'Version %s', 'asset-lending-manager' ), esc_html( $alm_data['Version'] ) );
+				?>
+			</span>
 			<span class="alm-about__sep" aria-hidden="true">&middot;</span>
-			<span><?php printf( esc_html__( 'Requires WordPress %s', 'asset-lending-manager' ), esc_html( $alm_data['RequiresWP'] ) ); ?></span>
+			<span>
+				<?php
+				/* translators: %s: minimum supported WordPress version. */
+				printf( esc_html__( 'Requires WordPress %s', 'asset-lending-manager' ), esc_html( $alm_data['RequiresWP'] ) );
+				?>
+			</span>
 			<span class="alm-about__sep" aria-hidden="true">&middot;</span>
 			<span><?php echo esc_html( $alm_data['License'] ); ?></span>
 		</p>
