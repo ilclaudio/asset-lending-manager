@@ -12,15 +12,15 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 ## Features
 
-- Asset and kit management (kits cannot contain other kits)
+- Asset and kit management
 - Frontend asset browsing with filters (type, state, structure, search)
 - QR code generation and print label from asset detail page
 - QR scanner from asset list (camera-based quick lookup)
 - Loan request workflow (submit, approve, reject)
-- Direct assignment by operator/admin (reason requirement configurable)
-- Automatic cancellation of concurrent pending requests after assignment
+- Direct assignment by operator/admin (reason is mandatory; max length is configurable)
+- Automatic cancellation of concurrent pending requests after assignment (configurable)
 - Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; location field required on every state change
-- Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return)
+- Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
 - Loan history tracking
 - Role-based permissions (`alm_member`, `alm_operator`)
 - Translation-ready
@@ -38,8 +38,8 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 3. Asset detail page in the frontend view (`assets/screenshots/fronted_asset_detail.png`)
    ![Asset detail page in the frontend view](assets/screenshots/fronted_asset_detail.png)
 
-4. Loan request form in the frontend view (`assets/screenshots/backoffice_loan_form.png`)
-   ![Loan request form in the frontend view](assets/screenshots/backoffice_loan_form.png)
+4. Loan request form in the backoffice view (`assets/screenshots/backoffice_loan_form.png`)
+   ![Loan request form in the backoffice view](assets/screenshots/backoffice_loan_form.png)
 
 5. Settings in the backoffice view (`assets/screenshots/backoffice_settings.png`)
    ![Settings in the backoffice view](assets/screenshots/backoffice_settings.png)
@@ -62,7 +62,7 @@ QR features use bundled JavaScript libraries:
 3. Notification emails are sent to the requester and, when applicable, to the current owner.
 4. The current owner can approve or reject the request.
 5. On approval, ownership is transferred and asset state is updated to on-loan.
-6. Operators/admins can directly assign any asset that is not retired or under maintenance, at any time.
+6. Operators/admins can directly assign any asset that is not retired or under maintenance (when direct assignment is enabled).
 7. Operators can change asset state (→ maintenance, → retired) from the frontend, providing a location and optional notes.
 8. Operators can force-return an on-loan asset to available directly from the frontend; this closes the active loan, clears the owner, and notifies the borrower.
 9. Assets in maintenance or retired state can be restored to available by operators.
@@ -86,6 +86,7 @@ For detailed role/action and notification schemas, see:
 
 All operator state transitions require a **location** field (mandatory) and accept optional notes.
 Kit state changes propagate to all components.
+Direct assignment can also reassign an already on-loan asset while keeping state `on-loan`.
 
 ---
 
@@ -100,10 +101,7 @@ Kit state changes propagate to all components.
 5. Use the shortcodes only if you need to embed a view inside an existing WordPress page:
    - `[alm_asset_list]` — embeds the asset catalog into any page or post
    - `[alm_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
-6. Optionally configure email sender settings in wp-admin under **ALM → Settings**, or via constants in `plugin-config.php`:
-   - `ALM_EMAIL_FROM_NAME`
-   - `ALM_EMAIL_FROM_ADDRESS`
-   - `ALM_EMAIL_SYSTEM_ADDRESS`
+6. Optionally configure email sender settings in wp-admin under **ALM → Settings**.
 
 Settings UI is available in wp-admin under the ALM menu.
 
@@ -133,26 +131,3 @@ Run lint:
 composer lint
 composer lint:fix
 ```
-
-Run tests:
-```bash
-composer test:unit
-composer test:integration
-composer test:all
-```
-
-### Build distribution ZIP
-
-Run from the repository root (or from `DEV/`):
-
-```bash
-bash DEV/SETUP/AIScripts/build-zip.sh
-```
-
-Output: `DEV/dist/asset-lending-manager-<version>.zip`
-
-The version is read automatically from the plugin header in `asset-lending-manager.php`.
-Dev-only files are stripped from the archive: `tests/`, `composer.json`, `phpcs.xml.dist`,
-`phpunit*.xml`, `.gitignore`, `.githooks/`, `.vscode/`, `DEV/`, `DOC/`, `TODO.txt`.
-The script prints a full file list and size on completion.
-Requires one of: `zip` (Unix), PowerShell, or `python3`.

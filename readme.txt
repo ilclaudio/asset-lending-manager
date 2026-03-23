@@ -26,13 +26,13 @@ Born within an association of amateur astronomers to manage telescopes and equip
 
 == Features ==
 * Asset and kit management (a kit is a group of items lent together as a set)
-* Public browsing page with search and category filters
+* Public browsing page with search and taxonomy filters
 * QR code generation and printable label from the asset detail page
 * QR scanner from the asset list (camera-based quick lookup)
 * Loan request workflow: members submit requests, the current asset owner approves or rejects
-* Direct assignment by operators and admins (a reason is always required)
-* When an asset is assigned, all other pending requests for it are automatically canceled
-* Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return)
+* Direct assignment by operators and admins (when enabled; a reason is always required)
+* By default, when an asset is assigned, all other pending requests for it are automatically canceled (configurable)
+* Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
 * Asset state management from the frontend: operators can set assets to maintenance or retired, or force-return on-loan assets directly to available; a location is required on every state change
 * Full loan history for each asset
 * Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)
@@ -50,7 +50,7 @@ You can install it for free from the WordPress plugin directory.
 * Notification emails are sent to the requester and, when applicable, to the current owner.
 * The current owner can approve or reject the request.
 * On approval, the asset is marked as on loan and the new borrower is recorded.
-* Operators and admins can also directly assign any asset that is not retired or under maintenance, without a prior request.
+* Operators and admins can also directly assign any asset that is not retired or under maintenance, without a prior request (when direct assignment is enabled).
 * All decisions and assignments are recorded in loan history.
 
 
@@ -92,7 +92,7 @@ Uninstalling the plugin removes the plugin settings, the loan request history, t
 An asset is a single physical item (for example, a telescope, a book, or a camera). A kit is a collection of items that are lent together as a group (for example, a telescope with its eyepieces and carrying case). Managing kits allows you to track all components under a single loan request.
 
 = Can multiple members request the same asset at the same time? =
-Yes. Multiple members can submit requests for the same asset simultaneously. When a request is approved or the asset is directly assigned, all other pending requests for that asset are automatically canceled and the requesters are notified by email.
+Yes. Multiple members can submit requests for the same asset simultaneously. By default, when a request is approved or the asset is directly assigned, all other pending requests for that asset are automatically canceled (this behavior is configurable), and requesters are notified by email when notifications are enabled.
 
 = Do I need a developer to set up this plugin? =
 Basic setup only requires installing the plugin and activating ACF — no shortcodes or coding needed for standard use. Asset pages are served automatically by the plugin on both classic and block themes. Some advanced customization such as theme template overrides or user role adjustments may benefit from developer support.
