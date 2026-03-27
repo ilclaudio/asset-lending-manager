@@ -53,8 +53,7 @@ Thumbs.db
 
 # Local development workspace
 DEV
-
-# AI agent entry points — local symlinks pointing into DEV/
+AGENTS
 AGENTS.md
 CLAUDE.md
 tmp-alm-php-path-test.out
