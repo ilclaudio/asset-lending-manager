@@ -47,11 +47,8 @@ Thumbs.db
 
 
 # Custom directives
-# AI tool temporary directories
 .codex-tmp
 .claude
-
-# Local development workspace
 DEV
 AGENTS
 AGENTS.md
