@@ -32,6 +32,7 @@
   ],
   "cSpell.enabled": false,
   "files.eol": "\n",
+  "search.followSymlinks": true,
   "terminal.integrated.env.windows": {
     "TEMP": "${workspaceFolder}\\.codex-tmp",
     "TMP": "${workspaceFolder}\\.codex-tmp",
