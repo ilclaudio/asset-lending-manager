@@ -48,6 +48,7 @@ Thumbs.db
 # Custom directives
 .codex-tmp
 .claude
+.codex
 DEV
 AGENTS
 AGENTS.md
