@@ -8,15 +8,18 @@ This project uses [Semantic Versioning](http://semver.org/).
 
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
+
+
+
 ## [0.1.1] - 2026-04-01
-
-
+### Added
+### Fixed
+### Changed
+### Security
 
 
 ## [0.1.0] - 2026-03-15
-
 First public release.
-
 ### Added
 - Asset and kit management with full loan workflow (request, approve, reject, direct assign).
 - Role-based access control: `alm_member` and `alm_operator` roles with scoped capabilities.
@@ -35,7 +38,6 @@ First public release.
 - Frontend shortcodes: `[alm_asset_list]`, `[alm_asset_view]`.
 - An operator cannot approve the lending request sent to a member.
 - Changing the state from on loan to available, in maintenance or dismissed you ha to specify a location and a note.
-
 ### Fixed
 - All message max length limits (loan request, rejection, state-change notes) are now read from settings and passed to frontend, eliminating frontend/backend divergence.
 - Kit loan approval and direct assignment now write individual history entries for each affected component.
@@ -44,27 +46,21 @@ First public release.
 
 
 ## [DEV-0.0.2] - 2026-03-11
-
 Internal development version — not released publicly.
-
 ### Changed
 - Modified the management of the loan flow.
-
 ### Added
 - New documentation files.
 - QR Code display.
 - Search asset by QR code.
 - ALM settings management.
 - Management of the `maintenance` and `retired` statuses.
-
 ### Fixed
 - Bug-fixing.
 - Accessibility improvements.
-
 ### Security
 - Multiple security fixes applied.
 
 
 ## [DEV-0.0.1] - 2026-02-22
-
 First internal development version, ready for internal tests.
