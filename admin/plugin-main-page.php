@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$alm_data = get_file_data(
+$alm_data     = get_file_data(
 	ALM_PLUGIN_DIR . 'asset-lending-manager.php',
 	array(
 		'Name'        => 'Plugin Name',
@@ -71,6 +71,9 @@ $alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 			</a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=alm-settings' ) ); ?>" class="button button-primary">
 				<?php esc_html_e( 'Settings', 'asset-lending-manager' ); ?> <span aria-hidden="true">&rarr;</span>
+			</a>
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=alm-tools' ) ); ?>" class="button">
+				<?php esc_html_e( 'Tools', 'asset-lending-manager' ); ?> <span aria-hidden="true">&rarr;</span>
 			</a>
 		</div>
 

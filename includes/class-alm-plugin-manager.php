@@ -135,15 +135,17 @@ class ALM_Plugin_Manager {
 	private function init_modules() {
 		if ( empty( $this->modules ) ) {
 			$settings      = new ALM_Settings_Manager();
+			$loan          = new ALM_Loan_Manager( $settings );
 			$this->modules = array(
 				'settings'     => $settings,
 				'role'         => new ALM_Role_Manager(),
 				'asset'        => new ALM_Asset_Manager(),
-				'loan'         => new ALM_Loan_Manager( $settings ),
+				'loan'         => $loan,
 				'notification' => new ALM_Notification_Manager( $settings ),
 				'frontend'     => new ALM_Frontend_Manager( $settings ),
 				'admin'        => new ALM_Admin_Manager(),
 				'autocomplete' => new ALM_Autocomplete_Manager( $settings ),
+				'rest'         => new ALM_REST_Manager( $settings, $loan ),
 			);
 		}
 	}
@@ -478,6 +480,10 @@ class ALM_Plugin_Manager {
 			$raw_prefix                   = sanitize_text_field( wp_unslash( $_POST['alm_asset_code_prefix'] ?? ALM_ASSET_CODE_PREFIX ) );
 			$clean_prefix                 = substr( preg_replace( '/[^A-Za-z0-9]/', '', $raw_prefix ), 0, 10 );
 			$changes['asset.code_prefix'] = '' !== $clean_prefix ? $clean_prefix : ALM_ASSET_CODE_PREFIX;
+		}
+
+		if ( 'rest_api' === $active_tab && $is_admin ) {
+			$changes['rest_api.enabled'] = isset( $_POST['alm_rest_api_enabled'] );
 		}
 
 		if ( 'templates' === $active_tab && $is_admin ) {

@@ -34,6 +34,7 @@ require_once ALM_PLUGIN_DIR . 'includes/class-alm-notification-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-frontend-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-admin-manager.php';
 require_once ALM_PLUGIN_DIR . 'includes/class-alm-autocomplete-manager.php';
+require_once ALM_PLUGIN_DIR . 'includes/class-alm-rest-manager.php';
 
 // Get the singleton Plugin Manager.
 $alm_plugin_manager = ALM_Plugin_Manager::get_instance();

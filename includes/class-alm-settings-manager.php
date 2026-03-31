@@ -113,6 +113,9 @@ class ALM_Settings_Manager {
 			'asset'         => array(
 				'code_prefix' => ALM_ASSET_CODE_PREFIX,
 			),
+			'rest_api'      => array(
+				'enabled' => true,
+			),
 		);
 	}
 

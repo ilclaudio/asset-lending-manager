@@ -145,6 +145,14 @@ class ALM_Loan_Manager {
 				)
 			);
 		}
+		// Loan requests are allowed only for publicly available assets.
+		if ( 'publish' !== $asset->post_status ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'This asset is not available for loan.', 'asset-lending-manager' ),
+				)
+			);
+		}
 		// Verify asset is in a loanable state.
 		$asset_state = $this->get_asset_state_slug( $asset_id );
 		if ( ! in_array( $asset_state, array( 'available', 'on-loan' ), true ) ) {

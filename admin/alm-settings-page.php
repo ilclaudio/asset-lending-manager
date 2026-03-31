@@ -34,6 +34,7 @@ $alm_tabs = array(
 	'autocomplete'  => __( 'Search Settings', 'asset-lending-manager' ),
 	'logging'       => __( 'Logging', 'asset-lending-manager' ),
 	'asset'         => __( 'Advanced Settings', 'asset-lending-manager' ),
+	'rest_api'      => __( 'REST API', 'asset-lending-manager' ),
 );
 
 // Validate active tab.
@@ -913,6 +914,115 @@ $placeholders = array(
 			</table>
 
 			<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
+
+		<?php elseif ( 'rest_api' === $active_tab ) : ?>
+
+			<h2><?php esc_html_e( 'REST API', 'asset-lending-manager' ); ?></h2>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Enable REST API', 'asset-lending-manager' ); ?>
+						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								name="alm_rest_api_enabled"
+								value="1"
+								<?php checked( $settings->get( 'rest_api.enabled', true ) ); ?>
+								<?php disabled( ! $is_admin ); ?>
+							>
+							<?php esc_html_e( 'Enable the ALM JSON API endpoints under /alm/v1/.', 'asset-lending-manager' ); ?>
+						</label>
+						<p class="description">
+							<?php esc_html_e( 'When disabled, all /alm/v1/ routes return a 503 response. The API works independently of the WordPress REST API global setting.', 'asset-lending-manager' ); ?>
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<h2><?php esc_html_e( 'Authentication', 'asset-lending-manager' ); ?></h2>
+			<div class="alm-info-box" style="background:#f0f6fc;border-left:4px solid #0073aa;padding:12px 16px;margin-bottom:16px;">
+				<p><strong><?php esc_html_e( 'How to authenticate with the ALM API', 'asset-lending-manager' ); ?></strong></p>
+				<ol style="margin:8px 0 8px 20px;">
+					<li>
+						<?php
+						printf(
+							/* translators: %s: link to WP admin profile page */
+							esc_html__( 'Go to %s → Application Passwords.', 'asset-lending-manager' ),
+							'<a href="' . esc_url( admin_url( 'profile.php' ) ) . '">' . esc_html__( 'WP Admin → Your Profile', 'asset-lending-manager' ) . '</a>'
+						);
+						?>
+					</li>
+					<li><?php esc_html_e( 'Create a new Application Password and copy it.', 'asset-lending-manager' ); ?></li>
+					<li>
+						<?php
+						esc_html_e( 'Send requests with the Authorization header:', 'asset-lending-manager' );
+						?>
+						<code style="display:block;margin-top:4px;">Authorization: Basic base64(username:app_password)</code>
+					</li>
+				</ol>
+				<p>
+					<?php
+					printf(
+						/* translators: %s: link to WP Application Passwords documentation */
+						esc_html__( 'Requires WordPress 5.6 or later. %s', 'asset-lending-manager' ),
+						'<a href="https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Learn more', 'asset-lending-manager' ) . '</a>'
+					);
+					?>
+				</p>
+			</div>
+
+			<h2><?php esc_html_e( 'Available Endpoints', 'asset-lending-manager' ); ?></h2>
+			<table class="widefat striped" style="max-width:800px;">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Endpoint', 'asset-lending-manager' ); ?></th>
+						<th><?php esc_html_e( 'Description', 'asset-lending-manager' ); ?></th>
+						<th><?php esc_html_e( 'Required capability', 'asset-lending-manager' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>GET /alm/v1/assets</code></td>
+						<td><?php esc_html_e( 'Paginated asset list. Supports ?state, ?type, ?structure, ?search, ?owner, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
+						<td><code>alm_view_assets</code></td>
+					</tr>
+					<tr>
+						<td><code>GET /alm/v1/assets/{id}</code></td>
+						<td><?php esc_html_e( 'Single asset detail with ACF fields. Operators additionally see cost, purchase date, notes, and loan history.', 'asset-lending-manager' ); ?></td>
+						<td><code>alm_view_asset</code></td>
+					</tr>
+					<tr>
+						<td><code>GET /alm/v1/members</code></td>
+						<td><?php esc_html_e( 'Paginated list of ALM members and operators. Supports ?search, ?role, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
+						<td><code>alm_edit_asset</code></td>
+					</tr>
+					<tr>
+						<td><code>GET /alm/v1/members/{id}/assets</code></td>
+						<td><?php esc_html_e( 'Assets currently held by a specific member (on-loan). Returns id, code, title, structure, type, external_code, location, thumbnail_url, permalink.', 'asset-lending-manager' ); ?></td>
+						<td><code>alm_edit_asset</code></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<p class="description" style="margin-top:12px;">
+				<?php
+				printf(
+					/* translators: %s: example base URL */
+					esc_html__( 'Base URL: %s', 'asset-lending-manager' ),
+					'<code>' . esc_url( home_url( '/alm/v1/' ) ) . '</code>'
+				);
+				?>
+			</p>
+			<p class="description">
+				<?php esc_html_e( 'After enabling the API for the first time, visit Settings → Permalinks and click Save to flush rewrite rules.', 'asset-lending-manager' ); ?>
+			</p>
+
+			<?php if ( $is_admin ) : ?>
+				<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
+			<?php endif; ?>
 
 		<?php endif; ?>
 	</form>
