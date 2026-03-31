@@ -8,6 +8,10 @@ This project uses [Semantic Versioning](http://semver.org/).
 
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
+## [0.1.1] - 2026-04-01
+
+
+
 
 ## [0.1.0] - 2026-03-15
 

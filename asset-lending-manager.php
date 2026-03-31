@@ -6,7 +6,7 @@
  *              associations, schools, libraries, laboratories, and any organization.
  * Requires at least: 6.2
  * Requires Plugins: advanced-custom-fields
- * Version:     0.1.0
+ * Version:     0.1.1
  * Author:      IoClaudio
  * Author URI:  https://www.claudiobattaglino.it
  * Text Domain: asset-lending-manager
