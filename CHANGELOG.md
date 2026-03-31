@@ -13,12 +13,8 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## [0.1.1] - 2026-04-01
 ### Added
-- Read-only JSON API via custom rewrite rules (`ALM_REST_Manager`), independent of the WordPress REST API global setting.
-  - `GET /alm/v1/assets` — paginated asset list with filters (`state`, `type`, `structure`, `search`, `owner`, `page`, `per_page`).
-  - `GET /alm/v1/assets/{id}` — full asset detail including ACF fields; operators additionally receive `cost`, `data_acquisto`, `notes`, and the last 10 loan history entries.
-  - `GET /alm/v1/members` — paginated ALM user list with `active_loans_count` (operator-only).
-- Settings tab **REST API** (admin-only): toggle to enable/disable all routes, endpoint reference table, authentication guide.
-- Authentication via WordPress Application Passwords (WP 5.6+) or session cookie. All endpoints require an authenticated ALM user.
+- Added a module to manage a REST API with tehese endpoints: `GET /alm/v1/assets`, `GET /alm/v1/assets/{id}`, `GET /alm/v1/members` and `GET /alm/v1/members/{id}/assets/`
+- Added the Settings tab REST API (admin-only): toggle to enable/disable all routes, endpoint reference table, authentication guide.
 ### Fixed
 ### Changed
 ### Security

@@ -23,6 +23,7 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
 - Loan history tracking
 - Role-based permissions (`alm_member`, `alm_operator`)
+- Read-only JSON REST API (`/alm/v1/`) for asset list, asset detail, member list, and member assets; authentication via Application Passwords; independent of the WordPress REST API global setting
 - Translation-ready
 
 ---
