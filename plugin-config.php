@@ -23,7 +23,7 @@ define( 'ALMGR_VIEW_ASSET', 'almgr_view_asset' );
 define( 'ALMGR_EDIT_ASSET', 'almgr_edit_asset' );
 
 // Asset CPT.
-define( 'ALMGR_ASSET_CPT_SLUG', 'alm_asset' );
+define( 'ALMGR_ASSET_CPT_SLUG', 'almgr_asset' );
 define( 'ALMGR_MAIN_MENU_ICON', 'dashicons-hammer' );
 define( 'ALMGR_ASSET_ICON', 'dashicons-hammer' );
 
@@ -32,10 +32,10 @@ define( 'ALMGR_ASSET_KIT_SLUG', 'kit' );
 define( 'ALMGR_ASSET_COMPONENT_SLUG', 'component' );
 
 // Taxonomies.
-define( 'ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG', 'alm_structure' );
-define( 'ALMGR_ASSET_TYPE_TAXONOMY_SLUG', 'alm_type' );
-define( 'ALMGR_ASSET_STATE_TAXONOMY_SLUG', 'alm_state' );
-define( 'ALMGR_ASSET_LEVEL_TAXONOMY_SLUG', 'alm_level' );
+define( 'ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG', 'almgr_structure' );
+define( 'ALMGR_ASSET_TYPE_TAXONOMY_SLUG', 'almgr_type' );
+define( 'ALMGR_ASSET_STATE_TAXONOMY_SLUG', 'almgr_state' );
+define( 'ALMGR_ASSET_LEVEL_TAXONOMY_SLUG', 'almgr_level' );
 define(
 	'ALMGR_CUSTOM_TAXONOMIES',
 	array(

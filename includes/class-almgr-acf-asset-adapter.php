@@ -256,7 +256,7 @@ class ALMGR_ACF_Asset_Adapter {
 							'id'    => '',
 						),
 						'post_type'            => array(
-							0 => 'alm_asset',
+							0 => 'almgr_asset',
 						),
 						'post_status'          => '',
 						'taxonomy'             => '',
@@ -379,7 +379,7 @@ class ALMGR_ACF_Asset_Adapter {
 						array(
 							'param'    => 'post_type',
 							'operator' => '==',
-							'value'    => 'alm_asset',
+							'value'    => 'almgr_asset',
 						),
 					),
 				),

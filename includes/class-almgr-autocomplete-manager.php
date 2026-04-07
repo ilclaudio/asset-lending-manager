@@ -75,7 +75,7 @@ class ALMGR_Autocomplete_Manager {
 			'almgr-asset-autocomplete',
 			'almgrAutocomplete',
 			array(
-				'restUrl'   => esc_url( rest_url( 'alm/v1/assets/autocomplete' ) ),
+				'restUrl'   => esc_url( rest_url( 'almgr/v1/assets/autocomplete' ) ),
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
 				'minChars'  => (int) $this->settings->get( 'autocomplete.min_chars', 3 ),
 			)
@@ -89,7 +89,7 @@ class ALMGR_Autocomplete_Manager {
 	 */
 	public function register_routes() {
 		register_rest_route(
-			'alm/v1',
+			'almgr/v1',
 			'/assets/autocomplete',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
@@ -106,7 +106,7 @@ class ALMGR_Autocomplete_Manager {
 		);
 
 		register_rest_route(
-			'alm/v1',
+			'almgr/v1',
 			'/users/autocomplete',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
@@ -175,7 +175,7 @@ class ALMGR_Autocomplete_Manager {
 		}
 
 		return new WP_Error(
-			'alm_assets_autocomplete_forbidden',
+			'almgr_assets_autocomplete_forbidden',
 			__( 'You do not have permission to access asset autocomplete.', 'asset-lending-manager' ),
 			array( 'status' => rest_authorization_required_code() )
 		);
@@ -237,8 +237,8 @@ class ALMGR_Autocomplete_Manager {
 					'id'          => $post->ID,
 					'title'       => $wrapper->title,
 					'description' => wp_trim_words( wp_strip_all_tags( $post->post_content ), (int) $this->settings->get( 'autocomplete.description_length', ALMGR_AUTOCOMPLETE_DESC_LENGTH ), '...' ),
-					'structure'   => ! empty( $wrapper->alm_structure ) ? implode( ', ', $wrapper->alm_structure ) : '',
-					'type'        => ! empty( $wrapper->alm_type ) ? implode( ', ', $wrapper->alm_type ) : '',
+					'structure'   => ! empty( $wrapper->almgr_structure ) ? implode( ', ', $wrapper->almgr_structure ) : '',
+					'type'        => ! empty( $wrapper->almgr_type ) ? implode( ', ', $wrapper->almgr_type ) : '',
 					'permalink'   => $wrapper->permalink,
 				);
 			}

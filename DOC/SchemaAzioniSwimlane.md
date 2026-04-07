@@ -15,7 +15,7 @@ flowchart TD
     V1 --> V2
   end
 
-  subgraph SOC["Socio (alm_member)"]
+  subgraph SOC["Socio (almgr_member)"]
     S1["Consulta elenco e dettaglio"]
     S2["Invia richiesta prestito"]
     S3{"Proprietario corrente?"}
@@ -63,7 +63,7 @@ flowchart TD
 VISITATORE
   [Visualizza elenco risorse] -> [Visualizza dettaglio risorsa]
 
-SOCIO (alm_member)
+SOCIO (almgr_member)
   [Consulta elenco e dettaglio]
     -> [Invia richiesta prestito]
     -> <Proprietario corrente?>
@@ -91,4 +91,4 @@ COLLEGAMENTI TRA SWIMLANE
 
 ---
 
-*Ultimo aggiornamento: 2026-03-22*
+*Ultimo aggiornamento: 2026-04-07*

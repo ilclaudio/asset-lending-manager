@@ -24,7 +24,7 @@ $saved      = isset( $_GET['saved'] ) && '1' === sanitize_key( wp_unslash( $_GET
 $settings = new ALMGR_Settings_Manager();
 $is_admin = current_user_can( 'manage_options' );
 
-$alm_tabs = array(
+$almgr_tabs = array(
 	'email'         => __( 'Notifications', 'asset-lending-manager' ),
 	'templates'     => __( 'Email Templates', 'asset-lending-manager' ),
 	'loans'         => __( 'Loan Rules', 'asset-lending-manager' ),
@@ -38,7 +38,7 @@ $alm_tabs = array(
 );
 
 // Validate active tab.
-if ( ! array_key_exists( $active_tab, $alm_tabs ) ) {
+if ( ! array_key_exists( $active_tab, $almgr_tabs ) ) {
 	$active_tab = 'email';
 }
 
@@ -75,7 +75,7 @@ $placeholders = array(
 	<?php endif; ?>
 
 	<nav class="nav-tab-wrapper" aria-label="<?php esc_attr_e( 'Settings sections', 'asset-lending-manager' ); ?>">
-		<?php foreach ( $alm_tabs as $tab_slug => $tab_label ) : ?>
+		<?php foreach ( $almgr_tabs as $tab_slug => $tab_label ) : ?>
 			<a
 				href="<?php echo esc_url( admin_url( 'admin.php?page=alm-settings&tab=' . $tab_slug ) ); ?>"
 				class="nav-tab<?php echo esc_attr( $active_tab === $tab_slug ? ' nav-tab-active' : '' ); ?>"
@@ -88,7 +88,7 @@ $placeholders = array(
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="alm-settings-form">
 		<?php wp_nonce_field( 'almgr_save_settings', 'almgr_settings_nonce' ); ?>
 		<input type="hidden" name="action" value="almgr_save_settings">
-		<input type="hidden" name="alm_active_tab" value="<?php echo esc_attr( $active_tab ); ?>">
+		<input type="hidden" name="almgr_active_tab" value="<?php echo esc_attr( $active_tab ); ?>">
 
 		<?php if ( 'email' === $active_tab ) : ?>
 
@@ -96,7 +96,7 @@ $placeholders = array(
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="alm_email_from_name">
+						<label for="almgr_email_from_name">
 							<?php esc_html_e( 'From name', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -104,8 +104,8 @@ $placeholders = array(
 					<td>
 						<input
 							type="text"
-							id="alm_email_from_name"
-							name="alm_email_from_name"
+							id="almgr_email_from_name"
+							name="almgr_email_from_name"
 							value="<?php echo esc_attr( $settings->get( 'email.from_name' ) ); ?>"
 							class="regular-text"
 							<?php disabled( ! $is_admin ); ?>
@@ -117,7 +117,7 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_email_from_address">
+						<label for="almgr_email_from_address">
 							<?php esc_html_e( 'From address', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -125,8 +125,8 @@ $placeholders = array(
 					<td>
 						<input
 							type="email"
-							id="alm_email_from_address"
-							name="alm_email_from_address"
+							id="almgr_email_from_address"
+							name="almgr_email_from_address"
 							value="<?php echo esc_attr( $settings->get( 'email.from_address' ) ); ?>"
 							class="regular-text"
 							<?php disabled( ! $is_admin ); ?>
@@ -138,7 +138,7 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_email_system_email">
+						<label for="almgr_email_system_email">
 							<?php esc_html_e( 'System email (BCC)', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -146,8 +146,8 @@ $placeholders = array(
 					<td>
 						<input
 							type="email"
-							id="alm_email_system_email"
-							name="alm_email_system_email"
+							id="almgr_email_system_email"
+							name="almgr_email_system_email"
 							value="<?php echo esc_attr( $settings->get( 'email.system_email' ) ); ?>"
 							class="regular-text"
 							<?php disabled( ! $is_admin ); ?>
@@ -170,7 +170,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_notifications_enabled"
+								name="almgr_notifications_enabled"
 								value="1"
 								<?php checked( $settings->get( 'notifications.enabled' ) ); ?>
 								<?php disabled( ! $is_admin ); ?>
@@ -188,7 +188,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_notifications_loan_request"
+								name="almgr_notifications_loan_request"
 								value="1"
 								<?php checked( $settings->get( 'notifications.loan_request' ) ); ?>
 							>
@@ -202,7 +202,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_notifications_loan_decision"
+								name="almgr_notifications_loan_decision"
 								value="1"
 								<?php checked( $settings->get( 'notifications.loan_decision' ) ); ?>
 							>
@@ -216,7 +216,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_notifications_loan_confirmation"
+								name="almgr_notifications_loan_confirmation"
 								value="1"
 								<?php checked( $settings->get( 'notifications.loan_confirmation' ) ); ?>
 							>
@@ -240,24 +240,24 @@ $placeholders = array(
 				<?php esc_html_e( 'Customize the subject and body of each notification email. Placeholders in curly braces are replaced at send time. Leave a field empty to use the translated default.', 'asset-lending-manager' ); ?>
 			</p>
 
-			<?php foreach ( $email_type_labels as $alm_type => $alm_type_label ) : ?>
+			<?php foreach ( $email_type_labels as $almgr_type => $almgr_type_label ) : ?>
 				<details class="alm-settings-template-section" open>
 					<summary class="alm-settings-template-summary">
-						<strong><?php echo esc_html( $alm_type_label ); ?></strong>
+						<strong><?php echo esc_html( $almgr_type_label ); ?></strong>
 					</summary>
 					<table class="form-table" role="presentation">
 						<tr>
 							<th scope="row">
-								<label for="alm_tpl_subject_<?php echo esc_attr( $alm_type ); ?>">
+								<label for="almgr_tpl_subject_<?php echo esc_attr( $almgr_type ); ?>">
 									<?php esc_html_e( 'Subject', 'asset-lending-manager' ); ?>
 								</label>
 							</th>
 							<td>
 								<input
 									type="text"
-									id="alm_tpl_subject_<?php echo esc_attr( $alm_type ); ?>"
-									name="alm_tpl_subject_<?php echo esc_attr( $alm_type ); ?>"
-									value="<?php echo esc_attr( $settings->get( 'template.subject.' . $alm_type ) ); ?>"
+									id="almgr_tpl_subject_<?php echo esc_attr( $almgr_type ); ?>"
+									name="almgr_tpl_subject_<?php echo esc_attr( $almgr_type ); ?>"
+									value="<?php echo esc_attr( $settings->get( 'template.subject.' . $almgr_type ) ); ?>"
 									class="large-text"
 									<?php disabled( ! $is_admin ); ?>
 								>
@@ -265,21 +265,21 @@ $placeholders = array(
 						</tr>
 						<tr>
 							<th scope="row">
-								<label for="alm_tpl_body_<?php echo esc_attr( $alm_type ); ?>">
+								<label for="almgr_tpl_body_<?php echo esc_attr( $almgr_type ); ?>">
 									<?php esc_html_e( 'Body', 'asset-lending-manager' ); ?>
 								</label>
 							</th>
 							<td>
 								<textarea
-									id="alm_tpl_body_<?php echo esc_attr( $alm_type ); ?>"
-									name="alm_tpl_body_<?php echo esc_attr( $alm_type ); ?>"
+									id="almgr_tpl_body_<?php echo esc_attr( $almgr_type ); ?>"
+									name="almgr_tpl_body_<?php echo esc_attr( $almgr_type ); ?>"
 									rows="6"
 									class="large-text"
 									<?php disabled( ! $is_admin ); ?>
-								><?php echo esc_textarea( $settings->get( 'template.body.' . $alm_type ) ); ?></textarea>
+								><?php echo esc_textarea( $settings->get( 'template.body.' . $almgr_type ) ); ?></textarea>
 								<p class="description">
 									<?php esc_html_e( 'Available placeholders:', 'asset-lending-manager' ); ?>
-									<code><?php echo esc_html( $placeholders[ $alm_type ] ); ?></code>
+									<code><?php echo esc_html( $placeholders[ $almgr_type ] ); ?></code>
 								</p>
 							</td>
 						</tr>
@@ -303,7 +303,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_loans_loan_requests_enabled"
+								name="almgr_loans_loan_requests_enabled"
 								value="1"
 								<?php checked( $settings->get( 'loans.loan_requests_enabled' ) ); ?>
 							>
@@ -317,15 +317,15 @@ $placeholders = array(
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="alm_loans_max_active_per_user">
+						<label for="almgr_loans_max_active_per_user">
 							<?php esc_html_e( 'Max active loans per user', 'asset-lending-manager' ); ?>
 						</label>
 					</th>
 					<td>
 						<input
 							type="number"
-							id="alm_loans_max_active_per_user"
-							name="alm_loans_max_active_per_user"
+							id="almgr_loans_max_active_per_user"
+							name="almgr_loans_max_active_per_user"
 							value="<?php echo esc_attr( $settings->get( 'loans.max_active_per_user' ) ); ?>"
 							min="0"
 							class="small-text"
@@ -343,7 +343,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_loans_allow_multiple_requests"
+								name="almgr_loans_allow_multiple_requests"
 								value="1"
 								<?php checked( $settings->get( 'loans.allow_multiple_requests' ) ); ?>
 							>
@@ -357,7 +357,7 @@ $placeholders = array(
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="alm_loans_request_message_max_length">
+						<label for="almgr_loans_request_message_max_length">
 							<?php esc_html_e( 'Request message max length', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -365,8 +365,8 @@ $placeholders = array(
 					<td>
 						<input
 							type="number"
-							id="alm_loans_request_message_max_length"
-							name="alm_loans_request_message_max_length"
+							id="almgr_loans_request_message_max_length"
+							name="almgr_loans_request_message_max_length"
 							value="<?php echo esc_attr( $settings->get( 'loans.request_message_max_length' ) ); ?>"
 							min="0"
 							class="small-text"
@@ -379,7 +379,7 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_loans_rejection_message_max_length">
+						<label for="almgr_loans_rejection_message_max_length">
 							<?php esc_html_e( 'Rejection message max length', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -387,8 +387,8 @@ $placeholders = array(
 					<td>
 						<input
 							type="number"
-							id="alm_loans_rejection_message_max_length"
-							name="alm_loans_rejection_message_max_length"
+							id="almgr_loans_rejection_message_max_length"
+							name="almgr_loans_rejection_message_max_length"
 							value="<?php echo esc_attr( $settings->get( 'loans.rejection_message_max_length' ) ); ?>"
 							min="0"
 							class="small-text"
@@ -401,7 +401,7 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_loans_direct_assign_reason_max_length">
+						<label for="almgr_loans_direct_assign_reason_max_length">
 							<?php esc_html_e( 'Direct-assign reason max length', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -409,8 +409,8 @@ $placeholders = array(
 					<td>
 						<input
 							type="number"
-							id="alm_loans_direct_assign_reason_max_length"
-							name="alm_loans_direct_assign_reason_max_length"
+							id="almgr_loans_direct_assign_reason_max_length"
+							name="almgr_loans_direct_assign_reason_max_length"
 							value="<?php echo esc_attr( $settings->get( 'loans.direct_assign_reason_max_length' ) ); ?>"
 							min="0"
 							class="small-text"
@@ -438,7 +438,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_direct_assign_enabled"
+								name="almgr_direct_assign_enabled"
 								value="1"
 								<?php checked( $settings->get( 'direct_assign.enabled' ) ); ?>
 								<?php disabled( ! $is_admin ); ?>
@@ -464,7 +464,7 @@ $placeholders = array(
 							<label style="display:block; margin-bottom:4px;">
 								<input
 									type="checkbox"
-									name="alm_direct_assign_roles[]"
+									name="almgr_direct_assign_roles[]"
 									value="<?php echo esc_attr( $role_slug ); ?>"
 									<?php checked( in_array( $role_slug, $allowed_roles, true ) ); ?>
 									<?php disabled( ! $is_admin ); ?>
@@ -493,7 +493,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_workflow_cancel_concurrent"
+								name="almgr_workflow_cancel_concurrent"
 								value="1"
 								<?php checked( $settings->get( 'workflow.cancel_concurrent_requests_on_assign' ) ); ?>
 							>
@@ -509,7 +509,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_workflow_cancel_component_requests"
+								name="almgr_workflow_cancel_component_requests"
 								value="1"
 								<?php checked( $settings->get( 'workflow.cancel_component_requests_when_kit_assigned' ) ); ?>
 							>
@@ -523,7 +523,7 @@ $placeholders = array(
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="alm_workflow_actor_user_id">
+						<label for="almgr_workflow_actor_user_id">
 							<?php esc_html_e( 'Automatic operations actor user ID', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -531,8 +531,8 @@ $placeholders = array(
 					<td>
 						<input
 							type="number"
-							id="alm_workflow_actor_user_id"
-							name="alm_workflow_actor_user_id"
+							id="almgr_workflow_actor_user_id"
+							name="almgr_workflow_actor_user_id"
 							value="<?php echo esc_attr( $settings->get( 'workflow.automatic_operations_actor_user_id' ) ); ?>"
 							min="1"
 							class="small-text"
@@ -553,7 +553,7 @@ $placeholders = array(
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="alm_frontend_assets_page_id">
+						<label for="almgr_frontend_assets_page_id">
 							<?php esc_html_e( 'Asset archive page', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -562,8 +562,8 @@ $placeholders = array(
 						<?php
 						wp_dropdown_pages(
 							array(
-								'name'              => 'alm_frontend_assets_page_id',
-								'id'                => 'alm_frontend_assets_page_id',
+								'name'              => 'almgr_frontend_assets_page_id',
+								'id'                => 'almgr_frontend_assets_page_id',
 								'selected'          => (int) $settings->get( 'frontend.assets_page_id' ),
 								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
@@ -578,7 +578,7 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_frontend_login_redirect_page_id">
+						<label for="almgr_frontend_login_redirect_page_id">
 							<?php esc_html_e( 'Login redirect page', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -587,8 +587,8 @@ $placeholders = array(
 						<?php
 						wp_dropdown_pages(
 							array(
-								'name'              => 'alm_frontend_login_redirect_page_id',
-								'id'                => 'alm_frontend_login_redirect_page_id',
+								'name'              => 'almgr_frontend_login_redirect_page_id',
+								'id'                => 'almgr_frontend_login_redirect_page_id',
 								'selected'          => (int) $settings->get( 'frontend.login_redirect_page_id' ),
 								'show_option_none'  => esc_html__( '— Default (/asset/) —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
@@ -603,7 +603,7 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_frontend_logout_redirect_page_id">
+						<label for="almgr_frontend_logout_redirect_page_id">
 							<?php esc_html_e( 'Logout redirect page', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -612,8 +612,8 @@ $placeholders = array(
 						<?php
 						wp_dropdown_pages(
 							array(
-								'name'              => 'alm_frontend_logout_redirect_page_id',
-								'id'                => 'alm_frontend_logout_redirect_page_id',
+								'name'              => 'almgr_frontend_logout_redirect_page_id',
+								'id'                => 'almgr_frontend_logout_redirect_page_id',
 								'selected'          => (int) $settings->get( 'frontend.logout_redirect_page_id' ),
 								'show_option_none'  => esc_html__( '— Default (home) —', 'asset-lending-manager' ),
 								'option_none_value' => '0',
@@ -632,15 +632,15 @@ $placeholders = array(
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="alm_frontend_asset_list_per_page">
+						<label for="almgr_frontend_asset_list_per_page">
 							<?php esc_html_e( 'Assets per page', 'asset-lending-manager' ); ?>
 						</label>
 					</th>
 					<td>
 						<input
 							type="number"
-							id="alm_frontend_asset_list_per_page"
-							name="alm_frontend_asset_list_per_page"
+							id="almgr_frontend_asset_list_per_page"
+							name="almgr_frontend_asset_list_per_page"
 							value="<?php echo esc_attr( $settings->get( 'frontend.asset_list_per_page' ) ); ?>"
 							min="1"
 							max="100"
@@ -659,7 +659,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_frontend_default_filters_open"
+								name="almgr_frontend_default_filters_open"
 								value="1"
 								<?php checked( $settings->get( 'frontend.default_filters_open' ) ); ?>
 							>
@@ -677,15 +677,15 @@ $placeholders = array(
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="alm_autocomplete_min_chars">
+						<label for="almgr_autocomplete_min_chars">
 							<?php esc_html_e( 'Minimum characters', 'asset-lending-manager' ); ?>
 						</label>
 					</th>
 					<td>
 						<input
 							type="number"
-							id="alm_autocomplete_min_chars"
-							name="alm_autocomplete_min_chars"
+							id="almgr_autocomplete_min_chars"
+							name="almgr_autocomplete_min_chars"
 							value="<?php echo esc_attr( $settings->get( 'autocomplete.min_chars' ) ); ?>"
 							min="1"
 							max="10"
@@ -698,15 +698,15 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_autocomplete_max_results">
+						<label for="almgr_autocomplete_max_results">
 							<?php esc_html_e( 'Max results', 'asset-lending-manager' ); ?>
 						</label>
 					</th>
 					<td>
 						<input
 							type="number"
-							id="alm_autocomplete_max_results"
-							name="alm_autocomplete_max_results"
+							id="almgr_autocomplete_max_results"
+							name="almgr_autocomplete_max_results"
 							value="<?php echo esc_attr( $settings->get( 'autocomplete.max_results' ) ); ?>"
 							min="1"
 							max="20"
@@ -719,15 +719,15 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_autocomplete_description_length">
+						<label for="almgr_autocomplete_description_length">
 							<?php esc_html_e( 'Description snippet length', 'asset-lending-manager' ); ?>
 						</label>
 					</th>
 					<td>
 						<input
 							type="number"
-							id="alm_autocomplete_description_length"
-							name="alm_autocomplete_description_length"
+							id="almgr_autocomplete_description_length"
+							name="almgr_autocomplete_description_length"
 							value="<?php echo esc_attr( $settings->get( 'autocomplete.description_length' ) ); ?>"
 							min="0"
 							max="200"
@@ -751,12 +751,12 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_autocomplete_public_endpoint"
+								name="almgr_autocomplete_public_endpoint"
 								value="1"
 								<?php checked( $settings->get( 'autocomplete.public_assets_endpoint_enabled' ) ); ?>
 								<?php disabled( ! $is_admin ); ?>
 							>
-							<?php esc_html_e( 'Allow unauthenticated requests to the asset autocomplete REST endpoint (/wp-json/alm/v1/assets/autocomplete)', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Allow unauthenticated requests to the asset autocomplete REST endpoint (/wp-json/almgr/v1/assets/autocomplete)', 'asset-lending-manager' ); ?>
 							</label>
 						</td>
 					</tr>
@@ -772,7 +772,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_autocomplete_qr_scan_enabled"
+								name="almgr_autocomplete_qr_scan_enabled"
 								value="1"
 								<?php checked( $settings->get( 'autocomplete.qr_scan_enabled' ) ); ?>
 							>
@@ -797,7 +797,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_logging_enabled"
+								name="almgr_logging_enabled"
 								value="1"
 								<?php checked( $settings->get( 'logging.enabled' ) ); ?>
 								<?php disabled( ! $is_admin ); ?>
@@ -808,15 +808,15 @@ $placeholders = array(
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="alm_logging_level">
+						<label for="almgr_logging_level">
 							<?php esc_html_e( 'Log level', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
 						<select
-							id="alm_logging_level"
-							name="alm_logging_level"
+							id="almgr_logging_level"
+							name="almgr_logging_level"
 							<?php disabled( ! $is_admin ); ?>
 						>
 							<?php
@@ -848,7 +848,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_logging_mask_personal_data"
+								name="almgr_logging_mask_personal_data"
 								value="1"
 								<?php checked( $settings->get( 'logging.mask_personal_data' ) ); ?>
 								<?php disabled( ! $is_admin ); ?>
@@ -866,7 +866,7 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_logging_log_email_events"
+								name="almgr_logging_log_email_events"
 								value="1"
 								<?php checked( $settings->get( 'logging.log_email_events' ) ); ?>
 								<?php disabled( ! $is_admin ); ?>
@@ -885,7 +885,7 @@ $placeholders = array(
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="alm_asset_code_prefix">
+						<label for="almgr_asset_code_prefix">
 							<?php esc_html_e( 'Code prefix', 'asset-lending-manager' ); ?>
 							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
@@ -893,8 +893,8 @@ $placeholders = array(
 					<td>
 						<input
 							type="text"
-							id="alm_asset_code_prefix"
-							name="alm_asset_code_prefix"
+							id="almgr_asset_code_prefix"
+							name="almgr_asset_code_prefix"
 							value="<?php echo esc_attr( $settings->get( 'asset.code_prefix' ) ); ?>"
 							maxlength="10"
 							class="small-text"
@@ -928,15 +928,15 @@ $placeholders = array(
 						<label>
 							<input
 								type="checkbox"
-								name="alm_rest_api_enabled"
+								name="almgr_rest_api_enabled"
 								value="1"
 								<?php checked( $settings->get( 'rest_api.enabled', true ) ); ?>
 								<?php disabled( ! $is_admin ); ?>
 							>
-							<?php esc_html_e( 'Enable the ALM JSON API endpoints under /alm/v1/.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Enable the ALM JSON API endpoints under /almgr/v1/.', 'asset-lending-manager' ); ?>
 						</label>
 						<p class="description">
-							<?php esc_html_e( 'When disabled, all /alm/v1/ routes return a 503 response. The API works independently of the WordPress REST API global setting.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'When disabled, all /almgr/v1/ routes return a 503 response. The API works independently of the WordPress REST API global setting.', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
@@ -985,22 +985,22 @@ $placeholders = array(
 				</thead>
 				<tbody>
 					<tr>
-						<td><code>GET /alm/v1/assets</code></td>
+						<td><code>GET /almgr/v1/assets</code></td>
 						<td><?php esc_html_e( 'Paginated asset list. Supports ?state, ?type, ?structure, ?search, ?owner, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_view_assets</code></td>
 					</tr>
 					<tr>
-						<td><code>GET /alm/v1/assets/{id}</code></td>
+						<td><code>GET /almgr/v1/assets/{id}</code></td>
 						<td><?php esc_html_e( 'Single asset detail with ACF fields. Operators additionally see cost, purchase date, notes, and loan history.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_view_asset</code></td>
 					</tr>
 					<tr>
-						<td><code>GET /alm/v1/members</code></td>
+						<td><code>GET /almgr/v1/members</code></td>
 						<td><?php esc_html_e( 'Paginated list of ALM members and operators. Supports ?search, ?role, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_edit_asset</code></td>
 					</tr>
 					<tr>
-						<td><code>GET /alm/v1/members/{id}/assets</code></td>
+						<td><code>GET /almgr/v1/members/{id}/assets</code></td>
 						<td><?php esc_html_e( 'Assets currently held by a specific member (on-loan). Returns id, code, title, structure, type, external_code, location, thumbnail_url, permalink.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_edit_asset</code></td>
 					</tr>
@@ -1012,7 +1012,7 @@ $placeholders = array(
 				printf(
 					/* translators: %s: example base URL */
 					esc_html__( 'Base URL: %s', 'asset-lending-manager' ),
-					'<code>' . esc_url( home_url( '/alm/v1/' ) ) . '</code>'
+					'<code>' . esc_url( home_url( '/almgr/v1/' ) ) . '</code>'
 				);
 				?>
 			</p>

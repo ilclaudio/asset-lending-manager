@@ -265,7 +265,7 @@
 						
 						// Reload page with success message
 						var currentUrl = window.location.href.split('?')[0];
-						window.location.href = currentUrl + '?alm_action=send_request&alm_status=success';
+						window.location.href = currentUrl + '?almgr_action=send_request&almgr_status=success';
 					} else {
 						var errorMsg = data.data && data.data.message ? data.data.message : __( 'Request failed. Please try again.', 'asset-lending-manager' );
 						ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
@@ -376,7 +376,7 @@
 				.then(function(data) {
 					if (data.success) {
 						var currentUrl = window.location.href.split('?')[0];
-						window.location.href = currentUrl + '?alm_action=direct_assign&alm_status=success';
+						window.location.href = currentUrl + '?almgr_action=direct_assign&almgr_status=success';
 					} else {
 						var errorMsg = data.data && data.data.message ? data.data.message : __( 'Assignment failed. Please try again.', 'asset-lending-manager' );
 						ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
@@ -463,7 +463,7 @@
 					.then(function(data) {
 						if (data.success) {
 							var currentUrl = window.location.href.split('?')[0];
-							window.location.href = currentUrl + '?alm_action=change_state&alm_status=success&alm_state=' + encodeURIComponent(targetState);
+							window.location.href = currentUrl + '?almgr_action=change_state&almgr_status=success&almgr_state=' + encodeURIComponent(targetState);
 						} else {
 							var errorMsg = data.data && data.data.message ? data.data.message : __( 'State change failed. Please try again.', 'asset-lending-manager' );
 							ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
@@ -545,7 +545,7 @@
 					.then(function(data) {
 						if (data.success) {
 							var currentUrl = window.location.href.split('?')[0];
-							window.location.href = currentUrl + '?alm_action=restore_state&alm_status=success';
+							window.location.href = currentUrl + '?almgr_action=restore_state&almgr_status=success';
 						} else {
 							var errorMsg = data.data && data.data.message ? data.data.message : __( 'Restore failed. Please try again.', 'asset-lending-manager' );
 							ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
@@ -760,7 +760,7 @@
 					
 					// Reload page with success message
 					var currentUrl = window.location.href.split('?')[0];
-					window.location.href = currentUrl + '?alm_action=approve&alm_status=success';
+					window.location.href = currentUrl + '?almgr_action=approve&almgr_status=success';
 				} else {
 					var errorMsg = data.data && data.data.message ? data.data.message : __( 'Approval failed. Please try again.', 'asset-lending-manager' );
 					alert(errorMsg);
@@ -1014,7 +1014,7 @@
 					
 					// Reload page with success message
 					var currentUrl = window.location.href.split('?')[0];
-					window.location.href = currentUrl + '?alm_action=reject&alm_status=success';
+					window.location.href = currentUrl + '?almgr_action=reject&almgr_status=success';
 				} else {
 					var errorMsg = data.data && data.data.message ? data.data.message : __( 'Failed to reject request. Please try again.', 'asset-lending-manager' );
 					ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
@@ -1099,8 +1099,8 @@
 		 */
 		showActionResultMessage: function() {
 			var urlParams = new URLSearchParams(window.location.search);
-			var action = urlParams.get('alm_action');
-			var status = urlParams.get('alm_status');
+			var action = urlParams.get('almgr_action');
+			var status = urlParams.get('almgr_status');
 
 			if (!action || !status) {
 				return;
@@ -1334,7 +1334,7 @@
 									try {
 										var decoded = code.data;
 										var parsed  = new URL(decoded);
-										if (parsed.origin === window.location.origin && parsed.searchParams.has('alm_scan')) {
+										if (parsed.origin === window.location.origin && parsed.searchParams.has('almgr_scan')) {
 											stopScanner();
 											window.location.href = decoded;
 											return;

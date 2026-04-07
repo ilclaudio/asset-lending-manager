@@ -56,6 +56,6 @@ LEFT JOIN wp_postmeta pm_external_code
 LEFT JOIN wp_postmeta pm_notes
 	ON pm_notes.post_id = p.ID
 	AND pm_notes.meta_key = 'notes'
-WHERE p.post_type = 'alm_asset'
+WHERE p.post_type = 'almgr_asset'
 AND p.ID = 49
 LIMIT 1;

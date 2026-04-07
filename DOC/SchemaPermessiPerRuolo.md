@@ -5,8 +5,8 @@ Questo documento riassume le operazioni disponibili per ciascun ruolo nel plugin
 ## Ruoli previsti dal sistema
 * Amministratore
 * Visitatore (utente anonimo)
-* **Socio**: alm_member
-* **Operatore**: alm_operator
+* **Socio**: almgr_member
+* **Operatore**: almgr_operator
   
 	---
 
@@ -14,7 +14,7 @@ Questo documento riassume le operazioni disponibili per ciascun ruolo nel plugin
 
 ## Matrice ruoli x operazioni
 
-| Operazione | Visitatore | Socio (`alm_member`) | Operatore (`alm_operator`) | Amministratore |
+| Operazione | Visitatore | Socio (`almgr_member`) | Operatore (`almgr_operator`) | Amministratore |
 |---|---|---|---|---|
 | Visualizzare elenco risorse | Si | Si | Si | Si |
 | Visualizzare dettaglio risorsa | Si | Si | Si | Si |
@@ -49,7 +49,7 @@ Diagramma Mermaid separato: `DOC/SchemaAzioniSwimlane.md`.
 VISITATORE
   [Visualizza elenco risorse] -> [Visualizza dettaglio risorsa]
 
-SOCIO (alm_member)
+SOCIO (almgr_member)
   [Consulta elenco e dettaglio]
     -> [Invia richiesta prestito]
     -> <Proprietario corrente?>
@@ -80,9 +80,9 @@ COLLEGAMENTI TRA SWIMLANE
 ## Note importanti
 
 - Le azioni di approvazione/rifiuto sono consentite a qualsiasi ruolo (socio, operatore, amministratore) solo se l'utente è il proprietario corrente dell'asset. Nessun ruolo ha un bypass su questa regola.
-- L'assegnamento diretto e' consentito solo a chi ha capability `alm_edit_asset` (operatore/amministratore).
+- L'assegnamento diretto e' consentito solo a chi ha capability `almgr_edit_asset` (operatore/amministratore).
 - Nella UI corrente, lo storico prestiti e' mostrato solo a operatore/amministratore.
 
 ---
 
-*Ultimo aggiornamento: 2026-03-22 (rev 3)*
+*Ultimo aggiornamento: 2026-04-07 (rev 4)*

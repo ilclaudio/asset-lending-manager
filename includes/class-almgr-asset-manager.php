@@ -4,7 +4,7 @@
  *
  * Handles asset domain logic.
  * Responsible for:
- * - Registering the alm_asset Custom Post Type
+ * - Registering the almgr_asset Custom Post Type
  * - Registering asset-related taxonomies
  * - Providing read-only helpers for asset properties
  *
@@ -83,7 +83,7 @@ class ALMGR_Asset_Manager {
 	}
 
 	/**
-	 * Register the alm_asset Custom Post Type.
+	 * Register the almgr_asset Custom Post Type.
 	 *
 	 * @return void
 	 */
@@ -260,19 +260,19 @@ class ALMGR_Asset_Manager {
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 				// State labels are translated at runtime from slug, not from stored term name.
 				if ( ALMGR_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
-					$wrapper->alm_state       = array();
-					$wrapper->alm_state_slugs = wp_list_pluck( $terms, 'slug' );
+					$wrapper->almgr_state       = array();
+					$wrapper->almgr_state_slugs = wp_list_pluck( $terms, 'slug' );
 					foreach ( $terms as $term ) {
-						$term_slug            = (string) $term->slug;
-						$term_name            = (string) $term->name;
-						$wrapper->alm_state[] = self::get_state_label( $term_slug, $term_name );
+						$term_slug              = (string) $term->slug;
+						$term_name              = (string) $term->name;
+						$wrapper->almgr_state[] = self::get_state_label( $term_slug, $term_name );
 					}
 				} elseif ( ALMGR_ASSET_LEVEL_TAXONOMY_SLUG === $taxonomy ) {
-					$wrapper->alm_level = array();
+					$wrapper->almgr_level = array();
 					foreach ( $terms as $term ) {
-						$term_slug            = (string) $term->slug;
-						$term_name            = (string) $term->name;
-						$wrapper->alm_level[] = self::get_level_label( $term_slug, $term_name );
+						$term_slug              = (string) $term->slug;
+						$term_name              = (string) $term->name;
+						$wrapper->almgr_level[] = self::get_level_label( $term_slug, $term_name );
 					}
 				} else {
 					$wrapper->{$taxonomy} = wp_list_pluck( $terms, 'name' );
@@ -280,13 +280,17 @@ class ALMGR_Asset_Manager {
 			} else {
 				$wrapper->{$taxonomy} = array();
 				if ( ALMGR_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
-					$wrapper->alm_state_slugs = array();
+					$wrapper->almgr_state       = array();
+					$wrapper->almgr_state_slugs = array();
+				}
+				if ( ALMGR_ASSET_LEVEL_TAXONOMY_SLUG === $taxonomy ) {
+					$wrapper->almgr_level = array();
 				}
 			}
 		}
 
 		// Load current owner.
-		$owner_id            = (int) get_post_meta( $asset->ID, '_alm_current_owner', true );
+		$owner_id            = (int) get_post_meta( $asset->ID, '_almgr_current_owner', true );
 		$wrapper->owner_id   = $owner_id;
 		$owner_data          = $owner_id > 0 ? get_userdata( $owner_id ) : false;
 		$wrapper->owner_name = $owner_data ? $owner_data->display_name : '';
@@ -447,7 +451,7 @@ class ALMGR_Asset_Manager {
 	 * Return the WordPress post ID from a human-readable asset code.
 	 *
 	 * Reverse of get_asset_code(). Extracts the numeric part after the last
-	 * hyphen, validates the post exists and is a published alm_asset.
+	 * hyphen, validates the post exists and is a published almgr_asset.
 	 *
 	 * @param string $code Human-readable asset code (e.g. "ALM-00000052").
 	 * @return int Post ID on success, 0 on failure.

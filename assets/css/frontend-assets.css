@@ -12,7 +12,7 @@
 	======================================================================== */
 
 	:root {
-		/* Asset state colors (alm_state taxonomy).
+		/* Asset state colors (almgr_state taxonomy).
 		 * All combinations verified WCAG AA (contrast ≥ 4.5:1 for normal text).
 		 * Use https://webaim.org/resources/contrastchecker/ to verify before changing. */
 		--alm-state-available-bg:         #d4edda;  /* contrast vs #155724: ~7.2:1 */
@@ -137,7 +137,7 @@
 		color: #0073aa;
 	}
 
-	/* Asset state badges (alm_state) */
+	/* Asset state badges (almgr_state) */
 	.alm-availability {
 		display: inline-block;
 		padding: 4px 10px;
@@ -190,7 +190,7 @@
 	}
 
 	/* Shared button palette for asset list and asset view */
-	#alm_asset_search_form,
+	#almgr_asset_search_form,
 	.alm-asset-view {
 		--alm-btn-primary-bg: #0073aa;
 		--alm-btn-primary-hover-bg: #006a9b;
@@ -213,7 +213,7 @@
 
 	/* Search form - used in asset list */
 	.alm-search-submit-btn,
-	#alm_asset_search_form .alm-form-actions button[type="submit"],
+	#almgr_asset_search_form .alm-form-actions button[type="submit"],
 	.alm-asset-view .alm-button {
 		padding: 10px 16px;
 		font-size: 0.95rem;
@@ -229,13 +229,13 @@
 	}
 
 	.alm-search-submit-btn,
-	#alm_asset_search_form .alm-form-actions button[type="submit"] {
+	#almgr_asset_search_form .alm-form-actions button[type="submit"] {
 		width: 100%;
 		margin-top: 8px;
 	}
 
 	.alm-search-submit-btn,
-	#alm_asset_search_form .alm-form-actions button[type="submit"],
+	#almgr_asset_search_form .alm-form-actions button[type="submit"],
 	.alm-asset-view .alm-button,
 	.alm-asset-view .alm-button--primary {
 		background: var(--alm-btn-primary-bg);
@@ -244,7 +244,7 @@
 	}
 
 	.alm-search-submit-btn:hover,
-	#alm_asset_search_form .alm-form-actions button[type="submit"]:hover,
+	#almgr_asset_search_form .alm-form-actions button[type="submit"]:hover,
 	.alm-asset-view .alm-button:hover,
 	.alm-asset-view .alm-button--primary:hover {
 		background: var(--alm-btn-primary-hover-bg);
@@ -252,7 +252,7 @@
 	}
 
 	.alm-search-submit-btn:focus-visible,
-	#alm_asset_search_form .alm-form-actions button[type="submit"]:focus-visible,
+	#almgr_asset_search_form .alm-form-actions button[type="submit"]:focus-visible,
 	.alm-asset-view .alm-button:focus-visible,
 	.alm-asset-view .alm-button--primary:focus-visible {
 		outline: 2px solid var(--alm-btn-primary-focus);
@@ -372,7 +372,7 @@
 		cursor: not-allowed;
 	}
 
-	#alm_asset_search_form {
+	#almgr_asset_search_form {
 		position: relative;
 		width: 100%;
 		margin-bottom: 1em;
@@ -429,7 +429,7 @@
 	}
 
 	/* Lens + loading spinner */
-	#alm_asset_search_form .alm-search-icon {
+	#almgr_asset_search_form .alm-search-icon {
 		position: absolute;
 		left: 10px;
 		top: 50%;
@@ -445,7 +445,7 @@
 		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
 	}
 
-	#alm_asset_search_form.alm-autocomplete-loading .alm-search-icon {
+	#almgr_asset_search_form.alm-autocomplete-loading .alm-search-icon {
 		background-image: none;
 		border: 2px solid #666;
 		border-top-color: transparent;
@@ -1172,7 +1172,7 @@
 		cursor: pointer;
 	}
 
-	#alm_asset_search_form .alm-filter-field input[type="text"] {
+	#almgr_asset_search_form .alm-filter-field input[type="text"] {
 		border: 1px solid #c7d3dd;
 	}
 
@@ -1193,13 +1193,13 @@
 		flex: 1;
 	}
 
-	#alm_asset_search_form .alm-form-actions .alm-reset-filters,
-	#alm_asset_search_form .alm-form-actions button[type="submit"] {
+	#almgr_asset_search_form .alm-form-actions .alm-reset-filters,
+	#almgr_asset_search_form .alm-form-actions button[type="submit"] {
 		min-height: 44px;
 		border-radius: 8px;
 	}
 
-	#alm_asset_search_form .alm-form-actions button[type="submit"] {
+	#almgr_asset_search_form .alm-form-actions button[type="submit"] {
 		margin-top: 0;
 		box-sizing: border-box;
 	}
@@ -1353,7 +1353,7 @@
 	@media (prefers-reduced-motion: reduce) {
 		.alm-asset-title,
 		.alm-search-submit-btn,
-		#alm_asset_search_form .alm-form-actions button[type="submit"],
+		#almgr_asset_search_form .alm-form-actions button[type="submit"],
 		.alm-asset-view .alm-button,
 		.alm-reset-filters,
 		.alm-filters-toggle::after {
@@ -1376,7 +1376,7 @@
 			transform: none;
 		}
 
-		#alm_asset_search_form.alm-autocomplete-loading .alm-search-icon {
+		#almgr_asset_search_form.alm-autocomplete-loading .alm-search-icon {
 			animation: none;
 		}
 	}

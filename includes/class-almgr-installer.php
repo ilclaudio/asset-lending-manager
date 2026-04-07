@@ -56,7 +56,7 @@ class ALMGR_Installer {
 	public static function create_loan_requests_table() {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
-		$table_name      = $wpdb->prefix . 'alm_loan_requests';
+		$table_name      = $wpdb->prefix . 'almgr_loan_requests';
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
 		$sql          = "CREATE TABLE $table_name (
@@ -84,12 +84,12 @@ class ALMGR_Installer {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
 			if ( $table_exists ) {
-				ALMGR_Logger::info( 'Table alm_loan_requests schema verified/updated successfully.' );
+				ALMGR_Logger::info( 'Table almgr_loan_requests schema verified/updated successfully.' );
 			} else {
-				ALMGR_Logger::info( 'Table alm_loan_requests created successfully.' );
+				ALMGR_Logger::info( 'Table almgr_loan_requests created successfully.' );
 			}
 		} else {
-			ALMGR_Logger::error( 'Failed to create table alm_loan_requests' );
+			ALMGR_Logger::error( 'Failed to create table almgr_loan_requests' );
 		}
 	}
 
@@ -102,6 +102,8 @@ class ALMGR_Installer {
 	public static function drop_tables() {
 		global $wpdb;
 		$tables = array(
+			$wpdb->prefix . 'almgr_loan_requests_history',
+			$wpdb->prefix . 'almgr_loan_requests',
 			$wpdb->prefix . 'alm_loan_requests_history',
 			$wpdb->prefix . 'alm_loan_requests',
 		);
@@ -142,7 +144,7 @@ class ALMGR_Installer {
 	public static function create_loan_requests_history_table() {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'alm_loan_requests_history';
+		$table_name      = $wpdb->prefix . 'almgr_loan_requests_history';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
@@ -175,12 +177,12 @@ class ALMGR_Installer {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
 			if ( $table_exists ) {
-				ALMGR_Logger::info( 'Table alm_loan_requests_history schema verified/updated successfully.' );
+				ALMGR_Logger::info( 'Table almgr_loan_requests_history schema verified/updated successfully.' );
 			} else {
-				ALMGR_Logger::info( 'Table alm_loan_requests_history created successfully.' );
+				ALMGR_Logger::info( 'Table almgr_loan_requests_history created successfully.' );
 			}
 		} else {
-			ALMGR_Logger::error( 'Failed to create table alm_loan_requests_history.' );
+			ALMGR_Logger::error( 'Failed to create table almgr_loan_requests_history.' );
 		}
 	}
 

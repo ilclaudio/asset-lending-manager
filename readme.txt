@@ -36,7 +36,7 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Asset state management from the frontend: operators can set assets to maintenance or retired, or force-return on-loan assets directly to available; a location is required on every state change
 * Full loan history for each asset
 * Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)
-* Read-only JSON REST API at `/alm/v1/` for asset list, asset detail, member list, and member assets; authentication via Application Passwords; works independently of the WordPress REST API global setting
+* Read-only JSON REST API at `/almgr/v1/` for asset list, asset detail, member list, and member assets; authentication via Application Passwords; works independently of the WordPress REST API global setting
 * Translation-ready
 
 
@@ -102,7 +102,7 @@ Basic setup only requires installing the plugin and activating ACF — no shortc
 == Changelog ==
 
 = 0.1.1 =
-* Read-only JSON REST API at `/alm/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress Application Passwords. Independent of the global WP REST API toggle.
+* Read-only JSON REST API at `/almgr/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress Application Passwords. Independent of the global WP REST API toggle.
 
 = 0.1.0 =
 * First public release.

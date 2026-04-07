@@ -5,7 +5,7 @@
  * Handles frontend rendering for ALM assets using shortcodes.
  *
  * Responsibilities:
- * - Provide fallback templates for alm_asset CPT.
+ * - Provide fallback templates for almgr_asset CPT.
  * - Register shortcodes for asset list and asset view.
  * - Enqueue frontend CSS and JS for asset pages.
  * - Keep rendering logic inside plugin templates.
@@ -58,7 +58,7 @@ class ALMGR_Frontend_Manager {
 		add_shortcode( 'almgr_asset_view', array( $this, 'shortcode_asset_view' ) );
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
-		// Handle QR scan redirect (?alm_scan=ALM-00000052).
+		// Handle QR scan redirect (?almgr_scan=ALM-00000052).
 		add_action( 'template_redirect', array( $this, 'handle_alm_scan_redirect' ) );
 		// Login and logout redirect for operators and members.
 		add_filter( 'login_redirect', array( $this, 'redirect_login_by_role' ), 10, 3 );
@@ -66,7 +66,7 @@ class ALMGR_Frontend_Manager {
 	}
 
 	/**
-	 * Load plugin templates for alm_asset archive and single views
+	 * Load plugin templates for almgr_asset archive and single views
 	 * if the active theme does not provide them.
 	 *
 	 * @param string $template The path to the template WordPress intends to use.
@@ -290,7 +290,7 @@ class ALMGR_Frontend_Manager {
 			'almgr-user-autocomplete',
 			'almgrUserAutocomplete',
 			array(
-				'restUrl'   => esc_url( rest_url( 'alm/v1/users/autocomplete' ) ),
+				'restUrl'   => esc_url( rest_url( 'almgr/v1/users/autocomplete' ) ),
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
 				'minChars'  => (int) $this->settings->get( 'autocomplete.min_chars', 3 ),
 			)
@@ -474,16 +474,16 @@ class ALMGR_Frontend_Manager {
 		$filter_type      = '';
 		$filter_state     = '';
 		$filter_level     = '';
-		$filter_structure = $this->get_sanitized_query_slug( 'alm_structure' );
-		$filter_type      = $this->get_sanitized_query_slug( 'alm_type' );
-		$filter_state     = $this->get_sanitized_query_slug( 'alm_state' );
-		$filter_level     = $this->get_sanitized_query_slug( 'alm_level' );
+		$filter_structure = $this->get_sanitized_query_slug( 'almgr_structure' );
+		$filter_type      = $this->get_sanitized_query_slug( 'almgr_type' );
+		$filter_state     = $this->get_sanitized_query_slug( 'almgr_state' );
+		$filter_level     = $this->get_sanitized_query_slug( 'almgr_level' );
 		// Read owner filter (operator: by user ID; member: "my assets" checkbox).
 		$filter_owner      = 0;
 		$filter_owner_name = '';
 		$filter_my_assets  = false;
 		if ( current_user_can( ALMGR_EDIT_ASSET ) ) {
-			$filter_owner = $this->get_sanitized_query_absint( 'alm_owner' );
+			$filter_owner = $this->get_sanitized_query_absint( 'almgr_owner' );
 			if ( $filter_owner > 0 ) {
 				$owner_data = get_userdata( $filter_owner );
 				if ( $owner_data ) {
@@ -493,14 +493,14 @@ class ALMGR_Frontend_Manager {
 				}
 			}
 		} elseif ( is_user_logged_in() ) {
-			if ( '1' === $this->get_sanitized_query_text( 'alm_my_assets' ) ) {
+			if ( '1' === $this->get_sanitized_query_text( 'almgr_my_assets' ) ) {
 				$filter_my_assets = true;
 				$filter_owner     = get_current_user_id();
 			}
 		}
 		// Pagination.
 		$per_page     = max( 1, (int) $attributes['per_page'] );
-		$current_page = max( 1, $this->get_sanitized_query_absint( 'alm_paged' ) );
+		$current_page = max( 1, $this->get_sanitized_query_absint( 'almgr_paged' ) );
 
 		// Build query args.
 		$query_args = array(
@@ -555,7 +555,7 @@ class ALMGR_Frontend_Manager {
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required owner filter based on current assignment meta.
 			$query_args['meta_query'] = array(
 				array(
-					'key'     => '_alm_current_owner',
+					'key'     => '_almgr_current_owner',
 					'value'   => $filter_owner,
 					'compare' => '=',
 					'type'    => 'NUMERIC',
@@ -576,7 +576,7 @@ class ALMGR_Frontend_Manager {
 			// and bulk-load user records so get_userdata() inside the loop is a cache hit.
 			$owner_ids = array_filter(
 				array_map(
-					static fn( $p ) => (int) get_post_meta( $p->ID, '_alm_current_owner', true ),
+					static fn( $p ) => (int) get_post_meta( $p->ID, '_almgr_current_owner', true ),
 					$query->posts
 				)
 			);
@@ -599,20 +599,20 @@ class ALMGR_Frontend_Manager {
 	}
 
 	/**
-	 * Handle the ?alm_scan=CODE redirect.
+	 * Handle the ?almgr_scan=CODE redirect.
 	 *
-	 * Reads the alm_scan query parameter, resolves the asset post ID from the
+	 * Reads the almgr_scan query parameter, resolves the asset post ID from the
 	 * code, and redirects to the asset permalink. Redirects to home on failure.
 	 *
 	 * @return void
 	 */
 	public function handle_alm_scan_redirect() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
-		if ( ! isset( $_GET['alm_scan'] ) ) {
+		if ( ! isset( $_GET['almgr_scan'] ) ) {
 			return;
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
-		$code    = sanitize_text_field( wp_unslash( $_GET['alm_scan'] ) );
+		$code    = sanitize_text_field( wp_unslash( $_GET['almgr_scan'] ) );
 		$post_id = ALMGR_Asset_Manager::get_asset_id_from_code( $code );
 		if ( $post_id > 0 ) {
 			wp_safe_redirect( get_permalink( $post_id ) );

@@ -58,7 +58,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 
 	<?php
 	$alm_asset_code_str = ALMGR_Asset_Manager::get_asset_code( $alm_asset_id );
-	$alm_scan_url       = home_url( '/?alm_scan=' . rawurlencode( $alm_asset_code_str ) );
+	$alm_scan_url       = home_url( '/?almgr_scan=' . rawurlencode( $alm_asset_code_str ) );
 	?>
 
 	<!-- II section: FOTO (sx) + Taxonomies box (dx) -->
@@ -75,10 +75,10 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		<!-- Asset taxonomies -->
 		<?php
 		// Get taxonomy values.
-		$alm_structure   = isset( $asset->alm_structure ) ? implode( ', ', $asset->alm_structure ) : '-';
-		$alm_type        = isset( $asset->alm_type ) ? implode( ', ', $asset->alm_type ) : '-';
-		$alm_level       = isset( $asset->alm_level ) ? implode( ', ', $asset->alm_level ) : '-';
-		$alm_state_terms = get_the_terms( $alm_asset_id, 'alm_state' );
+		$almgr_structure = isset( $asset->almgr_structure ) ? implode( ', ', $asset->almgr_structure ) : '-';
+		$almgr_type      = isset( $asset->almgr_type ) ? implode( ', ', $asset->almgr_type ) : '-';
+		$almgr_level     = isset( $asset->almgr_level ) ? implode( ', ', $asset->almgr_level ) : '-';
+		$alm_state_terms = get_the_terms( $alm_asset_id, 'almgr_state' );
 		$alm_state_slug  = '';
 		$alm_state_label = '';
 		if ( ! is_wp_error( $alm_state_terms ) && ! empty( $alm_state_terms ) ) {
@@ -101,7 +101,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 						<?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="alm-tax-value">
-						<?php echo esc_html( $alm_structure ); ?>
+						<?php echo esc_html( $almgr_structure ); ?>
 					</span>
 				</div>
 				<div class="alm-asset-tax-row">
@@ -109,7 +109,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 						<?php esc_html_e( 'Type', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="alm-tax-value">
-						<?php echo esc_html( $alm_type ); ?>
+						<?php echo esc_html( $almgr_type ); ?>
 					</span>
 				</div>
 				<div class="alm-asset-tax-row">
@@ -117,7 +117,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 						<?php esc_html_e( 'Level', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="alm-tax-value">
-						<?php echo esc_html( $alm_level ); ?>
+						<?php echo esc_html( $almgr_level ); ?>
 					</span>
 				</div>
 				<div class="alm-asset-tax-row">

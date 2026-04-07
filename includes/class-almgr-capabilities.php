@@ -26,22 +26,22 @@ class ALMGR_Capabilities {
 	public static function get_asset_cpt_caps() {
 		return array(
 			// To read.
-			'read_alm_asset',
-			'read_private_alm_assets',
+			'read_almgr_asset',
+			'read_private_almgr_assets',
 			// To modify.
-			'edit_alm_asset',
-			'edit_alm_assets',
-			'edit_others_alm_assets',
-			'edit_published_alm_assets',
-			'edit_private_alm_assets',
+			'edit_almgr_asset',
+			'edit_almgr_assets',
+			'edit_others_almgr_assets',
+			'edit_published_almgr_assets',
+			'edit_private_almgr_assets',
 			// To delete.
-			'delete_alm_asset',
-			'delete_alm_assets',
-			'delete_others_alm_assets',
-			'delete_published_alm_assets',
-			'delete_private_alm_assets',
+			'delete_almgr_asset',
+			'delete_almgr_assets',
+			'delete_others_almgr_assets',
+			'delete_published_almgr_assets',
+			'delete_private_almgr_assets',
 			// To publish.
-			'publish_alm_assets',
+			'publish_almgr_assets',
 		);
 	}
 

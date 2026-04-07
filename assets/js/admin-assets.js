@@ -27,10 +27,10 @@
 		 * Add status badges to asset list table.
 		 */
 		initAssetStatusBadges: function() {
-			var rows = document.querySelectorAll('.post-type-alm_asset .wp-list-table tbody tr');
+			var rows = document.querySelectorAll('.post-type-almgr_asset .wp-list-table tbody tr');
 
 			rows.forEach(function(row) {
-				var stateCell = row.querySelector('.column-taxonomy-alm_state');
+				var stateCell = row.querySelector('.column-taxonomy-almgr_state');
 				if (!stateCell) {
 					return;
 				}
@@ -63,7 +63,7 @@
 		 * Initialize quick actions for assets.
 		 */
 		initQuickActions: function() {
-			var actionsRows = document.querySelectorAll('.post-type-alm_asset .row-actions');
+			var actionsRows = document.querySelectorAll('.post-type-almgr_asset .row-actions');
 
 			actionsRows.forEach(function(actions) {
 				var row = actions.closest('tr');
@@ -108,7 +108,7 @@
 		 */
 		initFormValidation: function() {
 			var body = document.body;
-			if (!body.classList.contains('post-type-alm_asset') || !body.classList.contains('post-php')) {
+			if (!body.classList.contains('post-type-almgr_asset') || !body.classList.contains('post-php')) {
 				return;
 			}
 
@@ -128,7 +128,7 @@
 					isValid = false;
 				}
 
-				var assetType = document.querySelectorAll('input[name="tax_input[alm_type][]"]:checked').length;
+				var assetType = document.querySelectorAll('input[name="tax_input[almgr_type][]"]:checked').length;
 				if (0 === assetType) {
 					errors.push( __( 'Please select a asset type.', 'asset-lending-manager' ) );
 					isValid = false;

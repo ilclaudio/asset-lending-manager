@@ -3,7 +3,7 @@
  * REST API Manager for Asset Lending Manager plugin.
  *
  * Implements a read-only JSON API for ALM assets and members via custom
- * WordPress rewrite rules. Routes under alm/v1/ work independently of the
+ * WordPress rewrite rules. Routes under almgr/v1/ work independently of the
  * WordPress REST API global setting.
  *
  * Authentication: WordPress Application Passwords (WP 5.6+) via Authorization
@@ -11,9 +11,9 @@
  * user with the appropriate ALM capability.
  *
  * Endpoints:
- *   GET /alm/v1/assets          Paginated asset list          (almgr_view_assets)
- *   GET /alm/v1/assets/{id}     Single asset detail           (almgr_view_asset)
- *   GET /alm/v1/members         Paginated ALM user list       (almgr_edit_asset)
+ *   GET /almgr/v1/assets          Paginated asset list          (almgr_view_assets)
+ *   GET /almgr/v1/assets/{id}     Single asset detail           (almgr_view_asset)
+ *   GET /almgr/v1/members         Paginated ALM user list       (almgr_edit_asset)
  *
  * Response fields differ by caller capability:
  *   - All authenticated users: public asset fields and ACF fields.
@@ -35,28 +35,28 @@ class ALMGR_REST_Manager {
 	 *
 	 * @var string
 	 */
-	const API_BASE = 'alm/v1';
+	const API_BASE = 'almgr/v1';
 
 	/**
 	 * WordPress query var that identifies the API route type.
 	 *
 	 * @var string
 	 */
-	const QUERY_VAR = 'alm_api_route';
+	const QUERY_VAR = 'almgr_api_route';
 
 	/**
 	 * WordPress query var that carries the resource ID.
 	 *
 	 * @var string
 	 */
-	const QUERY_ID = 'alm_api_id';
+	const QUERY_ID = 'almgr_api_id';
 
 	/**
 	 * WordPress query var that carries the member ID for nested routes.
 	 *
 	 * @var string
 	 */
-	const QUERY_MEMBER_ID = 'alm_api_member_id';
+	const QUERY_MEMBER_ID = 'almgr_api_member_id';
 
 	/**
 	 * Default number of items per page for paginated responses.
@@ -129,23 +129,23 @@ class ALMGR_REST_Manager {
 	 */
 	public function add_rewrite_rules() {
 		add_rewrite_rule(
-			'^alm/v1/assets/([0-9]+)/?$',
-			'index.php?alm_api_route=asset&alm_api_id=$matches[1]',
+			'^almgr/v1/assets/([0-9]+)/?$',
+			'index.php?almgr_api_route=asset&almgr_api_id=$matches[1]',
 			'top'
 		);
 		add_rewrite_rule(
-			'^alm/v1/assets/?$',
-			'index.php?alm_api_route=assets',
+			'^almgr/v1/assets/?$',
+			'index.php?almgr_api_route=assets',
 			'top'
 		);
 		add_rewrite_rule(
-			'^alm/v1/members/?$',
-			'index.php?alm_api_route=members',
+			'^almgr/v1/members/?$',
+			'index.php?almgr_api_route=members',
 			'top'
 		);
 		add_rewrite_rule(
-			'^alm/v1/members/([0-9]+)/assets/?$',
-			'index.php?alm_api_route=member_assets&alm_api_member_id=$matches[1]',
+			'^almgr/v1/members/([0-9]+)/assets/?$',
+			'index.php?almgr_api_route=member_assets&almgr_api_member_id=$matches[1]',
 			'top'
 		);
 	}
@@ -185,7 +185,7 @@ class ALMGR_REST_Manager {
 
 		// Only act for requests targeting an ALM API route.
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-		if ( ! $this->is_alm_api_uri( $request_uri ) ) {
+		if ( ! $this->is_almgr_api_uri( $request_uri ) ) {
 			return $user_id;
 		}
 
@@ -242,16 +242,16 @@ class ALMGR_REST_Manager {
 		}
 
 		if ( ! $this->settings->get( 'rest_api.enabled', true ) ) {
-			$this->send_error( 'alm_api_disabled', __( 'The ALM API is disabled.', 'asset-lending-manager' ), 503 );
+			$this->send_error( 'almgr_api_disabled', __( 'The ALM API is disabled.', 'asset-lending-manager' ), 503 );
 		}
 
 		$method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) : 'GET';
 		if ( 'GET' !== $method ) {
-			$this->send_error( 'alm_method_not_allowed', __( 'Method not allowed.', 'asset-lending-manager' ), 405 );
+			$this->send_error( 'almgr_method_not_allowed', __( 'Method not allowed.', 'asset-lending-manager' ), 405 );
 		}
 
 		if ( ! is_user_logged_in() ) {
-			$this->send_error( 'alm_unauthorized', __( 'Authentication required.', 'asset-lending-manager' ), 401 );
+			$this->send_error( 'almgr_unauthorized', __( 'Authentication required.', 'asset-lending-manager' ), 401 );
 		}
 
 		switch ( $route ) {
@@ -270,7 +270,7 @@ class ALMGR_REST_Manager {
 				$this->handle_get_member_assets( $member_id );
 				break;
 			default:
-				$this->send_error( 'alm_not_found', __( 'Route not found.', 'asset-lending-manager' ), 404 );
+				$this->send_error( 'almgr_not_found', __( 'Route not found.', 'asset-lending-manager' ), 404 );
 		}
 	}
 
@@ -279,7 +279,7 @@ class ALMGR_REST_Manager {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Handle GET /alm/v1/assets — paginated asset list.
+	 * Handle GET /almgr/v1/assets — paginated asset list.
 	 *
 	 * Query parameters:
 	 *   page      (int)    Page number, default 1.
@@ -288,13 +288,13 @@ class ALMGR_REST_Manager {
 	 *   state     (string) Filter by state taxonomy slug.
 	 *   type      (string) Filter by type taxonomy slug.
 	 *   structure (string) Filter by structure taxonomy slug.
-	 *   owner     (int)    Filter by owner user ID (_alm_current_owner meta).
+	 *   owner     (int)    Filter by owner user ID (_almgr_current_owner meta).
 	 *
 	 * @return void
 	 */
 	private function handle_get_assets() {
 		if ( ! current_user_can( ALMGR_VIEW_ASSETS ) ) {
-			$this->send_error( 'alm_forbidden', __( 'You do not have permission to view assets.', 'asset-lending-manager' ), 403 );
+			$this->send_error( 'almgr_forbidden', __( 'You do not have permission to view assets.', 'asset-lending-manager' ), 403 );
 		}
 
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only GET, nonce not applicable.
@@ -339,7 +339,7 @@ class ALMGR_REST_Manager {
 		if ( $owner > 0 ) {
 			$args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- owner filter via post meta, no alternative.
 				array(
-					'key'   => '_alm_current_owner',
+					'key'   => '_almgr_current_owner',
 					'value' => $owner,
 				),
 			);
@@ -373,30 +373,30 @@ class ALMGR_REST_Manager {
 	}
 
 	/**
-	 * Handle GET /alm/v1/assets/{id} — single asset detail.
+	 * Handle GET /almgr/v1/assets/{id} — single asset detail.
 	 *
 	 * @param int $id Asset post ID.
 	 * @return void
 	 */
 	private function handle_get_asset( $id ) {
 		if ( ! current_user_can( ALMGR_VIEW_ASSET ) ) {
-			$this->send_error( 'alm_forbidden', __( 'You do not have permission to view assets.', 'asset-lending-manager' ), 403 );
+			$this->send_error( 'almgr_forbidden', __( 'You do not have permission to view assets.', 'asset-lending-manager' ), 403 );
 		}
 
 		if ( $id <= 0 ) {
-			$this->send_error( 'alm_not_found', __( 'Asset not found.', 'asset-lending-manager' ), 404 );
+			$this->send_error( 'almgr_not_found', __( 'Asset not found.', 'asset-lending-manager' ), 404 );
 		}
 
 		$data = $this->prepare_asset( $id, 'detail' );
 		if ( null === $data ) {
-			$this->send_error( 'alm_not_found', __( 'Asset not found.', 'asset-lending-manager' ), 404 );
+			$this->send_error( 'almgr_not_found', __( 'Asset not found.', 'asset-lending-manager' ), 404 );
 		}
 
 		$this->send_json( $data );
 	}
 
 	/**
-	 * Handle GET /alm/v1/members — paginated ALM user list (operator only).
+	 * Handle GET /almgr/v1/members — paginated ALM user list (operator only).
 	 *
 	 * Query parameters:
 	 *   page     (int)    Page number, default 1.
@@ -408,7 +408,7 @@ class ALMGR_REST_Manager {
 	 */
 	private function handle_get_members() {
 		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
-			$this->send_error( 'alm_forbidden', __( 'You do not have permission to view members.', 'asset-lending-manager' ), 403 );
+			$this->send_error( 'almgr_forbidden', __( 'You do not have permission to view members.', 'asset-lending-manager' ), 403 );
 		}
 
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only GET, nonce not applicable.
@@ -461,7 +461,7 @@ class ALMGR_REST_Manager {
 	}
 
 	/**
-	 * Handle GET /alm/v1/members/{id}/assets — assets currently held by a member.
+	 * Handle GET /almgr/v1/members/{id}/assets — assets currently held by a member.
 	 *
 	 * Returns the list of assets assigned to the given user (owner_id = user_id).
 	 * Requires ALMGR_EDIT_ASSET capability.
@@ -471,16 +471,16 @@ class ALMGR_REST_Manager {
 	 */
 	private function handle_get_member_assets( $member_id ) {
 		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
-			$this->send_error( 'alm_forbidden', __( 'You do not have permission to view member assets.', 'asset-lending-manager' ), 403 );
+			$this->send_error( 'almgr_forbidden', __( 'You do not have permission to view member assets.', 'asset-lending-manager' ), 403 );
 		}
 
 		if ( $member_id <= 0 ) {
-			$this->send_error( 'alm_not_found', __( 'Member not found.', 'asset-lending-manager' ), 404 );
+			$this->send_error( 'almgr_not_found', __( 'Member not found.', 'asset-lending-manager' ), 404 );
 		}
 
 		$user = get_userdata( $member_id );
 		if ( ! $user ) {
-			$this->send_error( 'alm_not_found', __( 'Member not found.', 'asset-lending-manager' ), 404 );
+			$this->send_error( 'almgr_not_found', __( 'Member not found.', 'asset-lending-manager' ), 404 );
 		}
 
 		$query = new WP_Query(
@@ -491,7 +491,7 @@ class ALMGR_REST_Manager {
 				'fields'         => 'ids',
 				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- owner lookup via post meta, no alternative.
 					array(
-						'key'   => '_alm_current_owner',
+						'key'   => '_almgr_current_owner',
 						'value' => $member_id,
 					),
 				),
@@ -549,7 +549,7 @@ class ALMGR_REST_Manager {
 			'thumbnail_url'  => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ? get_the_post_thumbnail_url( $post_id, 'thumbnail' ) : null,
 			'structure'      => ( $structure_terms && ! is_wp_error( $structure_terms ) ) ? wp_list_pluck( $structure_terms, 'slug' ) : array(),
 			'type'           => ( $type_terms && ! is_wp_error( $type_terms ) ) ? wp_list_pluck( $type_terms, 'slug' ) : array(),
-			'state'          => $wrapper->alm_state_slugs ?? array(),
+			'state'          => $wrapper->almgr_state_slugs ?? array(),
 			'level'          => ( $level_terms && ! is_wp_error( $level_terms ) ) ? wp_list_pluck( $level_terms, 'slug' ) : array(),
 			'owner_id'       => $wrapper->owner_id,
 			'owner_name'     => $wrapper->owner_name,
@@ -630,14 +630,14 @@ class ALMGR_REST_Manager {
 	 * @return array
 	 */
 	private function prepare_member( WP_User $user ) {
-		$role_map  = array(
+		$role_map    = array(
 			ALMGR_MEMBER_ROLE   => 'member',
 			ALMGR_OPERATOR_ROLE => 'operator',
 		);
-		$alm_roles = array();
+		$almgr_roles = array();
 		foreach ( (array) $user->roles as $role ) {
 			if ( isset( $role_map[ $role ] ) ) {
-				$alm_roles[] = $role_map[ $role ];
+				$almgr_roles[] = $role_map[ $role ];
 			}
 		}
 
@@ -645,7 +645,7 @@ class ALMGR_REST_Manager {
 			'id'                 => $user->ID,
 			'display_name'       => $user->display_name,
 			'email'              => $user->user_email,
-			'alm_roles'          => $alm_roles,
+			'almgr_roles'        => $almgr_roles,
 			'active_loans_count' => $this->count_active_loans( $user->ID ),
 		);
 	}
@@ -749,7 +749,7 @@ class ALMGR_REST_Manager {
 	 * @param string $uri Request URI.
 	 * @return bool
 	 */
-	private function is_alm_api_uri( $uri ) {
+	private function is_almgr_api_uri( $uri ) {
 		return (bool) preg_match( '#/' . preg_quote( self::API_BASE, '#' ) . '(/|$)#', $uri );
 	}
 
@@ -768,7 +768,7 @@ class ALMGR_REST_Manager {
 				'fields'         => 'ids',
 				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- active loan count by owner, no alternative.
 					array(
-						'key'   => '_alm_current_owner',
+						'key'   => '_almgr_current_owner',
 						'value' => $user_id,
 					),
 				),

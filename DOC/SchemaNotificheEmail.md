@@ -3,7 +3,7 @@
 Questo documento descrive quando vengono inviate le email di notifica, a chi
 arrivano, quale template viene usato e con quale testo.
 
-Le email vengono inviate tramite `wp_mail()` dalla classe `ALM_Notification_Manager`.
+Le email vengono inviate tramite `wp_mail()` dalla classe `ALMGR_Notification_Manager`.
 Il mittente e i destinatari di copia sono letti dai settings runtime:
 `email.from_name`, `email.from_address`, `email.system_email`.
 Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginfo('admin_email')`) quando i campi mittente sono vuoti.
@@ -58,7 +58,7 @@ Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginf
 
 ## Configurazione mittente e indirizzi
 
-Settings runtime in `alm_settings`:
+Settings runtime in `almgr_settings`:
 
 | Setting | Ruolo |
 |---|---|
@@ -66,8 +66,8 @@ Settings runtime in `alm_settings`:
 | `email.from_address` | Indirizzo email del mittente (fallback: admin email del sito) |
 | `email.system_email` | Indirizzo di copia operatore/sistema (opzionale) |
 
-Nota: nel flusso corrente `ALM_Notification_Manager` usa i settings runtime; le costanti `ALM_EMAIL_*` in `plugin-config.php` non vengono lette direttamente dal codice di invio.
+Nota: nel flusso corrente `ALMGR_Notification_Manager` usa i settings runtime; le costanti `ALMGR_EMAIL_*` in `plugin-config.php` non vengono lette direttamente dal codice di invio.
 
 ---
 
-*Ultimo aggiornamento: 2026-03-22*
+*Ultimo aggiornamento: 2026-04-07*

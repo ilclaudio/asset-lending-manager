@@ -7,14 +7,14 @@
 
 defined( 'ABSPATH' ) || exit;
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param for status display.
-$alm_status = isset( $_GET['alm_status'] ) ? sanitize_key( wp_unslash( $_GET['alm_status'] ) ) : '';
+$almgr_status = isset( $_GET['almgr_status'] ) ? sanitize_key( wp_unslash( $_GET['almgr_status'] ) ) : '';
 ?>
 
 <div class="wrap">
 	<h1><?php esc_html_e( 'ALM Tools', 'asset-lending-manager' ); ?></h1>
 
-	<?php if ( $alm_status ) : ?>
-		<?php if ( 'success' === $alm_status ) : ?>
+	<?php if ( $almgr_status ) : ?>
+		<?php if ( 'success' === $almgr_status ) : ?>
 			<div class="notice notice-success is-dismissible">
 				<p><?php esc_html_e( 'Default terms loaded successfully.', 'asset-lending-manager' ); ?></p>
 			</div>

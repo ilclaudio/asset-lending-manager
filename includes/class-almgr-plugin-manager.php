@@ -390,42 +390,42 @@ class ALMGR_Plugin_Manager {
 		check_admin_referer( 'almgr_save_settings', 'almgr_settings_nonce' );
 
 		$is_admin   = current_user_can( 'manage_options' );
-		$active_tab = isset( $_POST['alm_active_tab'] ) ? sanitize_key( wp_unslash( $_POST['alm_active_tab'] ) ) : 'email';
+		$active_tab = isset( $_POST['almgr_active_tab'] ) ? sanitize_key( wp_unslash( $_POST['almgr_active_tab'] ) ) : 'email';
 		$changes    = array();
 
 		if ( 'email' === $active_tab ) {
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['email.from_name']       = sanitize_text_field( wp_unslash( $_POST['alm_email_from_name'] ?? '' ) );
-				$changes['email.from_address']    = sanitize_email( wp_unslash( $_POST['alm_email_from_address'] ?? '' ) );
-				$changes['email.system_email']    = sanitize_email( wp_unslash( $_POST['alm_email_system_email'] ?? '' ) );
-				$changes['notifications.enabled'] = isset( $_POST['alm_notifications_enabled'] );
+				$changes['email.from_name']       = sanitize_text_field( wp_unslash( $_POST['almgr_email_from_name'] ?? '' ) );
+				$changes['email.from_address']    = sanitize_email( wp_unslash( $_POST['almgr_email_from_address'] ?? '' ) );
+				$changes['email.system_email']    = sanitize_email( wp_unslash( $_POST['almgr_email_system_email'] ?? '' ) );
+				$changes['notifications.enabled'] = isset( $_POST['almgr_notifications_enabled'] );
 			}
 			// [A/O] fields.
-			$changes['notifications.loan_request']      = isset( $_POST['alm_notifications_loan_request'] );
-			$changes['notifications.loan_decision']     = isset( $_POST['alm_notifications_loan_decision'] );
-			$changes['notifications.loan_confirmation'] = isset( $_POST['alm_notifications_loan_confirmation'] );
+			$changes['notifications.loan_request']      = isset( $_POST['almgr_notifications_loan_request'] );
+			$changes['notifications.loan_decision']     = isset( $_POST['almgr_notifications_loan_decision'] );
+			$changes['notifications.loan_confirmation'] = isset( $_POST['almgr_notifications_loan_confirmation'] );
 		}
 
 		if ( 'loans' === $active_tab ) {
 			// [A/O] fields.
-			$changes['loans.loan_requests_enabled']   = isset( $_POST['alm_loans_loan_requests_enabled'] );
-			$changes['loans.max_active_per_user']     = max( 0, absint( wp_unslash( $_POST['alm_loans_max_active_per_user'] ?? 0 ) ) );
-			$changes['loans.allow_multiple_requests'] = isset( $_POST['alm_loans_allow_multiple_requests'] );
+			$changes['loans.loan_requests_enabled']   = isset( $_POST['almgr_loans_loan_requests_enabled'] );
+			$changes['loans.max_active_per_user']     = max( 0, absint( wp_unslash( $_POST['almgr_loans_max_active_per_user'] ?? 0 ) ) );
+			$changes['loans.allow_multiple_requests'] = isset( $_POST['almgr_loans_allow_multiple_requests'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['loans.request_message_max_length']      = max( 0, absint( wp_unslash( $_POST['alm_loans_request_message_max_length'] ?? 500 ) ) );
-				$changes['loans.rejection_message_max_length']    = max( 0, absint( wp_unslash( $_POST['alm_loans_rejection_message_max_length'] ?? 500 ) ) );
-				$changes['loans.direct_assign_reason_max_length'] = max( 0, absint( wp_unslash( $_POST['alm_loans_direct_assign_reason_max_length'] ?? 500 ) ) );
+				$changes['loans.request_message_max_length']      = max( 0, absint( wp_unslash( $_POST['almgr_loans_request_message_max_length'] ?? 500 ) ) );
+				$changes['loans.rejection_message_max_length']    = max( 0, absint( wp_unslash( $_POST['almgr_loans_rejection_message_max_length'] ?? 500 ) ) );
+				$changes['loans.direct_assign_reason_max_length'] = max( 0, absint( wp_unslash( $_POST['almgr_loans_direct_assign_reason_max_length'] ?? 500 ) ) );
 			}
 		}
 
 		if ( 'direct_assign' === $active_tab ) {
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['direct_assign.enabled']              = isset( $_POST['alm_direct_assign_enabled'] );
+				$changes['direct_assign.enabled']              = isset( $_POST['almgr_direct_assign_enabled'] );
 				$valid_roles                                   = array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE );
-				$posted_roles                                  = filter_input( INPUT_POST, 'alm_direct_assign_roles', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+				$posted_roles                                  = filter_input( INPUT_POST, 'almgr_direct_assign_roles', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 				$raw_roles                                     = is_array( $posted_roles ) ? array_map( 'sanitize_key', $posted_roles ) : array();
 				$changes['direct_assign.allowed_target_roles'] = array_values(
 					array_intersect( $raw_roles, $valid_roles )
@@ -435,55 +435,55 @@ class ALMGR_Plugin_Manager {
 
 		if ( 'workflow' === $active_tab ) {
 			// [A/O] fields.
-			$changes['workflow.cancel_concurrent_requests_on_assign']        = isset( $_POST['alm_workflow_cancel_concurrent'] );
-			$changes['workflow.cancel_component_requests_when_kit_assigned'] = isset( $_POST['alm_workflow_cancel_component_requests'] );
+			$changes['workflow.cancel_concurrent_requests_on_assign']        = isset( $_POST['almgr_workflow_cancel_concurrent'] );
+			$changes['workflow.cancel_component_requests_when_kit_assigned'] = isset( $_POST['almgr_workflow_cancel_component_requests'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['workflow.automatic_operations_actor_user_id'] = max( 1, absint( wp_unslash( $_POST['alm_workflow_actor_user_id'] ?? 1 ) ) );
+				$changes['workflow.automatic_operations_actor_user_id'] = max( 1, absint( wp_unslash( $_POST['almgr_workflow_actor_user_id'] ?? 1 ) ) );
 			}
 		}
 
 		if ( 'frontend' === $active_tab ) {
 			// [A/O] fields.
-			$changes['frontend.asset_list_per_page']  = min( 100, max( 1, absint( wp_unslash( $_POST['alm_frontend_asset_list_per_page'] ?? ALMGR_ASSET_LIST_PER_PAGE ) ) ) );
-			$changes['frontend.default_filters_open'] = isset( $_POST['alm_frontend_default_filters_open'] );
+			$changes['frontend.asset_list_per_page']  = min( 100, max( 1, absint( wp_unslash( $_POST['almgr_frontend_asset_list_per_page'] ?? ALMGR_ASSET_LIST_PER_PAGE ) ) ) );
+			$changes['frontend.default_filters_open'] = isset( $_POST['almgr_frontend_default_filters_open'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['frontend.assets_page_id']          = max( 0, absint( wp_unslash( $_POST['alm_frontend_assets_page_id'] ?? 0 ) ) );
-				$changes['frontend.login_redirect_page_id']  = max( 0, absint( wp_unslash( $_POST['alm_frontend_login_redirect_page_id'] ?? 0 ) ) );
-				$changes['frontend.logout_redirect_page_id'] = max( 0, absint( wp_unslash( $_POST['alm_frontend_logout_redirect_page_id'] ?? 0 ) ) );
+				$changes['frontend.assets_page_id']          = max( 0, absint( wp_unslash( $_POST['almgr_frontend_assets_page_id'] ?? 0 ) ) );
+				$changes['frontend.login_redirect_page_id']  = max( 0, absint( wp_unslash( $_POST['almgr_frontend_login_redirect_page_id'] ?? 0 ) ) );
+				$changes['frontend.logout_redirect_page_id'] = max( 0, absint( wp_unslash( $_POST['almgr_frontend_logout_redirect_page_id'] ?? 0 ) ) );
 			}
 		}
 
 		if ( 'autocomplete' === $active_tab ) {
 			// [A/O] fields.
-			$changes['autocomplete.min_chars']          = min( 10, max( 1, absint( wp_unslash( $_POST['alm_autocomplete_min_chars'] ?? 3 ) ) ) );
-			$changes['autocomplete.max_results']        = min( 20, max( 1, absint( wp_unslash( $_POST['alm_autocomplete_max_results'] ?? ALMGR_AUTOCOMPLETE_MAX_RESULTS ) ) ) );
-			$changes['autocomplete.description_length'] = min( 200, max( 0, absint( wp_unslash( $_POST['alm_autocomplete_description_length'] ?? ALMGR_AUTOCOMPLETE_DESC_LENGTH ) ) ) );
-			$changes['autocomplete.qr_scan_enabled']    = isset( $_POST['alm_autocomplete_qr_scan_enabled'] );
+			$changes['autocomplete.min_chars']          = min( 10, max( 1, absint( wp_unslash( $_POST['almgr_autocomplete_min_chars'] ?? 3 ) ) ) );
+			$changes['autocomplete.max_results']        = min( 20, max( 1, absint( wp_unslash( $_POST['almgr_autocomplete_max_results'] ?? ALMGR_AUTOCOMPLETE_MAX_RESULTS ) ) ) );
+			$changes['autocomplete.description_length'] = min( 200, max( 0, absint( wp_unslash( $_POST['almgr_autocomplete_description_length'] ?? ALMGR_AUTOCOMPLETE_DESC_LENGTH ) ) ) );
+			$changes['autocomplete.qr_scan_enabled']    = isset( $_POST['almgr_autocomplete_qr_scan_enabled'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['autocomplete.public_assets_endpoint_enabled'] = isset( $_POST['alm_autocomplete_public_endpoint'] );
+				$changes['autocomplete.public_assets_endpoint_enabled'] = isset( $_POST['almgr_autocomplete_public_endpoint'] );
 			}
 		}
 
 		if ( 'logging' === $active_tab && $is_admin ) {
 			$level_whitelist                       = array( 'debug', 'info', 'warning', 'error' );
-			$raw_level                             = sanitize_key( wp_unslash( $_POST['alm_logging_level'] ?? 'error' ) );
-			$changes['logging.enabled']            = isset( $_POST['alm_logging_enabled'] );
+			$raw_level                             = sanitize_key( wp_unslash( $_POST['almgr_logging_level'] ?? 'error' ) );
+			$changes['logging.enabled']            = isset( $_POST['almgr_logging_enabled'] );
 			$changes['logging.level']              = in_array( $raw_level, $level_whitelist, true ) ? $raw_level : 'error';
-			$changes['logging.mask_personal_data'] = isset( $_POST['alm_logging_mask_personal_data'] );
-			$changes['logging.log_email_events']   = isset( $_POST['alm_logging_log_email_events'] );
+			$changes['logging.mask_personal_data'] = isset( $_POST['almgr_logging_mask_personal_data'] );
+			$changes['logging.log_email_events']   = isset( $_POST['almgr_logging_log_email_events'] );
 		}
 
 		if ( 'asset' === $active_tab && $is_admin ) {
-			$raw_prefix                   = sanitize_text_field( wp_unslash( $_POST['alm_asset_code_prefix'] ?? ALMGR_ASSET_CODE_PREFIX ) );
+			$raw_prefix                   = sanitize_text_field( wp_unslash( $_POST['almgr_asset_code_prefix'] ?? ALMGR_ASSET_CODE_PREFIX ) );
 			$clean_prefix                 = substr( preg_replace( '/[^A-Za-z0-9]/', '', $raw_prefix ), 0, 10 );
 			$changes['asset.code_prefix'] = '' !== $clean_prefix ? $clean_prefix : ALMGR_ASSET_CODE_PREFIX;
 		}
 
 		if ( 'rest_api' === $active_tab && $is_admin ) {
-			$changes['rest_api.enabled'] = isset( $_POST['alm_rest_api_enabled'] );
+			$changes['rest_api.enabled'] = isset( $_POST['almgr_rest_api_enabled'] );
 		}
 
 		if ( 'templates' === $active_tab && $is_admin ) {
@@ -497,8 +497,8 @@ class ALMGR_Plugin_Manager {
 				'direct_assign_to_prev_owner',
 			);
 			foreach ( $types as $type ) {
-				$changes[ 'template.subject.' . $type ] = sanitize_text_field( wp_unslash( $_POST[ 'alm_tpl_subject_' . $type ] ?? '' ) );
-				$changes[ 'template.body.' . $type ]    = sanitize_textarea_field( wp_unslash( $_POST[ 'alm_tpl_body_' . $type ] ?? '' ) );
+				$changes[ 'template.subject.' . $type ] = sanitize_text_field( wp_unslash( $_POST[ 'almgr_tpl_subject_' . $type ] ?? '' ) );
+				$changes[ 'template.body.' . $type ]    = sanitize_textarea_field( wp_unslash( $_POST[ 'almgr_tpl_body_' . $type ] ?? '' ) );
 			}
 		}
 
@@ -575,7 +575,7 @@ class ALMGR_Plugin_Manager {
 		// No output must be sent before this redirect.
 		wp_safe_redirect(
 			add_query_arg(
-				'alm_status',
+				'almgr_status',
 				$status,
 				admin_url( 'admin.php?page=alm-tools' )
 			)

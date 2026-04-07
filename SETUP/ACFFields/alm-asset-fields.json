@@ -166,7 +166,7 @@
                     "id": ""
                 },
                 "post_type": [
-                    "alm_asset"
+                    "almgr_asset"
                 ],
                 "post_status": "",
                 "taxonomy": "",
@@ -289,7 +289,7 @@
                 {
                     "param": "post_type",
                     "operator": "==",
-                    "value": "alm_asset"
+                    "value": "almgr_asset"
                 }
             ]
         ],

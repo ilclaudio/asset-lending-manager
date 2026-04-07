@@ -7,11 +7,11 @@
  */
 
 /* Asset list table enhancements */
-.post-type-alm_asset .wp-list-table .column-thumbnail {
+.post-type-almgr_asset .wp-list-table .column-thumbnail {
 	width: 80px;
 }
 
-.post-type-alm_asset .wp-list-table .column-thumbnail img {
+.post-type-almgr_asset .wp-list-table .column-thumbnail img {
 	max-width: 60px;
 	height: auto;
 	border-radius: 4px;
@@ -19,20 +19,20 @@
 }
 
 /* Asset edit page enhancements */
-.post-type-alm_asset #poststuff .inside {
+.post-type-almgr_asset #poststuff .inside {
 	margin: 0;
 	padding: 12px;
 }
 
-.post-type-alm_asset .acf-field {
+.post-type-almgr_asset .acf-field {
 	padding: 15px 12px !important;
 }
 
 /* Taxonomy term page */
-.taxonomy-alm_structure .term-description-wrap,
-.taxonomy-alm_type .term-description-wrap,
-.taxonomy-alm_state .term-description-wrap,
-.taxonomy-alm_level .term-description-wrap {
+.taxonomy-almgr_structure .term-description-wrap,
+.taxonomy-almgr_type .term-description-wrap,
+.taxonomy-almgr_state .term-description-wrap,
+.taxonomy-almgr_level .term-description-wrap {
 	max-width: 600px;
 }
 
@@ -181,14 +181,14 @@
 
 /* Responsive adjustments */
 @media (max-width: 782px) {
-	.post-type-alm_asset .wp-list-table .column-thumbnail {
+	.post-type-almgr_asset .wp-list-table .column-thumbnail {
 		display: none;
 	}
 }
 
 /* ---------------------------------------------------------------
-   About page
-   --------------------------------------------------------------- */
+	About page
+	--------------------------------------------------------------- */
 .alm-about {
 	max-width: 680px;
 	padding: 24px 28px;

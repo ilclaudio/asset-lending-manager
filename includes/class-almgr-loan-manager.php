@@ -304,7 +304,7 @@ class ALMGR_Loan_Manager {
 
 		// Get loan request from database.
 		global $wpdb;
-		$table_name       = $wpdb->prefix . 'alm_loan_requests';
+		$table_name       = $wpdb->prefix . 'almgr_loan_requests';
 			$loan_request = $wpdb->get_row(
 				$wpdb->prepare(
 					'SELECT * FROM %i WHERE id = %d',
@@ -418,7 +418,7 @@ class ALMGR_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
-			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 			// Re-read and lock the target request row inside the transaction.
 			$locked_request = $wpdb->get_row(
@@ -509,7 +509,7 @@ class ALMGR_Loan_Manager {
 	 */
 	private function log_history_entry( $loan_request_id, $asset_id, $requester_id, $owner_id, $status, $message, $changed_by ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests_history';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests_history';
 
 		$result = $wpdb->insert(
 			$table_name,
@@ -588,7 +588,7 @@ class ALMGR_Loan_Manager {
 
 		// Get loan request from database.
 		global $wpdb;
-		$table_name       = $wpdb->prefix . 'alm_loan_requests';
+		$table_name       = $wpdb->prefix . 'almgr_loan_requests';
 			$loan_request = $wpdb->get_row(
 				$wpdb->prepare(
 					'SELECT * FROM %i WHERE id = %d',
@@ -673,7 +673,7 @@ class ALMGR_Loan_Manager {
 		// Start transaction.
 		$wpdb->query( 'START TRANSACTION' );
 		try {
-			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 			// Re-check for an existing pending request inside the transaction with a row-level
 			// lock (FOR UPDATE) to prevent duplicates under concurrent submissions.
@@ -740,7 +740,7 @@ class ALMGR_Loan_Manager {
 	 * @return int Owner user ID or 0 if none.
 	 */
 	public function get_current_owner( $asset_id ) {
-		$owner_id = get_post_meta( $asset_id, '_alm_current_owner', true );
+		$owner_id = get_post_meta( $asset_id, '_almgr_current_owner', true );
 		return $owner_id ? (int) $owner_id : 0;
 	}
 
@@ -753,7 +753,7 @@ class ALMGR_Loan_Manager {
 	 */
 	public function has_pending_request( $asset_id, $user_id ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
@@ -777,7 +777,7 @@ class ALMGR_Loan_Manager {
 	 */
 	private function has_any_pending_request( $user_id ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
@@ -805,7 +805,7 @@ class ALMGR_Loan_Manager {
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- No alternative: active-loan count requires owner meta filter. To be replaced with a counter cache when _alm_parent_kit_ids normalization lands.
 				'meta_query'     => array(
 					array(
-						'key'   => '_alm_current_owner',
+						'key'   => '_almgr_current_owner',
 						'value' => $user_id,
 						'type'  => 'NUMERIC',
 					),
@@ -824,7 +824,7 @@ class ALMGR_Loan_Manager {
 	 */
 	public function get_asset_requests( $asset_id, $status = 'pending' ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		return $wpdb->get_results(
 			$wpdb->prepare(
@@ -848,7 +848,7 @@ class ALMGR_Loan_Manager {
 	 */
 	public function get_user_requests( $user_id, $status = '' ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		if ( empty( $status ) ) {
 			return $wpdb->get_results(
@@ -886,7 +886,7 @@ class ALMGR_Loan_Manager {
 	 */
 	public function get_asset_history( $asset_id, $user_id = 0 ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests_history';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests_history';
 
 		// Check if user is operator (can see all).
 		$is_operator = current_user_can( ALMGR_EDIT_ASSET );
@@ -1104,7 +1104,7 @@ class ALMGR_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
-			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$table_name = $wpdb->prefix . 'almgr_loan_requests';
 			$asset_id   = (int) $loan_request->asset_id;
 
 			// Lock all pending requests for this asset to serialize concurrent approvals.
@@ -1261,12 +1261,12 @@ class ALMGR_Loan_Manager {
 	 * @return bool True on success, false on failure.
 	 */
 	private function set_asset_owner( $asset_id, $user_id ) {
-		$result = update_post_meta( $asset_id, '_alm_current_owner', $user_id );
+		$result = update_post_meta( $asset_id, '_almgr_current_owner', $user_id );
 
 		// update_post_meta() returns false both on DB failure and when the stored
 		// value is already equal to $user_id (no-op update). Only treat it as an
 		// error when the value was not actually saved.
-		if ( false === $result && (int) get_post_meta( $asset_id, '_alm_current_owner', true ) !== (int) $user_id ) {
+		if ( false === $result && (int) get_post_meta( $asset_id, '_almgr_current_owner', true ) !== (int) $user_id ) {
 			throw new Exception(
 				sprintf(
 					/* translators: %d: asset post ID */
@@ -1380,7 +1380,7 @@ class ALMGR_Loan_Manager {
 	 */
 	private function cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_message, &$canceled_notification_events ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		// Get all pending requests for this asset (excluding the approved one).
 		// FOR UPDATE locks the selected rows within the caller's transaction so that a
@@ -1899,7 +1899,7 @@ class ALMGR_Loan_Manager {
 				$parent_kit_ids   = $this->get_parent_kit_ids( $asset_id );
 				if ( ! empty( $parent_kit_ids ) ) {
 					// Persist kit membership so it can be restored later via restore_asset_state().
-					update_post_meta( $asset_id, '_alm_removed_from_kit_ids', $parent_kit_ids );
+					update_post_meta( $asset_id, '_almgr_removed_from_kit_ids', $parent_kit_ids );
 					foreach ( $parent_kit_ids as $kit_id ) {
 						$this->remove_component_from_kit( $asset_id, $kit_id );
 					}
@@ -2110,10 +2110,10 @@ class ALMGR_Loan_Manager {
 	 * 4. Write history entry for each component.
 	 *
 	 * Operations for a component/standalone:
-	 * 1. Re-add component to any kit it was removed from (using _alm_removed_from_kit_ids meta).
+	 * 1. Re-add component to any kit it was removed from (using _almgr_removed_from_kit_ids meta).
 	 * 2. Restore state to available, clear owner.
 	 * 3. Write history entry.
-	 * 4. Delete _alm_removed_from_kit_ids meta.
+	 * 4. Delete _almgr_removed_from_kit_ids meta.
 	 *
 	 * @param int    $asset_id Asset ID.
 	 * @param string $notes    Operator notes.
@@ -2147,7 +2147,7 @@ class ALMGR_Loan_Manager {
 				foreach ( $component_ids as $component_id ) {
 					$this->set_asset_state( $component_id, 'available' );
 					$this->set_asset_owner( $component_id, 0 );
-					delete_post_meta( $component_id, '_alm_removed_from_kit_ids' );
+					delete_post_meta( $component_id, '_almgr_removed_from_kit_ids' );
 
 					$logged = $this->log_history_entry( 0, $component_id, 0, 0, 'to_available', $notes, $actor_id );
 					if ( ! $logged ) {
@@ -2157,7 +2157,7 @@ class ALMGR_Loan_Manager {
 			} else {
 				// Component or standalone: re-add to previous kit(s) if applicable, then restore state.
 				$location_targets = array( $asset_id );
-				$previous_kit_ids = get_post_meta( $asset_id, '_alm_removed_from_kit_ids', true );
+				$previous_kit_ids = get_post_meta( $asset_id, '_almgr_removed_from_kit_ids', true );
 
 				if ( ! empty( $previous_kit_ids ) && is_array( $previous_kit_ids ) ) {
 					foreach ( $previous_kit_ids as $kit_id ) {
@@ -2173,7 +2173,7 @@ class ALMGR_Loan_Manager {
 					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
 				}
 
-				delete_post_meta( $asset_id, '_alm_removed_from_kit_ids' );
+				delete_post_meta( $asset_id, '_almgr_removed_from_kit_ids' );
 			}
 
 			$wpdb->query( 'COMMIT' );

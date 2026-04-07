@@ -19,7 +19,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## [0.1.1] - 2026-04-01
 ### Added
-- Added a module to manage a REST API with tehese endpoints: `GET /alm/v1/assets`, `GET /alm/v1/assets/{id}`, `GET /alm/v1/members` and `GET /alm/v1/members/{id}/assets/`
+- Added a module to manage a REST API with tehese endpoints: `GET /almgr/v1/assets`, `GET /almgr/v1/assets/{id}`, `GET /almgr/v1/members` and `GET /almgr/v1/members/{id}/assets/`
 - Added the Settings tab REST API (admin-only): toggle to enable/disable all routes, endpoint reference table, authentication guide.
 ### Fixed
 ### Changed
@@ -43,7 +43,7 @@ First public release.
 - Settings page in wp-admin for email, loan, and workflow configuration.
 - Configurable message max lengths (loan request, rejection, direct assign reason, state change notes) propagated to frontend.
 - Translation-ready: English and Italian included, `.pot` file provided.
-- Frontend shortcodes: `[alm_asset_list]`, `[alm_asset_view]`.
+- Frontend shortcodes: `[almgr_asset_list]`, `[almgr_asset_view]`.
 - An operator cannot approve the lending request sent to a member.
 - Changing the state from on loan to available, in maintenance or dismissed you ha to specify a location and a note.
 ### Fixed

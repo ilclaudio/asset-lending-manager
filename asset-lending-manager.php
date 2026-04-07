@@ -39,25 +39,25 @@ require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-manual-prefix-migration.ph
 ALMGR_Manual_Prefix_Migration::boot();
 
 // Get the singleton Plugin Manager.
-$alm_plugin_manager = ALMGR_Plugin_Manager::get_instance();
+$almgr_plugin_manager = ALMGR_Plugin_Manager::get_instance();
 
 // Register activation/deactivation hooks.
 register_activation_hook(
 	__FILE__,
-	array( $alm_plugin_manager, 'activate' )
+	array( $almgr_plugin_manager, 'activate' )
 );
 
 register_deactivation_hook(
 	__FILE__,
-	array( $alm_plugin_manager, 'deactivate' )
+	array( $almgr_plugin_manager, 'deactivate' )
 );
 
 /**
  * Initialize PluginManager.
  */
 function almgr_init_plugin() {
-	$alm_plugin_manager = ALMGR_Plugin_Manager::get_instance();
-	$alm_plugin_manager->init();
+	$almgr_plugin_manager = ALMGR_Plugin_Manager::get_instance();
+	$almgr_plugin_manager->init();
 }
 
 add_action( 'plugins_loaded', 'almgr_init_plugin' );
