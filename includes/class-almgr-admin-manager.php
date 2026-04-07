@@ -16,14 +16,14 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Manager of the plugin backoffice.
  */
-class ALM_Admin_Manager {
+class ALMGR_Admin_Manager {
 
 	/**
 	 * Roles affected by admin restrictions.
 	 *
 	 * @var array
 	 */
-	private $restricted_roles = array( ALM_MEMBER_ROLE );
+	private $restricted_roles = array( ALMGR_MEMBER_ROLE );
 
 	/**
 	 * Plugin activation hook.
@@ -98,34 +98,34 @@ class ALM_Admin_Manager {
 
 		// Enqueue CSS.
 		wp_enqueue_style(
-			'alm-admin-assets',
-			ALM_PLUGIN_URL . 'assets/css/admin-assets.css',
+			'almgr-admin-assets',
+			ALMGR_PLUGIN_URL . 'assets/css/admin-assets.css',
 			array(),
-			ALM_VERSION,
+			ALMGR_VERSION,
 			'all'
 		);
 
 			// Enqueue JS.
 			wp_enqueue_script(
-				'alm-admin-assets',
-				ALM_PLUGIN_URL . 'assets/js/admin-assets.js',
+				'almgr-admin-assets',
+				ALMGR_PLUGIN_URL . 'assets/js/admin-assets.js',
 				array( 'wp-i18n' ),
-				ALM_VERSION,
+				ALMGR_VERSION,
 				true
 			);
 			wp_set_script_translations(
-				'alm-admin-assets',
-				ALM_TEXT_DOMAIN,
-				ALM_PLUGIN_DIR . 'languages'
+				'almgr-admin-assets',
+				ALMGR_TEXT_DOMAIN,
+				ALMGR_PLUGIN_DIR . 'languages'
 			);
 
 		// Pass data from PHP to JavaScript (useful for AJAX).
 		wp_localize_script(
-			'alm-admin-assets',
-			'almAdmin',
+			'almgr-admin-assets',
+			'almgrAdmin',
 			array(
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'alm_admin_nonce' ),
+				'nonce'   => wp_create_nonce( 'almgr_admin_nonce' ),
 			)
 		);
 	}
@@ -139,7 +139,7 @@ class ALM_Admin_Manager {
 	private function is_alm_admin_page( $hook ) {
 		global $post_type;
 		// Asset CPT pages (edit, list, add new).
-		if ( ALM_ASSET_CPT_SLUG === $post_type ) {
+		if ( ALMGR_ASSET_CPT_SLUG === $post_type ) {
 			return true;
 		}
 		// ALM custom admin pages (main menu, tools, etc).
@@ -148,7 +148,7 @@ class ALM_Admin_Manager {
 		}
 		// ALM taxonomies pages.
 		$screen = get_current_screen();
-		if ( $screen && in_array( $screen->taxonomy, ALM_CUSTOM_TAXONOMIES, true ) ) {
+		if ( $screen && in_array( $screen->taxonomy, ALMGR_CUSTOM_TAXONOMIES, true ) ) {
 			return true;
 		}
 		return false;

@@ -2,7 +2,7 @@
 /**
  * Archive template for ALM Assets
  *
- * This template uses the [alm_asset_list] shortcode.
+ * This template uses the [almgr_asset_list] shortcode.
  *
  * @package AssetLendingManager
  */
@@ -24,7 +24,7 @@ if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
 		</h1>
 	</header>
 
-	<?php echo do_shortcode( '[alm_asset_list]' ); ?>
+	<?php echo do_shortcode( '[almgr_asset_list]' ); ?>
 
 </div>
 

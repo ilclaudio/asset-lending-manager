@@ -13,7 +13,7 @@
 		return text;
 	};
 
-	var ALM_Admin = {
+	var ALMGR_Admin = {
 		/**
 		 * Initialize admin functionality.
 		 */
@@ -82,7 +82,7 @@
 				var viewLink = document.createElement('a');
 
 				viewWrapper.className = 'alm-view-frontend';
-				viewLink.href = ALM_Admin.getAssetPermalink(postId);
+				viewLink.href = ALMGR_Admin.getAssetPermalink(postId);
 				viewLink.target = '_blank';
 				viewLink.rel = 'noopener noreferrer';
 				viewLink.textContent = viewLabel;
@@ -194,6 +194,6 @@
 	};
 
 	document.addEventListener('DOMContentLoaded', function() {
-		ALM_Admin.init();
+		ALMGR_Admin.init();
 	});
 })();

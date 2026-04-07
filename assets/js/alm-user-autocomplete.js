@@ -21,7 +21,7 @@
 	 * @param {string} config.hiddenId   ID of the hidden input that stores the selected user ID.
 	 * @param {string} config.dropdownId ID of the dropdown container element.
 	 */
-	window.almInitUserAutocomplete = function(config) {
+	window.almgrInitUserAutocomplete = function(config) {
 		var input    = document.getElementById(config.inputId);
 		var hiddenId = document.getElementById(config.hiddenId);
 
@@ -30,7 +30,7 @@
 		}
 
 		var wrapEl        = input.parentNode;
-		var minChars      = window.almUserAutocomplete.minChars || 3;
+		var minChars      = window.almgrUserAutocomplete.minChars || 3;
 		var debounceTimer = null;
 		var activeIndex   = -1;
 
@@ -171,13 +171,13 @@
 
 			var params = new URLSearchParams();
 			params.append('term', term);
-			params.append('nonce', window.almUserAutocomplete.restNonce);
+			params.append('nonce', window.almgrUserAutocomplete.restNonce);
 
-			fetch(window.almUserAutocomplete.restUrl, {
+			fetch(window.almgrUserAutocomplete.restUrl, {
 				method:  'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-					'X-WP-Nonce':   window.almUserAutocomplete.restNonce,
+					'X-WP-Nonce':   window.almgrUserAutocomplete.restNonce,
 				},
 				body:        params.toString(),
 				credentials: 'same-origin',
@@ -258,19 +258,19 @@
 
 	document.addEventListener('DOMContentLoaded', function() {
 		// Bail early if localized data is missing (non-operator pages).
-		if (typeof window.almUserAutocomplete === 'undefined') {
+		if (typeof window.almgrUserAutocomplete === 'undefined') {
 			return;
 		}
 
 		// Initialize the direct assignment form widget (asset detail page).
-		window.almInitUserAutocomplete({
+		window.almgrInitUserAutocomplete({
 			inputId:    'alm-direct-assign-user-input',
 			hiddenId:   'alm-direct-assign-user-id',
 			dropdownId: 'alm-user-autocomplete-dropdown',
 		});
 
 		// Initialize the owner filter widget (asset list page).
-		window.almInitUserAutocomplete({
+		window.almgrInitUserAutocomplete({
 			inputId:    'alm-owner-filter-input',
 			hiddenId:   'alm-owner-filter-id',
 			dropdownId: 'alm-owner-filter-dropdown',

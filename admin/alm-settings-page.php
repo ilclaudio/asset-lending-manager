@@ -7,7 +7,7 @@
  * Direct Assignment, Workflow, Frontend, Research, Logging,
  * Advanced Settings, Maintenance.
  *
- * Access: any user with ALM_EDIT_ASSET capability can view the page.
+ * Access: any user with ALMGR_EDIT_ASSET capability can view the page.
  * Fields marked [A] are disabled for non-administrators (manage_options).
  * Fields marked [A/O] are editable by both administrators and operators.
  *
@@ -21,7 +21,7 @@ $active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) )
 $saved      = isset( $_GET['saved'] ) && '1' === sanitize_key( wp_unslash( $_GET['saved'] ) );
 // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-$settings = new ALM_Settings_Manager();
+$settings = new ALMGR_Settings_Manager();
 $is_admin = current_user_can( 'manage_options' );
 
 $alm_tabs = array(
@@ -86,8 +86,8 @@ $placeholders = array(
 	</nav>
 
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="alm-settings-form">
-		<?php wp_nonce_field( 'alm_save_settings', 'alm_settings_nonce' ); ?>
-		<input type="hidden" name="action" value="alm_save_settings">
+		<?php wp_nonce_field( 'almgr_save_settings', 'almgr_settings_nonce' ); ?>
+		<input type="hidden" name="action" value="almgr_save_settings">
 		<input type="hidden" name="alm_active_tab" value="<?php echo esc_attr( $active_tab ); ?>">
 
 		<?php if ( 'email' === $active_tab ) : ?>
@@ -456,8 +456,8 @@ $placeholders = array(
 						<?php
 						$allowed_roles   = (array) $settings->get( 'direct_assign.allowed_target_roles' );
 						$available_roles = array(
-							ALM_MEMBER_ROLE   => __( 'Member', 'asset-lending-manager' ),
-							ALM_OPERATOR_ROLE => __( 'Operator', 'asset-lending-manager' ),
+							ALMGR_MEMBER_ROLE   => __( 'Member', 'asset-lending-manager' ),
+							ALMGR_OPERATOR_ROLE => __( 'Operator', 'asset-lending-manager' ),
 						);
 						foreach ( $available_roles as $role_slug => $role_label ) :
 							?>
@@ -987,22 +987,22 @@ $placeholders = array(
 					<tr>
 						<td><code>GET /alm/v1/assets</code></td>
 						<td><?php esc_html_e( 'Paginated asset list. Supports ?state, ?type, ?structure, ?search, ?owner, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
-						<td><code>alm_view_assets</code></td>
+						<td><code>almgr_view_assets</code></td>
 					</tr>
 					<tr>
 						<td><code>GET /alm/v1/assets/{id}</code></td>
 						<td><?php esc_html_e( 'Single asset detail with ACF fields. Operators additionally see cost, purchase date, notes, and loan history.', 'asset-lending-manager' ); ?></td>
-						<td><code>alm_view_asset</code></td>
+						<td><code>almgr_view_asset</code></td>
 					</tr>
 					<tr>
 						<td><code>GET /alm/v1/members</code></td>
 						<td><?php esc_html_e( 'Paginated list of ALM members and operators. Supports ?search, ?role, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
-						<td><code>alm_edit_asset</code></td>
+						<td><code>almgr_edit_asset</code></td>
 					</tr>
 					<tr>
 						<td><code>GET /alm/v1/members/{id}/assets</code></td>
 						<td><?php esc_html_e( 'Assets currently held by a specific member (on-loan). Returns id, code, title, structure, type, external_code, location, thumbnail_url, permalink.', 'asset-lending-manager' ); ?></td>
-						<td><code>alm_edit_asset</code></td>
+						<td><code>almgr_edit_asset</code></td>
 					</tr>
 				</tbody>
 			</table>

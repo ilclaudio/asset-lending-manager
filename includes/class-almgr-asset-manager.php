@@ -13,18 +13,18 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once 'class-alm-acf-asset-adapter.php';
-require_once 'class-alm-installer.php';
+require_once 'class-almgr-acf-asset-adapter.php';
+require_once 'class-almgr-installer.php';
 
 /**
- * Class ALM_Asset_Manager
+ * Class ALMGR_Asset_Manager
  */
-class ALM_Asset_Manager {
+class ALMGR_Asset_Manager {
 
 	/**
 	 * ACF Adapter instance.
 	 *
-	 * @var ALM_ACF_Asset_Adapter
+	 * @var ALMGR_ACF_Asset_Adapter
 	 */
 	private $acf_adapter;
 
@@ -32,7 +32,7 @@ class ALM_Asset_Manager {
 	 * Class initialization.
 	 */
 	public function __construct() {
-		$this->acf_adapter = new ALM_ACF_Asset_Adapter();
+		$this->acf_adapter = new ALMGR_ACF_Asset_Adapter();
 	}
 
 	/**
@@ -47,7 +47,7 @@ class ALM_Asset_Manager {
 		$this->register_post_type();
 		$this->register_taxonomies();
 		// Create default terms.
-		ALM_Installer::create_default_terms();
+		ALMGR_Installer::create_default_terms();
 		// Flush rewrite rules now that CPT and taxonomies exist.
 		flush_rewrite_rules();
 	}
@@ -109,15 +109,15 @@ class ALM_Asset_Manager {
 			'show_ui'         => true,
 			'show_in_menu'    => false,
 			'show_in_rest'    => true,
-			'menu_icon'       => ALM_ASSET_ICON,
+			'menu_icon'       => ALMGR_ASSET_ICON,
 			'supports'        => array( 'title', 'editor', 'thumbnail' ),
-			'capability_type' => ALM_ASSET_CPT_SLUG,
+			'capability_type' => ALMGR_ASSET_CPT_SLUG,
 			'map_meta_cap'    => true,
 			'has_archive'     => true,
 			'rewrite'         => array( 'slug' => 'asset' ),
 		);
 
-		register_post_type( ALM_ASSET_CPT_SLUG, $args );
+		register_post_type( ALMGR_ASSET_CPT_SLUG, $args );
 	}
 
 	/**
@@ -129,8 +129,8 @@ class ALM_Asset_Manager {
 
 		// Logical asset structure: component or kit.
 		register_taxonomy(
-			ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
-			ALM_ASSET_CPT_SLUG,
+			ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
+			ALMGR_ASSET_CPT_SLUG,
 			array(
 				'labels'            => array(
 					'name'          => __( 'Asset Structures', 'asset-lending-manager' ),
@@ -141,18 +141,18 @@ class ALM_Asset_Manager {
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
 				'capabilities'      => array(
-					'manage_terms' => ALM_EDIT_ASSET,
-					'edit_terms'   => ALM_EDIT_ASSET,
-					'delete_terms' => ALM_EDIT_ASSET,
-					'assign_terms' => ALM_EDIT_ASSET,
+					'manage_terms' => ALMGR_EDIT_ASSET,
+					'edit_terms'   => ALMGR_EDIT_ASSET,
+					'delete_terms' => ALMGR_EDIT_ASSET,
+					'assign_terms' => ALMGR_EDIT_ASSET,
 				),
 			)
 		);
 
 		// Asset type (e.g. telescope, book, eyepiece).
 		register_taxonomy(
-			ALM_ASSET_TYPE_TAXONOMY_SLUG,
-			ALM_ASSET_CPT_SLUG,
+			ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
+			ALMGR_ASSET_CPT_SLUG,
 			array(
 				'labels'            => array(
 					'name'          => __( 'Asset Types', 'asset-lending-manager' ),
@@ -163,18 +163,18 @@ class ALM_Asset_Manager {
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
 				'capabilities'      => array(
-					'manage_terms' => ALM_EDIT_ASSET,
-					'edit_terms'   => ALM_EDIT_ASSET,
-					'delete_terms' => ALM_EDIT_ASSET,
-					'assign_terms' => ALM_EDIT_ASSET,
+					'manage_terms' => ALMGR_EDIT_ASSET,
+					'edit_terms'   => ALMGR_EDIT_ASSET,
+					'delete_terms' => ALMGR_EDIT_ASSET,
+					'assign_terms' => ALMGR_EDIT_ASSET,
 				),
 			)
 		);
 
 		// Asset state: available, loaned, maintenance, etc.
 		register_taxonomy(
-			ALM_ASSET_STATE_TAXONOMY_SLUG,
-			ALM_ASSET_CPT_SLUG,
+			ALMGR_ASSET_STATE_TAXONOMY_SLUG,
+			ALMGR_ASSET_CPT_SLUG,
 			array(
 				'labels'            => array(
 					'name'          => __( 'Asset States', 'asset-lending-manager' ),
@@ -185,18 +185,18 @@ class ALM_Asset_Manager {
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
 				'capabilities'      => array(
-					'manage_terms' => ALM_EDIT_ASSET,
-					'edit_terms'   => ALM_EDIT_ASSET,
-					'delete_terms' => ALM_EDIT_ASSET,
-					'assign_terms' => ALM_EDIT_ASSET,
+					'manage_terms' => ALMGR_EDIT_ASSET,
+					'edit_terms'   => ALMGR_EDIT_ASSET,
+					'delete_terms' => ALMGR_EDIT_ASSET,
+					'assign_terms' => ALMGR_EDIT_ASSET,
 				),
 			)
 		);
 
 		// Asset level: basic, intermediate, advanced, etc.
 		register_taxonomy(
-			ALM_ASSET_LEVEL_TAXONOMY_SLUG,
-			ALM_ASSET_CPT_SLUG,
+			ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
+			ALMGR_ASSET_CPT_SLUG,
 			array(
 				'labels'            => array(
 					'name'          => __( 'Asset Levels', 'asset-lending-manager' ),
@@ -207,10 +207,10 @@ class ALM_Asset_Manager {
 				'show_in_rest'      => true,
 				'show_admin_column' => false,
 				'capabilities'      => array(
-					'manage_terms' => ALM_EDIT_ASSET,
-					'edit_terms'   => ALM_EDIT_ASSET,
-					'delete_terms' => ALM_EDIT_ASSET,
-					'assign_terms' => ALM_EDIT_ASSET,
+					'manage_terms' => ALMGR_EDIT_ASSET,
+					'edit_terms'   => ALMGR_EDIT_ASSET,
+					'delete_terms' => ALMGR_EDIT_ASSET,
+					'assign_terms' => ALMGR_EDIT_ASSET,
 				),
 			)
 		);
@@ -225,7 +225,7 @@ class ALM_Asset_Manager {
 	public static function get_asset_wrapper( $asset_id ) {
 		$asset = get_post( $asset_id );
 
-		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type || 'publish' !== $asset->post_status ) {
+		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type || 'publish' !== $asset->post_status ) {
 			return null;
 		}
 
@@ -242,24 +242,24 @@ class ALM_Asset_Manager {
 		} else {
 			$wrapper->thumbnail = sprintf(
 				'<img src="%s" alt="%s" class="alm-asset-default-thumbnail">',
-				esc_url( ALM_PLUGIN_URL . 'assets/img/default_asset_color_bw.png' ),
+				esc_url( ALMGR_PLUGIN_URL . 'assets/img/default_asset_color_bw.png' ),
 				esc_attr( get_the_title( $asset ) )
 			);
 		}
 
 		// Load the main taxonomies.
 		$taxonomies = array(
-			ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
-			ALM_ASSET_TYPE_TAXONOMY_SLUG,
-			ALM_ASSET_STATE_TAXONOMY_SLUG,
-			ALM_ASSET_LEVEL_TAXONOMY_SLUG,
+			ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
+			ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
+			ALMGR_ASSET_STATE_TAXONOMY_SLUG,
+			ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 		);
 
 		foreach ( $taxonomies as $taxonomy ) {
 			$terms = get_the_terms( $asset, $taxonomy );
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 				// State labels are translated at runtime from slug, not from stored term name.
-				if ( ALM_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
+				if ( ALMGR_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
 					$wrapper->alm_state       = array();
 					$wrapper->alm_state_slugs = wp_list_pluck( $terms, 'slug' );
 					foreach ( $terms as $term ) {
@@ -267,7 +267,7 @@ class ALM_Asset_Manager {
 						$term_name            = (string) $term->name;
 						$wrapper->alm_state[] = self::get_state_label( $term_slug, $term_name );
 					}
-				} elseif ( ALM_ASSET_LEVEL_TAXONOMY_SLUG === $taxonomy ) {
+				} elseif ( ALMGR_ASSET_LEVEL_TAXONOMY_SLUG === $taxonomy ) {
 					$wrapper->alm_level = array();
 					foreach ( $terms as $term ) {
 						$term_slug            = (string) $term->slug;
@@ -279,7 +279,7 @@ class ALM_Asset_Manager {
 				}
 			} else {
 				$wrapper->{$taxonomy} = array();
-				if ( ALM_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
+				if ( ALMGR_ASSET_STATE_TAXONOMY_SLUG === $taxonomy ) {
 					$wrapper->alm_state_slugs = array();
 				}
 			}
@@ -293,10 +293,10 @@ class ALM_Asset_Manager {
 
 		// Load parent kit membership (only populated when this asset is a component).
 		$wrapper->parent_kits = array();
-		if ( has_term( ALM_ASSET_COMPONENT_SLUG, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
+		if ( has_term( ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
 			$alm_kit_query = new WP_Query(
 				array(
-					'post_type'      => ALM_ASSET_CPT_SLUG,
+					'post_type'      => ALMGR_ASSET_CPT_SLUG,
 					'post_status'    => 'publish',
 					'posts_per_page' => -1,
 					'fields'         => 'ids',
@@ -365,7 +365,7 @@ class ALM_Asset_Manager {
 			'notes'                => __( 'Notes', 'asset-lending-manager' ),
 			'components'           => __( 'Components', 'asset-lending-manager' ),
 		);
-		$field_objects     = ALM_ACF_Asset_Adapter::get_custom_fields( $asset_id );
+		$field_objects     = ALMGR_ACF_Asset_Adapter::get_custom_fields( $asset_id );
 		// Build an array with the fields ordered based on $order.
 		if ( ! empty( $field_objects ) ) {
 			foreach ( $order as $field_name ) {
@@ -390,9 +390,9 @@ class ALM_Asset_Manager {
 				);
 			}
 			// Add a field 'kit' if this asset is a component of a kit.
-			if ( has_term( ALM_ASSET_COMPONENT_SLUG, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
+			if ( has_term( ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
 				$args       = array(
-					'post_type'      => ALM_ASSET_CPT_SLUG,
+					'post_type'      => ALMGR_ASSET_CPT_SLUG,
 					'post_status'    => 'publish',
 					'posts_per_page' => 1,
 					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
@@ -421,9 +421,9 @@ class ALM_Asset_Manager {
 	/**
 	 * Return the human-readable identifier code for an asset.
 	 *
-	 * The code is composed of the ALM_ASSET_CODE_PREFIX constant followed by a
+	 * The code is composed of the ALMGR_ASSET_CODE_PREFIX constant followed by a
 	 * hyphen and the WordPress post ID zero-padded to 8 digits.
-	 * Example: prefix "ALM" + asset ID 45 → "ALM-00000045".
+	 * Example: prefix "ALMGR" + asset ID 45 -> "ALMGR-00000045".
 	 *
 	 * The code is always computed at runtime from the post ID (which never
 	 * changes in WordPress) so no storage is needed.
@@ -432,15 +432,15 @@ class ALM_Asset_Manager {
 	 * @return string Human-readable asset code.
 	 */
 	public static function get_asset_code( $asset_id ) {
-		$prefix   = ALM_ASSET_CODE_PREFIX;
-		$instance = ALM_Plugin_Manager::get_instance();
+		$prefix   = ALMGR_ASSET_CODE_PREFIX;
+		$instance = ALMGR_Plugin_Manager::get_instance();
 		if ( $instance ) {
 			$settings = $instance->get_module( 'settings' );
 			if ( $settings ) {
-				$prefix = (string) $settings->get( 'asset.code_prefix', ALM_ASSET_CODE_PREFIX );
+				$prefix = (string) $settings->get( 'asset.code_prefix', ALMGR_ASSET_CODE_PREFIX );
 			}
 		}
-		return sprintf( ALM_ASSET_CODE_FORMAT, $prefix, (int) $asset_id );
+		return sprintf( ALMGR_ASSET_CODE_FORMAT, $prefix, (int) $asset_id );
 	}
 
 	/**
@@ -463,7 +463,7 @@ class ALM_Asset_Manager {
 			return 0;
 		}
 		$post = get_post( $post_id );
-		if ( ! $post || ALM_ASSET_CPT_SLUG !== $post->post_type || 'publish' !== $post->post_status ) {
+		if ( ! $post || ALMGR_ASSET_CPT_SLUG !== $post->post_type || 'publish' !== $post->post_status ) {
 			return 0;
 		}
 		return $post_id;

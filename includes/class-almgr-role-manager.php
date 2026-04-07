@@ -4,7 +4,7 @@
  *
  * Handles custom roles and capabilities for the Asset Lending Manager plugin.
  * This class is responsible for:
- * - Creating custom roles (alm_member, alm_operator)
+ * - Creating custom roles (almgr_member, almgr_operator)
  * - Defining and assigning custom capabilities
  * - Granting capabilities to administrators
  * - Providing helper methods for permission checks
@@ -14,15 +14,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once 'class-alm-capabilities.php';
+require_once 'class-almgr-capabilities.php';
 
 /**
- * Class ALM_Role_Manager
+ * Class ALMGR_Role_Manager
  *
  * Manages WordPress roles and capabilities used by the plugin.
  * The plugin logic must always check capabilities, never roles.
  */
-class ALM_Role_Manager {
+class ALMGR_Role_Manager {
 
 	/**
 	 * Register WordPress hooks.
@@ -67,9 +67,9 @@ class ALM_Role_Manager {
 	 */
 	private function add_roles() {
 		// Create MEMBER role.
-		if ( ! get_role( ALM_MEMBER_ROLE ) ) {
+		if ( ! get_role( ALMGR_MEMBER_ROLE ) ) {
 			add_role(
-				ALM_MEMBER_ROLE,
+				ALMGR_MEMBER_ROLE,
 				__( 'Member', 'asset-lending-manager' ),
 				array(
 					'read' => true,
@@ -77,9 +77,9 @@ class ALM_Role_Manager {
 			);
 		}
 		// Create OPERATOR role.
-		if ( ! get_role( ALM_OPERATOR_ROLE ) ) {
+		if ( ! get_role( ALMGR_OPERATOR_ROLE ) ) {
 			add_role(
-				ALM_OPERATOR_ROLE,
+				ALMGR_OPERATOR_ROLE,
 				__( 'Operator', 'asset-lending-manager' ),
 				array(
 					'read' => true,
@@ -97,22 +97,22 @@ class ALM_Role_Manager {
 		// Administrator: always grant plugin capabilities.
 		$admin = get_role( 'administrator' );
 		if ( $admin ) {
-			foreach ( ALM_Capabilities::get_all_asset_caps() as $cap ) {
+			foreach ( ALMGR_Capabilities::get_all_asset_caps() as $cap ) {
 				$admin->add_cap( $cap );
 			}
 		}
 		// Operator: full asset management.
-		$alm_operator = get_role( ALM_OPERATOR_ROLE );
-		if ( $alm_operator ) {
-			foreach ( ALM_Capabilities::get_all_asset_caps() as $cap ) {
-				$alm_operator->add_cap( $cap );
+		$almgr_operator = get_role( ALMGR_OPERATOR_ROLE );
+		if ( $almgr_operator ) {
+			foreach ( ALMGR_Capabilities::get_all_asset_caps() as $cap ) {
+				$almgr_operator->add_cap( $cap );
 			}
 		}
 		// Member: read-only access to assets.
-		$alm_member = get_role( ALM_MEMBER_ROLE );
-		if ( $alm_member ) {
-			$alm_member->add_cap( ALM_VIEW_ASSETS );
-			$alm_member->add_cap( ALM_VIEW_ASSET );
+		$almgr_member = get_role( ALMGR_MEMBER_ROLE );
+		if ( $almgr_member ) {
+			$almgr_member->add_cap( ALMGR_VIEW_ASSETS );
+			$almgr_member->add_cap( ALMGR_VIEW_ASSET );
 		}
 	}
 
@@ -122,7 +122,7 @@ class ALM_Role_Manager {
 	 * @return bool
 	 */
 	public function current_user_can_manage_assets() {
-		return current_user_can( ALM_EDIT_ASSET );
+		return current_user_can( ALMGR_EDIT_ASSET );
 	}
 
 	/**
@@ -131,6 +131,6 @@ class ALM_Role_Manager {
 	 * @return bool
 	 */
 	public function current_user_can_view_assets() {
-		return current_user_can( ALM_VIEW_ASSETS );
+		return current_user_can( ALMGR_VIEW_ASSETS );
 	}
 }

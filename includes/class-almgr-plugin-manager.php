@@ -10,12 +10,12 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Main module of the plugin to bootstrap and to coordinate all the other modules.
  */
-class ALM_Plugin_Manager {
+class ALMGR_Plugin_Manager {
 
 	/**
 	 * Singleton instance.
 	 *
-	 * @var ALM_Plugin_Manager|null
+	 * @var ALMGR_Plugin_Manager|null
 	 */
 	private static $instance = null;
 
@@ -29,7 +29,7 @@ class ALM_Plugin_Manager {
 	/**
 	 * Get singleton instance.
 	 *
-	 * @return ALM_Plugin_Manager
+	 * @return ALMGR_Plugin_Manager
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -58,7 +58,7 @@ class ALM_Plugin_Manager {
 		}
 		// Configure logger with user settings (runs on plugins_loaded, safe because
 		// get_defaults() defers __() calls until after the 'init' action).
-		ALM_Logger::configure( $this->modules['settings'] );
+		ALMGR_Logger::configure( $this->modules['settings'] );
 		// Register all the other modules of the plugin.
 		$this->register_modules();
 		// Register the main menu of the plugin.
@@ -73,12 +73,12 @@ class ALM_Plugin_Manager {
 		);
 		// Reload default taxonomy terms.
 		add_action(
-			'admin_post_alm_reload_default_terms',
+			'admin_post_almgr_reload_default_terms',
 			array( $this, 'handle_reload_default_terms' ),
 		);
 		// Save settings page form.
 		add_action(
-			'admin_post_alm_save_settings',
+			'admin_post_almgr_save_settings',
 			array( $this, 'handle_settings_save' ),
 		);
 	}
@@ -134,18 +134,18 @@ class ALM_Plugin_Manager {
 	 */
 	private function init_modules() {
 		if ( empty( $this->modules ) ) {
-			$settings      = new ALM_Settings_Manager();
-			$loan          = new ALM_Loan_Manager( $settings );
+			$settings      = new ALMGR_Settings_Manager();
+			$loan          = new ALMGR_Loan_Manager( $settings );
 			$this->modules = array(
 				'settings'     => $settings,
-				'role'         => new ALM_Role_Manager(),
-				'asset'        => new ALM_Asset_Manager(),
+				'role'         => new ALMGR_Role_Manager(),
+				'asset'        => new ALMGR_Asset_Manager(),
 				'loan'         => $loan,
-				'notification' => new ALM_Notification_Manager( $settings ),
-				'frontend'     => new ALM_Frontend_Manager( $settings ),
-				'admin'        => new ALM_Admin_Manager(),
-				'autocomplete' => new ALM_Autocomplete_Manager( $settings ),
-				'rest'         => new ALM_REST_Manager( $settings, $loan ),
+				'notification' => new ALMGR_Notification_Manager( $settings ),
+				'frontend'     => new ALMGR_Frontend_Manager( $settings ),
+				'admin'        => new ALMGR_Admin_Manager(),
+				'autocomplete' => new ALMGR_Autocomplete_Manager( $settings ),
+				'rest'         => new ALMGR_REST_Manager( $settings, $loan ),
 			);
 		}
 	}
@@ -236,15 +236,15 @@ class ALM_Plugin_Manager {
 	 */
 	public function register_alm_custom_menu() {
 
-		$slug_main_menu = ALM_SLUG_MAIN_MENU;
+		$slug_main_menu = ALMGR_SLUG_MAIN_MENU;
 
 		add_menu_page(
 			__( 'Asset Lending Manager', 'asset-lending-manager' ),  // Page title.
 			__( 'ALM', 'asset-lending-manager' ),                    // Menu title.
-			ALM_EDIT_ASSET,                                         // Capability.
+			ALMGR_EDIT_ASSET,                                         // Capability.
 			$slug_main_menu,                                         // Menu slug.
 			array( $this, 'get_plugin_presentation' ),               // Callback (handled by CPT).
-			ALM_MAIN_MENU_ICON,                                      // Icon.
+			ALMGR_MAIN_MENU_ICON,                                      // Icon.
 			30                                                       // Position.
 		);
 
@@ -253,8 +253,8 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,                            // parent slug.
 			__( 'Assets', 'asset-lending-manager' ),   // page title.
 			__( 'Assets', 'asset-lending-manager' ),   // sub-menu title.
-			ALM_VIEW_ASSETS,                           // capability.
-			'edit.php?post_type=' . ALM_ASSET_CPT_SLUG // link.
+			ALMGR_VIEW_ASSETS,                           // capability.
+			'edit.php?post_type=' . ALMGR_ASSET_CPT_SLUG // link.
 		);
 
 		// Add a book.
@@ -262,8 +262,8 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Add a asset', 'asset-lending-manager' ),
 			__( 'Add a asset', 'asset-lending-manager' ),
-			ALM_EDIT_ASSET,
-			'post-new.php?post_type=' . ALM_ASSET_CPT_SLUG
+			ALMGR_EDIT_ASSET,
+			'post-new.php?post_type=' . ALMGR_ASSET_CPT_SLUG
 		);
 
 		// Taxonomy: asset structure.
@@ -271,8 +271,8 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Asset Structure', 'asset-lending-manager' ),
 			__( 'Asset Structure', 'asset-lending-manager' ),
-			ALM_EDIT_ASSET,
-			'edit-tags.php?taxonomy=' . ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+			ALMGR_EDIT_ASSET,
+			'edit-tags.php?taxonomy=' . ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
 		);
 
 		// Taxonomy: asset type.
@@ -280,8 +280,8 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Asset Type', 'asset-lending-manager' ),
 			__( 'Asset Type', 'asset-lending-manager' ),
-			ALM_EDIT_ASSET,
-			'edit-tags.php?taxonomy=' . ALM_ASSET_TYPE_TAXONOMY_SLUG,
+			ALMGR_EDIT_ASSET,
+			'edit-tags.php?taxonomy=' . ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
 		);
 
 		// Taxonomy: asset state.
@@ -289,8 +289,8 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Asset State', 'asset-lending-manager' ),
 			__( 'Asset State', 'asset-lending-manager' ),
-			ALM_EDIT_ASSET,
-			'edit-tags.php?taxonomy=' . ALM_ASSET_STATE_TAXONOMY_SLUG,
+			ALMGR_EDIT_ASSET,
+			'edit-tags.php?taxonomy=' . ALMGR_ASSET_STATE_TAXONOMY_SLUG,
 		);
 
 		// Taxonomy: asset levels.
@@ -298,8 +298,8 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'Asset Level', 'asset-lending-manager' ),
 			__( 'Asset Level', 'asset-lending-manager' ),
-			ALM_EDIT_ASSET,
-			'edit-tags.php?taxonomy=' . ALM_ASSET_LEVEL_TAXONOMY_SLUG,
+			ALMGR_EDIT_ASSET,
+			'edit-tags.php?taxonomy=' . ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 		);
 
 		// Settings page.
@@ -307,7 +307,7 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'ALM Settings', 'asset-lending-manager' ),
 			__( 'Settings', 'asset-lending-manager' ),
-			ALM_EDIT_ASSET,
+			ALMGR_EDIT_ASSET,
 			'alm-settings',
 			array( $this, 'render_settings_page' )
 		);
@@ -317,7 +317,7 @@ class ALM_Plugin_Manager {
 			$slug_main_menu,
 			__( 'ALM Tools', 'asset-lending-manager' ),
 			__( 'Tools', 'asset-lending-manager' ),
-			ALM_EDIT_ASSET,
+			ALMGR_EDIT_ASSET,
 			'alm-tools',
 			array( $this, 'render_tools_page' )
 		);
@@ -332,8 +332,8 @@ class ALM_Plugin_Manager {
 	public function keep_alm_taxonomy_menu_open( $parent_file ) {
 		global $current_screen;
 		$taxonomy = $current_screen->taxonomy;
-		if ( in_array( $taxonomy, ALM_CUSTOM_TAXONOMIES, true ) ) {
-			$parent_file = ALM_SLUG_MAIN_MENU;
+		if ( in_array( $taxonomy, ALMGR_CUSTOM_TAXONOMIES, true ) ) {
+			$parent_file = ALMGR_SLUG_MAIN_MENU;
 		}
 		return $parent_file;
 	}
@@ -344,10 +344,10 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function get_plugin_presentation() {
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
 		}
-		require_once ALM_PLUGIN_DIR . 'admin/plugin-main-page.php';
+		require_once ALMGR_PLUGIN_DIR . 'admin/plugin-main-page.php';
 	}
 
 	/**
@@ -356,10 +356,10 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function render_tools_page() {
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
 		}
-		require_once ALM_PLUGIN_DIR . 'admin/alm-tools-page.php';
+		require_once ALMGR_PLUGIN_DIR . 'admin/alm-tools-page.php';
 	}
 
 	/**
@@ -368,10 +368,10 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function render_settings_page() {
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
 		}
-		require_once ALM_PLUGIN_DIR . 'admin/alm-settings-page.php';
+		require_once ALMGR_PLUGIN_DIR . 'admin/alm-settings-page.php';
 	}
 
 	/**
@@ -383,11 +383,11 @@ class ALM_Plugin_Manager {
 	 * @return void
 	 */
 	public function handle_settings_save() {
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_die( esc_html__( 'Unauthorized action.', 'asset-lending-manager' ) );
 		}
 
-		check_admin_referer( 'alm_save_settings', 'alm_settings_nonce' );
+		check_admin_referer( 'almgr_save_settings', 'almgr_settings_nonce' );
 
 		$is_admin   = current_user_can( 'manage_options' );
 		$active_tab = isset( $_POST['alm_active_tab'] ) ? sanitize_key( wp_unslash( $_POST['alm_active_tab'] ) ) : 'email';
@@ -424,7 +424,7 @@ class ALM_Plugin_Manager {
 			// [A]-only fields.
 			if ( $is_admin ) {
 				$changes['direct_assign.enabled']              = isset( $_POST['alm_direct_assign_enabled'] );
-				$valid_roles                                   = array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE );
+				$valid_roles                                   = array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE );
 				$posted_roles                                  = filter_input( INPUT_POST, 'alm_direct_assign_roles', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 				$raw_roles                                     = is_array( $posted_roles ) ? array_map( 'sanitize_key', $posted_roles ) : array();
 				$changes['direct_assign.allowed_target_roles'] = array_values(
@@ -445,7 +445,7 @@ class ALM_Plugin_Manager {
 
 		if ( 'frontend' === $active_tab ) {
 			// [A/O] fields.
-			$changes['frontend.asset_list_per_page']  = min( 100, max( 1, absint( wp_unslash( $_POST['alm_frontend_asset_list_per_page'] ?? ALM_ASSET_LIST_PER_PAGE ) ) ) );
+			$changes['frontend.asset_list_per_page']  = min( 100, max( 1, absint( wp_unslash( $_POST['alm_frontend_asset_list_per_page'] ?? ALMGR_ASSET_LIST_PER_PAGE ) ) ) );
 			$changes['frontend.default_filters_open'] = isset( $_POST['alm_frontend_default_filters_open'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
@@ -458,8 +458,8 @@ class ALM_Plugin_Manager {
 		if ( 'autocomplete' === $active_tab ) {
 			// [A/O] fields.
 			$changes['autocomplete.min_chars']          = min( 10, max( 1, absint( wp_unslash( $_POST['alm_autocomplete_min_chars'] ?? 3 ) ) ) );
-			$changes['autocomplete.max_results']        = min( 20, max( 1, absint( wp_unslash( $_POST['alm_autocomplete_max_results'] ?? ALM_AUTOCOMPLETE_MAX_RESULTS ) ) ) );
-			$changes['autocomplete.description_length'] = min( 200, max( 0, absint( wp_unslash( $_POST['alm_autocomplete_description_length'] ?? ALM_AUTOCOMPLETE_DESC_LENGTH ) ) ) );
+			$changes['autocomplete.max_results']        = min( 20, max( 1, absint( wp_unslash( $_POST['alm_autocomplete_max_results'] ?? ALMGR_AUTOCOMPLETE_MAX_RESULTS ) ) ) );
+			$changes['autocomplete.description_length'] = min( 200, max( 0, absint( wp_unslash( $_POST['alm_autocomplete_description_length'] ?? ALMGR_AUTOCOMPLETE_DESC_LENGTH ) ) ) );
 			$changes['autocomplete.qr_scan_enabled']    = isset( $_POST['alm_autocomplete_qr_scan_enabled'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
@@ -477,9 +477,9 @@ class ALM_Plugin_Manager {
 		}
 
 		if ( 'asset' === $active_tab && $is_admin ) {
-			$raw_prefix                   = sanitize_text_field( wp_unslash( $_POST['alm_asset_code_prefix'] ?? ALM_ASSET_CODE_PREFIX ) );
+			$raw_prefix                   = sanitize_text_field( wp_unslash( $_POST['alm_asset_code_prefix'] ?? ALMGR_ASSET_CODE_PREFIX ) );
 			$clean_prefix                 = substr( preg_replace( '/[^A-Za-z0-9]/', '', $raw_prefix ), 0, 10 );
-			$changes['asset.code_prefix'] = '' !== $clean_prefix ? $clean_prefix : ALM_ASSET_CODE_PREFIX;
+			$changes['asset.code_prefix'] = '' !== $clean_prefix ? $clean_prefix : ALMGR_ASSET_CODE_PREFIX;
 		}
 
 		if ( 'rest_api' === $active_tab && $is_admin ) {
@@ -531,37 +531,37 @@ class ALM_Plugin_Manager {
 	 */
 	public function handle_reload_default_terms() {
 		$user_id = get_current_user_id();
-		ALM_Logger::info(
+		ALMGR_Logger::info(
 			'Reload default terms action triggered.',
 			array( 'user_id' => $user_id )
 		);
 
 		// Ensure the current user has the required capability.
 		// This check is mandatory even if the menu item is already protected.
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 				wp_die( esc_html__( 'Unauthorized action.', 'asset-lending-manager' ) );
 		}
 
 		// Verify the nonce to protect against CSRF attacks.
-		check_admin_referer( 'alm_reload_terms_action', 'alm_reload_terms_nonce' );
+		check_admin_referer( 'almgr_reload_terms_action', 'almgr_reload_terms_nonce' );
 
 		try {
-			ALM_Logger::debug(
+			ALMGR_Logger::debug(
 				'Starting default terms setup.',
 				array( 'user_id' => $user_id )
 			);
 
-			require_once plugin_dir_path( __FILE__ ) . 'class-alm-installer.php';
+			require_once plugin_dir_path( __FILE__ ) . 'class-almgr-installer.php';
 			// Execute the idempotent setup routine.
 			// Safe to call multiple times.
-			ALM_Installer::create_default_terms();
-			ALM_Logger::info(
+			ALMGR_Installer::create_default_terms();
+			ALMGR_Logger::info(
 				'Default terms successfully reloaded.',
 				array( 'user_id' => $user_id )
 			);
 			$status = 'success';
 		} catch ( Exception $e ) {
-			ALM_Logger::error(
+			ALMGR_Logger::error(
 				'Error while reloading default terms.',
 				array(
 					'user_id'   => $user_id,

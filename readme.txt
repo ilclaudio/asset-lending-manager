@@ -1,12 +1,12 @@
 === Asset Lending Manager ===
-Contributors: ilclaudio
+Contributors: ioclaudio
 Author URI: https://www.claudiobattaglino.it/
 Author: IoClaudio
 Tags: asset management, loans, library, equipment, organization
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.1.1
+Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,8 +63,8 @@ You can install it for free from the WordPress plugin directory.
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page
 5. Optionally, use the shortcodes to embed a view inside an existing WordPress page:
-   * `[alm_asset_list]` — embeds the asset catalog into any page or post
-   * `[alm_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
+   * `[almgr_asset_list]` — embeds the asset catalog into any page or post
+   * `[almgr_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
 
 
 == Frequently Asked Questions ==
@@ -107,7 +107,7 @@ Basic setup only requires installing the plugin and activating ACF — no shortc
 = 0.1.0 =
 * First public release.
 * Asset and kit management with full loan workflow (request, approve, reject, direct assign).
-* Role-based access control (alm_member, alm_operator).
+* Role-based access control (almgr_member, almgr_operator).
 * Email notifications for all loan workflow events.
 * Loan history tracking, including per-component entries for kit operations.
 * Frontend asset browsing with filters, QR code generation, and QR scanner.

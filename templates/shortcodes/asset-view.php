@@ -3,7 +3,7 @@
  * Template for asset view shortcode
  *
  * Available variables:
- * - $asset: Asset wrapper object from ALM_Asset_Manager::get_asset_wrapper()
+ * - $asset: Asset wrapper object from ALMGR_Asset_Manager::get_asset_wrapper()
  *
  * @package AssetLendingManager
  */
@@ -18,9 +18,9 @@ if ( $alm_asset_id <= 0 ) {
 	return;
 }
 
-$alm_asset_fields             = ALM_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
-$alm_loan_manager             = ALM_Plugin_Manager::get_instance()->get_module( 'loan' );
-$alm_settings                 = ALM_Plugin_Manager::get_instance()->get_module( 'settings' );
+$alm_asset_fields             = ALMGR_Asset_Manager::get_asset_custom_fields( $alm_asset_id );
+$alm_loan_manager             = ALMGR_Plugin_Manager::get_instance()->get_module( 'loan' );
+$alm_settings                 = ALMGR_Plugin_Manager::get_instance()->get_module( 'settings' );
 $alm_loan_requests_enabled    = (bool) $alm_settings->get( 'loans.loan_requests_enabled', true );
 $alm_request_message_max      = (int) $alm_settings->get( 'loans.request_message_max_length', 500 );
 $alm_rejection_message_max    = (int) $alm_settings->get( 'loans.rejection_message_max_length', 500 );
@@ -32,7 +32,7 @@ $alm_asset_title              = isset( $asset->title ) ? (string) $asset->title 
 $alm_asset_content            = isset( $asset->content ) ? (string) $asset->content : '';
 $alm_owner_name               = '';
 $alm_is_current_owner         = is_user_logged_in() && $alm_owner_id > 0 && ( $alm_current_user_id === (int) $alm_owner_id );
-$alm_is_operator              = is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
+$alm_is_operator              = is_user_logged_in() && current_user_can( ALMGR_EDIT_ASSET );
 if ( $alm_owner_id > 0 ) {
 	$alm_owner_data = get_userdata( $alm_owner_id );
 	$alm_owner_name = $alm_owner_data ? $alm_owner_data->display_name : '';
@@ -57,7 +57,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	</header>
 
 	<?php
-	$alm_asset_code_str = ALM_Asset_Manager::get_asset_code( $alm_asset_id );
+	$alm_asset_code_str = ALMGR_Asset_Manager::get_asset_code( $alm_asset_id );
 	$alm_scan_url       = home_url( '/?alm_scan=' . rawurlencode( $alm_asset_code_str ) );
 	?>
 
@@ -83,12 +83,12 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		$alm_state_label = '';
 		if ( ! is_wp_error( $alm_state_terms ) && ! empty( $alm_state_terms ) ) {
 			$alm_state_slug  = (string) $alm_state_terms[0]->slug;
-			$alm_state_label = ALM_Asset_Manager::get_state_label(
+			$alm_state_label = ALMGR_Asset_Manager::get_state_label(
 				$alm_state_slug,
 				(string) $alm_state_terms[0]->name
 			);
 		}
-		$alm_state_class_map = ALM_Asset_Manager::get_state_classes();
+		$alm_state_class_map = ALMGR_Asset_Manager::get_state_classes();
 		$alm_state_css_class = '';
 		if ( $alm_state_slug && isset( $alm_state_class_map[ $alm_state_slug ] ) ) {
 			$alm_state_css_class = $alm_state_class_map[ $alm_state_slug ];
@@ -253,7 +253,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 		// Check if this component belongs to one or more kits.
 		// Show only to users who can actually request a loan (logged-in members/operators).
 		$alm_parent_kits = isset( $asset->parent_kits ) ? $asset->parent_kits : array();
-		if ( ! empty( $alm_parent_kits ) && is_user_logged_in() && current_user_can( ALM_VIEW_ASSET ) ) :
+		if ( ! empty( $alm_parent_kits ) && is_user_logged_in() && current_user_can( ALMGR_VIEW_ASSET ) ) :
 			?>
 			<div class="alm-notice alm-notice--info alm-kit-notice" role="note">
 				<strong><?php esc_html_e( 'Note:', 'asset-lending-manager' ); ?></strong>
@@ -295,7 +295,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 				</summary>
 				<div class="alm-collapsible__body">
 
-					<?php if ( is_user_logged_in() && current_user_can( ALM_VIEW_ASSET ) ) : ?>
+					<?php if ( is_user_logged_in() && current_user_can( ALMGR_VIEW_ASSET ) ) : ?>
 						<!-- People eligible to apply for the loan -->
 
 						<?php if ( $alm_loan_manager->has_pending_request( $alm_asset_id, $alm_current_user_id ) ) : ?>
@@ -305,7 +305,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 
 						<?php else : ?>
 							<form id="alm-loan-request-form" class="alm-loan-form">
-								<?php wp_nonce_field( 'alm_loan_request_nonce', 'nonce' ); ?>
+								<?php wp_nonce_field( 'almgr_loan_request_nonce', 'nonce' ); ?>
 								<div class="alm-form-field">
 									<label for="alm-request-message">
 										<?php esc_html_e( 'Message for the current owner:', 'asset-lending-manager' ); ?>
@@ -500,7 +500,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 			</summary>
 			<div class="alm-collapsible__body">
 				<form id="alm-direct-assign-form" class="alm-loan-form">
-					<?php wp_nonce_field( 'alm_direct_assign_nonce', 'alm_direct_assign_nonce_field' ); ?>
+					<?php wp_nonce_field( 'almgr_direct_assign_nonce', 'alm_direct_assign_nonce_field' ); ?>
 
 					<div class="alm-form-field">
 						<label for="alm-direct-assign-user-input">
@@ -582,7 +582,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							</p>
 						<?php endif; ?>
 						<form id="alm-change-state-form" class="alm-loan-form" method="post">
-							<?php wp_nonce_field( 'alm_change_state_nonce', 'nonce' ); ?>
+							<?php wp_nonce_field( 'almgr_change_state_nonce', 'nonce' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $alm_asset_id ); ?>" />
 							<div class="alm-form-field">
 								<label for="alm-change-state-location">
@@ -641,7 +641,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 							?>
 						</p>
 						<form id="alm-restore-state-form" class="alm-loan-form" method="post">
-							<?php wp_nonce_field( 'alm_restore_state_nonce', 'nonce' ); ?>
+							<?php wp_nonce_field( 'almgr_restore_state_nonce', 'nonce' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $alm_asset_id ); ?>" />
 							<div class="alm-form-field">
 								<label for="alm-restore-state-location">
@@ -685,7 +685,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 	<?php endif; ?>
 
 	<!-- IX section: Loan history -->
-	<?php if ( is_user_logged_in() && current_user_can( ALM_EDIT_ASSET ) ) : ?>
+	<?php if ( is_user_logged_in() && current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
 		<section class="alm-asset-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
 			<details class="alm-collapsible alm-collapsible--history">
 				<summary class="alm-collapsible__summary">
@@ -762,7 +762,7 @@ if ( has_post_thumbnail( $alm_asset_id ) ) {
 									// Get status.
 									$alm_entry_status = $alm_entry->status;
 									// Status labels and CSS classes.
-									$alm_loan_labels  = alm_get_loan_status_labels();
+									$alm_loan_labels  = almgr_get_loan_status_labels();
 									$alm_status_label = $alm_loan_labels[ $alm_entry_status ] ?? $alm_entry_status;
 									$alm_status_class = 'alm-status--' . $alm_entry_status;
 

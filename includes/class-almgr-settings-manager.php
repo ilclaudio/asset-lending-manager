@@ -2,11 +2,11 @@
 /**
  * Settings Manager for Asset Lending Manager plugin.
  *
- * This file defines the ALM_Settings_Manager class, responsible for
+ * This file defines the ALMGR_Settings_Manager class, responsible for
  * handling all plugin configuration options.
  *
  * The settings are stored as a single serialized array in the WordPress
- * options table (wp_options) under the "alm_settings" option name.
+ * options table (wp_options) under the "almgr_settings" option name.
  *
  * The manager provides:
  * - Centralized default values for all plugin settings.
@@ -30,29 +30,29 @@ defined( 'ABSPATH' ) || exit;
 /**
  * This class manages all the settings of the plugin.
  */
-class ALM_Settings_Manager {
+class ALMGR_Settings_Manager {
 
 	/**
 	 * Option name used in wp_options.
 	 *
 	 * @var string
 	 */
-	private $option_name = 'alm_settings';
+	private $option_name = 'almgr_settings';
 
 	/**
 	 * Get default settings.
 	 *
 	 * Defined as a method (not a property) so that __() translation functions
 	 * are called at runtime, after the plugin text domain has been loaded.
-	 * Template defaults delegate to alm_get_email_templates() for the same reason.
+	 * Template defaults delegate to almgr_get_email_templates() for the same reason.
 	 *
 	 * @return array
 	 */
 	private function get_defaults(): array {
-		// alm_get_email_templates() uses __() and must not be called before the 'init'
+		// almgr_get_email_templates() uses __() and must not be called before the 'init'
 		// action (WordPress 6.7 JIT textdomain loading). Templates are only needed when
 		// sending emails, which always happens after 'init', so empty arrays are safe before.
-		$templates = did_action( 'init' ) ? alm_get_email_templates() : array(
+		$templates = did_action( 'init' ) ? almgr_get_email_templates() : array(
 			'subject' => array(),
 			'body'    => array(),
 		);
@@ -83,7 +83,7 @@ class ALM_Settings_Manager {
 			),
 			'direct_assign' => array(
 				'enabled'              => true,
-				'allowed_target_roles' => array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ),
+				'allowed_target_roles' => array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE ),
 			),
 			'workflow'      => array(
 				'cancel_concurrent_requests_on_assign' => true,
@@ -94,13 +94,13 @@ class ALM_Settings_Manager {
 				'assets_page_id'          => 0,
 				'login_redirect_page_id'  => 0,
 				'logout_redirect_page_id' => 0,
-				'asset_list_per_page'     => ALM_ASSET_LIST_PER_PAGE,
+				'asset_list_per_page'     => ALMGR_ASSET_LIST_PER_PAGE,
 				'default_filters_open'    => false,
 			),
 			'autocomplete'  => array(
 				'min_chars'                      => 3,
-				'max_results'                    => ALM_AUTOCOMPLETE_MAX_RESULTS,
-				'description_length'             => ALM_AUTOCOMPLETE_DESC_LENGTH,
+				'max_results'                    => ALMGR_AUTOCOMPLETE_MAX_RESULTS,
+				'description_length'             => ALMGR_AUTOCOMPLETE_DESC_LENGTH,
 				'public_assets_endpoint_enabled' => true,
 				'qr_scan_enabled'                => true,
 			),
@@ -111,7 +111,7 @@ class ALM_Settings_Manager {
 				'log_email_events'   => false,
 			),
 			'asset'         => array(
-				'code_prefix' => ALM_ASSET_CODE_PREFIX,
+				'code_prefix' => ALMGR_ASSET_CODE_PREFIX,
 			),
 			'rest_api'      => array(
 				'enabled' => true,

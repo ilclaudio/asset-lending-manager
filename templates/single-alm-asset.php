@@ -2,7 +2,7 @@
 /**
  * Single template for ALM Asset
  *
- * This template uses the [alm_asset_view] shortcode.
+ * This template uses the [almgr_asset_view] shortcode.
  *
  * @package AssetLendingManager
  */
@@ -18,7 +18,7 @@ if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
 
 <div class="alm-container alm-asset-single">
 
-	<?php echo do_shortcode( '[alm_asset_view]' ); ?>
+	<?php echo do_shortcode( '[almgr_asset_view]' ); ?>
 
 </div>
 

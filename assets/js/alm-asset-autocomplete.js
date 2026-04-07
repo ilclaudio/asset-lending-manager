@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	input.addEventListener('input', function () {
 		const term = input.value.trim();
 
-		if (term.length < almAutocomplete.minChars) {
+		if (term.length < almgrAutocomplete.minChars) {
 			setLoading(false);
 			dropdown.style.display = 'none';
 			input.setAttribute('aria-expanded', 'false');
@@ -66,15 +66,15 @@ document.addEventListener('DOMContentLoaded', function () {
 		debounceTimer = setTimeout(function () {
 			setLoading(true);
 
-			fetch(almAutocomplete.restUrl, {
+			fetch(almgrAutocomplete.restUrl, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-					'X-WP-Nonce': almAutocomplete.restNonce,
+					'X-WP-Nonce': almgrAutocomplete.restNonce,
 				},
 				body: new URLSearchParams({
 					term: term,
-					nonce: almAutocomplete.restNonce
+					nonce: almgrAutocomplete.restNonce
 				})
 			})
 			.then(res => res.json())

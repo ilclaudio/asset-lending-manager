@@ -10,6 +10,12 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 
+## [0.2.1] - 2026-04-07
+### Fixed
+- Changed the prefix of the project from alm_ to almgr_.
+- 
+
+
 
 ## [0.1.1] - 2026-04-01
 ### Added
@@ -19,7 +25,6 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ### Changed
 ### Security
 - Added checks on resource status in ajax scripts.
-
 
 ## [0.1.0] - 2026-03-15
 First public release.
@@ -47,7 +52,6 @@ First public release.
 - Invalid QR scan codes no longer cause silent home-page redirects.
 - Unowned assets approver policy is consistent across settings, UI, and backend.
 
-
 ## [DEV-0.0.2] - 2026-03-11
 Internal development version — not released publicly.
 ### Changed
@@ -63,7 +67,6 @@ Internal development version — not released publicly.
 - Accessibility improvements.
 ### Security
 - Multiple security fixes applied.
-
 
 ## [DEV-0.0.1] - 2026-02-22
 First internal development version, ready for internal tests.

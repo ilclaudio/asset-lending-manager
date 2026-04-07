@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * The Adapter that adds custom ACF fields.
  */
-class ALM_ACF_Asset_Adapter {
+class ALMGR_ACF_Asset_Adapter {
 
 	/**
 	 * This functions is never used.
@@ -22,7 +22,7 @@ class ALM_ACF_Asset_Adapter {
 	 */
 	private function define_custom_field_labels() {
 		define(
-			'ALM_CUSTOM_FIELD_LABELS',
+			'ALMGR_CUSTOM_FIELD_LABELS',
 			array(
 				__( 'Manufacturer', 'asset-lending-manager' ),
 				__( 'Model', 'asset-lending-manager' ),

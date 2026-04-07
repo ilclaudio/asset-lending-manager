@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Centralized definition of all ALM capabilities.
  */
-class ALM_Capabilities {
+class ALMGR_Capabilities {
 
 	/**
 	 * CPT capabilities for the Asset post type.
@@ -57,9 +57,9 @@ class ALM_Capabilities {
 	 */
 	public static function get_asset_domain_caps() {
 		return array(
-			ALM_VIEW_ASSETS,
-			ALM_VIEW_ASSET,
-			ALM_EDIT_ASSET,
+			ALMGR_VIEW_ASSETS,
+			ALMGR_VIEW_ASSET,
+			ALMGR_EDIT_ASSET,
 		);
 	}
 

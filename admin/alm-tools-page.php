@@ -26,8 +26,8 @@ $alm_status = isset( $_GET['alm_status'] ) ? sanitize_key( wp_unslash( $_GET['al
 	<?php endif; ?>
 
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-		<?php wp_nonce_field( 'alm_reload_terms_action', 'alm_reload_terms_nonce' ); ?>
-		<input type="hidden" name="action" value="alm_reload_default_terms">
+		<?php wp_nonce_field( 'almgr_reload_terms_action', 'almgr_reload_terms_nonce' ); ?>
+		<input type="hidden" name="action" value="almgr_reload_default_terms">
 		<?php submit_button( __( 'Reload Default Taxonomies Terms', 'asset-lending-manager' ) ); ?>
 	</form>
 </div>

@@ -2,12 +2,12 @@
 /**
  * Notification manager for ALM loan workflow events.
  *
- * Listens to custom WordPress actions fired by ALM_Loan_Manager and sends
+ * Listens to custom WordPress actions fired by ALMGR_Loan_Manager and sends
  * transactional email notifications to the involved parties via wp_mail().
  *
- * Sender configuration is controlled by the constants ALM_EMAIL_FROM_NAME,
- * ALM_EMAIL_FROM_ADDRESS, and ALM_EMAIL_SYSTEM_ADDRESS defined in plugin-config.php.
- * Email subjects and body templates are resolved via alm_get_email_templates()
+ * Sender configuration is controlled by the constants ALMGR_EMAIL_FROM_NAME,
+ * ALMGR_EMAIL_FROM_ADDRESS, and ALMGR_EMAIL_SYSTEM_ADDRESS defined in plugin-config.php.
+ * Email subjects and body templates are resolved via almgr_get_email_templates()
  * to keep translation strings discoverable by Loco/makepot.
  *
  * @package AssetLendingManager
@@ -18,21 +18,21 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Handles email notifications for ALM loan workflow events.
  */
-class ALM_Notification_Manager {
+class ALMGR_Notification_Manager {
 
 	/**
 	 * Settings manager instance.
 	 *
-	 * @var ALM_Settings_Manager
+	 * @var ALMGR_Settings_Manager
 	 */
 	private $settings;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param ALM_Settings_Manager $settings Plugin settings instance.
+	 * @param ALMGR_Settings_Manager $settings Plugin settings instance.
 	 */
-	public function __construct( ALM_Settings_Manager $settings ) {
+	public function __construct( ALMGR_Settings_Manager $settings ) {
 		$this->settings = $settings;
 	}
 
@@ -40,28 +40,28 @@ class ALM_Notification_Manager {
 	 * Register WordPress action hooks for loan workflow events.
 	 *
 	 * Each hook maps a custom ALM action to the corresponding notification method.
-	 * ALM_Loan_Manager fires these actions; this class reacts to them without
+	 * ALMGR_Loan_Manager fires these actions; this class reacts to them without
 	 * any direct coupling between the two modules.
 	 *
 	 * @return void
 	 */
 	public function register() {
 		// Notify requester and current owner when a new loan request is submitted.
-		add_action( 'alm_loan_request_submitted', array( $this, 'send_loan_request_submitted_notification' ), 10, 4 );
+		add_action( 'almgr_loan_request_submitted', array( $this, 'send_loan_request_submitted_notification' ), 10, 4 );
 
 		// Notify requester when their request is approved.
-		add_action( 'alm_loan_request_approved', array( $this, 'send_loan_request_approved_notification' ), 10, 1 );
+		add_action( 'almgr_loan_request_approved', array( $this, 'send_loan_request_approved_notification' ), 10, 1 );
 
 		// Notify requester when their request is rejected, including the rejection reason.
-		add_action( 'alm_loan_request_rejected', array( $this, 'send_loan_request_rejected_notification' ), 10, 2 );
+		add_action( 'almgr_loan_request_rejected', array( $this, 'send_loan_request_rejected_notification' ), 10, 2 );
 
 		// Notify requester when their pending request is automatically canceled
 		// because the asset was assigned to someone else.
-		add_action( 'alm_loan_request_canceled', array( $this, 'send_loan_request_canceled_notification' ), 10, 2 );
+		add_action( 'almgr_loan_request_canceled', array( $this, 'send_loan_request_canceled_notification' ), 10, 2 );
 
 		// Notify the assignee, the previous owner (if any), and the system address when an asset is directly assigned.
-		add_action( 'alm_direct_assign', array( $this, 'send_direct_assign_notification' ), 10, 5 );
-		add_action( 'alm_asset_force_returned', array( $this, 'send_force_return_notification' ), 10, 4 );
+		add_action( 'almgr_direct_assign', array( $this, 'send_direct_assign_notification' ), 10, 5 );
+		add_action( 'almgr_asset_force_returned', array( $this, 'send_force_return_notification' ), 10, 4 );
 	}
 
 	// -------------------------------------------------------------------------
@@ -74,7 +74,7 @@ class ALM_Notification_Manager {
 	 * Sends:
 	 * - A confirmation email to the requester.
 	 * - A notification email to the current asset owner (if any).
-	 * - A copy to the system/operator address (if ALM_EMAIL_SYSTEM_ADDRESS is set).
+	 * - A copy to the system/operator address (if ALMGR_EMAIL_SYSTEM_ADDRESS is set).
 	 *
 	 * @param int    $requester_id WordPress user ID of the requester.
 	 * @param int    $owner_id     WordPress user ID of the current asset owner (0 if unassigned).
@@ -92,7 +92,7 @@ class ALM_Notification_Manager {
 
 		$requester = get_userdata( $requester_id );
 		if ( ! $requester ) {
-			ALM_Logger::warning(
+			ALMGR_Logger::warning(
 				'[NOTIFICATION] send_loan_request_submitted_notification: requester not found.',
 				array( 'requester_id' => $requester_id )
 			);
@@ -157,7 +157,7 @@ class ALM_Notification_Manager {
 
 		$requester = get_userdata( $loan_request->requester_id );
 		if ( ! $requester ) {
-			ALM_Logger::warning(
+			ALMGR_Logger::warning(
 				'[NOTIFICATION] send_loan_request_approved_notification: requester not found.',
 				array( 'requester_id' => $loan_request->requester_id )
 			);
@@ -194,7 +194,7 @@ class ALM_Notification_Manager {
 
 		$requester = get_userdata( $loan_request->requester_id );
 		if ( ! $requester ) {
-			ALM_Logger::warning(
+			ALMGR_Logger::warning(
 				'[NOTIFICATION] send_loan_request_rejected_notification: requester not found.',
 				array( 'requester_id' => $loan_request->requester_id )
 			);
@@ -235,7 +235,7 @@ class ALM_Notification_Manager {
 
 		$requester = get_userdata( $requester_id );
 		if ( ! $requester ) {
-			ALM_Logger::warning(
+			ALMGR_Logger::warning(
 				'[NOTIFICATION] send_loan_request_canceled_notification: requester not found.',
 				array( 'requester_id' => $requester_id )
 			);
@@ -261,7 +261,7 @@ class ALM_Notification_Manager {
 	 * Sends:
 	 * - A notification email to the assignee (new owner).
 	 * - A notification email to the previous owner (if any and different from the assignee).
-	 * - A copy to the system/operator address (if ALM_EMAIL_SYSTEM_ADDRESS is set).
+	 * - A copy to the system/operator address (if ALMGR_EMAIL_SYSTEM_ADDRESS is set).
 	 *
 	 * @param int    $asset_id          Post ID of the asset.
 	 * @param int    $assignee_id       WordPress user ID of the new asset owner.
@@ -280,7 +280,7 @@ class ALM_Notification_Manager {
 
 		$assignee = get_userdata( $assignee_id );
 		if ( ! $assignee ) {
-			ALM_Logger::warning(
+			ALMGR_Logger::warning(
 				'[NOTIFICATION] send_direct_assign_notification: assignee not found.',
 				array( 'assignee_id' => $assignee_id )
 			);
@@ -365,7 +365,7 @@ class ALM_Notification_Manager {
 
 		$borrower = get_userdata( $borrower_id );
 		if ( ! $borrower ) {
-			ALM_Logger::warning(
+			ALMGR_Logger::warning(
 				'[NOTIFICATION] send_force_return_notification: borrower not found.',
 				array( 'borrower_id' => $borrower_id )
 			);
@@ -407,7 +407,7 @@ class ALM_Notification_Manager {
 	private function send_notification_email( $to_email, $subject_tpl, $body_tpl, $placeholders ) {
 		// Guard: do not attempt sending to an empty address.
 		if ( empty( $to_email ) ) {
-			ALM_Logger::warning(
+			ALMGR_Logger::warning(
 				'[NOTIFICATION] Cannot send email: recipient address is empty.',
 				array( 'subject_tpl' => $subject_tpl )
 			);
@@ -430,7 +430,7 @@ class ALM_Notification_Manager {
 
 		// Log the outgoing email attempt when email event logging is enabled.
 		if ( $this->settings->get( 'logging.log_email_events', false ) ) {
-			ALM_Logger::info(
+			ALMGR_Logger::info(
 				'[NOTIFICATION] Sending email.',
 				array(
 					'to'      => $to_email,
@@ -444,7 +444,7 @@ class ALM_Notification_Manager {
 
 		// Log delivery failure when email event logging is enabled.
 		if ( ! $result && $this->settings->get( 'logging.log_email_events', false ) ) {
-			ALM_Logger::warning(
+			ALMGR_Logger::warning(
 				'[NOTIFICATION] wp_mail() returned false — email may not have been delivered.',
 				array(
 					'to'      => $to_email,
@@ -476,13 +476,13 @@ class ALM_Notification_Manager {
 	 */
 	private function get_email_template( $group, $key ) {
 		// Settings store custom overrides under template.{group}.{key};
-		// defaults are pre-populated with translated values from alm_get_email_templates().
+		// defaults are pre-populated with translated values from almgr_get_email_templates().
 		$value = $this->settings->get( 'template.' . $group . '.' . $key, '' );
 		if ( '' !== $value ) {
 			return $value;
 		}
 
-		ALM_Logger::warning(
+		ALMGR_Logger::warning(
 			'[NOTIFICATION] Missing email template.',
 			array(
 				'group' => $group,
@@ -496,7 +496,7 @@ class ALM_Notification_Manager {
 	/**
 	 * Return the sender email address.
 	 *
-	 * Uses ALM_EMAIL_FROM_ADDRESS when set; falls back to the WordPress site
+	 * Uses ALMGR_EMAIL_FROM_ADDRESS when set; falls back to the WordPress site
 	 * admin email returned by get_bloginfo('admin_email').
 	 *
 	 * @return string Sender email address.

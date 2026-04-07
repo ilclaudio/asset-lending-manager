@@ -11,13 +11,13 @@
  * user with the appropriate ALM capability.
  *
  * Endpoints:
- *   GET /alm/v1/assets          Paginated asset list          (alm_view_assets)
- *   GET /alm/v1/assets/{id}     Single asset detail           (alm_view_asset)
- *   GET /alm/v1/members         Paginated ALM user list       (alm_edit_asset)
+ *   GET /alm/v1/assets          Paginated asset list          (almgr_view_assets)
+ *   GET /alm/v1/assets/{id}     Single asset detail           (almgr_view_asset)
+ *   GET /alm/v1/members         Paginated ALM user list       (almgr_edit_asset)
  *
  * Response fields differ by caller capability:
  *   - All authenticated users: public asset fields and ACF fields.
- *   - Operators (alm_edit_asset): additionally cost, data_acquisto, notes,
+ *   - Operators (almgr_edit_asset): additionally cost, data_acquisto, notes,
  *     loan history (detail endpoint), and the /members endpoint.
  *
  * @package AssetLendingManager
@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Manages the ALM read-only JSON API endpoints.
  */
-class ALM_REST_Manager {
+class ALMGR_REST_Manager {
 
 	/**
 	 * URL prefix for all API routes.
@@ -49,7 +49,7 @@ class ALM_REST_Manager {
 	 *
 	 * @var string
 	 */
-	const QUERY_ID      = 'alm_api_id';
+	const QUERY_ID = 'alm_api_id';
 
 	/**
 	 * WordPress query var that carries the member ID for nested routes.
@@ -75,14 +75,14 @@ class ALM_REST_Manager {
 	/**
 	 * Settings manager instance.
 	 *
-	 * @var ALM_Settings_Manager
+	 * @var ALMGR_Settings_Manager
 	 */
 	private $settings;
 
 	/**
 	 * Loan manager instance, injected for asset history retrieval.
 	 *
-	 * @var ALM_Loan_Manager
+	 * @var ALMGR_Loan_Manager
 	 */
 	private $loan_manager;
 
@@ -93,10 +93,10 @@ class ALM_REST_Manager {
 	/**
 	 * Constructor.
 	 *
-	 * @param ALM_Settings_Manager $settings     Settings manager instance.
-	 * @param ALM_Loan_Manager     $loan_manager Loan manager instance.
+	 * @param ALMGR_Settings_Manager $settings     Settings manager instance.
+	 * @param ALMGR_Loan_Manager     $loan_manager Loan manager instance.
 	 */
-	public function __construct( ALM_Settings_Manager $settings, ALM_Loan_Manager $loan_manager ) {
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Loan_Manager $loan_manager ) {
 		$this->settings     = $settings;
 		$this->loan_manager = $loan_manager;
 	}
@@ -184,18 +184,19 @@ class ALM_REST_Manager {
 		}
 
 		// Only act for requests targeting an ALM API route.
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		if ( ! $this->is_alm_api_uri( $request_uri ) ) {
 			return $user_id;
 		}
 
 		// Some servers provide the Authorization header differently than PHP_AUTH_*.
 		if ( ! isset( $_SERVER['PHP_AUTH_USER'] ) ) {
-			$auth_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
+			$auth_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_AUTHORIZATION'] ) ) : '';
 			if ( 0 === stripos( $auth_header, 'basic ' ) ) {
+				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- Required to decode Basic Auth credentials for Application Passwords.
 				$decoded = base64_decode( substr( $auth_header, 6 ), true );
 				if ( $decoded ) {
-					$parts                   = explode( ':', $decoded, 2 );
+					$parts                    = explode( ':', $decoded, 2 );
 					$_SERVER['PHP_AUTH_USER'] = $parts[0];
 					$_SERVER['PHP_AUTH_PW']   = isset( $parts[1] ) ? $parts[1] : '';
 				}
@@ -208,10 +209,10 @@ class ALM_REST_Manager {
 
 		// Signal API context so Application Passwords authentication is active.
 		add_filter( 'application_password_is_api_request', '__return_true' );
-		$user = wp_authenticate(
-			sanitize_user( wp_unslash( $_SERVER['PHP_AUTH_USER'] ) ),
-			wp_unslash( isset( $_SERVER['PHP_AUTH_PW'] ) ? $_SERVER['PHP_AUTH_PW'] : '' )
-		);
+		$auth_user = sanitize_user( wp_unslash( $_SERVER['PHP_AUTH_USER'] ) );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Passwords must be passed raw to wp_authenticate().
+		$auth_pass = isset( $_SERVER['PHP_AUTH_PW'] ) ? (string) wp_unslash( $_SERVER['PHP_AUTH_PW'] ) : '';
+		$user      = wp_authenticate( $auth_user, $auth_pass );
 		remove_filter( 'application_password_is_api_request', '__return_true' );
 
 		if ( $user instanceof WP_User ) {
@@ -292,7 +293,7 @@ class ALM_REST_Manager {
 	 * @return void
 	 */
 	private function handle_get_assets() {
-		if ( ! current_user_can( ALM_VIEW_ASSETS ) ) {
+		if ( ! current_user_can( ALMGR_VIEW_ASSETS ) ) {
 			$this->send_error( 'alm_forbidden', __( 'You do not have permission to view assets.', 'asset-lending-manager' ), 403 );
 		}
 
@@ -301,7 +302,7 @@ class ALM_REST_Manager {
 		$per_page = $this->clamp_per_page( absint( isset( $_GET['per_page'] ) ? $_GET['per_page'] : self::DEFAULT_PER_PAGE ) );
 
 		$args = array(
-			'post_type'      => ALM_ASSET_CPT_SLUG,
+			'post_type'      => ALMGR_ASSET_CPT_SLUG,
 			'post_status'    => 'publish',
 			'posts_per_page' => $per_page,
 			'paged'          => $page,
@@ -316,9 +317,9 @@ class ALM_REST_Manager {
 		// Build tax_query from optional taxonomy filters.
 		$tax_query = array();
 		$tax_map   = array(
-			'state'     => ALM_ASSET_STATE_TAXONOMY_SLUG,
-			'type'      => ALM_ASSET_TYPE_TAXONOMY_SLUG,
-			'structure' => ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+			'state'     => ALMGR_ASSET_STATE_TAXONOMY_SLUG,
+			'type'      => ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
+			'structure' => ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
 		);
 		foreach ( $tax_map as $param => $taxonomy ) {
 			$value = isset( $_GET[ $param ] ) ? sanitize_text_field( wp_unslash( $_GET[ $param ] ) ) : '';
@@ -345,8 +346,8 @@ class ALM_REST_Manager {
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-		$query       = new WP_Query( $args );
-		$items       = array();
+		$query = new WP_Query( $args );
+		$items = array();
 		foreach ( $query->posts as $post_id ) {
 			$prepared = $this->prepare_asset( (int) $post_id, 'list' );
 			if ( null !== $prepared ) {
@@ -378,7 +379,7 @@ class ALM_REST_Manager {
 	 * @return void
 	 */
 	private function handle_get_asset( $id ) {
-		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_VIEW_ASSET ) ) {
 			$this->send_error( 'alm_forbidden', __( 'You do not have permission to view assets.', 'asset-lending-manager' ), 403 );
 		}
 
@@ -401,12 +402,12 @@ class ALM_REST_Manager {
 	 *   page     (int)    Page number, default 1.
 	 *   per_page (int)    Items per page, default 20, max 100.
 	 *   search   (string) Search term (login, email, display name).
-	 *   role     (string) Filter by ALM role slug (alm_member or alm_operator).
+	 *   role     (string) Filter by ALM role slug (almgr_member or almgr_operator).
 	 *
 	 * @return void
 	 */
 	private function handle_get_members() {
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			$this->send_error( 'alm_forbidden', __( 'You do not have permission to view members.', 'asset-lending-manager' ), 403 );
 		}
 
@@ -416,7 +417,7 @@ class ALM_REST_Manager {
 		$offset   = ( $page - 1 ) * $per_page;
 
 		$query_args = array(
-			'role__in'    => array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ),
+			'role__in'    => array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE ),
 			'number'      => $per_page,
 			'offset'      => $offset,
 			'orderby'     => 'display_name',
@@ -431,7 +432,7 @@ class ALM_REST_Manager {
 		}
 
 		$role_filter = isset( $_GET['role'] ) ? sanitize_key( wp_unslash( $_GET['role'] ) ) : '';
-		if ( in_array( $role_filter, array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ), true ) ) {
+		if ( in_array( $role_filter, array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE ), true ) ) {
 			$query_args['role__in'] = array( $role_filter );
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
@@ -463,13 +464,13 @@ class ALM_REST_Manager {
 	 * Handle GET /alm/v1/members/{id}/assets — assets currently held by a member.
 	 *
 	 * Returns the list of assets assigned to the given user (owner_id = user_id).
-	 * Requires ALM_EDIT_ASSET capability.
+	 * Requires ALMGR_EDIT_ASSET capability.
 	 *
 	 * @param int $member_id WordPress user ID.
 	 * @return void
 	 */
 	private function handle_get_member_assets( $member_id ) {
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			$this->send_error( 'alm_forbidden', __( 'You do not have permission to view member assets.', 'asset-lending-manager' ), 403 );
 		}
 
@@ -484,7 +485,7 @@ class ALM_REST_Manager {
 
 		$query = new WP_Query(
 			array(
-				'post_type'      => ALM_ASSET_CPT_SLUG,
+				'post_type'      => ALMGR_ASSET_CPT_SLUG,
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
@@ -528,30 +529,30 @@ class ALM_REST_Manager {
 	 * @return array|null Asset data array, or null when the asset is invalid.
 	 */
 	private function prepare_asset( $post_id, $context = 'list' ) {
-		$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post_id );
+		$wrapper = ALMGR_Asset_Manager::get_asset_wrapper( $post_id );
 		if ( null === $wrapper ) {
 			return null;
 		}
 
 		// Fetch taxonomy slugs directly. get_the_terms() results are cached by
 		// WordPress, so these calls do not add extra DB queries after get_asset_wrapper().
-		$structure_terms = get_the_terms( $post_id, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG );
-		$type_terms      = get_the_terms( $post_id, ALM_ASSET_TYPE_TAXONOMY_SLUG );
-		$level_terms     = get_the_terms( $post_id, ALM_ASSET_LEVEL_TAXONOMY_SLUG );
+		$structure_terms = get_the_terms( $post_id, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
+		$type_terms      = get_the_terms( $post_id, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
+		$level_terms     = get_the_terms( $post_id, ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
 
-		$owner_data  = $wrapper->owner_id > 0 ? get_userdata( $wrapper->owner_id ) : false;
-		$data = array(
-			'id'            => $post_id,
-			'code'          => ALM_Asset_Manager::get_asset_code( $post_id ),
-			'title'         => $wrapper->title,
-			'permalink'     => $wrapper->permalink,
-			'thumbnail_url' => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ?: null,
-			'structure'     => ( $structure_terms && ! is_wp_error( $structure_terms ) ) ? wp_list_pluck( $structure_terms, 'slug' ) : array(),
-			'type'          => ( $type_terms && ! is_wp_error( $type_terms ) ) ? wp_list_pluck( $type_terms, 'slug' ) : array(),
-			'state'         => $wrapper->alm_state_slugs ?? array(),
-			'level'         => ( $level_terms && ! is_wp_error( $level_terms ) ) ? wp_list_pluck( $level_terms, 'slug' ) : array(),
-			'owner_id'      => $wrapper->owner_id,
-			'owner_name'    => $wrapper->owner_name,
+		$owner_data = $wrapper->owner_id > 0 ? get_userdata( $wrapper->owner_id ) : false;
+		$data       = array(
+			'id'             => $post_id,
+			'code'           => ALMGR_Asset_Manager::get_asset_code( $post_id ),
+			'title'          => $wrapper->title,
+			'permalink'      => $wrapper->permalink,
+			'thumbnail_url'  => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ? get_the_post_thumbnail_url( $post_id, 'thumbnail' ) : null,
+			'structure'      => ( $structure_terms && ! is_wp_error( $structure_terms ) ) ? wp_list_pluck( $structure_terms, 'slug' ) : array(),
+			'type'           => ( $type_terms && ! is_wp_error( $type_terms ) ) ? wp_list_pluck( $type_terms, 'slug' ) : array(),
+			'state'          => $wrapper->alm_state_slugs ?? array(),
+			'level'          => ( $level_terms && ! is_wp_error( $level_terms ) ) ? wp_list_pluck( $level_terms, 'slug' ) : array(),
+			'owner_id'       => $wrapper->owner_id,
+			'owner_name'     => $wrapper->owner_name,
 			'owner_username' => $owner_data ? $owner_data->user_login : '',
 		);
 
@@ -565,7 +566,7 @@ class ALM_REST_Manager {
 		// Kit/component relationships.
 		$data['parent_kits'] = $wrapper->parent_kits ?? array();
 
-		$raw_components     = ALM_ACF_Asset_Adapter::get_custom_field( 'components', $post_id );
+		$raw_components     = ALMGR_ACF_Asset_Adapter::get_custom_field( 'components', $post_id );
 		$data['components'] = array();
 		if ( is_array( $raw_components ) ) {
 			foreach ( $raw_components as $component ) {
@@ -581,7 +582,7 @@ class ALM_REST_Manager {
 		}
 
 		// ACF fields visible to all authenticated users.
-		$acf             = ALM_ACF_Asset_Adapter::get_custom_fields( $post_id );
+		$acf             = ALMGR_ACF_Asset_Adapter::get_custom_fields( $post_id );
 		$public_acf_keys = array(
 			'manufacturer',
 			'model',
@@ -630,8 +631,8 @@ class ALM_REST_Manager {
 	 */
 	private function prepare_member( WP_User $user ) {
 		$role_map  = array(
-			ALM_MEMBER_ROLE   => 'member',
-			ALM_OPERATOR_ROLE => 'operator',
+			ALMGR_MEMBER_ROLE   => 'member',
+			ALMGR_OPERATOR_ROLE => 'operator',
 		);
 		$alm_roles = array();
 		foreach ( (array) $user->roles as $role ) {
@@ -661,19 +662,19 @@ class ALM_REST_Manager {
 	 * @return array
 	 */
 	private function prepare_member_asset( $post_id ) {
-		$wrapper     = ALM_Asset_Manager::get_asset_wrapper( $post_id );
-		$type_terms  = get_the_terms( $post_id, ALM_ASSET_TYPE_TAXONOMY_SLUG );
-		$struct_terms = get_the_terms( $post_id, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG );
+		$wrapper      = ALMGR_Asset_Manager::get_asset_wrapper( $post_id );
+		$type_terms   = get_the_terms( $post_id, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
+		$struct_terms = get_the_terms( $post_id, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
 
 		return array(
 			'id'            => $post_id,
-			'code'          => ALM_Asset_Manager::get_asset_code( $post_id ),
+			'code'          => ALMGR_Asset_Manager::get_asset_code( $post_id ),
 			'title'         => $wrapper ? $wrapper->title : get_the_title( $post_id ),
 			'structure'     => ( $struct_terms && ! is_wp_error( $struct_terms ) ) ? wp_list_pluck( $struct_terms, 'slug' ) : array(),
 			'type'          => ( $type_terms && ! is_wp_error( $type_terms ) ) ? wp_list_pluck( $type_terms, 'slug' ) : array(),
-			'external_code' => (string) ALM_ACF_Asset_Adapter::get_custom_field( 'external_code', $post_id ),
-			'location'      => (string) ALM_ACF_Asset_Adapter::get_custom_field( 'location', $post_id ),
-			'thumbnail_url' => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ?: null,
+			'external_code' => (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'external_code', $post_id ),
+			'location'      => (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'location', $post_id ),
+			'thumbnail_url' => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ? get_the_post_thumbnail_url( $post_id, 'thumbnail' ) : null,
 			'permalink'     => get_permalink( $post_id ),
 		);
 	}
@@ -729,7 +730,7 @@ class ALM_REST_Manager {
 	 * @return bool
 	 */
 	private function is_operator() {
-		return current_user_can( ALM_EDIT_ASSET );
+		return current_user_can( ALMGR_EDIT_ASSET );
 	}
 
 	/**
@@ -761,7 +762,7 @@ class ALM_REST_Manager {
 	private function count_active_loans( $user_id ) {
 		$query = new WP_Query(
 			array(
-				'post_type'      => ALM_ASSET_CPT_SLUG,
+				'post_type'      => ALMGR_ASSET_CPT_SLUG,
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',

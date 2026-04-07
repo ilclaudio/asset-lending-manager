@@ -12,21 +12,21 @@ defined( 'ABSPATH' ) || exit;
 /**
  * The class that registers and manages the Autcomplete feature.
  */
-class ALM_Autocomplete_Manager {
+class ALMGR_Autocomplete_Manager {
 
 	/**
 	 * Settings manager instance.
 	 *
-	 * @var ALM_Settings_Manager
+	 * @var ALMGR_Settings_Manager
 	 */
 	private $settings;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param ALM_Settings_Manager $settings Plugin settings instance.
+	 * @param ALMGR_Settings_Manager $settings Plugin settings instance.
 	 */
-	public function __construct( ALM_Settings_Manager $settings ) {
+	public function __construct( ALMGR_Settings_Manager $settings ) {
 		$this->settings = $settings;
 	}
 
@@ -59,21 +59,21 @@ class ALM_Autocomplete_Manager {
 		}
 
 		wp_enqueue_script(
-			'alm-asset-autocomplete',
-			ALM_PLUGIN_URL . 'assets/js/alm-asset-autocomplete.js',
+			'almgr-asset-autocomplete',
+			ALMGR_PLUGIN_URL . 'assets/js/alm-asset-autocomplete.js',
 			array(),
-			ALM_VERSION,
+			ALMGR_VERSION,
 			true
 		);
 		wp_enqueue_style(
-			'alm-asset-autocomplete',
-			ALM_PLUGIN_URL . 'assets/css/alm-asset-autocomplete.css',
+			'almgr-asset-autocomplete',
+			ALMGR_PLUGIN_URL . 'assets/css/alm-asset-autocomplete.css',
 			array(),
-			ALM_VERSION
+			ALMGR_VERSION
 		);
 		wp_localize_script(
-			'alm-asset-autocomplete',
-			'almAutocomplete',
+			'almgr-asset-autocomplete',
+			'almgrAutocomplete',
 			array(
 				'restUrl'   => esc_url( rest_url( 'alm/v1/assets/autocomplete' ) ),
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
@@ -112,7 +112,7 @@ class ALM_Autocomplete_Manager {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'handle_users_autocomplete' ),
 				'permission_callback' => function () {
-					return is_user_logged_in() && current_user_can( ALM_EDIT_ASSET );
+					return is_user_logged_in() && current_user_can( ALMGR_EDIT_ASSET );
 				},
 				'args'                => array(
 					'term' => array(
@@ -161,7 +161,7 @@ class ALM_Autocomplete_Manager {
 			return true;
 		}
 
-		return is_user_logged_in() && current_user_can( ALM_VIEW_ASSETS );
+		return is_user_logged_in() && current_user_can( ALMGR_VIEW_ASSETS );
 	}
 
 	/**
@@ -185,17 +185,17 @@ class ALM_Autocomplete_Manager {
 	 * Check whether the current page is an ALM page.
 	 *
 	 * Returns true for asset archive, single asset, and pages containing
-	 * the alm_asset_list or alm_asset_view shortcodes.
+	 * the almgr_asset_list or almgr_asset_view shortcodes.
 	 *
 	 * @return bool
 	 */
 	private function is_alm_page() {
-		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) || is_singular( ALM_ASSET_CPT_SLUG ) ) {
+		if ( is_post_type_archive( ALMGR_ASSET_CPT_SLUG ) || is_singular( ALMGR_ASSET_CPT_SLUG ) ) {
 			return true;
 		}
 
 		global $post;
-		if ( $post && ( has_shortcode( $post->post_content, 'alm_asset_list' ) || has_shortcode( $post->post_content, 'alm_asset_view' ) ) ) {
+		if ( $post && ( has_shortcode( $post->post_content, 'almgr_asset_list' ) || has_shortcode( $post->post_content, 'almgr_asset_view' ) ) ) {
 			return true;
 		}
 
@@ -220,23 +220,23 @@ class ALM_Autocomplete_Manager {
 
 		// Query assets.
 		$query_args = array(
-			'post_type'      => ALM_ASSET_CPT_SLUG,
+			'post_type'      => ALMGR_ASSET_CPT_SLUG,
 			'post_status'    => 'publish',
 			's'              => $term,
-			'posts_per_page' => (int) $this->settings->get( 'autocomplete.max_results', ALM_AUTOCOMPLETE_MAX_RESULTS ),
+			'posts_per_page' => (int) $this->settings->get( 'autocomplete.max_results', ALMGR_AUTOCOMPLETE_MAX_RESULTS ),
 		);
 		$query      = new WP_Query( $query_args );
 		$results    = array();
 		if ( $query->have_posts() ) {
 			foreach ( $query->posts as $post ) {
-				$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
+				$wrapper = ALMGR_Asset_Manager::get_asset_wrapper( $post->ID );
 				if ( ! $wrapper ) {
 					continue;
 				}
 				$results[] = array(
 					'id'          => $post->ID,
 					'title'       => $wrapper->title,
-					'description' => wp_trim_words( wp_strip_all_tags( $post->post_content ), (int) $this->settings->get( 'autocomplete.description_length', ALM_AUTOCOMPLETE_DESC_LENGTH ), '...' ),
+					'description' => wp_trim_words( wp_strip_all_tags( $post->post_content ), (int) $this->settings->get( 'autocomplete.description_length', ALMGR_AUTOCOMPLETE_DESC_LENGTH ), '...' ),
 					'structure'   => ! empty( $wrapper->alm_structure ) ? implode( ', ', $wrapper->alm_structure ) : '',
 					'type'        => ! empty( $wrapper->alm_type ) ? implode( ', ', $wrapper->alm_type ) : '',
 					'permalink'   => $wrapper->permalink,
@@ -267,9 +267,9 @@ class ALM_Autocomplete_Manager {
 
 		$users = get_users(
 			array(
-				'role__in' => array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ),
+				'role__in' => array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE ),
 				'search'   => '*' . $term . '*',
-				'number'   => (int) $this->settings->get( 'autocomplete.max_results', ALM_AUTOCOMPLETE_MAX_RESULTS ),
+				'number'   => (int) $this->settings->get( 'autocomplete.max_results', ALMGR_AUTOCOMPLETE_MAX_RESULTS ),
 				'orderby'  => 'display_name',
 				'order'    => 'ASC',
 			)
@@ -278,7 +278,7 @@ class ALM_Autocomplete_Manager {
 		$results = array();
 		foreach ( $users as $user ) {
 			$user_roles = (array) $user->roles;
-			$role_label = in_array( ALM_OPERATOR_ROLE, $user_roles, true )
+			$role_label = in_array( ALMGR_OPERATOR_ROLE, $user_roles, true )
 				? __( 'Operator', 'asset-lending-manager' )
 				: __( 'Member', 'asset-lending-manager' );
 

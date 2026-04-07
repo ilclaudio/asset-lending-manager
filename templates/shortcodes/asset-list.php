@@ -3,7 +3,7 @@
  * Template for asset list shortcode.
  *
  * Variables injected from render_asset_list_template():
- * - $assets:             array    Asset wrapper objects (ALM_Asset_Manager::get_asset_wrapper()).
+ * - $assets:             array    Asset wrapper objects (ALMGR_Asset_Manager::get_asset_wrapper()).
  * - $assets_count:       int      Total number of matching assets (all pages).
  * - $current_page:       int      Current pagination page number.
  * - $total_pages:        int      Total number of pagination pages.
@@ -24,25 +24,25 @@ defined( 'ABSPATH' ) || exit;
 // Get taxonomy terms for filters.
 $alm_terms_structure = get_terms(
 	array(
-		'taxonomy'   => ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+		'taxonomy'   => ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
 $alm_terms_type      = get_terms(
 	array(
-		'taxonomy'   => ALM_ASSET_TYPE_TAXONOMY_SLUG,
+		'taxonomy'   => ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
 $alm_terms_state     = get_terms(
 	array(
-		'taxonomy'   => ALM_ASSET_STATE_TAXONOMY_SLUG,
+		'taxonomy'   => ALMGR_ASSET_STATE_TAXONOMY_SLUG,
 		'hide_empty' => false,
 	)
 );
 $alm_terms_level     = get_terms(
 	array(
-		'taxonomy'   => ALM_ASSET_LEVEL_TAXONOMY_SLUG,
+		'taxonomy'   => ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
@@ -151,7 +151,7 @@ if ( $filter_owner > 0 ) {
 										<?php if ( ! is_wp_error( $alm_terms_state ) && ! empty( $alm_terms_state ) ) : ?>
 											<?php foreach ( $alm_terms_state as $alm_term ) : ?>
 												<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_state, $alm_term->slug ); ?>>
-													<?php echo esc_html( ALM_Asset_Manager::get_state_label( (string) $alm_term->slug, (string) $alm_term->name ) ); ?>
+													<?php echo esc_html( ALMGR_Asset_Manager::get_state_label( (string) $alm_term->slug, (string) $alm_term->name ) ); ?>
 												</option>
 											<?php endforeach; ?>
 										<?php endif; ?>
@@ -164,7 +164,7 @@ if ( $filter_owner > 0 ) {
 										<?php if ( ! is_wp_error( $alm_terms_level ) && ! empty( $alm_terms_level ) ) : ?>
 											<?php foreach ( $alm_terms_level as $alm_term ) : ?>
 												<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_level, $alm_term->slug ); ?>>
-													<?php echo esc_html( ALM_Asset_Manager::get_level_label( (string) $alm_term->slug, (string) $alm_term->name ) ); ?>
+													<?php echo esc_html( ALMGR_Asset_Manager::get_level_label( (string) $alm_term->slug, (string) $alm_term->name ) ); ?>
 												</option>
 											<?php endforeach; ?>
 										<?php endif; ?>
@@ -172,7 +172,7 @@ if ( $filter_owner > 0 ) {
 						</div>
 					</div>
 					<!-- Row 3: Owner -->
-					<?php if ( current_user_can( ALM_EDIT_ASSET ) ) : ?>
+					<?php if ( current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
 						<div class="alm-filter-row">
 							<div class="alm-filter-field">
 								<label for="alm-owner-filter-input"><?php esc_html_e( 'Owner', 'asset-lending-manager' ); ?></label>
@@ -254,7 +254,7 @@ if ( $filter_owner > 0 ) {
 							<div class="alm-card-title-row">
 								<h2 class="alm-asset-title"><?php echo esc_html( $alm_asset->title ); ?></h2>
 								<?php
-								$alm_state_classes = ALM_Asset_Manager::get_state_classes();
+								$alm_state_classes = ALMGR_Asset_Manager::get_state_classes();
 								foreach ( $alm_asset->alm_state as $alm_si => $alm_state_name ) :
 									$alm_state_slug  = $alm_asset->alm_state_slugs[ $alm_si ] ?? '';
 									$alm_badge_class = $alm_state_classes[ $alm_state_slug ] ?? '';

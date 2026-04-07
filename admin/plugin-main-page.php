@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $alm_data     = get_file_data(
-	ALM_PLUGIN_DIR . 'asset-lending-manager.php',
+	ALMGR_PLUGIN_DIR . 'asset-lending-manager.php',
 	array(
 		'Name'        => 'Plugin Name',
 		'PluginURI'   => 'Plugin URI',
@@ -21,7 +21,7 @@ $alm_data     = get_file_data(
 		'License'     => 'License',
 	)
 );
-$alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
+$alm_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 ?>
 <div class="wrap">
 
@@ -100,11 +100,11 @@ $alm_logo_url = ALM_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 			</thead>
 			<tbody>
 				<tr>
-					<td><code>[alm_asset_list]</code></td>
+					<td><code>[almgr_asset_list]</code></td>
 					<td><?php esc_html_e( 'Embeds the full asset catalog with search filters into any page or post.', 'asset-lending-manager' ); ?></td>
 				</tr>
 				<tr>
-					<td><code>[alm_asset_view]</code></td>
+					<td><code>[almgr_asset_view]</code></td>
 					<td><?php esc_html_e( 'Embeds the detail view for a single asset. Not needed on the standard asset permalink — use only for custom layouts.', 'asset-lending-manager' ); ?></td>
 				</tr>
 			</tbody>
