@@ -101,8 +101,16 @@ Basic setup only requires installing the plugin and activating ACF — no shortc
 
 == Changelog ==
 
+For full release notes see `CHANGELOG.md`.
+
+= 0.2.1 =
+* Internal refactoring: all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
+* Import and export tools for members and operators added.
+* Various bug fixes and improvements flagged during code audit.
+
 = 0.1.1 =
 * Read-only JSON REST API at `/almgr/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress Application Passwords. Independent of the global WP REST API toggle.
+* Security: added resource-status checks on all AJAX endpoints.
 
 = 0.1.0 =
 * First public release.
@@ -128,6 +136,9 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 
 
 == Upgrade Notice ==
+
+= 0.2.1 =
+Internal refactoring release. All plugin database tables, options, and identifiers have been renamed from the `alm_` prefix to `almgr_`. A one-time automatic migration runs on upgrade — no manual action required.
 
 = 0.1.0 =
 First public release.

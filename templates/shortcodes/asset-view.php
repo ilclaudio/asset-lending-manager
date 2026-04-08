@@ -349,7 +349,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 				$almgr_loan_requests_enabled &&
 				in_array( $almgr_state_slug, array( 'available', 'on-loan' ), true ) &&
 				is_user_logged_in() &&
-				( (int) $almgr_owner_id === (int) $almgr_current_user_id )
+				( $almgr_is_current_owner || $almgr_is_operator )
 			) {
 		$almgr_requests        = $almgr_loan_manager->get_asset_requests( $almgr_asset_id );
 		$almgr_requester_names = array();
@@ -444,7 +444,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 											<?php echo esc_html( $almgr_request_date ); ?>
 										</td>
 										<td class="almgr-request-actions" role="cell" data-label="<?php esc_attr_e( 'Actions', 'asset-lending-manager' ); ?>">
-										<?php if ( 'pending' === $almgr_request_status && $almgr_is_current_owner ) : ?>
+										<?php if ( 'pending' === $almgr_request_status && ( $almgr_is_current_owner || $almgr_is_operator ) ) : ?>
 											<button
 												type="button"
 												class="almgr-button almgr-button--small almgr-button--approve"

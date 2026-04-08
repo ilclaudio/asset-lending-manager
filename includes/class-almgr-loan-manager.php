@@ -382,6 +382,11 @@ class ALMGR_Loan_Manager {
 	 * @return bool True if user can reject.
 	 */
 	private function can_user_reject_request( $loan_request, $user_id ) {
+		// Operators and administrators can always reject pending requests.
+		if ( user_can( $user_id, ALMGR_EDIT_ASSET ) ) {
+			return true;
+		}
+
 		// Only the current owner of the asset can reject requests for it.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;
@@ -933,6 +938,11 @@ class ALMGR_Loan_Manager {
 	 * @return bool True if user can approve.
 	 */
 	private function can_user_approve_request( $loan_request, $user_id ) {
+		// Operators and administrators can always approve pending requests.
+		if ( user_can( $user_id, ALMGR_EDIT_ASSET ) ) {
+			return true;
+		}
+
 		// Only the current owner of the asset can approve requests for it.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;

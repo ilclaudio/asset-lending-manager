@@ -10,10 +10,11 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 
-## [0.2.1] - 2026-04-07
+## [0.2.1] - 2026-04-10
 ### Fixed
 - Massive refactoring: Changed the prefix of the project from "alm_" "to almgr_".
 - Fixed the issues reported by the auditor.
+- An operator can approve/reject requests for resources without a current owner.
 ## Added
 - Added import/export features for members/operators.
 ### Changed
