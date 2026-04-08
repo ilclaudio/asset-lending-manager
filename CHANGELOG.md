@@ -12,9 +12,12 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## [0.2.1] - 2026-04-07
 ### Fixed
-- Changed the prefix of the project from alm_ to almgr_.
-- 
-
+- Massive refactoring: Changed the prefix of the project from "alm_" "to almgr_".
+- Fixed the issues reported by the auditor.
+## Added
+- Added import/export features for members/operators.
+### Changed
+### Security
 
 
 ## [0.1.1] - 2026-04-01
