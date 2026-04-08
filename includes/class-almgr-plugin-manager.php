@@ -81,11 +81,6 @@ class ALMGR_Plugin_Manager {
 			'admin_post_almgr_save_settings',
 			array( $this, 'handle_settings_save' ),
 		);
-		// Backward-compat redirects for legacy admin page slugs.
-		add_action(
-			'admin_init',
-			array( $this, 'redirect_legacy_admin_pages' ),
-		);
 	}
 
 	/**
@@ -341,65 +336,6 @@ class ALMGR_Plugin_Manager {
 			$parent_file = ALMGR_SLUG_MAIN_MENU;
 		}
 		return $parent_file;
-	}
-
-	/**
-	 * Redirect legacy admin pages to the new almgr-prefixed slugs.
-	 *
-	 * @return void
-	 */
-	public function redirect_legacy_admin_pages() {
-		if ( ! is_admin() ) {
-			return;
-		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing compatibility for admin page slugs.
-		if ( ! isset( $_GET['page'] ) ) {
-			return;
-		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing compatibility for admin page slugs.
-		$current_page = sanitize_key( wp_unslash( $_GET['page'] ) );
-		$page_map     = array(
-			'alm-settings' => 'almgr-settings',
-			'alm-tools'    => 'almgr-tools',
-		);
-
-		if ( ! isset( $page_map[ $current_page ] ) ) {
-			return;
-		}
-
-		$redirect_args = array();
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing compatibility for admin page slugs.
-		foreach ( $_GET as $key => $value ) {
-			if ( 'page' === $key ) {
-				continue;
-			}
-
-			$clean_key = sanitize_key( (string) $key );
-			if ( '' === $clean_key ) {
-				continue;
-			}
-
-			if ( is_array( $value ) ) {
-				$redirect_args[ $clean_key ] = array_map(
-					static function ( $item ) {
-						return sanitize_text_field( (string) wp_unslash( $item ) );
-					},
-					$value
-				);
-			} else {
-				$redirect_args[ $clean_key ] = sanitize_text_field( (string) wp_unslash( $value ) );
-			}
-		}
-
-		$target_url = add_query_arg(
-			$redirect_args,
-			admin_url( 'admin.php?page=' . $page_map[ $current_page ] )
-		);
-
-		wp_safe_redirect( $target_url, 302 );
-		exit;
 	}
 
 	/**
