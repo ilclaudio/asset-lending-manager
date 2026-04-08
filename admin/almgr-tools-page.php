@@ -376,28 +376,44 @@ if ( isset( $almgr_section_map[ $almgr_current_tab ] ) ) {
 		<br class="clear">
 
 		<?php if ( 'users' === $almgr_current_section ) : ?>
-			<div class="postbox">
-				<div class="inside">
-					<h3><?php esc_html_e( 'How It Works', 'asset-lending-manager' ); ?></h3>
-					<p><?php esc_html_e( 'Users export will support CSV and JSON formats.', 'asset-lending-manager' ); ?></p>
-					<p><?php esc_html_e( 'Target permission: administrators only.', 'asset-lending-manager' ); ?></p>
+			<?php if ( ! current_user_can( 'manage_options' ) && ! current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
+				<div class="notice notice-warning">
+					<p><?php esc_html_e( 'Only administrators and operators can export users.', 'asset-lending-manager' ); ?></p>
 				</div>
-			</div>
-			<div class="postbox">
-				<div class="inside">
-					<h3><?php esc_html_e( 'Run Export', 'asset-lending-manager' ); ?></h3>
-					<p><?php esc_html_e( 'Users export actions will be added here.', 'asset-lending-manager' ); ?></p>
-					<p>
-						<button type="button" class="button button-secondary" disabled><?php esc_html_e( 'Export Users CSV', 'asset-lending-manager' ); ?></button>
-						<button type="button" class="button button-secondary" disabled><?php esc_html_e( 'Export Users JSON', 'asset-lending-manager' ); ?></button>
-					</p>
+			<?php else : ?>
+				<div class="postbox">
+					<div class="inside">
+						<h3><?php esc_html_e( 'How It Works', 'asset-lending-manager' ); ?></h3>
+						<p><?php esc_html_e( 'Export users to CSV with strict columns compatible with users import.', 'asset-lending-manager' ); ?></p>
+						<p>
+							<strong><?php esc_html_e( 'Exported CSV header:', 'asset-lending-manager' ); ?></strong>
+							<code>Username;Email;First_Name;Last_Name;Role</code>
+						</p>
+						<p>
+							<strong><?php esc_html_e( 'Allowed role values:', 'asset-lending-manager' ); ?></strong>
+							<code><?php esc_html_e( 'member', 'asset-lending-manager' ); ?></code>,
+							<code><?php esc_html_e( 'operator', 'asset-lending-manager' ); ?></code>.
+							<?php esc_html_e( 'Delimiter: semicolon (;).', 'asset-lending-manager' ); ?>
+						</p>
+						<p><?php esc_html_e( 'Only users with ALM roles are exported. If a user has both roles, operator is exported.', 'asset-lending-manager' ); ?></p>
+					</div>
 				</div>
-			</div>
+				<div class="postbox">
+					<div class="inside">
+						<h3><?php esc_html_e( 'Run Export', 'asset-lending-manager' ); ?></h3>
+						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+							<?php wp_nonce_field( 'almgr_export_users_csv_action', 'almgr_export_users_csv_nonce' ); ?>
+							<input type="hidden" name="action" value="almgr_export_users_csv">
+							<?php submit_button( __( 'Export Users CSV', 'asset-lending-manager' ) ); ?>
+						</form>
+					</div>
+				</div>
+			<?php endif; ?>
 		<?php elseif ( 'assets' === $almgr_current_section ) : ?>
 			<div class="postbox">
 				<div class="inside">
 					<h3><?php esc_html_e( 'How It Works', 'asset-lending-manager' ); ?></h3>
-					<p><?php esc_html_e( 'Assets export will support CSV and JSON formats.', 'asset-lending-manager' ); ?></p>
+					<p><?php esc_html_e( 'Assets export will support CSV format.', 'asset-lending-manager' ); ?></p>
 					<p><?php esc_html_e( 'Target permission: administrators and operators.', 'asset-lending-manager' ); ?></p>
 				</div>
 			</div>
@@ -407,7 +423,6 @@ if ( isset( $almgr_section_map[ $almgr_current_tab ] ) ) {
 					<p><?php esc_html_e( 'Assets export actions will be added here.', 'asset-lending-manager' ); ?></p>
 					<p>
 						<button type="button" class="button button-secondary" disabled><?php esc_html_e( 'Export Assets CSV', 'asset-lending-manager' ); ?></button>
-						<button type="button" class="button button-secondary" disabled><?php esc_html_e( 'Export Assets JSON', 'asset-lending-manager' ); ?></button>
 					</p>
 				</div>
 			</div>

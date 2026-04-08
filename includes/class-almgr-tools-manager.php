@@ -26,6 +26,11 @@ class ALMGR_Tools_Manager {
 			'admin_post_almgr_import_users_csv',
 			array( $this, 'handle_import_users_csv' ),
 		);
+		// Users CSV export action (Tools > Export > Users).
+		add_action(
+			'admin_post_almgr_export_users_csv',
+			array( $this, 'handle_export_users_csv' ),
+		);
 	}
 
 	/**
@@ -94,6 +99,170 @@ class ALMGR_Tools_Manager {
 		);
 		$this->store_users_import_report_for_current_user( $report );
 		$this->redirect_to_tools_import_tab();
+	}
+
+	/**
+	 * Handle users CSV export submission from Tools > Export.
+	 *
+	 * @return void
+	 */
+	public function handle_export_users_csv() {
+		if ( ! $this->current_user_can_export_users_csv() ) {
+			wp_die( esc_html__( 'Unauthorized action.', 'asset-lending-manager' ) );
+		}
+
+		check_admin_referer( 'almgr_export_users_csv_action', 'almgr_export_users_csv_nonce' );
+		$this->stream_users_csv_export();
+	}
+
+	/**
+	 * Return whether current user can export users CSV.
+	 *
+	 * Allowed: administrators and operators.
+	 *
+	 * @return bool
+	 */
+	private function current_user_can_export_users_csv() {
+		return current_user_can( 'manage_options' ) || current_user_can( ALMGR_EDIT_ASSET );
+	}
+
+	/**
+	 * Stream users CSV export response.
+	 *
+	 * The output is compatible with the Users CSV import format.
+	 *
+	 * @return void
+	 */
+	private function stream_users_csv_export() {
+		if ( headers_sent() ) {
+			wp_die( esc_html__( 'Cannot start CSV export because headers are already sent.', 'asset-lending-manager' ) );
+		}
+
+		$file_name = sprintf(
+			'almgr-users-export-%s.csv',
+			gmdate( 'Ymd-His' )
+		);
+
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $file_name ) . '"' );
+		header( 'X-Content-Type-Options: nosniff' );
+
+		$output = fopen( 'php://output', 'w' );
+		if ( false === $output ) {
+			wp_die( esc_html__( 'Unable to generate CSV export output stream.', 'asset-lending-manager' ) );
+		}
+
+		// Add UTF-8 BOM to improve compatibility with spreadsheet applications.
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Writing BOM to php://output stream.
+		fwrite( $output, "\xEF\xBB\xBF" );
+
+		fputcsv(
+			$output,
+			array( 'Username', 'Email', 'First_Name', 'Last_Name', 'Role' ),
+			';',
+			'"',
+			'\\'
+		);
+
+		$per_page = 200;
+		$offset   = 0;
+		$rows     = 0;
+
+		do {
+			$user_query = new WP_User_Query(
+				array(
+					'orderby'     => 'ID',
+					'order'       => 'ASC',
+					'number'      => $per_page,
+					'offset'      => $offset,
+					'count_total' => false,
+					'role__in'    => array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE ),
+					'fields'      => 'all_with_meta',
+				)
+			);
+
+			$users = $user_query->get_results();
+			if ( empty( $users ) ) {
+				break;
+			}
+
+			foreach ( $users as $user ) {
+				if ( ! $user instanceof WP_User ) {
+					continue;
+				}
+
+				$export_role = $this->map_user_roles_to_export_role( (array) $user->roles );
+				if ( '' === $export_role ) {
+					continue;
+				}
+
+				$row = array(
+					$this->sanitize_users_export_csv_cell( $user->user_login ),
+					$this->sanitize_users_export_csv_cell( $user->user_email ),
+					$this->sanitize_users_export_csv_cell( (string) get_user_meta( (int) $user->ID, 'first_name', true ) ),
+					$this->sanitize_users_export_csv_cell( (string) get_user_meta( (int) $user->ID, 'last_name', true ) ),
+					$this->sanitize_users_export_csv_cell( $export_role ),
+				);
+
+				fputcsv(
+					$output,
+					$row,
+					';',
+					'"',
+					'\\'
+				);
+			}
+
+			$rows    = count( $users );
+			$offset += $per_page;
+		} while ( $rows === $per_page );
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing php://output stream handle after CSV stream.
+		fclose( $output );
+		exit;
+	}
+
+	/**
+	 * Map user roles to export role value used by CSV import/export contract.
+	 *
+	 * @param array $roles User role slugs.
+	 * @return string
+	 */
+	private function map_user_roles_to_export_role( array $roles ) {
+		if ( in_array( ALMGR_OPERATOR_ROLE, $roles, true ) ) {
+			return 'operator';
+		}
+
+		if ( in_array( ALMGR_MEMBER_ROLE, $roles, true ) ) {
+			return 'member';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Sanitize a CSV cell and protect against spreadsheet formula injection.
+	 *
+	 * @param string $value Cell value.
+	 * @return string
+	 */
+	private function sanitize_users_export_csv_cell( $value ) {
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return '';
+		}
+
+		$trimmed_left = ltrim( $value );
+		if ( '' !== $trimmed_left && preg_match( '/^[=\+\-@]/', $trimmed_left ) ) {
+			return "'" . $value;
+		}
+
+		if ( preg_match( '/^[\t\r\n]/', $value ) ) {
+			return "'" . $value;
+		}
+
+		return $value;
 	}
 
 	/**

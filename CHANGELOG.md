@@ -16,7 +16,8 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Fixed the issues reported by the auditor.
 - An operator can approve/reject requests for resources without a current owner.
 ## Added
-- Added import/export features for members/operators.
+- Added users CSV import from Tools (admin only).
+- Added users CSV export from Tools (admin and operator).
 ### Changed
 ### Security
 
