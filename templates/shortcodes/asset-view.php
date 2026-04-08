@@ -155,7 +155,20 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 				</span>
 			</summary>
 			<div class="almgr-collapsible__body">
-				<?php if ( ! empty( $almgr_asset_fields ) ) : ?>
+				<?php
+			// Remove members-only fields for anonymous visitors.
+			if ( ! is_user_logged_in() ) {
+				$almgr_asset_fields = array_values(
+					array_filter(
+						$almgr_asset_fields,
+						function ( $almgr_row ) {
+							return empty( $almgr_row['members_only'] );
+						}
+					)
+				);
+			}
+			?>
+			<?php if ( ! empty( $almgr_asset_fields ) ) : ?>
 					<dl class="almgr-asset-acf-list">
 						<?php if ( is_user_logged_in() && ! empty( $almgr_owner_name ) ) : ?>
 							<div class="almgr-asset-acf-row almgr-acf-current-owner">

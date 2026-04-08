@@ -369,6 +369,9 @@ class ALMGR_Asset_Manager {
 			'notes'                => __( 'Notes', 'asset-lending-manager' ),
 			'components'           => __( 'Components', 'asset-lending-manager' ),
 		);
+		// Fields restricted to logged-in users only (financial data, personal locations, internal notes).
+		$members_only_fields = array( 'cost', 'data_acquisto', 'serial_number', 'notes', 'location' );
+
 		$field_objects     = ALMGR_ACF_Asset_Adapter::get_custom_fields( $asset_id );
 		// Build an array with the fields ordered based on $order.
 		if ( ! empty( $field_objects ) ) {
@@ -387,10 +390,11 @@ class ALMGR_Asset_Manager {
 					continue;
 				}
 				$asset_fields[] = array(
-					'name'  => $field_name,
-					'label' => $label,
-					'type'  => isset( $field['type'] ) ? (string) $field['type'] : '',
-					'value' => $value,
+					'name'         => $field_name,
+					'label'        => $label,
+					'type'         => isset( $field['type'] ) ? (string) $field['type'] : '',
+					'value'        => $value,
+					'members_only' => in_array( $field_name, $members_only_fields, true ),
 				);
 			}
 			// Add a field 'kit' if this asset is a component of a kit.
@@ -410,10 +414,11 @@ class ALMGR_Asset_Manager {
 				$kit_result = new WP_Query( $args );
 				if ( $kit_result->have_posts() ) {
 					$item = array(
-						'name'  => 'kit',
-						'label' => __( 'Membership kit', 'asset-lending-manager' ),
-						'type'  => 'post_object',
-						'value' => $kit_result->posts,
+						'name'         => 'kit',
+						'label'        => __( 'Membership kit', 'asset-lending-manager' ),
+						'type'         => 'post_object',
+						'value'        => $kit_result->posts,
+						'members_only' => false,
 					);
 					array_push( $asset_fields, $item );
 				}

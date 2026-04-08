@@ -21,6 +21,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Added users CSV export from Tools (admin and operator).
 ### Changed
 ### Security
+- Fixed issues about sensible data of a resource.
 
 
 ## [0.1.1] - 2026-04-01
