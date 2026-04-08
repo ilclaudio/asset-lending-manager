@@ -63,6 +63,11 @@ $placeholders = array(
 	'direct_assign'               => '{ASSET_TITLE}, {ASSET_URL}, {ASSIGNEE_NAME}, {ACTOR_NAME}, {REASON}',
 	'direct_assign_to_prev_owner' => '{ASSET_TITLE}, {ASSET_URL}, {PREV_OWNER_NAME}, {ASSIGNEE_NAME}, {ACTOR_NAME}, {REASON}',
 );
+
+$loan_request_operator_mode = sanitize_key( (string) $settings->get( 'notifications.loan_request_operator_mode', 'no_owner' ) );
+if ( ! in_array( $loan_request_operator_mode, array( 'never', 'no_owner', 'always' ), true ) ) {
+	$loan_request_operator_mode = 'no_owner';
+}
 ?>
 
 <div class="wrap">
@@ -153,7 +158,7 @@ $placeholders = array(
 							<?php disabled( ! $is_admin ); ?>
 						>
 						<p class="description">
-							<?php esc_html_e( 'Operator address that receives a copy of every loan request submission. Leave empty to disable.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Optional additional recipient for every loan request submission (with or without current owner). Leave empty to disable.', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
@@ -192,8 +197,39 @@ $placeholders = array(
 								value="1"
 								<?php checked( $settings->get( 'notifications.loan_request' ) ); ?>
 							>
-							<?php esc_html_e( 'Notify requester and operator when a loan request is submitted', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Notify requester and relevant recipients when a loan request is submitted', 'asset-lending-manager' ); ?>
 						</label>
+						<p class="description">
+							<?php esc_html_e( 'Relevant recipients are: current owner (if any), System email (if configured), and operators based on the rule below.', 'asset-lending-manager' ); ?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="almgr_notifications_loan_request_operator_mode">
+							<?php esc_html_e( 'Notify all operators for loan requests', 'asset-lending-manager' ); ?>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						</label>
+					</th>
+					<td>
+						<select
+							id="almgr_notifications_loan_request_operator_mode"
+							name="almgr_notifications_loan_request_operator_mode"
+							<?php disabled( ! $is_admin ); ?>
+						>
+							<option value="never" <?php selected( $loan_request_operator_mode, 'never' ); ?>>
+								<?php esc_html_e( 'Never', 'asset-lending-manager' ); ?>
+							</option>
+							<option value="no_owner" <?php selected( $loan_request_operator_mode, 'no_owner' ); ?>>
+								<?php esc_html_e( 'Only when the asset has no owner', 'asset-lending-manager' ); ?>
+							</option>
+							<option value="always" <?php selected( $loan_request_operator_mode, 'always' ); ?>>
+								<?php esc_html_e( 'Always', 'asset-lending-manager' ); ?>
+							</option>
+						</select>
+						<p class="description">
+							<?php esc_html_e( 'Controls additional notifications to users with role "almgr_operator". Duplicate email addresses are automatically de-duplicated.', 'asset-lending-manager' ); ?>
+						</p>
 					</td>
 				</tr>
 				<tr>

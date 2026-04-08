@@ -63,10 +63,11 @@ class ALMGR_Settings_Manager {
 				'system_email' => '',
 			),
 			'notifications' => array(
-				'enabled'           => false,
-				'loan_request'      => true,
-				'loan_decision'     => true,
-				'loan_confirmation' => true,
+				'enabled'                    => false,
+				'loan_request'               => true,
+				'loan_request_operator_mode' => 'no_owner',
+				'loan_decision'              => true,
+				'loan_confirmation'          => true,
 			),
 			'template'      => array(
 				'subject' => $templates['subject'],

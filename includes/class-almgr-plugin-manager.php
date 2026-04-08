@@ -401,6 +401,15 @@ class ALMGR_Plugin_Manager {
 				$changes['email.from_address']    = sanitize_email( wp_unslash( $_POST['almgr_email_from_address'] ?? '' ) );
 				$changes['email.system_email']    = sanitize_email( wp_unslash( $_POST['almgr_email_system_email'] ?? '' ) );
 				$changes['notifications.enabled'] = isset( $_POST['almgr_notifications_enabled'] );
+
+				$operator_mode         = isset( $_POST['almgr_notifications_loan_request_operator_mode'] )
+					? sanitize_key( wp_unslash( $_POST['almgr_notifications_loan_request_operator_mode'] ) )
+					: 'no_owner';
+				$allowed_operator_mode = array( 'never', 'no_owner', 'always' );
+				if ( ! in_array( $operator_mode, $allowed_operator_mode, true ) ) {
+					$operator_mode = 'no_owner';
+				}
+				$changes['notifications.loan_request_operator_mode'] = $operator_mode;
 			}
 			// [A/O] fields.
 			$changes['notifications.loan_request']      = isset( $_POST['almgr_notifications_loan_request'] );

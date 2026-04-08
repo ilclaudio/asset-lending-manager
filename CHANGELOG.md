@@ -15,6 +15,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Massive refactoring: Changed the prefix of the project from "alm_" "to almgr_".
 - Fixed the issues reported by the auditor.
 - An operator can approve/reject requests for resources without a current owner.
+- Added configuration to set if and when operators must be notified of a new request of loan.
 ## Added
 - Added users CSV import from Tools (admin only).
 - Added users CSV export from Tools (admin and operator).

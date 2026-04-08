@@ -74,7 +74,9 @@ class ALMGR_Notification_Manager {
 	 * Sends:
 	 * - A confirmation email to the requester.
 	 * - A notification email to the current asset owner (if any).
-	 * - A copy to the system/operator address (if ALMGR_EMAIL_SYSTEM_ADDRESS is set).
+	 * - A copy to the configured system email (if any).
+	 * - Optional notifications to all operators, based on
+	 *   notifications.loan_request_operator_mode (never/no_owner/always).
 	 *
 	 * @param int    $requester_id WordPress user ID of the requester.
 	 * @param int    $owner_id     WordPress user ID of the current asset owner (0 if unassigned).
@@ -100,44 +102,61 @@ class ALMGR_Notification_Manager {
 		}
 
 		// Build the shared placeholder set used by all outgoing emails for this event.
-		$placeholders = array_merge(
+		$placeholders    = array_merge(
 			$this->get_asset_base_placeholders( $asset_id ),
 			array(
 				'{REQUESTER_NAME}'  => $requester->display_name,
 				'{REQUEST_MESSAGE}' => $message ? $message : '',
 			)
 		);
+		$sent_recipients = array();
 
 		// Email 1: confirmation to the requester.
-		$this->send_notification_email(
+		$this->send_notification_email_unique(
 			$requester->user_email,
 			$this->get_email_template( 'subject', 'request_to_requester' ),
 			$this->get_email_template( 'body', 'request_to_requester' ),
-			$placeholders
+			$placeholders,
+			$sent_recipients
 		);
 
 		// Email 2: notification to the current asset owner (if the asset is already assigned).
 		if ( $owner_id > 0 ) {
 			$owner = get_userdata( $owner_id );
 			if ( $owner ) {
-				$this->send_notification_email(
+				$this->send_notification_email_unique(
 					$owner->user_email,
 					$this->get_email_template( 'subject', 'request_to_owner' ),
 					$this->get_email_template( 'body', 'request_to_owner' ),
-					$placeholders
+					$placeholders,
+					$sent_recipients
 				);
 			}
 		}
 
-		// Email 3: copy to the system/operator address (only if configured in settings).
+		// Email 3: copy to the system address (only if configured in settings).
 		$system_email = $this->settings->get( 'email.system_email', '' );
 		if ( ! empty( $system_email ) ) {
-			$this->send_notification_email(
+			$this->send_notification_email_unique(
 				$system_email,
 				$this->get_email_template( 'subject', 'request_to_owner' ),
 				$this->get_email_template( 'body', 'request_to_owner' ),
-				$placeholders
+				$placeholders,
+				$sent_recipients
 			);
+		}
+
+		if ( $this->should_notify_all_operators_for_loan_request( $owner_id ) ) {
+			$operator_emails = $this->get_operator_emails();
+			foreach ( $operator_emails as $operator_email ) {
+				$this->send_notification_email_unique(
+					$operator_email,
+					$this->get_email_template( 'subject', 'request_to_owner' ),
+					$this->get_email_template( 'body', 'request_to_owner' ),
+					$placeholders,
+					$sent_recipients
+				);
+			}
 		}
 	}
 
@@ -345,6 +364,81 @@ class ALMGR_Notification_Manager {
 	// -------------------------------------------------------------------------
 	// Private infrastructure methods.
 	// -------------------------------------------------------------------------
+
+	/**
+	 * Send an email only once per normalized recipient address.
+	 *
+	 * @param string $to_email        Recipient email address.
+	 * @param string $subject_tpl     Subject template.
+	 * @param string $body_tpl        Body template.
+	 * @param array  $placeholders    Placeholder values used in templates.
+	 * @param array  $sent_recipients Previously used recipient map (normalized email => true).
+	 * @return bool True when an email send is attempted, false when skipped.
+	 */
+	private function send_notification_email_unique( $to_email, $subject_tpl, $body_tpl, $placeholders, &$sent_recipients ) {
+		$normalized_email = sanitize_email( strtolower( trim( (string) $to_email ) ) );
+		if ( empty( $normalized_email ) ) {
+			return false;
+		}
+
+		if ( isset( $sent_recipients[ $normalized_email ] ) ) {
+			return false;
+		}
+
+		$sent_recipients[ $normalized_email ] = true;
+		return $this->send_notification_email( $to_email, $subject_tpl, $body_tpl, $placeholders );
+	}
+
+	/**
+	 * Return whether operator-wide notifications should be sent for this request event.
+	 *
+	 * @param int $owner_id Current owner user ID (0 when unassigned).
+	 * @return bool
+	 */
+	private function should_notify_all_operators_for_loan_request( $owner_id ) {
+		$mode = sanitize_key( (string) $this->settings->get( 'notifications.loan_request_operator_mode', 'no_owner' ) );
+
+		if ( 'always' === $mode ) {
+			return true;
+		}
+
+		if ( 'never' === $mode ) {
+			return false;
+		}
+
+		return ( $owner_id <= 0 );
+	}
+
+	/**
+	 * Return unique operator email addresses.
+	 *
+	 * @return string[] List of non-empty email addresses.
+	 */
+	private function get_operator_emails() {
+		$operators_query = new WP_User_Query(
+			array(
+				'role'   => ALMGR_OPERATOR_ROLE,
+				'fields' => array( 'user_email' ),
+			)
+		);
+
+		$operator_emails = array();
+		$operators       = $operators_query->get_results();
+		foreach ( $operators as $operator ) {
+			if ( ! is_object( $operator ) || ! isset( $operator->user_email ) ) {
+				continue;
+			}
+
+			$operator_email = sanitize_email( $operator->user_email );
+			if ( empty( $operator_email ) ) {
+				continue;
+			}
+
+			$operator_emails[] = $operator_email;
+		}
+
+		return array_values( array_unique( $operator_emails ) );
+	}
 
 	/**
 	 * Send notification to borrower when an operator force-returns an on-loan asset.
