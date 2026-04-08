@@ -311,7 +311,7 @@ class ALMGR_Manual_Prefix_Migration {
 	}
 
 	/**
-	 * Rename legacy post meta keys used by ALM assets.
+	 * Rename legacy post meta keys used by ALMGR assets.
 	 *
 	 * @return array<int, string>
 	 */

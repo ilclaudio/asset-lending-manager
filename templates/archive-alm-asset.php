@@ -1,6 +1,6 @@
 <?php
 /**
- * Archive template for ALM Assets
+ * Archive template for ALMGR Assets
  *
  * This template uses the [almgr_asset_list] shortcode.
  *

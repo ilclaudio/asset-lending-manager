@@ -1,7 +1,7 @@
 /**
- * Admin styles for ALM assets
+ * Admin styles for ALMGR assets
  *
- * Loaded only on ALM admin pages (asset edit, list, taxonomies, custom pages).
+ * Loaded only on ALMGR admin pages (asset edit, list, taxonomies, custom pages).
  *
  * @package AssetLendingManager
  */
@@ -36,7 +36,7 @@
 	max-width: 600px;
 }
 
-/* ALM custom admin pages styling */
+/* ALMGR custom admin pages styling */
 .alm-admin-page {
 	background: #fff;
 	padding: 20px;
@@ -96,7 +96,7 @@
 	color: #fff;
 }
 
-/* Notice styles for ALM pages */
+/* Notice styles for ALMGR pages */
 .alm-notice {
 	margin: 15px 0;
 	padding: 12px;

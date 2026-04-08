@@ -1558,7 +1558,7 @@ class ALMGR_Loan_Manager {
 			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
 		}
 
-		// Verify assignee exists and has an ALM role.
+		// Verify assignee exists and has an ALMGR role.
 		$assignee = get_userdata( $assignee_id );
 		if ( ! $assignee ) {
 			wp_send_json_error( array( 'message' => __( 'Assignee user not found.', 'asset-lending-manager' ) ) );

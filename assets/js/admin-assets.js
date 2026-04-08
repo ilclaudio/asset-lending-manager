@@ -1,7 +1,7 @@
 /**
- * Admin JavaScript for ALM assets.
+ * Admin JavaScript for ALMGR assets.
  *
- * Loaded only on ALM admin pages (asset edit, list, taxonomies, custom pages).
+ * Loaded only on ALMGR admin pages (asset edit, list, taxonomies, custom pages).
  *
  * @package AssetLendingManager
  */

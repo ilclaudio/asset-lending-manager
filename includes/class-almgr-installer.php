@@ -1,6 +1,6 @@
 <?php
 /**
- * ALM Setup Manager.
+ * ALMGR Setup Manager.
  *
  * Handles initial setup tasks for the Asset Lending Manager plugin.
  * Ensures that required default taxonomy terms exist.
@@ -187,7 +187,7 @@ class ALMGR_Installer {
 	/**
 	 * Public entry point.
 	 *
-	 * Ensures that all default taxonomy terms required by ALM
+	 * Ensures that all default taxonomy terms required by ALMGR
 	 * are present in the system.
 	 *
 	 * This method can be safely called:

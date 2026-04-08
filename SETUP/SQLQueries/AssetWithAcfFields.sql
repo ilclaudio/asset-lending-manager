@@ -1,4 +1,4 @@
--- Show ID, name, and ALM ACF fields for one asset.
+-- Show ID, name, and ALMGR ACF fields for one asset.
 -- Replace 49 with the target asset ID.
 SELECT
 	p.ID                           AS asset_id,

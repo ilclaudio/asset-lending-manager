@@ -2,18 +2,18 @@
 /**
  * REST API Manager for Asset Lending Manager plugin.
  *
- * Implements a read-only JSON API for ALM assets and members via custom
+ * Implements a read-only JSON API for ALMGR assets and members via custom
  * WordPress rewrite rules. Routes under almgr/v1/ work independently of the
  * WordPress REST API global setting.
  *
  * Authentication: WordPress Application Passwords (WP 5.6+) via Authorization
  * header, or a WordPress session cookie. All endpoints require a logged-in
- * user with the appropriate ALM capability.
+ * user with the appropriate ALMGR capability.
  *
  * Endpoints:
  *   GET /almgr/v1/assets          Paginated asset list          (almgr_view_assets)
  *   GET /almgr/v1/assets/{id}     Single asset detail           (almgr_view_asset)
- *   GET /almgr/v1/members         Paginated ALM user list       (almgr_edit_asset)
+ *   GET /almgr/v1/members         Paginated ALMGR user list       (almgr_edit_asset)
  *
  * Response fields differ by caller capability:
  *   - All authenticated users: public asset fields and ACF fields.
@@ -26,7 +26,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Manages the ALM read-only JSON API endpoints.
+ * Manages the ALMGR read-only JSON API endpoints.
  */
 class ALMGR_REST_Manager {
 
@@ -110,7 +110,7 @@ class ALMGR_REST_Manager {
 		add_action( 'init', array( $this, 'add_rewrite_rules' ) );
 		add_filter( 'query_vars', array( $this, 'add_query_vars' ) );
 		add_action( 'parse_request', array( $this, 'handle_request' ) );
-		// Enable Application Passwords for ALM routes, which use custom rewrite
+		// Enable Application Passwords for ALMGR routes, which use custom rewrite
 		// rules instead of the WP REST API infrastructure.
 		add_filter( 'determine_current_user', array( $this, 'authenticate_almgr_request' ), 15 );
 	}
@@ -120,7 +120,7 @@ class ALMGR_REST_Manager {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Register custom rewrite rules for ALM API routes.
+	 * Register custom rewrite rules for ALMGR API routes.
 	 *
 	 * Must be followed by a permalink flush (Settings → Permalinks) on first
 	 * activation. The plugin activation hook flushes rules automatically.
@@ -151,7 +151,7 @@ class ALMGR_REST_Manager {
 	}
 
 	/**
-	 * Add ALM API query vars to the WordPress allowed list.
+	 * Add ALMGR API query vars to the WordPress allowed list.
 	 *
 	 * @param array $vars Registered query vars.
 	 * @return array
@@ -168,10 +168,10 @@ class ALMGR_REST_Manager {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Process Application Passwords (Basic Auth) for ALM API routes.
+	 * Process Application Passwords (Basic Auth) for ALMGR API routes.
 	 *
 	 * WordPress only enables Application Passwords for routes served by its
-	 * REST API infrastructure. This filter extends that support to ALM custom
+	 * REST API infrastructure. This filter extends that support to ALMGR custom
 	 * rewrite rule routes by temporarily asserting an API request context while
 	 * the credentials are validated.
 	 *
@@ -183,7 +183,7 @@ class ALMGR_REST_Manager {
 			return $user_id;
 		}
 
-		// Only act for requests targeting an ALM API route.
+		// Only act for requests targeting an ALMGR API route.
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		if ( ! $this->is_almgr_api_uri( $request_uri ) ) {
 			return $user_id;
@@ -227,10 +227,10 @@ class ALMGR_REST_Manager {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Handle incoming ALM API requests.
+	 * Handle incoming ALMGR API requests.
 	 *
 	 * Fires on the parse_request action. Returns immediately when the request
-	 * does not target an ALM API route.
+	 * does not target an ALMGR API route.
 	 *
 	 * @param WP $wp WordPress request object.
 	 * @return void
@@ -396,13 +396,13 @@ class ALMGR_REST_Manager {
 	}
 
 	/**
-	 * Handle GET /almgr/v1/members — paginated ALM user list (operator only).
+	 * Handle GET /almgr/v1/members — paginated ALMGR user list (operator only).
 	 *
 	 * Query parameters:
 	 *   page     (int)    Page number, default 1.
 	 *   per_page (int)    Items per page, default 20, max 100.
 	 *   search   (string) Search term (login, email, display name).
-	 *   role     (string) Filter by ALM role slug (almgr_member or almgr_operator).
+	 *   role     (string) Filter by ALMGR role slug (almgr_member or almgr_operator).
 	 *
 	 * @return void
 	 */
@@ -624,7 +624,7 @@ class ALMGR_REST_Manager {
 	}
 
 	/**
-	 * Build the JSON-safe array representation of an ALM user.
+	 * Build the JSON-safe array representation of an ALMGR user.
 	 *
 	 * @param WP_User $user WordPress user object.
 	 * @return array
@@ -744,7 +744,7 @@ class ALMGR_REST_Manager {
 	}
 
 	/**
-	 * Return true when the given URI targets an ALM API route.
+	 * Return true when the given URI targets an ALMGR API route.
 	 *
 	 * @param string $uri Request URI.
 	 * @return bool

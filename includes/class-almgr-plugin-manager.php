@@ -235,7 +235,7 @@ class ALMGR_Plugin_Manager {
 	/**
 	 * Register the main admin menu for the plugin.
 	 *
-	 * This menu acts as a container for all ALM-related CPTs and pages.
+	 * This menu acts as a container for all ALMGR-related CPTs and pages.
 	 *
 	 * @return void
 	 */

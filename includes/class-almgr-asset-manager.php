@@ -453,7 +453,7 @@ class ALMGR_Asset_Manager {
 	 * Reverse of get_asset_code(). Extracts the numeric part after the last
 	 * hyphen, validates the post exists and is a published almgr_asset.
 	 *
-	 * @param string $code Human-readable asset code (e.g. "ALM-00000052").
+	 * @param string $code Human-readable asset code (e.g. "ALMGR-00000052").
 	 * @return int Post ID on success, 0 on failure.
 	 */
 	public static function get_asset_id_from_code( $code ) {

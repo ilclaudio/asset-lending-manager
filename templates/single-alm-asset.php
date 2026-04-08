@@ -1,6 +1,6 @@
 <?php
 /**
- * Single template for ALM Asset
+ * Single template for ALMGR Asset
  *
  * This template uses the [almgr_asset_view] shortcode.
  *

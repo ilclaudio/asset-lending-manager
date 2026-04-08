@@ -1,6 +1,6 @@
 <?php
 /**
- * ALM ACF Adapter
+ * ALMGR ACF Adapter
  *
  * Provides an abstraction layer for registering ACF fields for assets.
  *

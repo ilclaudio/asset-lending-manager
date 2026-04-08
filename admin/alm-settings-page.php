@@ -1,6 +1,6 @@
 <?php
 /**
- * ALM Settings Page template.
+ * ALMGR Settings Page template.
  *
  * Renders the plugin settings page in the WordPress admin.
  * Implements 10 tabs: Notifications, Email Templates, Loan Rules,

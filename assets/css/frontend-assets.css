@@ -1,5 +1,5 @@
 /**
-	* Frontend styles for ALM assets
+	* Frontend styles for ALMGR assets
 	*
 	* Loaded only on asset archive, single, and pages with asset shortcodes.
 	*
@@ -7,7 +7,7 @@
 	*/
 
 	/* ========================================================================
-	DESIGN TOKENS — Semantic color variables shared across all ALM stylesheets.
+	DESIGN TOKENS — Semantic color variables shared across all ALMGR stylesheets.
 	Define colors here once; use var(--alm-...) everywhere else.
 	======================================================================== */
 

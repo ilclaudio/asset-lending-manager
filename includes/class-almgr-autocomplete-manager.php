@@ -1,6 +1,6 @@
 <?php
 /**
- * Autocomplete manager for ALM assets.
+ * Autocomplete manager for ALMGR assets.
  *
  * Handles REST API endpoint for frontend autocomplete search.
  *
@@ -45,7 +45,7 @@ class ALMGR_Autocomplete_Manager {
 	/**
 	 * Enqueue autocomplete scripts.
 	 *
-	 * Loads assets only on ALM pages (archive, single, or shortcode pages)
+	 * Loads assets only on ALMGR pages (archive, single, or shortcode pages)
 	 * to avoid unnecessary JS/CSS on unrelated frontend pages.
 	 *
 	 * @return void
@@ -182,7 +182,7 @@ class ALMGR_Autocomplete_Manager {
 	}
 
 	/**
-	 * Check whether the current page is an ALM page.
+	 * Check whether the current page is an ALMGR page.
 	 *
 	 * Returns true for asset archive, single asset, and pages containing
 	 * the almgr_asset_list or almgr_asset_view shortcodes.
@@ -250,7 +250,7 @@ class ALMGR_Autocomplete_Manager {
 	/**
 	 * Handle user autocomplete request via POST.
 	 *
-	 * Returns ALM users (members and operators) matching the search term.
+	 * Returns ALMGR users (members and operators) matching the search term.
 	 * Protected endpoint: requires operator capability.
 	 *
 	 * @param WP_REST_Request $request REST request.

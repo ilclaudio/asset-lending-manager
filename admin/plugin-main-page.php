@@ -1,6 +1,6 @@
 <?php
 /**
- * ALM Main Page template — About section.
+ * ALMGR Main Page template — About section.
  *
  * Displays plugin identity, metadata, quick links and shortcode reference.
  *

@@ -2,7 +2,7 @@
 /**
  * Asset Lending Manager - Frontend Manager
  *
- * Handles frontend rendering for ALM assets using shortcodes.
+ * Handles frontend rendering for ALMGR assets using shortcodes.
  *
  * Responsibilities:
  * - Provide fallback templates for almgr_asset CPT.
@@ -58,7 +58,7 @@ class ALMGR_Frontend_Manager {
 		add_shortcode( 'almgr_asset_view', array( $this, 'shortcode_asset_view' ) );
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
-		// Handle QR scan redirect (?almgr_scan=ALM-00000052).
+		// Handle QR scan redirect (?almgr_scan=ALMGR-00000052).
 		add_action( 'template_redirect', array( $this, 'handle_almgr_scan_redirect' ) );
 		// Login and logout redirect for operators and members.
 		add_filter( 'login_redirect', array( $this, 'redirect_login_by_role' ), 10, 3 );

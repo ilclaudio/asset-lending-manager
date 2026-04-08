@@ -1,5 +1,5 @@
 /**
- * Frontend JavaScript for ALM assets
+ * Frontend JavaScript for ALMGR assets
  *
  * Loaded only on asset archive, single, and pages with asset shortcodes.
  *
@@ -21,7 +21,7 @@
 	});
 
 	/**
-	 * ALM Frontend object.
+	 * ALMGR Frontend object.
 	 */
 	var ALMGR_Frontend = {
 
@@ -1339,7 +1339,7 @@
 											window.location.href = decoded;
 											return;
 										}
-										// Non-ALM or foreign-origin QR: ignore and keep scanning.
+										// Non-ALMGR or foreign-origin QR: ignore and keep scanning.
 									} catch (err) {
 										// Not a valid URL: ignore and keep scanning.
 									}

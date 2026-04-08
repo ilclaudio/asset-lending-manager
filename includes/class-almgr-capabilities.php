@@ -1,10 +1,10 @@
 <?php
 /**
- * Centralized definition of all ALM capabilities.
+ * Centralized definition of all ALMGR capabilities.
  *
  * This class defines:
  * - CPT-level WordPress capabilities (used by core for CPT access control)
- * - Domain-level ALM capabilities (used by menus, frontend, business logic)
+ * - Domain-level ALMGR capabilities (used by menus, frontend, business logic)
  *
  * @package AssetLendingManager
  */
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Centralized definition of all ALM capabilities.
+ * Centralized definition of all ALMGR capabilities.
  */
 class ALMGR_Capabilities {
 
@@ -46,7 +46,7 @@ class ALMGR_Capabilities {
 	}
 
 	/**
-	 * Domain-level ALM capabilities.
+	 * Domain-level ALMGR capabilities.
 	 *
 	 * These are used by:
 	 * - menus
@@ -64,7 +64,7 @@ class ALMGR_Capabilities {
 	}
 
 	/**
-	 * Return all capabilities managed by ALM.
+	 * Return all capabilities managed by ALMGR.
 	 *
 	 * @return string[]
 	 */

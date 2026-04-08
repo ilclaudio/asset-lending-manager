@@ -1,5 +1,5 @@
 /**
- * User autocomplete widget for ALM.
+ * User autocomplete widget for ALMGR.
  *
  * Provides a reusable, accessible autocomplete widget for user search inputs.
  * Used by the direct assignment form (operator-only) and the owner filter in the asset list.

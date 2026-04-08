@@ -1,4 +1,4 @@
--- Retrieve all ALM plugin settings.
+-- Retrieve all ALMGR plugin settings.
 --
 -- All settings are stored as a single serialized PHP array in wp_options
 -- under the key 'almgr_settings'. If the row is missing, no settings have

@@ -1,12 +1,12 @@
 <?php
 /**
- * ALM Admin Manager.
+ * ALMGR Admin Manager.
  *
  * Handles admin UI customizations and access restrictions for specific roles.
  *
  * Responsibilities:
  * - Manage admin menu visibility and redirects for restricted users.
- * - Enqueue admin CSS and JS for ALM pages.
+ * - Enqueue admin CSS and JS for ALMGR pages.
  *
  * @package AssetLendingManager
  */
@@ -80,18 +80,18 @@ class ALMGR_Admin_Manager {
 	}
 
 	/**
-	 * Enqueue admin CSS and JS for ALM pages.
+	 * Enqueue admin CSS and JS for ALMGR pages.
 	 *
 	 * Loads assets only on plugin-related admin pages:
 	 * - Asset post type pages (list, edit, add)
-	 * - ALM custom admin pages
-	 * - ALM taxonomy pages
+	 * - ALMGR custom admin pages
+	 * - ALMGR taxonomy pages
 	 *
 	 * @param string $hook Current admin page hook.
 	 * @return void
 	 */
 	public function enqueue_admin_assets( $hook ) {
-		// Load only on ALM admin pages.
+		// Load only on ALMGR admin pages.
 		if ( ! $this->is_almgr_admin_page( $hook ) ) {
 			return;
 		}
@@ -131,10 +131,10 @@ class ALMGR_Admin_Manager {
 	}
 
 	/**
-	 * Check if current admin page is ALM-related.
+	 * Check if current admin page is ALMGR-related.
 	 *
 	 * @param string $hook Current admin page hook.
-	 * @return bool True if on ALM admin page.
+	 * @return bool True if on ALMGR admin page.
 	 */
 	private function is_almgr_admin_page( $hook ) {
 		global $post_type;
@@ -142,11 +142,11 @@ class ALMGR_Admin_Manager {
 		if ( ALMGR_ASSET_CPT_SLUG === $post_type ) {
 			return true;
 		}
-		// ALM custom admin pages (main menu, tools, etc).
+		// ALMGR custom admin pages (main menu, tools, etc).
 		if ( strpos( $hook, 'alm' ) !== false ) {
 			return true;
 		}
-		// ALM taxonomies pages.
+		// ALMGR taxonomies pages.
 		$screen = get_current_screen();
 		if ( $screen && in_array( $screen->taxonomy, ALMGR_CUSTOM_TAXONOMIES, true ) ) {
 			return true;

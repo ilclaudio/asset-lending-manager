@@ -1,6 +1,6 @@
 <?php
 /**
- * ALM Tools Page template.
+ * ALMGR Tools Page template.
  *
  * @package AssetLendingManager
  */

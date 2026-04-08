@@ -1,6 +1,6 @@
 <?php
 /**
- * Notification manager for ALM loan workflow events.
+ * Notification manager for ALMGR loan workflow events.
  *
  * Listens to custom WordPress actions fired by ALMGR_Loan_Manager and sends
  * transactional email notifications to the involved parties via wp_mail().
@@ -16,7 +16,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Handles email notifications for ALM loan workflow events.
+ * Handles email notifications for ALMGR loan workflow events.
  */
 class ALMGR_Notification_Manager {
 
@@ -39,7 +39,7 @@ class ALMGR_Notification_Manager {
 	/**
 	 * Register WordPress action hooks for loan workflow events.
 	 *
-	 * Each hook maps a custom ALM action to the corresponding notification method.
+	 * Each hook maps a custom ALMGR action to the corresponding notification method.
 	 * ALMGR_Loan_Manager fires these actions; this class reacts to them without
 	 * any direct coupling between the two modules.
 	 *
