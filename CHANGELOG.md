@@ -10,24 +10,24 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 
-## [0.2.1] - 2026-04-10
-### Fixed
-- Massive refactoring: Changed the prefix of the project from "alm_" "to almgr_".
-- Fixed the issues reported by the auditor.
-- An operator can approve/reject requests for resources without a current owner.
-- Added configuration to set if and when operators must be notified of a new request of loan.
-## Added
-- Added users CSV import from Tools (admin only).
-- Added users CSV export from Tools (admin and operator).
+## [0.2.1] - 2026-04-08
+### Added
+- Back-office Tools page (ALM -> Tools) with Import, Export, and Utilities tabs.
+- Users CSV import from Tools (admin only).
+- Users CSV export from Tools (admin and operator).
+- Notification policy setting to control if/when all operators are notified for a new loan request (`never`, `no_owner`, `always`).
 ### Changed
+- Massive refactoring: changed all plugin identifiers from `alm_` to `almgr_`.
+### Fixed
+- An operator can approve/reject requests for resources without a current owner.
 ### Security
-- Fixed issues about sensible data of a resource.
+- Security fixes and hardening from code audit.
 
 
 ## [0.1.1] - 2026-04-01
 ### Added
-- Added a module to manage a REST API with tehese endpoints: `GET /almgr/v1/assets`, `GET /almgr/v1/assets/{id}`, `GET /almgr/v1/members` and `GET /almgr/v1/members/{id}/assets/`
-- Added the Settings tab REST API (admin-only): toggle to enable/disable all routes, endpoint reference table, authentication guide.
+- Added a module to manage a REST API with these endpoints: `GET /almgr/v1/assets`, `GET /almgr/v1/assets/{id}`, `GET /almgr/v1/members` and `GET /almgr/v1/members/{id}/assets/`.
+- Added the REST API settings tab (admin-only): toggle to enable/disable all routes, endpoint reference table, and authentication guide.
 ### Fixed
 ### Changed
 ### Security
@@ -37,7 +37,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 First public release.
 ### Added
 - Asset and kit management with full loan workflow (request, approve, reject, direct assign).
-- Role-based access control: `alm_member` and `alm_operator` roles with scoped capabilities.
+- Role-based access control: `almgr_member` and `almgr_operator` roles with scoped capabilities.
 - Email notifications for all loan workflow events (request submitted, approved, rejected, canceled, direct assignment).
 - Loan history tracking per asset, including per-component entries for kit operations.
 - Frontend asset browsing with text search and taxonomy filters.

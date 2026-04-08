@@ -6,6 +6,10 @@ arrivano, quale template viene usato e con quale testo.
 Le email vengono inviate tramite `wp_mail()` dalla classe `ALMGR_Notification_Manager`.
 Il mittente e i destinatari di copia sono letti dai settings runtime:
 `email.from_name`, `email.from_address`, `email.system_email`.
+Le notifiche evento sono governate dai toggle `notifications.enabled`,
+`notifications.loan_request`, `notifications.loan_decision`,
+`notifications.loan_confirmation` e dalla policy
+`notifications.loan_request_operator_mode` (`never`, `no_owner`, `always`).
 Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginfo('admin_email')`) quando i campi mittente sono vuoti.
 
 ---
@@ -17,6 +21,7 @@ Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginf
 | 1 | Richiesta di prestito inviata | Membro | Richiedente | `request_to_requester` | Sempre |
 | 1 | Richiesta di prestito inviata | Membro | Proprietario corrente | `request_to_owner` | Solo se asset già assegnato |
 | 1 | Richiesta di prestito inviata | Membro | Sistema | `request_to_owner` | Solo se `email.system_email` configurato |
+| 1 | Richiesta di prestito inviata | Membro | Tutti gli operatori (`almgr_operator`) | `request_to_owner` | Solo se policy operatori = `always`, oppure `no_owner` con asset senza proprietario |
 | 2 | Richiesta approvata | Proprietario corrente | Richiedente | `approved` | Sempre |
 | 3 | Richiesta rifiutata | Proprietario corrente | Richiedente | `rejected` | Sempre |
 | 4 | Richiesta annullata automaticamente | Sistema | Richiedente (della richiesta cancellata) | `canceled` | Una email per ogni richiesta concorrente annullata |
@@ -31,9 +36,16 @@ Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginf
 
 - **A chi:** `email.system_email`
 - **Condizione:** inviata solo se il setting è configurato
-- **Oggetto e corpo:** identici all'email 5b (template `direct_assign_to_prev_owner`)
-- **Nota:** se non c'era un proprietario precedente, il placeholder
-  `{PREV_OWNER_NAME}` apparirà vuoto nel corpo
+- **Richiesta prestito:** template `request_to_owner`
+- **Assegnamento diretto:** template `direct_assign_to_prev_owner`
+- **Nota assegnamento diretto:** se non c'era un proprietario precedente,
+  il placeholder `{PREV_OWNER_NAME}` apparirà vuoto nel corpo
+
+### Deduplica destinatari (richiesta prestito)
+
+Per l'evento "Richiesta di prestito inviata" il sistema effettua deduplica
+per indirizzo email normalizzato. Se la stessa email coincide tra richiedente,
+proprietario, `system_email` o operatori, viene inviata una sola email a quell'indirizzo.
 
 ---
 
@@ -65,9 +77,14 @@ Settings runtime in `almgr_settings`:
 | `email.from_name` | Nome visualizzato del mittente (fallback: nome sito) |
 | `email.from_address` | Indirizzo email del mittente (fallback: admin email del sito) |
 | `email.system_email` | Indirizzo di copia operatore/sistema (opzionale) |
+| `notifications.enabled` | Master switch globale notifiche |
+| `notifications.loan_request` | Abilita/disabilita notifiche sugli eventi di richiesta prestito |
+| `notifications.loan_decision` | Abilita/disabilita notifiche su approvazione/rifiuto |
+| `notifications.loan_confirmation` | Abilita/disabilita notifiche su assegnamento diretto |
+| `notifications.loan_request_operator_mode` | Policy destinatari operatori su richiesta prestito: `never`, `no_owner`, `always` |
 
 Nota: nel flusso corrente `ALMGR_Notification_Manager` usa i settings runtime; le costanti `ALMGR_EMAIL_*` in `plugin-config.php` non vengono lette direttamente dal codice di invio.
 
 ---
 
-*Ultimo aggiornamento: 2026-04-07*
+*Ultimo aggiornamento: 2026-04-08*

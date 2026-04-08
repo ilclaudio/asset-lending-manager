@@ -107,14 +107,16 @@ Basic setup only requires installing the plugin and activating ACF — no shortc
 For full release notes see `CHANGELOG.md`.
 
 = 0.2.1 =
-* Internal refactoring: all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
-* Back-office Tools page (ALM → Tools) added with Import, Export, and Utilities tabs.
-* Users CSV import added in Tools.
-* Users CSV export added in Tools.
-* Various bug fixes and improvements flagged during code audit.
+* Changed: internal refactoring — all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
+* Added: back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs.
+* Added: users CSV import (admin only) and users CSV export (admin and operator) in Tools.
+* Added: notification policy setting to control if/when all operators are notified for a new loan request (`never`, `no owner`, `always`).
+* Fixed: operators can approve/reject requests for assets without a current owner.
+* Security: fixes and hardening from code audit.
 
 = 0.1.1 =
-* Read-only JSON REST API at `/almgr/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress Application Passwords. Independent of the global WP REST API toggle.
+* Added: read-only JSON REST API at `/almgr/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress Application Passwords. Independent of the global WP REST API toggle.
+* Added: REST API settings tab in wp-admin (admin only) with enable/disable toggle, endpoint reference, and authentication guide.
 * Security: added resource-status checks on all AJAX endpoints.
 
 = 0.1.0 =
