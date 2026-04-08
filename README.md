@@ -24,6 +24,9 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Loan history tracking
 - Role-based permissions (`almgr_member`, `almgr_operator`)
 - Read-only JSON REST API (`/almgr/v1/`) for asset list, asset detail, member list, and member assets; authentication via Application Passwords; independent of the WordPress REST API global setting
+- Back-office Tools page (`ALM → Tools`) with Import, Export, and Utilities tabs
+- Bulk CSV import for users and assets with dry-run preview, three import modes (`create_only`, `update_only`, `upsert`), per-row validation, and downloadable error report (in development)
+- Bulk export of users and assets to CSV and JSON (in development)
 - Translation-ready
 
 ---

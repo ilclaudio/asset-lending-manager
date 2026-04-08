@@ -37,6 +37,9 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Full loan history for each asset
 * Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)
 * Read-only JSON REST API at `/almgr/v1/` for asset list, asset detail, member list, and member assets; authentication via Application Passwords; works independently of the WordPress REST API global setting
+* Back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs
+* Bulk CSV import for users and assets with dry-run preview, three import modes (create only, update only, upsert), per-row validation, and downloadable error report
+* Bulk export of users and assets to CSV and JSON with fixed fields and CSV injection protection
 * Translation-ready
 
 
@@ -105,7 +108,9 @@ For full release notes see `CHANGELOG.md`.
 
 = 0.2.1 =
 * Internal refactoring: all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
-* Import and export tools for members and operators added.
+* Back-office Tools page (ALM → Tools) added with Import, Export, and Utilities tabs.
+* Bulk CSV import for users and assets (dry-run, create_only/update_only/upsert modes, per-row error report).
+* Bulk export of users and assets to CSV and JSON.
 * Various bug fixes and improvements flagged during code audit.
 
 = 0.1.1 =
