@@ -32,6 +32,7 @@ require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-loan-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-notification-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-frontend-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-admin-manager.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-tools-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-autocomplete-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-rest-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-manual-prefix-migration.php';
