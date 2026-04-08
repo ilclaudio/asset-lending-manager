@@ -147,7 +147,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	<section class="almgr-asset-view__acf" aria-label="<?php esc_attr_e( 'Additional fields', 'asset-lending-manager' ); ?>">
 		<details class="almgr-collapsible almgr-collapsible--acf" open>
 			<summary class="almgr-collapsible__summary">
-				<span class="almgr-collapsible__title">
+				<span class="almgr-collapsible__title" role="heading" aria-level="2">
 					<?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?>
 				</span>
 				<span class="almgr-collapsible__hint" aria-hidden="true">
@@ -286,7 +286,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 		<section class="almgr-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
 			<details class="almgr-collapsible almgr-collapsible--requestbutton" id="almgr-loan-request-section">
 				<summary class="almgr-collapsible__summary">
-					<span class="almgr-collapsible__title">
+					<span class="almgr-collapsible__title" role="heading" aria-level="2">
 						<?php esc_html_e( 'Request loan', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="almgr-collapsible__hint" aria-hidden="true">
@@ -375,7 +375,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	<section class="almgr-asset-view__loan-requests" aria-label="<?php esc_attr_e( 'Loan requests', 'asset-lending-manager' ); ?>">
 		<details class="almgr-collapsible almgr-collapsible--requestlist">
 			<summary class="almgr-collapsible__summary">
-				<span class="almgr-collapsible__title">
+				<span class="almgr-collapsible__title" role="heading" aria-level="2">
 				<?php esc_html_e( 'Loan requests', 'asset-lending-manager' ); ?>
 				</span>
 				<span class="almgr-collapsible__hint" aria-hidden="true">
@@ -491,7 +491,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	<section class="almgr-asset-view__direct-assign" aria-label="<?php esc_attr_e( 'Direct assignment', 'asset-lending-manager' ); ?>">
 		<details class="almgr-collapsible almgr-collapsible--directassign">
 			<summary class="almgr-collapsible__summary">
-				<span class="almgr-collapsible__title">
+				<span class="almgr-collapsible__title" role="heading" aria-level="2">
 					<?php esc_html_e( 'Direct assignment', 'asset-lending-manager' ); ?>
 				</span>
 				<span class="almgr-collapsible__hint" aria-hidden="true">
@@ -557,7 +557,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 		<section class="almgr-asset-view__change-state" aria-label="<?php esc_attr_e( 'Asset state management', 'asset-lending-manager' ); ?>">
 			<details class="almgr-collapsible almgr-collapsible--changestate">
 				<summary class="almgr-collapsible__summary">
-					<span class="almgr-collapsible__title">
+					<span class="almgr-collapsible__title" role="heading" aria-level="2">
 						<?php esc_html_e( 'Asset state management', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="almgr-collapsible__hint" aria-hidden="true">
@@ -689,7 +689,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 		<section class="almgr-asset-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
 			<details class="almgr-collapsible almgr-collapsible--history">
 				<summary class="almgr-collapsible__summary">
-					<span class="almgr-collapsible__title">
+					<span class="almgr-collapsible__title" role="heading" aria-level="2">
 						<?php esc_html_e( 'Loan history', 'asset-lending-manager' ); ?>
 					</span>
 					<span class="almgr-collapsible__hint" aria-hidden="true">
