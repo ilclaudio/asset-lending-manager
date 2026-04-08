@@ -15,7 +15,7 @@ define( 'ALMGR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ALMGR_TEXT_DOMAIN', 'asset-lending-manager' );
 
 // Main menu settings.
-define( 'ALMGR_SLUG_MAIN_MENU', 'alm' );
+define( 'ALMGR_SLUG_MAIN_MENU', 'almgr' );
 
 // Permissions.
 define( 'ALMGR_VIEW_ASSETS', 'almgr_view_assets' );
@@ -74,7 +74,7 @@ define( 'ALMGR_EMAIL_SYSTEM_ADDRESS', '' ); // Operator notification address; di
 // Email notifications — templates.
 // Runtime placeholders are replaced before sending the email.
 /**
- * Return the default email templates used by ALM notifications.
+ * Return the default email templates used by ALMGR notifications.
  *
  * @return array<string, array<string, string>>
  */

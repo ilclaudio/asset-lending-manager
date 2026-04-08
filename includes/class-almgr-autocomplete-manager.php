@@ -51,7 +51,7 @@ class ALMGR_Autocomplete_Manager {
 	 * @return void
 	 */
 	public function enqueue_assets() {
-		if ( ! $this->is_alm_page() ) {
+		if ( ! $this->is_almgr_page() ) {
 			return;
 		}
 		if ( ! $this->can_current_user_access_assets_autocomplete() ) {
@@ -189,7 +189,7 @@ class ALMGR_Autocomplete_Manager {
 	 *
 	 * @return bool
 	 */
-	private function is_alm_page() {
+	private function is_almgr_page() {
 		if ( is_post_type_archive( ALMGR_ASSET_CPT_SLUG ) || is_singular( ALMGR_ASSET_CPT_SLUG ) ) {
 			return true;
 		}

@@ -173,12 +173,12 @@
 
 		/**
 		 * Initialize loan request form.
-		 * 
+		 *
 		 * Handles loan request submission via AJAX.
 		 */
 		initLoanRequestForm: function() {
 			var form = document.getElementById('alm-loan-request-form');
-			
+
 			if (!form) {
 				return;
 			}
@@ -191,7 +191,7 @@
 				messageField.addEventListener('input', function() {
 					var length = messageField.value.length;
 					charCount.textContent = length + ' / ' + (parseInt(almgrFrontend.directAssignReasonMaxLength, 10) || 500);
-					
+
 					if (length >= 500) {
 						charCount.style.color = '#dc3545';
 					} else {
@@ -262,7 +262,7 @@
 				})
 				.then(function(data) {
 					if (data.success) {
-						
+
 						// Reload page with success message
 						var currentUrl = window.location.href.split('?')[0];
 						window.location.href = currentUrl + '?almgr_action=send_request&almgr_status=success';
@@ -270,7 +270,7 @@
 						var errorMsg = data.data && data.data.message ? data.data.message : __( 'Request failed. Please try again.', 'asset-lending-manager' );
 						ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
 						console.error('*** Loan request failed:', errorMsg);
-						
+
 						// Re-enable submit button only on error
 						submitBtn.disabled = false;
 						submitBtn.textContent = originalBtnText;
@@ -279,7 +279,7 @@
 				.catch(function(error) {
 					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
 					console.error('*** AJAX error:', error);
-					
+
 					// Re-enable submit button only on error
 					submitBtn.disabled = false;
 					submitBtn.textContent = originalBtnText;
@@ -599,7 +599,7 @@
 
 		/**
 		 * Handle approve request action.
-		 * 
+		 *
 		 * @param {HTMLElement} btn Button element
 		 */
 		handleApproveRequest: function(btn) {
@@ -624,7 +624,7 @@
 
 		/**
 		 * Show confirmation modal.
-		 * 
+		 *
 		 * @param {string} title Modal title
 		 * @param {string} message Modal message
 		 * @param {Function} onConfirm Callback on confirm
@@ -704,7 +704,7 @@
 				cancelBtn.disabled = true;
 
 				closeModal();
-				
+
 				if (typeof onConfirm === 'function') {
 					onConfirm();
 				}
@@ -713,7 +713,7 @@
 
 		/**
 		 * Submit approval request via AJAX.
-		 * 
+		 *
 		 * @param {HTMLElement} btn Button element
 		 * @param {string} requestId Request ID
 		 * @param {string} assetId Asset ID
@@ -757,7 +757,7 @@
 			})
 			.then(function(data) {
 				if (data.success) {
-					
+
 					// Reload page with success message
 					var currentUrl = window.location.href.split('?')[0];
 					window.location.href = currentUrl + '?almgr_action=approve&almgr_status=success';
@@ -765,11 +765,11 @@
 					var errorMsg = data.data && data.data.message ? data.data.message : __( 'Approval failed. Please try again.', 'asset-lending-manager' );
 					alert(errorMsg);
 					console.error('*** Approval failed:', errorMsg);
-					
+
 					// Re-enable buttons on error
 					btn.disabled = false;
 					btn.textContent = originalBtnText;
-					
+
 					if (row) {
 						var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
 						actionBtns.forEach(function(actionBtn) {
@@ -781,11 +781,11 @@
 			.catch(function(error) {
 				alert( __( 'Approval request failed. Please try again.', 'asset-lending-manager' ) );
 				console.error('*** AJAX error:', error);
-				
+
 				// Re-enable buttons on error
 				btn.disabled = false;
 				btn.textContent = originalBtnText;
-				
+
 				if (row) {
 					var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
 					actionBtns.forEach(function(actionBtn) {
@@ -797,7 +797,7 @@
 
 		/**
 		 * Handle reject request action.
-		 * 
+		 *
 		 * @param {HTMLElement} btn Button element
 		 */
 		handleRejectRequest: function(btn) {
@@ -810,7 +810,7 @@
 
 		/**
 		 * Show rejection modal.
-		 * 
+		 *
 		 * @param {string} requestId Request ID
 		 * @param {string} assetId Asset ID
 		 */
@@ -829,11 +829,11 @@
 			// Modal header
 			var modalHeader = document.createElement('div');
 			modalHeader.className = 'alm-modal-header';
-			
+
 			var modalTitle = document.createElement('h2');
 			modalTitle.id = 'alm-reject-modal-title';
 			modalTitle.textContent = __( 'Reject Loan Request', 'asset-lending-manager' );
-			
+
 			var closeBtn = document.createElement('button');
 			closeBtn.className = 'alm-modal-close';
 			closeBtn.setAttribute('aria-label', __( 'Close dialog', 'asset-lending-manager' ));
@@ -872,7 +872,7 @@
 			textarea.addEventListener('input', function() {
 				var length = textarea.value.length;
 				charCount.textContent = length + ' / ' + rejMaxLen;
-				
+
 				if (length >= rejMaxLen) {
 					charCount.style.color = '#dc3545';
 				} else {
@@ -909,7 +909,7 @@
 
 			modalFooter.appendChild(cancelBtn);
 			modalFooter.appendChild(submitBtn);
-			
+
 			// Add footer to form
 			form.appendChild(modalFooter);
 
@@ -957,7 +957,7 @@
 
 		/**
 		 * Submit reject request via AJAX.
-		 * 
+		 *
 		 * @param {string} requestId Request ID
 		 * @param {string} assetId Asset ID
 		 * @param {string} message Rejection message
@@ -1008,10 +1008,10 @@
 			})
 			.then(function(data) {
 				if (data.success) {
-					
+
 					// Close modal
 					ALMGR_Frontend.closeModal(modal);
-					
+
 					// Reload page with success message
 					var currentUrl = window.location.href.split('?')[0];
 					window.location.href = currentUrl + '?almgr_action=reject&almgr_status=success';
@@ -1019,7 +1019,7 @@
 					var errorMsg = data.data && data.data.message ? data.data.message : __( 'Failed to reject request. Please try again.', 'asset-lending-manager' );
 					ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
 					console.error('*** Rejection failed:', errorMsg);
-					
+
 					// Re-enable submit button
 					submitBtn.disabled = false;
 					submitBtn.textContent = originalBtnText;
@@ -1028,7 +1028,7 @@
 			.catch(function(error) {
 				ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
 				console.error('*** AJAX error:', error);
-				
+
 				// Re-enable submit button
 				submitBtn.disabled = false;
 				submitBtn.textContent = originalBtnText;
@@ -1037,7 +1037,7 @@
 
 		/**
 		 * Close modal.
-		 * 
+		 *
 		 * @param {HTMLElement} modal Modal element
 		 */
 		closeModal: function(modal) {
@@ -1046,7 +1046,7 @@
 			}
 
 			modal.classList.remove('active');
-			
+
 			setTimeout(function() {
 				if (modal && modal.parentNode) {
 					modal.parentNode.removeChild(modal);
@@ -1056,14 +1056,14 @@
 
 		/**
 		 * Trap focus inside modal for accessibility.
-		 * 
+		 *
 		 * @param {HTMLElement} modal Modal element
 		 */
 		trapFocus: function(modal) {
 			var focusableElements = modal.querySelectorAll(
 				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 			);
-			
+
 			if (!focusableElements.length) {
 				return;
 			}
@@ -1094,7 +1094,7 @@
 
 		/**
 		 * Show action result message after page reload.
-		 * 
+		 *
 		 * Display global message based on URL parameters.
 		 */
 		showActionResultMessage: function() {
@@ -1137,7 +1137,7 @@
 
 			if (message) {
 				this.showGlobalMessage(message, messageType);
-				
+
 				// Clean URL (remove query parameters)
 				var cleanUrl = window.location.href.split('?')[0];
 				window.history.replaceState({}, document.title, cleanUrl);
@@ -1219,7 +1219,7 @@
 		 * Shows a "Scan QR" button next to the search input. On click, opens a
 		 * full-screen overlay with the device camera. jsQR decodes each video frame;
 		 * when a valid same-origin URL is found the browser navigates to it, which
-		 * triggers the handle_alm_scan_redirect() PHP handler and lands on the asset
+		 * triggers the handle_almgr_scan_redirect() PHP handler and lands on the asset
 		 * detail page. Foreign-origin URLs are silently ignored.
 		 */
 		initQrScanner: function() {
@@ -1374,10 +1374,10 @@
 			messageEl.className = 'alm-global-message alm-global-message--' + type;
 			messageEl.setAttribute('role', 'alert');
 			messageEl.setAttribute('aria-live', 'polite');
-			
+
 			var messageText = document.createElement('p');
 			messageText.textContent = message;
-			
+
 			var closeBtn = document.createElement('button');
 			closeBtn.className = 'alm-global-message-close';
 			closeBtn.setAttribute('aria-label', __( 'Close message', 'asset-lending-manager' ));
@@ -1418,7 +1418,7 @@
 
 		/**
 		 * Get asset ID from the current page.
-		 * 
+		 *
 		 * @return {number|null} Asset ID or null if not found
 		 */
 		getAssetIdFromPage: function() {
@@ -1431,7 +1431,7 @@
 			// Fallback: try to get from body class (WordPress adds postid-XXX)
 			var bodyClasses = document.body.className;
 			var match = bodyClasses.match(/postid-(\d+)/);
-			
+
 			if (match && match[1]) {
 				return parseInt(match[1], 10);
 			}
@@ -1441,7 +1441,7 @@
 
 		/**
 		 * Show response message.
-		 * 
+		 *
 		 * @param {HTMLElement} el DOM element
 		 * @param {string} type 'success' or 'error'
 		 * @param {string} message Message text
@@ -1450,7 +1450,7 @@
 			if (!el) {
 				return;
 			}
-			
+
 			el.className = 'alm-response-message alm-response--' + type;
 			el.innerHTML = '<p>' + this.escapeHtml(message) + '</p>';
 			el.style.display = 'block';
@@ -1458,7 +1458,7 @@
 
 		/**
 		 * Escape HTML to prevent XSS.
-		 * 
+		 *
 		 * @param {string} text Text to escape
 		 * @return {string} Escaped text
 		 */

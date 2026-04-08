@@ -92,7 +92,7 @@ class ALMGR_Admin_Manager {
 	 */
 	public function enqueue_admin_assets( $hook ) {
 		// Load only on ALM admin pages.
-		if ( ! $this->is_alm_admin_page( $hook ) ) {
+		if ( ! $this->is_almgr_admin_page( $hook ) ) {
 			return;
 		}
 
@@ -136,7 +136,7 @@ class ALMGR_Admin_Manager {
 	 * @param string $hook Current admin page hook.
 	 * @return bool True if on ALM admin page.
 	 */
-	private function is_alm_admin_page( $hook ) {
+	private function is_almgr_admin_page( $hook ) {
 		global $post_type;
 		// Asset CPT pages (edit, list, add new).
 		if ( ALMGR_ASSET_CPT_SLUG === $post_type ) {

@@ -64,12 +64,12 @@ class ALMGR_Plugin_Manager {
 		// Register the main menu of the plugin.
 		add_action(
 			'admin_menu',
-			array( $this, 'register_alm_custom_menu' ),
+			array( $this, 'register_almgr_custom_menu' ),
 		);
 		// Fix the layout of the main menu for taxonomies entries.
 		add_action(
 			'parent_file',
-			array( $this, 'keep_alm_taxonomy_menu_open' ),
+			array( $this, 'keep_almgr_taxonomy_menu_open' ),
 		);
 		// Reload default taxonomy terms.
 		add_action(
@@ -80,6 +80,11 @@ class ALMGR_Plugin_Manager {
 		add_action(
 			'admin_post_almgr_save_settings',
 			array( $this, 'handle_settings_save' ),
+		);
+		// Backward-compat redirects for legacy admin page slugs.
+		add_action(
+			'admin_init',
+			array( $this, 'redirect_legacy_admin_pages' ),
 		);
 	}
 
@@ -234,7 +239,7 @@ class ALMGR_Plugin_Manager {
 	 *
 	 * @return void
 	 */
-	public function register_alm_custom_menu() {
+	public function register_almgr_custom_menu() {
 
 		$slug_main_menu = ALMGR_SLUG_MAIN_MENU;
 
@@ -308,7 +313,7 @@ class ALMGR_Plugin_Manager {
 			__( 'ALM Settings', 'asset-lending-manager' ),
 			__( 'Settings', 'asset-lending-manager' ),
 			ALMGR_EDIT_ASSET,
-			'alm-settings',
+			'almgr-settings',
 			array( $this, 'render_settings_page' )
 		);
 
@@ -318,7 +323,7 @@ class ALMGR_Plugin_Manager {
 			__( 'ALM Tools', 'asset-lending-manager' ),
 			__( 'Tools', 'asset-lending-manager' ),
 			ALMGR_EDIT_ASSET,
-			'alm-tools',
+			'almgr-tools',
 			array( $this, 'render_tools_page' )
 		);
 	}
@@ -329,13 +334,72 @@ class ALMGR_Plugin_Manager {
 	 * @param string $parent_file Current parent file slug.
 	 * @return string
 	 */
-	public function keep_alm_taxonomy_menu_open( $parent_file ) {
+	public function keep_almgr_taxonomy_menu_open( $parent_file ) {
 		global $current_screen;
 		$taxonomy = $current_screen->taxonomy;
 		if ( in_array( $taxonomy, ALMGR_CUSTOM_TAXONOMIES, true ) ) {
 			$parent_file = ALMGR_SLUG_MAIN_MENU;
 		}
 		return $parent_file;
+	}
+
+	/**
+	 * Redirect legacy admin pages to the new almgr-prefixed slugs.
+	 *
+	 * @return void
+	 */
+	public function redirect_legacy_admin_pages() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing compatibility for admin page slugs.
+		if ( ! isset( $_GET['page'] ) ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing compatibility for admin page slugs.
+		$current_page = sanitize_key( wp_unslash( $_GET['page'] ) );
+		$page_map     = array(
+			'alm-settings' => 'almgr-settings',
+			'alm-tools'    => 'almgr-tools',
+		);
+
+		if ( ! isset( $page_map[ $current_page ] ) ) {
+			return;
+		}
+
+		$redirect_args = array();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing compatibility for admin page slugs.
+		foreach ( $_GET as $key => $value ) {
+			if ( 'page' === $key ) {
+				continue;
+			}
+
+			$clean_key = sanitize_key( (string) $key );
+			if ( '' === $clean_key ) {
+				continue;
+			}
+
+			if ( is_array( $value ) ) {
+				$redirect_args[ $clean_key ] = array_map(
+					static function ( $item ) {
+						return sanitize_text_field( (string) wp_unslash( $item ) );
+					},
+					$value
+				);
+			} else {
+				$redirect_args[ $clean_key ] = sanitize_text_field( (string) wp_unslash( $value ) );
+			}
+		}
+
+		$target_url = add_query_arg(
+			$redirect_args,
+			admin_url( 'admin.php?page=' . $page_map[ $current_page ] )
+		);
+
+		wp_safe_redirect( $target_url, 302 );
+		exit;
 	}
 
 	/**
@@ -512,7 +576,7 @@ class ALMGR_Plugin_Manager {
 					'tab'   => $active_tab,
 					'saved' => '1',
 				),
-				admin_url( 'admin.php?page=alm-settings' )
+				admin_url( 'admin.php?page=almgr-settings' )
 			)
 		);
 		exit;
@@ -577,7 +641,7 @@ class ALMGR_Plugin_Manager {
 			add_query_arg(
 				'almgr_status',
 				$status,
-				admin_url( 'admin.php?page=alm-tools' )
+				admin_url( 'admin.php?page=almgr-tools' )
 			)
 		);
 		exit;

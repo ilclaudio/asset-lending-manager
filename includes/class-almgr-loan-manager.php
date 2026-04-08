@@ -757,9 +757,9 @@ class ALMGR_Loan_Manager {
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM %i 
-				WHERE asset_id = %d 
-				AND requester_id = %d 
+				"SELECT COUNT(*) FROM %i
+				WHERE asset_id = %d
+				AND requester_id = %d
 				AND status = 'pending'",
 				$table_name,
 				$asset_id,
@@ -802,7 +802,6 @@ class ALMGR_Loan_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- No alternative: active-loan count requires owner meta filter. To be replaced with a counter cache when _alm_parent_kit_ids normalization lands.
 				'meta_query'     => array(
 					array(
 						'key'   => '_almgr_current_owner',
@@ -828,9 +827,9 @@ class ALMGR_Loan_Manager {
 
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM %i 
-				WHERE asset_id = %d 
-				AND status = %s 
+				'SELECT * FROM %i
+				WHERE asset_id = %d
+				AND status = %s
 				ORDER BY request_date DESC',
 				$table_name,
 				$asset_id,
@@ -853,8 +852,8 @@ class ALMGR_Loan_Manager {
 		if ( empty( $status ) ) {
 			return $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT * FROM %i 
-					WHERE requester_id = %d 
+					'SELECT * FROM %i
+					WHERE requester_id = %d
 					ORDER BY request_date DESC',
 					$table_name,
 					$user_id
@@ -863,9 +862,9 @@ class ALMGR_Loan_Manager {
 		}
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM %i 
-				WHERE requester_id = %d 
-				AND status = %s 
+				'SELECT * FROM %i
+				WHERE requester_id = %d
+				AND status = %s
 				ORDER BY request_date DESC',
 				$table_name,
 				$user_id,
@@ -895,9 +894,9 @@ class ALMGR_Loan_Manager {
 			// Operators see all entries for this asset.
 				return $wpdb->get_results(
 					$wpdb->prepare(
-						'SELECT * FROM %i 
-						WHERE asset_id = %d 
-						ORDER BY changed_at DESC 
+						'SELECT * FROM %i
+						WHERE asset_id = %d
+						ORDER BY changed_at DESC
 					LIMIT 10',
 						$table_name,
 						$asset_id
@@ -908,14 +907,14 @@ class ALMGR_Loan_Manager {
 		// Members see only entries where they are involved.
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM %i 
-				WHERE asset_id = %d 
+				'SELECT * FROM %i
+				WHERE asset_id = %d
 				AND (
-					requester_id = %d 
-					OR owner_id = %d 
+					requester_id = %d
+					OR owner_id = %d
 					OR changed_by = %d
 				)
-				ORDER BY changed_at DESC 
+				ORDER BY changed_at DESC
 				LIMIT 10',
 				$table_name,
 				$asset_id,
@@ -1977,7 +1976,6 @@ class ALMGR_Loan_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Reverse kit lookup via serialized LIKE. Known limitation tracked in ISSUES_TODO.md; will be replaced by _alm_parent_kit_ids normalized meta.
 				'meta_query'     => array(
 					array(
 						'key'     => 'components',

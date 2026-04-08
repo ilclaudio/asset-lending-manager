@@ -77,7 +77,7 @@ $placeholders = array(
 	<nav class="nav-tab-wrapper" aria-label="<?php esc_attr_e( 'Settings sections', 'asset-lending-manager' ); ?>">
 		<?php foreach ( $almgr_tabs as $tab_slug => $tab_label ) : ?>
 			<a
-				href="<?php echo esc_url( admin_url( 'admin.php?page=alm-settings&tab=' . $tab_slug ) ); ?>"
+				href="<?php echo esc_url( admin_url( 'admin.php?page=almgr-settings&tab=' . $tab_slug ) ); ?>"
 				class="nav-tab<?php echo esc_attr( $active_tab === $tab_slug ? ' nav-tab-active' : '' ); ?>"
 			>
 				<?php echo esc_html( $tab_label ); ?>

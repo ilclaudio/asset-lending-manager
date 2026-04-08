@@ -59,7 +59,7 @@ class ALMGR_Frontend_Manager {
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 		// Handle QR scan redirect (?almgr_scan=ALM-00000052).
-		add_action( 'template_redirect', array( $this, 'handle_alm_scan_redirect' ) );
+		add_action( 'template_redirect', array( $this, 'handle_almgr_scan_redirect' ) );
 		// Login and logout redirect for operators and members.
 		add_filter( 'login_redirect', array( $this, 'redirect_login_by_role' ), 10, 3 );
 		add_filter( 'logout_redirect', array( $this, 'redirect_logout_by_role' ), 10, 3 );
@@ -592,9 +592,9 @@ class ALMGR_Frontend_Manager {
 			}
 		}
 		wp_reset_postdata();
-		$alm_current_search       = $search_term;
-		$alm_default_filters_open = (bool) $this->settings->get( 'frontend.default_filters_open', false );
-		$alm_qr_scan_enabled      = (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true );
+		$almgr_current_search       = $search_term;
+		$almgr_default_filters_open = (bool) $this->settings->get( 'frontend.default_filters_open', false );
+		$almgr_qr_scan_enabled      = (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true );
 		include ALMGR_PLUGIN_DIR . 'templates/shortcodes/asset-list.php';
 	}
 
@@ -606,7 +606,7 @@ class ALMGR_Frontend_Manager {
 	 *
 	 * @return void
 	 */
-	public function handle_alm_scan_redirect() {
+	public function handle_almgr_scan_redirect() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
 		if ( ! isset( $_GET['almgr_scan'] ) ) {
 			return;

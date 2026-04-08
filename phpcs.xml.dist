@@ -35,8 +35,6 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="alm_"/>
-				<element value="ALM_"/>
 				<element value="almgr_"/>
 				<element value="ALMGR_"/>
 			</property>

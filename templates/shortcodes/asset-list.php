@@ -7,7 +7,7 @@
  * - $assets_count:       int      Total number of matching assets (all pages).
  * - $current_page:       int      Current pagination page number.
  * - $total_pages:        int      Total number of pagination pages.
- * - $alm_current_search: string  Current search term (sanitized).
+ * - $almgr_current_search: string  Current search term (sanitized).
  * - $filter_structure:   string  Active structure taxonomy filter slug.
  * - $filter_type:        string  Active type taxonomy filter slug.
  * - $filter_state:       string  Active state taxonomy filter slug.
@@ -22,46 +22,46 @@
 defined( 'ABSPATH' ) || exit;
 
 // Get taxonomy terms for filters.
-$alm_terms_structure = get_terms(
+$almgr_terms_structure = get_terms(
 	array(
 		'taxonomy'   => ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
-$alm_terms_type      = get_terms(
+$almgr_terms_type      = get_terms(
 	array(
 		'taxonomy'   => ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
-$alm_terms_state     = get_terms(
+$almgr_terms_state     = get_terms(
 	array(
 		'taxonomy'   => ALMGR_ASSET_STATE_TAXONOMY_SLUG,
 		'hide_empty' => false,
 	)
 );
-$alm_terms_level     = get_terms(
+$almgr_terms_level     = get_terms(
 	array(
 		'taxonomy'   => ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 		'hide_empty' => true,
 	)
 );
 // Count active filters.
-$alm_active_filters_count = 0;
+$almgr_active_filters_count = 0;
 if ( ! empty( $filter_structure ) ) {
-	++$alm_active_filters_count;
+	++$almgr_active_filters_count;
 }
 if ( ! empty( $filter_type ) ) {
-	++$alm_active_filters_count;
+	++$almgr_active_filters_count;
 }
 if ( ! empty( $filter_state ) ) {
-	++$alm_active_filters_count;
+	++$almgr_active_filters_count;
 }
 if ( ! empty( $filter_level ) ) {
-	++$alm_active_filters_count;
+	++$almgr_active_filters_count;
 }
 if ( $filter_owner > 0 ) {
-	++$alm_active_filters_count;
+	++$almgr_active_filters_count;
 }
 
 ?>
@@ -80,7 +80,7 @@ if ( $filter_owner > 0 ) {
 					aria-autocomplete="list"
 					aria-expanded="false"
 					aria-controls="almgr_asset_autocomplete_dropdown"
-					value="<?php echo esc_attr( $alm_current_search ); ?>"
+					value="<?php echo esc_attr( $almgr_current_search ); ?>"
 					placeholder="<?php esc_attr_e( 'Search assets...', 'asset-lending-manager' ); ?>"
 				/>
 				<div
@@ -91,7 +91,7 @@ if ( $filter_owner > 0 ) {
 					aria-label="<?php esc_attr_e( 'Search suggestions', 'asset-lending-manager' ); ?>"
 				></div>
 			</div>
-		<?php if ( ! empty( $alm_qr_scan_enabled ) ) : ?>
+		<?php if ( ! empty( $almgr_qr_scan_enabled ) ) : ?>
 			<button
 				type="button"
 				class="alm-button alm-button--secondary alm-qr-scan-btn"
@@ -103,11 +103,11 @@ if ( $filter_owner > 0 ) {
 		</div>
 
 		<!-- Advanced Filters -->
-		<details class="alm-filters-collapsible"<?php echo ! empty( $alm_default_filters_open ) ? ' open' : ''; ?>>
+		<details class="alm-filters-collapsible"<?php echo ! empty( $almgr_default_filters_open ) ? ' open' : ''; ?>>
 			<summary class="alm-filters-toggle">
 				<?php esc_html_e( 'Advanced Filters', 'asset-lending-manager' ); ?>
-				<?php if ( $alm_active_filters_count > 0 ) : ?>
-					<span class="alm-active-filters-badge"><?php echo (int) $alm_active_filters_count; ?></span>
+				<?php if ( $almgr_active_filters_count > 0 ) : ?>
+					<span class="alm-active-filters-badge"><?php echo (int) $almgr_active_filters_count; ?></span>
 				<?php endif; ?>
 			</summary>
 			<!-- Taxonomy filters -->
@@ -116,26 +116,26 @@ if ( $filter_owner > 0 ) {
 					<!-- Row 1: Structure + Type -->
 					<div class="alm-filter-row">
 						<div class="alm-filter-field">
-							<label for="alm_filter_structure"><?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?></label>
-							<select name="almgr_structure" id="alm_filter_structure">
+							<label for="almgr_filter_structure"><?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?></label>
+							<select name="almgr_structure" id="almgr_filter_structure">
 								<option value=""><?php esc_html_e( 'All structures', 'asset-lending-manager' ); ?></option>
-									<?php if ( ! is_wp_error( $alm_terms_structure ) && ! empty( $alm_terms_structure ) ) : ?>
-										<?php foreach ( $alm_terms_structure as $alm_term ) : ?>
-											<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_structure, $alm_term->slug ); ?>>
-												<?php echo esc_html( $alm_term->name ); ?>
+									<?php if ( ! is_wp_error( $almgr_terms_structure ) && ! empty( $almgr_terms_structure ) ) : ?>
+										<?php foreach ( $almgr_terms_structure as $almgr_term ) : ?>
+											<option value="<?php echo esc_attr( $almgr_term->slug ); ?>" <?php selected( $filter_structure, $almgr_term->slug ); ?>>
+												<?php echo esc_html( $almgr_term->name ); ?>
 											</option>
 										<?php endforeach; ?>
 									<?php endif; ?>
 							</select>
 						</div>
 						<div class="alm-filter-field">
-							<label for="alm_filter_type"><?php esc_html_e( 'Type', 'asset-lending-manager' ); ?></label>
-							<select name="almgr_type" id="alm_filter_type">
+							<label for="almgr_filter_type"><?php esc_html_e( 'Type', 'asset-lending-manager' ); ?></label>
+							<select name="almgr_type" id="almgr_filter_type">
 								<option value=""><?php esc_html_e( 'All types', 'asset-lending-manager' ); ?></option>
-									<?php if ( ! is_wp_error( $alm_terms_type ) && ! empty( $alm_terms_type ) ) : ?>
-										<?php foreach ( $alm_terms_type as $alm_term ) : ?>
-											<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_type, $alm_term->slug ); ?>>
-												<?php echo esc_html( $alm_term->name ); ?>
+									<?php if ( ! is_wp_error( $almgr_terms_type ) && ! empty( $almgr_terms_type ) ) : ?>
+										<?php foreach ( $almgr_terms_type as $almgr_term ) : ?>
+											<option value="<?php echo esc_attr( $almgr_term->slug ); ?>" <?php selected( $filter_type, $almgr_term->slug ); ?>>
+												<?php echo esc_html( $almgr_term->name ); ?>
 											</option>
 										<?php endforeach; ?>
 									<?php endif; ?>
@@ -145,26 +145,26 @@ if ( $filter_owner > 0 ) {
 					<!-- Row 2: State + Level -->
 					<div class="alm-filter-row">
 						<div class="alm-filter-field">
-							<label for="alm_filter_state"><?php esc_html_e( 'State', 'asset-lending-manager' ); ?></label>
-							<select name="almgr_state" id="alm_filter_state">
+							<label for="almgr_filter_state"><?php esc_html_e( 'State', 'asset-lending-manager' ); ?></label>
+							<select name="almgr_state" id="almgr_filter_state">
 								<option value=""><?php esc_html_e( 'All states', 'asset-lending-manager' ); ?></option>
-										<?php if ( ! is_wp_error( $alm_terms_state ) && ! empty( $alm_terms_state ) ) : ?>
-											<?php foreach ( $alm_terms_state as $alm_term ) : ?>
-												<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_state, $alm_term->slug ); ?>>
-													<?php echo esc_html( ALMGR_Asset_Manager::get_state_label( (string) $alm_term->slug, (string) $alm_term->name ) ); ?>
+										<?php if ( ! is_wp_error( $almgr_terms_state ) && ! empty( $almgr_terms_state ) ) : ?>
+											<?php foreach ( $almgr_terms_state as $almgr_term ) : ?>
+												<option value="<?php echo esc_attr( $almgr_term->slug ); ?>" <?php selected( $filter_state, $almgr_term->slug ); ?>>
+													<?php echo esc_html( ALMGR_Asset_Manager::get_state_label( (string) $almgr_term->slug, (string) $almgr_term->name ) ); ?>
 												</option>
 											<?php endforeach; ?>
 										<?php endif; ?>
 							</select>
 						</div>
 						<div class="alm-filter-field">
-							<label for="alm_filter_level"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?></label>
-							<select name="almgr_level" id="alm_filter_level">
+							<label for="almgr_filter_level"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?></label>
+							<select name="almgr_level" id="almgr_filter_level">
 								<option value=""><?php esc_html_e( 'All levels', 'asset-lending-manager' ); ?></option>
-										<?php if ( ! is_wp_error( $alm_terms_level ) && ! empty( $alm_terms_level ) ) : ?>
-											<?php foreach ( $alm_terms_level as $alm_term ) : ?>
-												<option value="<?php echo esc_attr( $alm_term->slug ); ?>" <?php selected( $filter_level, $alm_term->slug ); ?>>
-													<?php echo esc_html( ALMGR_Asset_Manager::get_level_label( (string) $alm_term->slug, (string) $alm_term->name ) ); ?>
+										<?php if ( ! is_wp_error( $almgr_terms_level ) && ! empty( $almgr_terms_level ) ) : ?>
+											<?php foreach ( $almgr_terms_level as $almgr_term ) : ?>
+												<option value="<?php echo esc_attr( $almgr_term->slug ); ?>" <?php selected( $filter_level, $almgr_term->slug ); ?>>
+													<?php echo esc_html( ALMGR_Asset_Manager::get_level_label( (string) $almgr_term->slug, (string) $almgr_term->name ) ); ?>
 												</option>
 											<?php endforeach; ?>
 										<?php endif; ?>
@@ -254,13 +254,13 @@ if ( $filter_owner > 0 ) {
 							<div class="alm-card-title-row">
 								<h2 class="alm-asset-title"><?php echo esc_html( $almgr_asset->title ); ?></h2>
 								<?php
-								$alm_state_classes = ALMGR_Asset_Manager::get_state_classes();
-								foreach ( $almgr_asset->almgr_state as $alm_si => $alm_state_name ) :
-									$alm_state_slug  = $almgr_asset->almgr_state_slugs[ $alm_si ] ?? '';
-									$alm_badge_class = $alm_state_classes[ $alm_state_slug ] ?? '';
+								$almgr_state_classes = ALMGR_Asset_Manager::get_state_classes();
+								foreach ( $almgr_asset->almgr_state as $almgr_si => $almgr_state_name ) :
+									$almgr_state_slug  = $almgr_asset->almgr_state_slugs[ $almgr_si ] ?? '';
+									$almgr_badge_class = $almgr_state_classes[ $almgr_state_slug ] ?? '';
 									?>
-									<span class="alm-availability <?php echo esc_attr( $alm_badge_class ); ?>">
-										<?php echo esc_html( $alm_state_name ); ?>
+									<span class="alm-availability <?php echo esc_attr( $almgr_badge_class ); ?>">
+										<?php echo esc_html( $almgr_state_name ); ?>
 									</span>
 								<?php endforeach; ?>
 							</div>
@@ -295,9 +295,9 @@ if ( $filter_owner > 0 ) {
 					<?php if ( ! empty( $almgr_asset->parent_kits ) ) : ?>
 						<div class="alm-card-kit-footer" role="note" aria-label="<?php esc_attr_e( 'Kit membership', 'asset-lending-manager' ); ?>">
 							<span class="alm-card-kit-label"><?php esc_html_e( 'Kit', 'asset-lending-manager' ); ?>:</span>
-							<?php foreach ( $almgr_asset->parent_kits as $alm_ki => $alm_kit ) : ?>
-								<a class="alm-card-kit-link" href="<?php echo esc_url( $alm_kit['permalink'] ); ?>"><?php echo esc_html( $alm_kit['title'] ); ?></a>
-								<?php if ( $alm_ki < count( $almgr_asset->parent_kits ) - 1 ) : ?>
+							<?php foreach ( $almgr_asset->parent_kits as $almgr_ki => $almgr_kit ) : ?>
+								<a class="alm-card-kit-link" href="<?php echo esc_url( $almgr_kit['permalink'] ); ?>"><?php echo esc_html( $almgr_kit['title'] ); ?></a>
+								<?php if ( $almgr_ki < count( $almgr_asset->parent_kits ) - 1 ) : ?>
 									<span aria-hidden="true">,</span>
 								<?php endif; ?>
 							<?php endforeach; ?>
@@ -330,11 +330,11 @@ if ( $filter_owner > 0 ) {
 
 		<p class="alm-no-results">
 		<?php
-		if ( ! empty( $alm_current_search ) ) {
+		if ( ! empty( $almgr_current_search ) ) {
 			printf(
 				/* translators: %s: Search term entered by the user. */
 				esc_html__( 'No results found for "%s".', 'asset-lending-manager' ),
-				esc_html( $alm_current_search )
+				esc_html( $almgr_current_search )
 			);
 		} else {
 			esc_html_e( 'No assets found.', 'asset-lending-manager' );

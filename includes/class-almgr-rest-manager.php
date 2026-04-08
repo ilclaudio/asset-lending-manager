@@ -112,7 +112,7 @@ class ALMGR_REST_Manager {
 		add_action( 'parse_request', array( $this, 'handle_request' ) );
 		// Enable Application Passwords for ALM routes, which use custom rewrite
 		// rules instead of the WP REST API infrastructure.
-		add_filter( 'determine_current_user', array( $this, 'authenticate_alm_request' ), 15 );
+		add_filter( 'determine_current_user', array( $this, 'authenticate_almgr_request' ), 15 );
 	}
 
 	// -------------------------------------------------------------------------
@@ -178,7 +178,7 @@ class ALMGR_REST_Manager {
 	 * @param int|false $user_id Currently determined user ID, or false.
 	 * @return int|false
 	 */
-	public function authenticate_alm_request( $user_id ) {
+	public function authenticate_almgr_request( $user_id ) {
 		if ( $user_id ) {
 			return $user_id;
 		}

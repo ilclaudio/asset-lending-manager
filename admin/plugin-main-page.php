@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$alm_data     = get_file_data(
+$almgr_data     = get_file_data(
 	ALMGR_PLUGIN_DIR . 'asset-lending-manager.php',
 	array(
 		'Name'        => 'Plugin Name',
@@ -21,24 +21,24 @@ $alm_data     = get_file_data(
 		'License'     => 'License',
 	)
 );
-$alm_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
+$almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 ?>
 <div class="wrap">
 
-	<h1 class="screen-reader-text"><?php echo esc_html( $alm_data['Name'] ); ?></h1>
+	<h1 class="screen-reader-text"><?php echo esc_html( $almgr_data['Name'] ); ?></h1>
 
 	<div class="card alm-about">
 
 		<!-- Header: logo + name + description -->
 		<div class="alm-about__header">
 			<img
-				src="<?php echo esc_url( $alm_logo_url ); ?>"
+				src="<?php echo esc_url( $almgr_logo_url ); ?>"
 				alt="<?php esc_attr_e( 'Asset Lending Manager logo', 'asset-lending-manager' ); ?>"
 				class="alm-about__logo"
 			/>
 			<div class="alm-about__intro">
-				<p class="alm-about__name"><?php echo esc_html( $alm_data['Name'] ); ?></p>
-				<p><?php echo esc_html( $alm_data['Description'] ); ?></p>
+				<p class="alm-about__name"><?php echo esc_html( $almgr_data['Name'] ); ?></p>
+				<p><?php echo esc_html( $almgr_data['Description'] ); ?></p>
 			</div>
 		</div>
 
@@ -47,32 +47,32 @@ $alm_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 			<span>
 				<?php
 				/* translators: %s: plugin version string. */
-				printf( esc_html__( 'Version %s', 'asset-lending-manager' ), esc_html( $alm_data['Version'] ) );
+				printf( esc_html__( 'Version %s', 'asset-lending-manager' ), esc_html( $almgr_data['Version'] ) );
 				?>
 			</span>
 			<span class="alm-about__sep" aria-hidden="true">&middot;</span>
 			<span>
 				<?php
 				/* translators: %s: minimum supported WordPress version. */
-				printf( esc_html__( 'Requires WordPress %s', 'asset-lending-manager' ), esc_html( $alm_data['RequiresWP'] ) );
+				printf( esc_html__( 'Requires WordPress %s', 'asset-lending-manager' ), esc_html( $almgr_data['RequiresWP'] ) );
 				?>
 			</span>
 			<span class="alm-about__sep" aria-hidden="true">&middot;</span>
-			<span><?php echo esc_html( $alm_data['License'] ); ?></span>
+			<span><?php echo esc_html( $almgr_data['License'] ); ?></span>
 		</p>
 
 		<!-- Quick links -->
 		<div class="alm-about__links">
-			<a href="<?php echo esc_url( $alm_data['PluginURI'] ); ?>" class="button" target="_blank" rel="noopener noreferrer">
+			<a href="<?php echo esc_url( $almgr_data['PluginURI'] ); ?>" class="button" target="_blank" rel="noopener noreferrer">
 				<?php esc_html_e( 'GitHub repository', 'asset-lending-manager' ); ?> <span aria-hidden="true">&#8599;</span>
 			</a>
-			<a href="<?php echo esc_url( $alm_data['AuthorURI'] ); ?>" class="button" target="_blank" rel="noopener noreferrer">
+			<a href="<?php echo esc_url( $almgr_data['AuthorURI'] ); ?>" class="button" target="_blank" rel="noopener noreferrer">
 				<?php esc_html_e( 'Author site', 'asset-lending-manager' ); ?> <span aria-hidden="true">&#8599;</span>
 			</a>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=alm-settings' ) ); ?>" class="button button-primary">
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=almgr-settings' ) ); ?>" class="button button-primary">
 				<?php esc_html_e( 'Settings', 'asset-lending-manager' ); ?> <span aria-hidden="true">&rarr;</span>
 			</a>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=alm-tools' ) ); ?>" class="button">
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=almgr-tools' ) ); ?>" class="button">
 				<?php esc_html_e( 'Tools', 'asset-lending-manager' ); ?> <span aria-hidden="true">&rarr;</span>
 			</a>
 		</div>

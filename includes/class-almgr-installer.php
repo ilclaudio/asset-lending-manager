@@ -104,8 +104,6 @@ class ALMGR_Installer {
 		$tables = array(
 			$wpdb->prefix . 'almgr_loan_requests_history',
 			$wpdb->prefix . 'almgr_loan_requests',
-			$wpdb->prefix . 'alm_loan_requests_history',
-			$wpdb->prefix . 'alm_loan_requests',
 		);
 		foreach ( $tables as $table ) {
 			if ( ! self::is_safe_table_identifier( $table ) ) {

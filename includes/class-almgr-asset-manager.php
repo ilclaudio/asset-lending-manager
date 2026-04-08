@@ -298,7 +298,7 @@ class ALMGR_Asset_Manager {
 		// Load parent kit membership (only populated when this asset is a component).
 		$wrapper->parent_kits = array();
 		if ( has_term( ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
-			$alm_kit_query = new WP_Query(
+			$almgr_kit_query = new WP_Query(
 				array(
 					'post_type'      => ALMGR_ASSET_CPT_SLUG,
 					'post_status'    => 'publish',
@@ -313,12 +313,12 @@ class ALMGR_Asset_Manager {
 					),
 				)
 			);
-			foreach ( $alm_kit_query->posts as $alm_kit_id ) {
-				$alm_kit_id             = (int) $alm_kit_id;
+			foreach ( $almgr_kit_query->posts as $almgr_kit_id ) {
+				$almgr_kit_id             = (int) $almgr_kit_id;
 				$wrapper->parent_kits[] = array(
-					'id'        => $alm_kit_id,
-					'title'     => get_the_title( $alm_kit_id ),
-					'permalink' => get_permalink( $alm_kit_id ),
+					'id'        => $almgr_kit_id,
+					'title'     => get_the_title( $almgr_kit_id ),
+					'permalink' => get_permalink( $almgr_kit_id ),
 				);
 			}
 			wp_reset_postdata();

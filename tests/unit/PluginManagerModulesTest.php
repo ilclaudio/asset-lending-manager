@@ -13,13 +13,13 @@ class PluginManagerModulesTest extends TestCase {
 	/**
 	 * Plugin manager instance.
 	 *
-	 * @var ALM_Plugin_Manager
+	 * @var ALMGR_Plugin_Manager
 	 */
 	private $plugin_manager;
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->plugin_manager = ALM_Plugin_Manager::get_instance();
+		$this->plugin_manager = ALMGR_Plugin_Manager::get_instance();
 		$this->plugin_manager->init();
 	}
 
@@ -40,12 +40,12 @@ class PluginManagerModulesTest extends TestCase {
 		$modules = $this->plugin_manager->get_modules();
 
 		$expected_classes = array(
-			ALM_Settings_Manager::class,
-			ALM_Role_Manager::class,
-			ALM_Asset_Manager::class,
-			ALM_Loan_Manager::class,
-			ALM_Notification_Manager::class,
-			ALM_Frontend_Manager::class,
+			ALMGR_Settings_Manager::class,
+			ALMGR_Role_Manager::class,
+			ALMGR_Asset_Manager::class,
+			ALMGR_Loan_Manager::class,
+			ALMGR_Notification_Manager::class,
+			ALMGR_Frontend_Manager::class,
 		);
 
 		foreach ( $expected_classes as $expected_class ) {
