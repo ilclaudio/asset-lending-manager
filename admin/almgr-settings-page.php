@@ -139,7 +139,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<label for="almgr_email_system_email">
-							<?php esc_html_e( 'System email (BCC)', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'System email', 'asset-lending-manager' ); ?>
 							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
