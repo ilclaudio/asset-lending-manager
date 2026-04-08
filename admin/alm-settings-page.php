@@ -85,7 +85,7 @@ $placeholders = array(
 		<?php endforeach; ?>
 	</nav>
 
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="alm-settings-form">
+	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="almgr-settings-form">
 		<?php wp_nonce_field( 'almgr_save_settings', 'almgr_settings_nonce' ); ?>
 		<input type="hidden" name="action" value="almgr_save_settings">
 		<input type="hidden" name="almgr_active_tab" value="<?php echo esc_attr( $active_tab ); ?>">
@@ -98,7 +98,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_email_from_name">
 							<?php esc_html_e( 'From name', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -119,7 +119,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_email_from_address">
 							<?php esc_html_e( 'From address', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -140,7 +140,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_email_system_email">
 							<?php esc_html_e( 'System email (BCC)', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -164,7 +164,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<?php esc_html_e( 'Enable notifications', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
 						<label>
@@ -241,8 +241,8 @@ $placeholders = array(
 			</p>
 
 			<?php foreach ( $email_type_labels as $almgr_type => $almgr_type_label ) : ?>
-				<details class="alm-settings-template-section" open>
-					<summary class="alm-settings-template-summary">
+				<details class="almgr-settings-template-section" open>
+					<summary class="almgr-settings-template-summary">
 						<strong><?php echo esc_html( $almgr_type_label ); ?></strong>
 					</summary>
 					<table class="form-table" role="presentation">
@@ -359,7 +359,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_loans_request_message_max_length">
 							<?php esc_html_e( 'Request message max length', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -381,7 +381,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_loans_rejection_message_max_length">
 							<?php esc_html_e( 'Rejection message max length', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -403,7 +403,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_loans_direct_assign_reason_max_length">
 							<?php esc_html_e( 'Direct-assign reason max length', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -432,7 +432,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<?php esc_html_e( 'Enable direct assignment', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
 						<label>
@@ -450,7 +450,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<?php esc_html_e( 'Allowed target roles', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
 						<?php
@@ -525,7 +525,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_workflow_actor_user_id">
 							<?php esc_html_e( 'Automatic operations actor user ID', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -555,7 +555,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_frontend_assets_page_id">
 							<?php esc_html_e( 'Asset archive page', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -580,7 +580,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_frontend_login_redirect_page_id">
 							<?php esc_html_e( 'Login redirect page', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -605,7 +605,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_frontend_logout_redirect_page_id">
 							<?php esc_html_e( 'Logout redirect page', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -745,7 +745,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<?php esc_html_e( 'Public asset search endpoint', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
 						<label>
@@ -791,7 +791,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<?php esc_html_e( 'Enable ALM logging', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
 						<label>
@@ -810,7 +810,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_logging_level">
 							<?php esc_html_e( 'Log level', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -842,7 +842,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<?php esc_html_e( 'Mask personal data in logs', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
 						<label>
@@ -860,7 +860,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<?php esc_html_e( 'Log email events', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
 						<label>
@@ -887,7 +887,7 @@ $placeholders = array(
 					<th scope="row">
 						<label for="almgr_asset_code_prefix">
 							<?php esc_html_e( 'Code prefix', 'asset-lending-manager' ); ?>
-							<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
 					<td>
@@ -922,7 +922,7 @@ $placeholders = array(
 				<tr>
 					<th scope="row">
 						<?php esc_html_e( 'Enable REST API', 'asset-lending-manager' ); ?>
-						<span class="alm-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
 						<label>
@@ -943,7 +943,7 @@ $placeholders = array(
 			</table>
 
 			<h2><?php esc_html_e( 'Authentication', 'asset-lending-manager' ); ?></h2>
-			<div class="alm-info-box" style="background:#f0f6fc;border-left:4px solid #0073aa;padding:12px 16px;margin-bottom:16px;">
+			<div class="almgr-info-box" style="background:#f0f6fc;border-left:4px solid #0073aa;padding:12px 16px;margin-bottom:16px;">
 				<p><strong><?php esc_html_e( 'How to authenticate with the ALM API', 'asset-lending-manager' ); ?></strong></p>
 				<ol style="margin:8px 0 8px 20px;">
 					<li>

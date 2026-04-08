@@ -16,10 +16,10 @@ if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
 }
 ?>
 
-<div class="alm-container alm-asset-archive">
+<div class="almgr-container almgr-asset-archive">
 
-	<header class="alm-archive-header">
-		<h1 class="alm-archive-title">
+	<header class="almgr-archive-header">
+		<h1 class="almgr-archive-title">
 			<?php post_type_archive_title(); ?>
 		</h1>
 	</header>

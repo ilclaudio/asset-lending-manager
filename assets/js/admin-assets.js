@@ -46,12 +46,12 @@
 					badgeClass = 'maintenance';
 				}
 
-				if (!badgeClass || stateCell.querySelector('.alm-status-badge')) {
+				if (!badgeClass || stateCell.querySelector('.almgr-status-badge')) {
 					return;
 				}
 
 				var wrapper = document.createElement('span');
-				wrapper.className = 'alm-status-badge ' + badgeClass;
+				wrapper.className = 'almgr-status-badge ' + badgeClass;
 				while (stateCell.firstChild) {
 					wrapper.appendChild(stateCell.firstChild);
 				}
@@ -81,7 +81,7 @@
 				var separator = document.createTextNode(' | ');
 				var viewLink = document.createElement('a');
 
-				viewWrapper.className = 'alm-view-frontend';
+				viewWrapper.className = 'almgr-view-frontend';
 				viewLink.href = ALMGR_Admin.getAssetPermalink(postId);
 				viewLink.target = '_blank';
 				viewLink.rel = 'noopener noreferrer';
@@ -147,11 +147,11 @@
 		 * @param {HTMLElement} element Element to show spinner next to.
 		 */
 		showSpinner: function(element) {
-			if (!element || element.querySelector('.alm-spinner')) {
+			if (!element || element.querySelector('.almgr-spinner')) {
 				return;
 			}
 			var spinner = document.createElement('span');
-			spinner.className = 'alm-spinner';
+			spinner.className = 'almgr-spinner';
 			element.appendChild(spinner);
 		},
 
@@ -164,7 +164,7 @@
 			if (!element) {
 				return;
 			}
-			var spinner = element.querySelector('.alm-spinner');
+			var spinner = element.querySelector('.almgr-spinner');
 			if (spinner) {
 				spinner.remove();
 			}
@@ -179,7 +179,7 @@
 		showNotice: function(message, type) {
 			var noticeType = type || 'success';
 			var notice = document.createElement('div');
-			notice.className = 'alm-notice ' + noticeType;
+			notice.className = 'almgr-notice ' + noticeType;
 			notice.textContent = message;
 
 			var heading = document.querySelector('.wrap h1');

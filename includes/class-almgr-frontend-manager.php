@@ -273,14 +273,14 @@ class ALMGR_Frontend_Manager {
 			);
 		}
 
-		// Enqueue user autocomplete assets (used by the direct assignment form for operators).
-			wp_enqueue_script(
-				'almgr-user-autocomplete',
-				ALMGR_PLUGIN_URL . 'assets/js/alm-user-autocomplete.js',
-				array( 'wp-i18n' ),
-				ALMGR_VERSION,
-				true
-			);
+			// Enqueue user autocomplete assets (used by the direct assignment form for operators).
+				wp_enqueue_script(
+					'almgr-user-autocomplete',
+					ALMGR_PLUGIN_URL . 'assets/js/almgr-user-autocomplete.js',
+					array( 'wp-i18n' ),
+					ALMGR_VERSION,
+					true
+				);
 			wp_set_script_translations(
 				'almgr-user-autocomplete',
 				ALMGR_TEXT_DOMAIN,
@@ -415,7 +415,7 @@ class ALMGR_Frontend_Manager {
 		$asset_id = $this->get_asset_id_from_context( $attributes['slug'] );
 
 		if ( ! $asset_id ) {
-			return '<p class="alm-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
+			return '<p class="almgr-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
 		}
 
 		// Start output buffering.
@@ -664,7 +664,7 @@ class ALMGR_Frontend_Manager {
 		$asset = ALMGR_Asset_Manager::get_asset_wrapper( $asset_id );
 
 		if ( ! $asset ) {
-			echo '<p class="alm-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
+			echo '<p class="almgr-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
 			return;
 		}
 

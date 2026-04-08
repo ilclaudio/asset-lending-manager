@@ -58,19 +58,19 @@ class ALMGR_Autocomplete_Manager {
 			return;
 		}
 
-		wp_enqueue_script(
-			'almgr-asset-autocomplete',
-			ALMGR_PLUGIN_URL . 'assets/js/alm-asset-autocomplete.js',
-			array(),
-			ALMGR_VERSION,
-			true
-		);
-		wp_enqueue_style(
-			'almgr-asset-autocomplete',
-			ALMGR_PLUGIN_URL . 'assets/css/alm-asset-autocomplete.css',
-			array(),
-			ALMGR_VERSION
-		);
+			wp_enqueue_script(
+				'almgr-asset-autocomplete',
+				ALMGR_PLUGIN_URL . 'assets/js/almgr-asset-autocomplete.js',
+				array(),
+				ALMGR_VERSION,
+				true
+			);
+			wp_enqueue_style(
+				'almgr-asset-autocomplete',
+				ALMGR_PLUGIN_URL . 'assets/css/almgr-asset-autocomplete.css',
+				array(),
+				ALMGR_VERSION
+			);
 		wp_localize_script(
 			'almgr-asset-autocomplete',
 			'almgrAutocomplete',

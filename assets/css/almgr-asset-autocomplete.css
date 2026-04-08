@@ -1,9 +1,9 @@
-.alm-autocomplete-wrap {
+.almgr-autocomplete-wrap {
 	position: relative;
 	width: 100%;
 }
 
-.alm-autocomplete-wrap .alm-search-icon {
+.almgr-autocomplete-wrap .almgr-search-icon {
 	position: absolute;
 	left: 10px;
 	top: 50%;
@@ -19,13 +19,13 @@
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
 }
 
-.alm-autocomplete-wrap input[type="text"] {
+.almgr-autocomplete-wrap input[type="text"] {
 	width: 100%;
 	box-sizing: border-box;
 	padding-left: 34px;
 }
 
-.alm-autocomplete-wrap.alm-autocomplete-loading .alm-search-icon {
+.almgr-autocomplete-wrap.almgr-autocomplete-loading .almgr-search-icon {
 	background-image: none;
 	border: 2px solid #666;
 	border-top-color: transparent;
@@ -34,7 +34,7 @@
 	animation: almSpin 0.8s linear infinite;
 }
 
-.alm-autocomplete-dropdown {
+.almgr-autocomplete-dropdown {
 	position: absolute;
 	top: 100%;
 	left: 0;
@@ -50,30 +50,30 @@
 	display: none;
 }
 
-.alm-autocomplete-item {
+.almgr-autocomplete-item {
 	padding: 8px 12px;
 	border-bottom: 1px solid #eee;
 	cursor: pointer;
 }
 
-.alm-autocomplete-item:last-child {
+.almgr-autocomplete-item:last-child {
 	border-bottom: none;
 }
 
-.alm-autocomplete-item:hover {
+.almgr-autocomplete-item:hover {
 	background-color: #f0f0f0;
 }
 
-.alm-autocomplete-title {
+.almgr-autocomplete-title {
 	margin-bottom: 4px;
 }
 
-.alm-autocomplete-description {
+.almgr-autocomplete-description {
 	margin-bottom: 4px;
 	color: #555;
 }
 
-.alm-autocomplete-meta {
+.almgr-autocomplete-meta {
 	color: #333;
 	font-size: 0.85em;
 }

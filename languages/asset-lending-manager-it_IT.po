@@ -2056,7 +2056,7 @@ msgstr ""
 msgid "User manual"
 msgstr "Manuale utente"
 
-#: assets/js/alm-user-autocomplete.js:44
+#: assets/js/almgr-user-autocomplete.js:44
 msgid "User suggestions"
 msgstr "Suggerimenti utente"
 

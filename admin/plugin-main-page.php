@@ -27,42 +27,42 @@ $almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 
 	<h1 class="screen-reader-text"><?php echo esc_html( $almgr_data['Name'] ); ?></h1>
 
-	<div class="card alm-about">
+	<div class="card almgr-about">
 
 		<!-- Header: logo + name + description -->
-		<div class="alm-about__header">
+		<div class="almgr-about__header">
 			<img
 				src="<?php echo esc_url( $almgr_logo_url ); ?>"
 				alt="<?php esc_attr_e( 'Asset Lending Manager logo', 'asset-lending-manager' ); ?>"
-				class="alm-about__logo"
+				class="almgr-about__logo"
 			/>
-			<div class="alm-about__intro">
-				<p class="alm-about__name"><?php echo esc_html( $almgr_data['Name'] ); ?></p>
+			<div class="almgr-about__intro">
+				<p class="almgr-about__name"><?php echo esc_html( $almgr_data['Name'] ); ?></p>
 				<p><?php echo esc_html( $almgr_data['Description'] ); ?></p>
 			</div>
 		</div>
 
 		<!-- Metadata row -->
-		<p class="alm-about__meta">
+		<p class="almgr-about__meta">
 			<span>
 				<?php
 				/* translators: %s: plugin version string. */
 				printf( esc_html__( 'Version %s', 'asset-lending-manager' ), esc_html( $almgr_data['Version'] ) );
 				?>
 			</span>
-			<span class="alm-about__sep" aria-hidden="true">&middot;</span>
+			<span class="almgr-about__sep" aria-hidden="true">&middot;</span>
 			<span>
 				<?php
 				/* translators: %s: minimum supported WordPress version. */
 				printf( esc_html__( 'Requires WordPress %s', 'asset-lending-manager' ), esc_html( $almgr_data['RequiresWP'] ) );
 				?>
 			</span>
-			<span class="alm-about__sep" aria-hidden="true">&middot;</span>
+			<span class="almgr-about__sep" aria-hidden="true">&middot;</span>
 			<span><?php echo esc_html( $almgr_data['License'] ); ?></span>
 		</p>
 
 		<!-- Quick links -->
-		<div class="alm-about__links">
+		<div class="almgr-about__links">
 			<a href="<?php echo esc_url( $almgr_data['PluginURI'] ); ?>" class="button" target="_blank" rel="noopener noreferrer">
 				<?php esc_html_e( 'GitHub repository', 'asset-lending-manager' ); ?> <span aria-hidden="true">&#8599;</span>
 			</a>
@@ -77,7 +77,7 @@ $almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 			</a>
 		</div>
 
-		<hr class="alm-about__divider" />
+		<hr class="almgr-about__divider" />
 
 		<!-- Shortcode reference -->
 		<h2><?php esc_html_e( 'Quick start', 'asset-lending-manager' ); ?></h2>
@@ -91,7 +91,7 @@ $almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 		</ul>
 		<p><?php esc_html_e( 'Use the shortcodes below only if you need to embed a view inside an existing WordPress page:', 'asset-lending-manager' ); ?></p>
 
-		<table class="widefat striped alm-about__shortcodes">
+		<table class="widefat striped almgr-about__shortcodes">
 			<thead>
 				<tr>
 					<th><?php esc_html_e( 'Shortcode', 'asset-lending-manager' ); ?></th>
@@ -110,6 +110,6 @@ $almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 			</tbody>
 		</table>
 
-	</div><!-- .alm-about -->
+	</div><!-- .almgr-about -->
 
 </div><!-- .wrap -->

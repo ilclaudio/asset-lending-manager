@@ -8,14 +8,14 @@ document.addEventListener('DOMContentLoaded', function () {
 	if (!dropdown) {
 		dropdown = document.createElement('div');
 		dropdown.id = 'almgr_asset_autocomplete_dropdown';
-		dropdown.className = 'alm-autocomplete-dropdown';
+		dropdown.className = 'almgr-autocomplete-dropdown';
 		input.parentNode.appendChild(dropdown);
 	}
 
 	let debounceTimer;
 
 	function setLoading(isLoading) {
-		searchForm.classList.toggle('alm-autocomplete-loading', !!isLoading);
+		searchForm.classList.toggle('almgr-autocomplete-loading', !!isLoading);
 	}
 
 	function escapeHtml(text) {
@@ -36,12 +36,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		let html = '';
 		items.forEach(item => {
-			html += `<div class="alm-autocomplete-item">
-				<div class="alm-autocomplete-title">
+			html += `<div class="almgr-autocomplete-item">
+				<div class="almgr-autocomplete-title">
 					<a href="${escapeHtml(item.permalink)}"><strong>${escapeHtml(item.title)}</strong></a>
 				</div>
-				<div class="alm-autocomplete-description">${escapeHtml(item.description)}</div>
-				<div class="alm-autocomplete-meta">
+				<div class="almgr-autocomplete-description">${escapeHtml(item.description)}</div>
+				<div class="almgr-autocomplete-meta">
 					<strong>${escapeHtml(item.structure)}</strong> - <em>${escapeHtml(item.type)}</em>
 				</div>
 			</div>`;

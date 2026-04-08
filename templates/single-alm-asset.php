@@ -16,7 +16,7 @@ if ( ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
 }
 ?>
 
-<div class="alm-container alm-asset-single">
+<div class="almgr-container almgr-asset-single">
 
 	<?php echo do_shortcode( '[almgr_asset_view]' ); ?>
 

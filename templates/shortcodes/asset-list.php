@@ -67,15 +67,15 @@ if ( $filter_owner > 0 ) {
 ?>
 
 <div id="almgr_asset_search_form">
-	<form method="get" class="alm-asset-search-form">
+	<form method="get" class="almgr-asset-search-form">
 		<!-- Input search text -->
-		<div class="alm-search-row">
-			<div class="alm-search-input-wrap">
-				<span class="alm-search-icon" aria-hidden="true"></span>
+		<div class="almgr-search-row">
+			<div class="almgr-search-input-wrap">
+				<span class="almgr-search-icon" aria-hidden="true"></span>
 				<input
 					type="search"
 					name="s"
-					id="alm-search-input"
+					id="almgr-search-input"
 					aria-label="<?php esc_attr_e( 'Search assets', 'asset-lending-manager' ); ?>"
 					aria-autocomplete="list"
 					aria-expanded="false"
@@ -85,7 +85,7 @@ if ( $filter_owner > 0 ) {
 				/>
 				<div
 					id="almgr_asset_autocomplete_dropdown"
-					class="alm-autocomplete-dropdown"
+					class="almgr-autocomplete-dropdown"
 					role="region"
 					aria-live="polite"
 					aria-label="<?php esc_attr_e( 'Search suggestions', 'asset-lending-manager' ); ?>"
@@ -94,7 +94,7 @@ if ( $filter_owner > 0 ) {
 		<?php if ( ! empty( $almgr_qr_scan_enabled ) ) : ?>
 			<button
 				type="button"
-				class="alm-button alm-button--secondary alm-qr-scan-btn"
+				class="almgr-button almgr-button--secondary almgr-qr-scan-btn"
 				aria-label="<?php esc_attr_e( 'Scan QR code to find an asset', 'asset-lending-manager' ); ?>"
 			>
 				<?php esc_html_e( 'Scan QR', 'asset-lending-manager' ); ?>
@@ -103,19 +103,19 @@ if ( $filter_owner > 0 ) {
 		</div>
 
 		<!-- Advanced Filters -->
-		<details class="alm-filters-collapsible"<?php echo ! empty( $almgr_default_filters_open ) ? ' open' : ''; ?>>
-			<summary class="alm-filters-toggle">
+		<details class="almgr-filters-collapsible"<?php echo ! empty( $almgr_default_filters_open ) ? ' open' : ''; ?>>
+			<summary class="almgr-filters-toggle">
 				<?php esc_html_e( 'Advanced Filters', 'asset-lending-manager' ); ?>
 				<?php if ( $almgr_active_filters_count > 0 ) : ?>
-					<span class="alm-active-filters-badge"><?php echo (int) $almgr_active_filters_count; ?></span>
+					<span class="almgr-active-filters-badge"><?php echo (int) $almgr_active_filters_count; ?></span>
 				<?php endif; ?>
 			</summary>
 			<!-- Taxonomy filters -->
-			<div class="alm-filters-content">
-				<div class="alm-filters-grid">
+			<div class="almgr-filters-content">
+				<div class="almgr-filters-grid">
 					<!-- Row 1: Structure + Type -->
-					<div class="alm-filter-row">
-						<div class="alm-filter-field">
+					<div class="almgr-filter-row">
+						<div class="almgr-filter-field">
 							<label for="almgr_filter_structure"><?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?></label>
 							<select name="almgr_structure" id="almgr_filter_structure">
 								<option value=""><?php esc_html_e( 'All structures', 'asset-lending-manager' ); ?></option>
@@ -128,7 +128,7 @@ if ( $filter_owner > 0 ) {
 									<?php endif; ?>
 							</select>
 						</div>
-						<div class="alm-filter-field">
+						<div class="almgr-filter-field">
 							<label for="almgr_filter_type"><?php esc_html_e( 'Type', 'asset-lending-manager' ); ?></label>
 							<select name="almgr_type" id="almgr_filter_type">
 								<option value=""><?php esc_html_e( 'All types', 'asset-lending-manager' ); ?></option>
@@ -143,8 +143,8 @@ if ( $filter_owner > 0 ) {
 						</div>
 					</div>
 					<!-- Row 2: State + Level -->
-					<div class="alm-filter-row">
-						<div class="alm-filter-field">
+					<div class="almgr-filter-row">
+						<div class="almgr-filter-field">
 							<label for="almgr_filter_state"><?php esc_html_e( 'State', 'asset-lending-manager' ); ?></label>
 							<select name="almgr_state" id="almgr_filter_state">
 								<option value=""><?php esc_html_e( 'All states', 'asset-lending-manager' ); ?></option>
@@ -157,7 +157,7 @@ if ( $filter_owner > 0 ) {
 										<?php endif; ?>
 							</select>
 						</div>
-						<div class="alm-filter-field">
+						<div class="almgr-filter-field">
 							<label for="almgr_filter_level"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?></label>
 							<select name="almgr_level" id="almgr_filter_level">
 								<option value=""><?php esc_html_e( 'All levels', 'asset-lending-manager' ); ?></option>
@@ -173,32 +173,32 @@ if ( $filter_owner > 0 ) {
 					</div>
 					<!-- Row 3: Owner -->
 					<?php if ( current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
-						<div class="alm-filter-row">
-							<div class="alm-filter-field">
-								<label for="alm-owner-filter-input"><?php esc_html_e( 'Owner', 'asset-lending-manager' ); ?></label>
-								<div class="alm-autocomplete-wrap">
-									<span class="alm-search-icon" aria-hidden="true"></span>
+						<div class="almgr-filter-row">
+							<div class="almgr-filter-field">
+								<label for="almgr-owner-filter-input"><?php esc_html_e( 'Owner', 'asset-lending-manager' ); ?></label>
+								<div class="almgr-autocomplete-wrap">
+									<span class="almgr-search-icon" aria-hidden="true"></span>
 									<input
 										type="text"
-										id="alm-owner-filter-input"
+										id="almgr-owner-filter-input"
 										autocomplete="off"
 										placeholder="<?php esc_attr_e( 'Search user...', 'asset-lending-manager' ); ?>"
 										value="<?php echo esc_attr( $filter_owner_name ); ?>"
 									/>
-									<div id="alm-owner-filter-dropdown" class="alm-autocomplete-dropdown"></div>
+									<div id="almgr-owner-filter-dropdown" class="almgr-autocomplete-dropdown"></div>
 									<input
 										type="hidden"
 										name="almgr_owner"
-										id="alm-owner-filter-id"
+										id="almgr-owner-filter-id"
 										value="<?php echo esc_attr( $filter_owner > 0 ? $filter_owner : '' ); ?>"
 									/>
 								</div>
 							</div>
 						</div>
 					<?php elseif ( is_user_logged_in() ) : ?>
-						<div class="alm-filter-row">
-							<div class="alm-filter-field">
-								<label class="alm-checkbox-label">
+						<div class="almgr-filter-row">
+							<div class="almgr-filter-field">
+								<label class="almgr-checkbox-label">
 									<input
 										type="checkbox"
 										name="almgr_my_assets"
@@ -215,8 +215,8 @@ if ( $filter_owner > 0 ) {
 		</details>
 
 		<!-- Form actions: Reset filters + Search -->
-		<div class="alm-form-actions">
-			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'almgr_structure', 'almgr_type', 'almgr_state', 'almgr_level', 'almgr_owner', 'almgr_my_assets', 'almgr_paged' ) ) ); ?>" class="alm-reset-filters">
+		<div class="almgr-form-actions">
+			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'almgr_structure', 'almgr_type', 'almgr_state', 'almgr_level', 'almgr_owner', 'almgr_my_assets', 'almgr_paged' ) ) ); ?>" class="almgr-reset-filters">
 				<?php esc_html_e( 'Reset Filters', 'asset-lending-manager' ); ?>
 			</a>
 			<button type="submit">
@@ -230,7 +230,7 @@ if ( $filter_owner > 0 ) {
 <div id="almgr_asset_search_results">
 
 	<?php if ( $assets_count > 0 ) : ?>
-		<p class="alm-asset-search-count">
+		<p class="almgr-asset-search-count">
 			<?php
 			printf(
 				/* translators: %d: Number of assets found. */
@@ -243,60 +243,60 @@ if ( $filter_owner > 0 ) {
 
 	<?php if ( ! empty( $assets ) ) : ?>
 
-		<div class="alm-asset-list">
+		<div class="almgr-asset-list">
 			<?php foreach ( $assets as $almgr_asset ) : ?>
-				<article class="alm-asset-card">
-					<a href="<?php echo esc_url( $almgr_asset->permalink ); ?>" class="alm-asset-link">
-						<div class="alm-asset-thumbnail">
+				<article class="almgr-asset-card">
+					<a href="<?php echo esc_url( $almgr_asset->permalink ); ?>" class="almgr-asset-link">
+						<div class="almgr-asset-thumbnail">
 							<?php echo wp_kses_post( $almgr_asset->thumbnail ); ?>
 						</div>
-						<div class="alm-asset-content-wrapper">
-							<div class="alm-card-title-row">
-								<h2 class="alm-asset-title"><?php echo esc_html( $almgr_asset->title ); ?></h2>
+						<div class="almgr-asset-content-wrapper">
+							<div class="almgr-card-title-row">
+								<h2 class="almgr-asset-title"><?php echo esc_html( $almgr_asset->title ); ?></h2>
 								<?php
 								$almgr_state_classes = ALMGR_Asset_Manager::get_state_classes();
 								foreach ( $almgr_asset->almgr_state as $almgr_si => $almgr_state_name ) :
 									$almgr_state_slug  = $almgr_asset->almgr_state_slugs[ $almgr_si ] ?? '';
 									$almgr_badge_class = $almgr_state_classes[ $almgr_state_slug ] ?? '';
 									?>
-									<span class="alm-availability <?php echo esc_attr( $almgr_badge_class ); ?>">
+									<span class="almgr-availability <?php echo esc_attr( $almgr_badge_class ); ?>">
 										<?php echo esc_html( $almgr_state_name ); ?>
 									</span>
 								<?php endforeach; ?>
 							</div>
-							<div class="alm-asset-taxonomies">
+							<div class="almgr-asset-taxonomies">
 								<!-- Tax: Structure -->
-								<div class="alm-asset-taxonomy">
-									<span class="alm-tax-label"><?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?>:</span>
-									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $almgr_asset->almgr_structure ) ); ?></span>
+								<div class="almgr-asset-taxonomy">
+									<span class="almgr-tax-label"><?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?>:</span>
+									<span class="almgr-tax-value"><?php echo esc_html( implode( ', ', $almgr_asset->almgr_structure ) ); ?></span>
 								</div>
 								<!-- Tax: Type -->
-								<div class="alm-asset-taxonomy">
-									<span class="alm-tax-label"><?php esc_html_e( 'Type', 'asset-lending-manager' ); ?>:</span>
-									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $almgr_asset->almgr_type ) ); ?></span>
+								<div class="almgr-asset-taxonomy">
+									<span class="almgr-tax-label"><?php esc_html_e( 'Type', 'asset-lending-manager' ); ?>:</span>
+									<span class="almgr-tax-value"><?php echo esc_html( implode( ', ', $almgr_asset->almgr_type ) ); ?></span>
 								</div>
 								<!-- Tax: Level (shown only if assigned) -->
 								<?php if ( ! empty( $almgr_asset->almgr_level ) ) : ?>
-								<div class="alm-asset-taxonomy">
-									<span class="alm-tax-label"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?>:</span>
-									<span class="alm-tax-value"><?php echo esc_html( implode( ', ', $almgr_asset->almgr_level ) ); ?></span>
+								<div class="almgr-asset-taxonomy">
+									<span class="almgr-tax-label"><?php esc_html_e( 'Level', 'asset-lending-manager' ); ?>:</span>
+									<span class="almgr-tax-value"><?php echo esc_html( implode( ', ', $almgr_asset->almgr_level ) ); ?></span>
 								</div>
 								<?php endif; ?>
 								<!-- Owner: visible to logged-in users only. -->
 								<?php if ( is_user_logged_in() && $almgr_asset->owner_name ) : ?>
-									<div class="alm-asset-taxonomy">
-										<span class="alm-tax-label"><?php esc_html_e( 'Owner', 'asset-lending-manager' ); ?>:</span>
-										<span class="alm-tax-value"><?php echo esc_html( $almgr_asset->owner_name ); ?></span>
+									<div class="almgr-asset-taxonomy">
+										<span class="almgr-tax-label"><?php esc_html_e( 'Owner', 'asset-lending-manager' ); ?>:</span>
+										<span class="almgr-tax-value"><?php echo esc_html( $almgr_asset->owner_name ); ?></span>
 									</div>
 								<?php endif; ?>
 							</div>
 						</div>
 					</a>
 					<?php if ( ! empty( $almgr_asset->parent_kits ) ) : ?>
-						<div class="alm-card-kit-footer" role="note" aria-label="<?php esc_attr_e( 'Kit membership', 'asset-lending-manager' ); ?>">
-							<span class="alm-card-kit-label"><?php esc_html_e( 'Kit', 'asset-lending-manager' ); ?>:</span>
+						<div class="almgr-card-kit-footer" role="note" aria-label="<?php esc_attr_e( 'Kit membership', 'asset-lending-manager' ); ?>">
+							<span class="almgr-card-kit-label"><?php esc_html_e( 'Kit', 'asset-lending-manager' ); ?>:</span>
 							<?php foreach ( $almgr_asset->parent_kits as $almgr_ki => $almgr_kit ) : ?>
-								<a class="alm-card-kit-link" href="<?php echo esc_url( $almgr_kit['permalink'] ); ?>"><?php echo esc_html( $almgr_kit['title'] ); ?></a>
+								<a class="almgr-card-kit-link" href="<?php echo esc_url( $almgr_kit['permalink'] ); ?>"><?php echo esc_html( $almgr_kit['title'] ); ?></a>
 								<?php if ( $almgr_ki < count( $almgr_asset->parent_kits ) - 1 ) : ?>
 									<span aria-hidden="true">,</span>
 								<?php endif; ?>
@@ -308,7 +308,7 @@ if ( $filter_owner > 0 ) {
 		</div>
 
 		<?php if ( $total_pages > 1 ) : ?>
-			<nav class="alm-pagination" aria-label="<?php esc_attr_e( 'Asset list pagination', 'asset-lending-manager' ); ?>">
+			<nav class="almgr-pagination" aria-label="<?php esc_attr_e( 'Asset list pagination', 'asset-lending-manager' ); ?>">
 				<?php
 				echo wp_kses_post(
 					paginate_links(
@@ -328,7 +328,7 @@ if ( $filter_owner > 0 ) {
 
 	<?php else : ?>
 
-		<p class="alm-no-results">
+		<p class="almgr-no-results">
 		<?php
 		if ( ! empty( $almgr_current_search ) ) {
 			printf(

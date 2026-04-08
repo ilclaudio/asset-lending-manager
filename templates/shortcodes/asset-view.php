@@ -49,11 +49,11 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 }
 ?>
 
-<article class="alm-asset-detail alm-asset-view" data-asset-id="<?php echo esc_attr( $almgr_asset_id ); ?>">
+<article class="almgr-asset-detail almgr-asset-view" data-asset-id="<?php echo esc_attr( $almgr_asset_id ); ?>">
 
 	<!-- I section: Title -->
-	<header class="alm-asset-view__title">
-		<h1 class="alm-asset-title"><?php echo esc_html( $almgr_asset_title ); ?></h1>
+	<header class="almgr-asset-view__title">
+		<h1 class="almgr-asset-title"><?php echo esc_html( $almgr_asset_title ); ?></h1>
 	</header>
 
 	<?php
@@ -62,11 +62,11 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	?>
 
 	<!-- II section: FOTO (sx) + Taxonomies box (dx) -->
-	<section class="alm-asset-view__hero" aria-label="<?php esc_attr_e( 'Asset overview', 'asset-lending-manager' ); ?>">
+	<section class="almgr-asset-view__hero" aria-label="<?php esc_attr_e( 'Asset overview', 'asset-lending-manager' ); ?>">
 		<!-- Asset foto -->
-		<div class="alm-asset-view__media">
+		<div class="almgr-asset-view__media">
 			<?php if ( $almgr_detail_image_html ) : ?>
-				<div class="alm-asset-thumbnail alm-asset-thumbnail--large">
+				<div class="almgr-asset-thumbnail almgr-asset-thumbnail--large">
 					<?php echo wp_kses_post( $almgr_detail_image_html ); ?>
 				</div>
 			<?php endif; ?>
@@ -94,38 +94,38 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 			$almgr_state_css_class = $almgr_state_class_map[ $almgr_state_slug ];
 		}
 		?>
-		<aside class="alm-asset-view__taxbox" aria-label="<?php esc_attr_e( 'Asset taxonomies', 'asset-lending-manager' ); ?>">
-			<div class="alm-asset-taxonomies alm-asset-taxonomies--boxed">
-				<div class="alm-asset-tax-row">
-					<span class="alm-tax-label">
+		<aside class="almgr-asset-view__taxbox" aria-label="<?php esc_attr_e( 'Asset taxonomies', 'asset-lending-manager' ); ?>">
+			<div class="almgr-asset-taxonomies almgr-asset-taxonomies--boxed">
+				<div class="almgr-asset-tax-row">
+					<span class="almgr-tax-label">
 						<?php esc_html_e( 'Structure', 'asset-lending-manager' ); ?>
 					</span>
-					<span class="alm-tax-value">
+					<span class="almgr-tax-value">
 						<?php echo esc_html( $almgr_structure ); ?>
 					</span>
 				</div>
-				<div class="alm-asset-tax-row">
-					<span class="alm-tax-label">
+				<div class="almgr-asset-tax-row">
+					<span class="almgr-tax-label">
 						<?php esc_html_e( 'Type', 'asset-lending-manager' ); ?>
 					</span>
-					<span class="alm-tax-value">
+					<span class="almgr-tax-value">
 						<?php echo esc_html( $almgr_type ); ?>
 					</span>
 				</div>
-				<div class="alm-asset-tax-row">
-					<span class="alm-tax-label">
+				<div class="almgr-asset-tax-row">
+					<span class="almgr-tax-label">
 						<?php esc_html_e( 'Level', 'asset-lending-manager' ); ?>
 					</span>
-					<span class="alm-tax-value">
+					<span class="almgr-tax-value">
 						<?php echo esc_html( $almgr_level ); ?>
 					</span>
 				</div>
-				<div class="alm-asset-tax-row">
-					<span class="alm-tax-label">
+				<div class="almgr-asset-tax-row">
+					<span class="almgr-tax-label">
 						<?php esc_html_e( 'State', 'asset-lending-manager' ); ?>
 					</span>
-					<span class="alm-tax-value">
-						<span class="alm-availability <?php echo esc_attr( $almgr_state_css_class ); ?>">
+					<span class="almgr-tax-value">
+						<span class="almgr-availability <?php echo esc_attr( $almgr_state_css_class ); ?>">
 							<?php echo esc_html( $almgr_state_label ); ?>
 						</span>
 					</span>
@@ -136,63 +136,63 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 
 	<!-- III section: Asset description -->
 	<?php if ( $almgr_asset_content ) : ?>
-	<section class="alm-asset-view__content" aria-label="<?php esc_attr_e( 'Full description', 'asset-lending-manager' ); ?>">
-		<div class="alm-asset-content">
+	<section class="almgr-asset-view__content" aria-label="<?php esc_attr_e( 'Full description', 'asset-lending-manager' ); ?>">
+		<div class="almgr-asset-content">
 			<?php echo wp_kses_post( $almgr_asset_content ); ?>
 		</div>
 	</section>
 	<?php endif; ?>
 
 	<!-- IV section: Asset optional fields -->
-	<section class="alm-asset-view__acf" aria-label="<?php esc_attr_e( 'Additional fields', 'asset-lending-manager' ); ?>">
-		<details class="alm-collapsible alm-collapsible--acf" open>
-			<summary class="alm-collapsible__summary">
-				<span class="alm-collapsible__title">
+	<section class="almgr-asset-view__acf" aria-label="<?php esc_attr_e( 'Additional fields', 'asset-lending-manager' ); ?>">
+		<details class="almgr-collapsible almgr-collapsible--acf" open>
+			<summary class="almgr-collapsible__summary">
+				<span class="almgr-collapsible__title">
 					<?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?>
 				</span>
-				<span class="alm-collapsible__hint" aria-hidden="true">
+				<span class="almgr-collapsible__hint" aria-hidden="true">
 					<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 				</span>
 			</summary>
-			<div class="alm-collapsible__body">
+			<div class="almgr-collapsible__body">
 				<?php if ( ! empty( $almgr_asset_fields ) ) : ?>
-					<dl class="alm-asset-acf-list">
+					<dl class="almgr-asset-acf-list">
 						<?php if ( is_user_logged_in() && ! empty( $almgr_owner_name ) ) : ?>
-							<div class="alm-asset-acf-row alm-acf-current-owner">
-								<dt class="alm-asset-acf-label">
+							<div class="almgr-asset-acf-row almgr-acf-current-owner">
+								<dt class="almgr-asset-acf-label">
 									<?php esc_html_e( 'Current owner', 'asset-lending-manager' ); ?>
 								</dt>
-								<dd class="alm-asset-acf-value">
+								<dd class="almgr-asset-acf-value">
 									<?php echo esc_html( $almgr_owner_name ); ?>
 								</dd>
 							</div>
 						<?php endif; ?>
 						<?php foreach ( $almgr_asset_fields as $almgr_asset_row ) : ?>
 							<?php if ( $almgr_asset_row['value'] ) : ?>
-								<div class="alm-asset-acf-row alm-acf-<?php echo esc_attr( $almgr_asset_row['name'] ); ?>">
-									<dt class="alm-asset-acf-label">
+								<div class="almgr-asset-acf-row almgr-acf-<?php echo esc_attr( $almgr_asset_row['name'] ); ?>">
+									<dt class="almgr-asset-acf-label">
 										<?php echo esc_html( (string) $almgr_asset_row['label'] ); ?>
 									</dt>
-									<dd class="alm-asset-acf-value">
+									<dd class="almgr-asset-acf-value">
 										<?php
 										// Render by type.
 										if ( 'file' === $almgr_asset_row['type'] && is_array( $almgr_asset_row['value'] ) && ! empty( $almgr_asset_row['value']['url'] ) ) {
 											$almgr_file_url  = (string) $almgr_asset_row['value']['url'];
 											$almgr_file_name = ! empty( $almgr_asset_row['value']['filename'] ) ? (string) $almgr_asset_row['value']['filename'] : $almgr_file_url;
 											?>
-											<a href="<?php echo esc_url( $almgr_file_url ); ?>" class="alm-link" target="_blank" rel="noopener">
+											<a href="<?php echo esc_url( $almgr_file_url ); ?>" class="almgr-link" target="_blank" rel="noopener">
 												<?php echo esc_html( $almgr_file_name ); ?>
 												<span class="screen-reader-text"><?php esc_html_e( '(opens in new tab)', 'asset-lending-manager' ); ?></span>
 											</a>
 											<?php
 										} elseif ( 'post_object' === $almgr_asset_row['type'] && is_array( $almgr_asset_row['value'] ) ) {
 											// Multiple components (objects).
-											echo '<ul class="alm-asset-components">';
+											echo '<ul class="almgr-asset-components">';
 											foreach ( $almgr_asset_row['value'] as $almgr_component_post ) {
 												if ( is_object( $almgr_component_post ) && ! empty( $almgr_component_post->ID ) ) {
 													$almgr_component_title = get_the_title( $almgr_component_post->ID );
 													$almgr_component_link  = get_permalink( $almgr_component_post->ID );
-													echo '<li><a class="alm-link" href="' . esc_url( $almgr_component_link ) . '">' . esc_html( $almgr_component_title ) . '</a></li>';
+													echo '<li><a class="almgr-link" href="' . esc_url( $almgr_component_link ) . '">' . esc_html( $almgr_component_title ) . '</a></li>';
 												}
 											}
 											echo '</ul>';
@@ -211,29 +211,29 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 								</div>
 							<?php endif; ?>
 						<?php endforeach; ?>
-						<div class="alm-asset-acf-row alm-acf-asset-code">
-							<dt class="alm-asset-acf-label">
+						<div class="almgr-asset-acf-row almgr-acf-asset-code">
+							<dt class="almgr-asset-acf-label">
 								<?php esc_html_e( 'Code', 'asset-lending-manager' ); ?>
 							</dt>
-							<dd class="alm-asset-acf-value">
+							<dd class="almgr-asset-acf-value">
 								<?php echo esc_html( $almgr_asset_code_str ); ?>
 							</dd>
 						</div>
 						<!-- QR code row -->
-						<div class="alm-asset-acf-row alm-acf-qr">
-							<dt class="alm-asset-acf-label">
+						<div class="almgr-asset-acf-row almgr-acf-qr">
+							<dt class="almgr-asset-acf-label">
 								<?php esc_html_e( 'QR code', 'asset-lending-manager' ); ?>
 							</dt>
-							<dd class="alm-asset-acf-value">
-								<div class="alm-qr-inline">
+							<dd class="almgr-asset-acf-value">
+								<div class="almgr-qr-inline">
 									<div
-										class="alm-qr-canvas alm-qr-canvas--small"
+										class="almgr-qr-canvas almgr-qr-canvas--small"
 										data-scan-url="<?php echo esc_url( $almgr_scan_url ); ?>"
 										data-asset-code="<?php echo esc_attr( $almgr_asset_code_str ); ?>"
 										aria-label="<?php esc_attr_e( 'QR code for this asset', 'asset-lending-manager' ); ?>"
 										role="img"
 									></div>
-									<button type="button" class="alm-button alm-button--secondary alm-qr-print">
+									<button type="button" class="almgr-button almgr-button--secondary almgr-qr-print">
 										<?php esc_html_e( 'Print QR code', 'asset-lending-manager' ); ?>
 									</button>
 								</div>
@@ -241,7 +241,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 						</div>
 					</dl>
 				<?php else : ?>
-					<p class="alm-muted"><?php esc_html_e( 'No additional details available.', 'asset-lending-manager' ); ?></p>
+					<p class="almgr-muted"><?php esc_html_e( 'No additional details available.', 'asset-lending-manager' ); ?></p>
 				<?php endif; ?>
 			</div>
 		</details>
@@ -255,12 +255,12 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 		$almgr_parent_kits = isset( $asset->parent_kits ) ? $asset->parent_kits : array();
 		if ( ! empty( $almgr_parent_kits ) && is_user_logged_in() && current_user_can( ALMGR_VIEW_ASSET ) ) :
 			?>
-			<div class="alm-notice alm-notice--info alm-kit-notice" role="note">
+			<div class="almgr-notice almgr-notice--info almgr-kit-notice" role="note">
 				<strong><?php esc_html_e( 'Note:', 'asset-lending-manager' ); ?></strong>
 				<?php
 				$almgr_kit_links = array();
 				foreach ( $almgr_parent_kits as $almgr_parent_kit ) {
-					$almgr_kit_links[] = '<a class="alm-link" href="' . esc_url( $almgr_parent_kit['permalink'] ) . '">'
+					$almgr_kit_links[] = '<a class="almgr-link" href="' . esc_url( $almgr_parent_kit['permalink'] ) . '">'
 						. esc_html( $almgr_parent_kit['title'] ) . '</a>';
 				}
 				if ( 1 === count( $almgr_kit_links ) ) {
@@ -283,57 +283,57 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 				?>
 			</div>
 		<?php endif; ?>
-		<section class="alm-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
-			<details class="alm-collapsible alm-collapsible--requestbutton" id="alm-loan-request-section">
-				<summary class="alm-collapsible__summary">
-					<span class="alm-collapsible__title">
+		<section class="almgr-asset-view__loan-request" aria-label="<?php esc_attr_e( 'Loan request', 'asset-lending-manager' ); ?>">
+			<details class="almgr-collapsible almgr-collapsible--requestbutton" id="almgr-loan-request-section">
+				<summary class="almgr-collapsible__summary">
+					<span class="almgr-collapsible__title">
 						<?php esc_html_e( 'Request loan', 'asset-lending-manager' ); ?>
 					</span>
-					<span class="alm-collapsible__hint" aria-hidden="true">
+					<span class="almgr-collapsible__hint" aria-hidden="true">
 						<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 					</span>
 				</summary>
-				<div class="alm-collapsible__body">
+				<div class="almgr-collapsible__body">
 
 					<?php if ( is_user_logged_in() && current_user_can( ALMGR_VIEW_ASSET ) ) : ?>
 						<!-- People eligible to apply for the loan -->
 
 						<?php if ( $almgr_loan_manager->has_pending_request( $almgr_asset_id, $almgr_current_user_id ) ) : ?>
-							<p class="alm-muted">
+							<p class="almgr-muted">
 								<?php esc_html_e( 'You have already requested a loan for this asset.', 'asset-lending-manager' ); ?>
 							</p>
 
 						<?php else : ?>
-							<form id="alm-loan-request-form" class="alm-loan-form">
+							<form id="almgr-loan-request-form" class="almgr-loan-form">
 								<?php wp_nonce_field( 'almgr_loan_request_nonce', 'nonce' ); ?>
-								<div class="alm-form-field">
-									<label for="alm-request-message">
+								<div class="almgr-form-field">
+									<label for="almgr-request-message">
 										<?php esc_html_e( 'Message for the current owner:', 'asset-lending-manager' ); ?>
 									</label>
 									<textarea
-										id="alm-request-message"
+										id="almgr-request-message"
 										name="message"
 										rows="4"
 										maxlength="<?php echo esc_attr( $almgr_request_message_max ); ?>"
 										placeholder="<?php esc_attr_e( 'Write a brief message explaining why you need this asset...', 'asset-lending-manager' ); ?>"
-										aria-describedby="alm-request-char-count"
+										aria-describedby="almgr-request-char-count"
 										aria-required="true"
 										required
 									></textarea>
-									<div class="alm-char-count" id="alm-request-char-count">0 / <?php echo esc_html( $almgr_request_message_max ); ?></div>
+									<div class="almgr-char-count" id="almgr-request-char-count">0 / <?php echo esc_html( $almgr_request_message_max ); ?></div>
 								</div>
-								<div class="alm-form-actions">
-									<button type="submit" class="alm-button alm-button--primary">
+								<div class="almgr-form-actions">
+									<button type="submit" class="almgr-button almgr-button--primary">
 										<?php esc_html_e( 'Send request', 'asset-lending-manager' ); ?>
 									</button>
 								</div>
-								<div id="alm-loan-request-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
+								<div id="almgr-loan-request-response" class="almgr-response-message" role="status" aria-live="polite" style="display:none;"></div>
 							</form>
 						<?php endif; ?>
 
 					<?php else : ?>
 						<!-- People not eligible to apply for the loan -->
-						<p class="alm-muted">
+						<p class="almgr-muted">
 							<?php esc_html_e( 'To request a loan, you must log in as a member.', 'asset-lending-manager' ); ?>
 						</p>
 					<?php endif; ?>
@@ -372,20 +372,20 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 			}
 		}
 		?>
-	<section class="alm-asset-view__loan-requests" aria-label="<?php esc_attr_e( 'Loan requests', 'asset-lending-manager' ); ?>">
-		<details class="alm-collapsible alm-collapsible--requestlist">
-			<summary class="alm-collapsible__summary">
-				<span class="alm-collapsible__title">
+	<section class="almgr-asset-view__loan-requests" aria-label="<?php esc_attr_e( 'Loan requests', 'asset-lending-manager' ); ?>">
+		<details class="almgr-collapsible almgr-collapsible--requestlist">
+			<summary class="almgr-collapsible__summary">
+				<span class="almgr-collapsible__title">
 				<?php esc_html_e( 'Loan requests', 'asset-lending-manager' ); ?>
 				</span>
-				<span class="alm-collapsible__hint" aria-hidden="true">
+				<span class="almgr-collapsible__hint" aria-hidden="true">
 				<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 				</span>
 			</summary>
 
-			<div class="alm-collapsible__body">
+			<div class="almgr-collapsible__body">
 			<?php if ( ! empty( $almgr_requests ) ) : ?>
-						<table class="alm-requests-table alm-responsive-table">
+						<table class="almgr-requests-table almgr-responsive-table">
 						<caption class="screen-reader-text">
 							<?php esc_html_e( 'Pending loan requests for this asset', 'asset-lending-manager' ); ?>
 						</caption>
@@ -416,38 +416,38 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 									/* translators: %s: loan requester display name. */
 									$almgr_reject_label = sprintf( __( 'Reject request from %s', 'asset-lending-manager' ), $almgr_requester_name );
 									?>
-								<tr class="alm-request-row" role="row" data-request-id="<?php echo esc_attr( $almgr_request->id ); ?>">
-										<td class="alm-request-requester" role="cell" data-label="<?php esc_attr_e( 'Requester', 'asset-lending-manager' ); ?>">
+								<tr class="almgr-request-row" role="row" data-request-id="<?php echo esc_attr( $almgr_request->id ); ?>">
+										<td class="almgr-request-requester" role="cell" data-label="<?php esc_attr_e( 'Requester', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $almgr_requester_name ); ?>
 										</td>
-										<td class="alm-request-message" role="cell" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
-											<p class="alm-message-preview">
+										<td class="almgr-request-message" role="cell" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
+											<p class="almgr-message-preview">
 												<?php echo esc_html( $almgr_short_message ); ?>
 											</p>
 											<?php if ( $almgr_has_long_message ) : ?>
-												<details class="alm-message-details">
-													<summary class="alm-message-toggle">
-														<span class="alm-message-toggle-open">
+												<details class="almgr-message-details">
+													<summary class="almgr-message-toggle">
+														<span class="almgr-message-toggle-open">
 															<?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?>
 														</span>
-														<span class="alm-message-toggle-close">
+														<span class="almgr-message-toggle-close">
 															<?php esc_html_e( 'Close message', 'asset-lending-manager' ); ?>
 														</span>
 													</summary>
-													<div class="alm-message-full">
+													<div class="almgr-message-full">
 														<?php echo esc_html( $almgr_full_message ); ?>
 													</div>
 												</details>
 											<?php endif; ?>
 										</td>
-										<td class="alm-request-date" role="cell" data-label="<?php esc_attr_e( 'Date', 'asset-lending-manager' ); ?>">
+										<td class="almgr-request-date" role="cell" data-label="<?php esc_attr_e( 'Date', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $almgr_request_date ); ?>
 										</td>
-										<td class="alm-request-actions" role="cell" data-label="<?php esc_attr_e( 'Actions', 'asset-lending-manager' ); ?>">
+										<td class="almgr-request-actions" role="cell" data-label="<?php esc_attr_e( 'Actions', 'asset-lending-manager' ); ?>">
 										<?php if ( 'pending' === $almgr_request_status && $almgr_is_current_owner ) : ?>
 											<button
 												type="button"
-												class="alm-button alm-button--small alm-button--approve"
+												class="almgr-button almgr-button--small almgr-button--approve"
 												data-action="approve"
 												data-request-id="<?php echo esc_attr( $almgr_request->id ); ?>"
 												data-asset-id="<?php echo esc_attr( $almgr_asset_id ); ?>"
@@ -457,7 +457,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 											</button>
 											<button
 												type="button"
-												class="alm-button alm-button--small alm-button--reject"
+												class="almgr-button almgr-button--small almgr-button--reject"
 												data-action="reject"
 												data-request-id="<?php echo esc_attr( $almgr_request->id ); ?>"
 												data-asset-id="<?php echo esc_attr( $almgr_asset_id ); ?>"
@@ -466,7 +466,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 												<?php esc_html_e( 'Reject', 'asset-lending-manager' ); ?>
 											</button>
 										<?php else : ?>
-											<span class="alm-muted">—</span>
+											<span class="almgr-muted">—</span>
 										<?php endif; ?>
 									</td>
 								</tr>
@@ -474,7 +474,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 						</tbody>
 					</table>
 				<?php else : ?>
-					<p class="alm-muted">
+					<p class="almgr-muted">
 						<?php esc_html_e( 'No pending requests for this asset.', 'asset-lending-manager' ); ?>
 					</p>
 				<?php endif; ?>
@@ -488,64 +488,64 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 
 	<!-- VII section: Direct assignment (operator only, hidden for maintenance/retired assets) -->
 	<?php if ( $almgr_is_operator && ! in_array( $almgr_state_slug, array( 'maintenance', 'retired' ), true ) ) : ?>
-	<section class="alm-asset-view__direct-assign" aria-label="<?php esc_attr_e( 'Direct assignment', 'asset-lending-manager' ); ?>">
-		<details class="alm-collapsible alm-collapsible--directassign">
-			<summary class="alm-collapsible__summary">
-				<span class="alm-collapsible__title">
+	<section class="almgr-asset-view__direct-assign" aria-label="<?php esc_attr_e( 'Direct assignment', 'asset-lending-manager' ); ?>">
+		<details class="almgr-collapsible almgr-collapsible--directassign">
+			<summary class="almgr-collapsible__summary">
+				<span class="almgr-collapsible__title">
 					<?php esc_html_e( 'Direct assignment', 'asset-lending-manager' ); ?>
 				</span>
-				<span class="alm-collapsible__hint" aria-hidden="true">
+				<span class="almgr-collapsible__hint" aria-hidden="true">
 					<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 				</span>
 			</summary>
-			<div class="alm-collapsible__body">
-				<form id="alm-direct-assign-form" class="alm-loan-form">
+			<div class="almgr-collapsible__body">
+				<form id="almgr-direct-assign-form" class="almgr-loan-form">
 					<?php wp_nonce_field( 'almgr_direct_assign_nonce', 'almgr_direct_assign_nonce_field' ); ?>
 
-					<div class="alm-form-field">
-						<label for="alm-direct-assign-user-input">
+					<div class="almgr-form-field">
+						<label for="almgr-direct-assign-user-input">
 							<?php esc_html_e( 'Assign to user:', 'asset-lending-manager' ); ?>
 						</label>
-						<div class="alm-autocomplete-wrap">
-							<span class="alm-search-icon" aria-hidden="true"></span>
+						<div class="almgr-autocomplete-wrap">
+							<span class="almgr-search-icon" aria-hidden="true"></span>
 							<input
 								type="text"
-								id="alm-direct-assign-user-input"
+								id="almgr-direct-assign-user-input"
 								autocomplete="off"
 								placeholder="<?php esc_attr_e( 'Search member or operator...', 'asset-lending-manager' ); ?>"
 							/>
 							<input
 								type="hidden"
-								id="alm-direct-assign-user-id"
+								id="almgr-direct-assign-user-id"
 								name="assignee_id"
 								value=""
 							/>
 						</div>
 					</div>
 
-					<div class="alm-form-field">
-						<label for="alm-direct-assign-reason">
+					<div class="almgr-form-field">
+						<label for="almgr-direct-assign-reason">
 							<?php esc_html_e( 'Reason:', 'asset-lending-manager' ); ?>
 						</label>
 						<textarea
-							id="alm-direct-assign-reason"
+							id="almgr-direct-assign-reason"
 							name="reason"
 							rows="3"
 							maxlength="<?php echo esc_attr( $almgr_direct_assign_reason_max ); ?>"
 							placeholder="<?php esc_attr_e( 'Explain the reason for this assignment...', 'asset-lending-manager' ); ?>"
-							aria-describedby="alm-direct-assign-char-count"
+							aria-describedby="almgr-direct-assign-char-count"
 							aria-required="true"
 							required
 						></textarea>
-						<div class="alm-char-count" id="alm-direct-assign-char-count">0 / <?php echo esc_html( $almgr_direct_assign_reason_max ); ?></div>
+						<div class="almgr-char-count" id="almgr-direct-assign-char-count">0 / <?php echo esc_html( $almgr_direct_assign_reason_max ); ?></div>
 					</div>
 
-					<div class="alm-form-actions">
-						<button type="submit" class="alm-button alm-button--primary">
+					<div class="almgr-form-actions">
+						<button type="submit" class="almgr-button almgr-button--primary">
 							<?php esc_html_e( 'Assign asset', 'asset-lending-manager' ); ?>
 						</button>
 					</div>
-					<div id="alm-direct-assign-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
+					<div id="almgr-direct-assign-response" class="almgr-response-message" role="status" aria-live="polite" style="display:none;"></div>
 				</form>
 			</div>
 		</details>
@@ -554,21 +554,21 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 
 	<!-- VIII section: Asset state management (operator only) -->
 	<?php if ( $almgr_is_operator ) : ?>
-		<section class="alm-asset-view__change-state" aria-label="<?php esc_attr_e( 'Asset state management', 'asset-lending-manager' ); ?>">
-			<details class="alm-collapsible alm-collapsible--changestate">
-				<summary class="alm-collapsible__summary">
-					<span class="alm-collapsible__title">
+		<section class="almgr-asset-view__change-state" aria-label="<?php esc_attr_e( 'Asset state management', 'asset-lending-manager' ); ?>">
+			<details class="almgr-collapsible almgr-collapsible--changestate">
+				<summary class="almgr-collapsible__summary">
+					<span class="almgr-collapsible__title">
 						<?php esc_html_e( 'Asset state management', 'asset-lending-manager' ); ?>
 					</span>
-					<span class="alm-collapsible__hint" aria-hidden="true">
+					<span class="almgr-collapsible__hint" aria-hidden="true">
 						<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 					</span>
 				</summary>
-				<div class="alm-collapsible__body">
+				<div class="almgr-collapsible__body">
 					<?php if ( in_array( $almgr_state_slug, array( 'available', 'on-loan' ), true ) ) : ?>
 						<!-- Sub-form: set to maintenance or retired -->
 						<?php if ( 'on-loan' === $almgr_state_slug ) : ?>
-							<p class="alm-notice alm-notice--warning">
+							<p class="almgr-notice almgr-notice--warning">
 								<?php
 								$almgr_owner_display = $almgr_owner_name ? $almgr_owner_name : __( 'an unknown user', 'asset-lending-manager' );
 								echo wp_kses_post(
@@ -581,16 +581,16 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 								?>
 							</p>
 						<?php endif; ?>
-						<form id="alm-change-state-form" class="alm-loan-form" method="post">
+						<form id="almgr-change-state-form" class="almgr-loan-form" method="post">
 							<?php wp_nonce_field( 'almgr_change_state_nonce', 'nonce' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>" />
-							<div class="alm-form-field">
-								<label for="alm-change-state-location">
+							<div class="almgr-form-field">
+								<label for="almgr-change-state-location">
 									<?php esc_html_e( 'Location (required):', 'asset-lending-manager' ); ?>
 								</label>
 								<input
 									type="text"
-									id="alm-change-state-location"
+									id="almgr-change-state-location"
 									name="location"
 									value="<?php echo esc_attr( $almgr_asset_location ); ?>"
 									maxlength="255"
@@ -598,38 +598,38 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 									placeholder="<?php esc_attr_e( "e.g. Room A, shelf 3 or at David's house", 'asset-lending-manager' ); ?>"
 								/>
 							</div>
-							<div class="alm-form-field">
-								<label for="alm-change-state-notes">
+							<div class="almgr-form-field">
+								<label for="almgr-change-state-notes">
 									<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>
 								</label>
 								<textarea
-									id="alm-change-state-notes"
+									id="almgr-change-state-notes"
 									name="notes"
 									rows="3"
 									maxlength="<?php echo esc_attr( $almgr_change_state_notes_max ); ?>"
 									placeholder="<?php esc_attr_e( 'Describe the reason for this state change...', 'asset-lending-manager' ); ?>"
-									aria-describedby="alm-change-state-char-count"
+									aria-describedby="almgr-change-state-char-count"
 								></textarea>
-								<div class="alm-char-count" id="alm-change-state-char-count">0 / <?php echo esc_html( $almgr_change_state_notes_max ); ?></div>
+								<div class="almgr-char-count" id="almgr-change-state-char-count">0 / <?php echo esc_html( $almgr_change_state_notes_max ); ?></div>
 							</div>
-							<div class="alm-form-actions alm-form-actions--row">
+							<div class="almgr-form-actions almgr-form-actions--row">
 								<?php if ( 'on-loan' === $almgr_state_slug ) : ?>
-									<button type="submit" class="alm-button alm-button--approve" data-target-state="available">
+									<button type="submit" class="almgr-button almgr-button--approve" data-target-state="available">
 										<?php esc_html_e( 'Set to available', 'asset-lending-manager' ); ?>
 									</button>
 								<?php endif; ?>
-								<button type="submit" class="alm-button alm-button--warning" data-target-state="maintenance">
+								<button type="submit" class="almgr-button almgr-button--warning" data-target-state="maintenance">
 									<?php esc_html_e( 'Set to maintenance', 'asset-lending-manager' ); ?>
 								</button>
-								<button type="submit" class="alm-button alm-button--danger" data-target-state="retired">
+								<button type="submit" class="almgr-button almgr-button--danger" data-target-state="retired">
 									<?php esc_html_e( 'Set to retired', 'asset-lending-manager' ); ?>
 								</button>
 							</div>
-							<div id="alm-change-state-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
+							<div id="almgr-change-state-response" class="almgr-response-message" role="status" aria-live="polite" style="display:none;"></div>
 						</form>
 					<?php elseif ( in_array( $almgr_state_slug, array( 'maintenance', 'retired' ), true ) ) : ?>
 						<!-- Sub-form: restore to available -->
-						<p class="alm-notice alm-notice--info">
+						<p class="almgr-notice almgr-notice--info">
 							<?php
 							echo wp_kses_post(
 								sprintf(
@@ -640,16 +640,16 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 							);
 							?>
 						</p>
-						<form id="alm-restore-state-form" class="alm-loan-form" method="post">
+						<form id="almgr-restore-state-form" class="almgr-loan-form" method="post">
 							<?php wp_nonce_field( 'almgr_restore_state_nonce', 'nonce' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>" />
-							<div class="alm-form-field">
-								<label for="alm-restore-state-location">
+							<div class="almgr-form-field">
+								<label for="almgr-restore-state-location">
 									<?php esc_html_e( 'Location (required):', 'asset-lending-manager' ); ?>
 								</label>
 								<input
 									type="text"
-									id="alm-restore-state-location"
+									id="almgr-restore-state-location"
 									name="location"
 									value="<?php echo esc_attr( $almgr_asset_location ); ?>"
 									maxlength="255"
@@ -657,26 +657,26 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 									placeholder="<?php esc_attr_e( 'e.g. Room A, shelf 3', 'asset-lending-manager' ); ?>"
 								/>
 							</div>
-							<div class="alm-form-field">
-								<label for="alm-restore-state-notes">
+							<div class="almgr-form-field">
+								<label for="almgr-restore-state-notes">
 									<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>
 								</label>
 								<textarea
-									id="alm-restore-state-notes"
+									id="almgr-restore-state-notes"
 									name="notes"
 									rows="3"
 									maxlength="<?php echo esc_attr( $almgr_change_state_notes_max ); ?>"
 									placeholder="<?php esc_attr_e( 'Describe the reason for restoring this asset...', 'asset-lending-manager' ); ?>"
-									aria-describedby="alm-restore-state-char-count"
+									aria-describedby="almgr-restore-state-char-count"
 								></textarea>
-								<div class="alm-char-count" id="alm-restore-state-char-count">0 / <?php echo esc_html( $almgr_change_state_notes_max ); ?></div>
+								<div class="almgr-char-count" id="almgr-restore-state-char-count">0 / <?php echo esc_html( $almgr_change_state_notes_max ); ?></div>
 							</div>
-							<div class="alm-form-actions">
-								<button type="submit" class="alm-button alm-button--approve">
+							<div class="almgr-form-actions">
+								<button type="submit" class="almgr-button almgr-button--approve">
 									<?php esc_html_e( 'Make available', 'asset-lending-manager' ); ?>
 								</button>
 							</div>
-							<div id="alm-restore-state-response" class="alm-response-message" role="status" aria-live="polite" style="display:none;"></div>
+							<div id="almgr-restore-state-response" class="almgr-response-message" role="status" aria-live="polite" style="display:none;"></div>
 						</form>
 					<?php endif; ?>
 				</div>
@@ -686,18 +686,18 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 
 	<!-- IX section: Loan history -->
 	<?php if ( is_user_logged_in() && current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
-		<section class="alm-asset-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
-			<details class="alm-collapsible alm-collapsible--history">
-				<summary class="alm-collapsible__summary">
-					<span class="alm-collapsible__title">
+		<section class="almgr-asset-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
+			<details class="almgr-collapsible almgr-collapsible--history">
+				<summary class="almgr-collapsible__summary">
+					<span class="almgr-collapsible__title">
 						<?php esc_html_e( 'Loan history', 'asset-lending-manager' ); ?>
 					</span>
-					<span class="alm-collapsible__hint" aria-hidden="true">
+					<span class="almgr-collapsible__hint" aria-hidden="true">
 						<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
 					</span>
 				</summary>
 
-				<div class="alm-collapsible__body">
+				<div class="almgr-collapsible__body">
 					<?php
 					// Get loan history for this asset.
 					$almgr_history            = $almgr_loan_manager->get_asset_history( $almgr_asset_id, $almgr_current_user_id );
@@ -728,12 +728,12 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 					?>
 
 					<?php if ( ! empty( $almgr_history ) ) : ?>
-						<div class="alm-history-limit-notice">
+						<div class="almgr-history-limit-notice">
 							<strong><?php esc_html_e( 'Note:', 'asset-lending-manager' ); ?></strong>
 							<?php esc_html_e( 'Showing the last 10 loan history entries for this asset.', 'asset-lending-manager' ); ?>
 						</div>
 
-							<table class="alm-history-table alm-responsive-table">
+							<table class="almgr-history-table almgr-responsive-table">
 							<caption class="screen-reader-text">
 								<?php esc_html_e( 'Recent loan history entries for this asset', 'asset-lending-manager' ); ?>
 							</caption>
@@ -764,7 +764,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 									// Status labels and CSS classes.
 									$almgr_loan_labels  = almgr_get_loan_status_labels();
 									$almgr_status_label = $almgr_loan_labels[ $almgr_entry_status ] ?? $almgr_entry_status;
-									$almgr_status_class = 'alm-status--' . $almgr_entry_status;
+									$almgr_status_class = 'almgr-status--' . $almgr_entry_status;
 
 									// Handle message (truncate for display, full in expandable details).
 									$almgr_full_message     = sanitize_text_field( (string) $almgr_entry->message );
@@ -773,36 +773,36 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 										? mb_substr( $almgr_full_message, 0, 80 ) . '...'
 										: $almgr_full_message;
 									?>
-									<tr class="alm-history-row" role="row">
-										<td class="alm-history-requester" role="cell" data-label="<?php esc_attr_e( 'Recipient', 'asset-lending-manager' ); ?>">
+									<tr class="almgr-history-row" role="row">
+										<td class="almgr-history-requester" role="cell" data-label="<?php esc_attr_e( 'Recipient', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $almgr_requester_name ); ?>
 										</td>
-										<td class="alm-history-changed-by" role="cell" data-label="<?php esc_attr_e( 'Changed by', 'asset-lending-manager' ); ?>">
+										<td class="almgr-history-changed-by" role="cell" data-label="<?php esc_attr_e( 'Changed by', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $almgr_changed_by_name ); ?>
 										</td>
-										<td class="alm-history-request-date" role="cell" data-label="<?php esc_attr_e( 'Request Date', 'asset-lending-manager' ); ?>">
+										<td class="almgr-history-request-date" role="cell" data-label="<?php esc_attr_e( 'Request Date', 'asset-lending-manager' ); ?>">
 											<?php echo esc_html( $almgr_request_date ); ?>
 										</td>
-										<td class="alm-history-status" role="cell" data-label="<?php esc_attr_e( 'Status', 'asset-lending-manager' ); ?>">
-											<span class="alm-status-badge <?php echo esc_attr( $almgr_status_class ); ?>">
+										<td class="almgr-history-status" role="cell" data-label="<?php esc_attr_e( 'Status', 'asset-lending-manager' ); ?>">
+											<span class="almgr-status-badge <?php echo esc_attr( $almgr_status_class ); ?>">
 												<?php echo esc_html( $almgr_status_label ); ?>
 											</span>
 										</td>
-											<td class="alm-history-message" role="cell" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
-												<p class="alm-message-preview">
+											<td class="almgr-history-message" role="cell" data-label="<?php esc_attr_e( 'Message', 'asset-lending-manager' ); ?>">
+												<p class="almgr-message-preview">
 													<?php echo esc_html( $almgr_short_message ); ?>
 												</p>
 												<?php if ( $almgr_has_long_message ) : ?>
-													<details class="alm-message-details">
-														<summary class="alm-message-toggle">
-															<span class="alm-message-toggle-open">
+													<details class="almgr-message-details">
+														<summary class="almgr-message-toggle">
+															<span class="almgr-message-toggle-open">
 																<?php esc_html_e( 'Read details', 'asset-lending-manager' ); ?>
 															</span>
-															<span class="alm-message-toggle-close">
+															<span class="almgr-message-toggle-close">
 																<?php esc_html_e( 'Close message', 'asset-lending-manager' ); ?>
 															</span>
 														</summary>
-														<div class="alm-message-full">
+														<div class="almgr-message-full">
 															<?php echo esc_html( $almgr_full_message ); ?>
 														</div>
 													</details>
@@ -813,7 +813,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 							</tbody>
 						</table>
 					<?php else : ?>
-						<p class="alm-history-empty alm-muted">
+						<p class="almgr-history-empty almgr-muted">
 							<?php esc_html_e( 'No loan history available for this asset.', 'asset-lending-manager' ); ?>
 						</p>
 					<?php endif; ?>

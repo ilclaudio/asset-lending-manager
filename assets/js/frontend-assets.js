@@ -49,7 +49,7 @@
 		 * Opens asset images in a simple lightbox overlay.
 		 */
 		initImageLightbox: function() {
-			var images = document.querySelectorAll('.alm-asset-thumbnail img');
+			var images = document.querySelectorAll('.almgr-asset-thumbnail img');
 			if (!images.length) {
 				return;
 			}
@@ -57,7 +57,7 @@
 			images.forEach(function(imgEl) {
 				imgEl.addEventListener('click', function(e) {
 					// Only in single asset view.
-					if (!document.querySelector('.alm-asset-single')) {
+					if (!document.querySelector('.almgr-asset-single')) {
 						return;
 					}
 
@@ -68,7 +68,7 @@
 
 					// Create lightbox overlay.
 					var lightbox = document.createElement('div');
-					lightbox.className = 'alm-lightbox';
+					lightbox.className = 'almgr-lightbox';
 
 					var img = document.createElement('img');
 					img.setAttribute('src', imgSrc || '');
@@ -102,12 +102,12 @@
 		 * Does NOT interfere with autocomplete functionality.
 		 */
 		initAssetFilters: function() {
-			var filters = document.querySelectorAll('.alm-filters-collapsible');
+			var filters = document.querySelectorAll('.almgr-filters-collapsible');
 			if (!filters.length) {
 				return;
 			}
 
-			// In jQuery code it targets all .alm-filters-collapsible at once.
+			// In jQuery code it targets all .almgr-filters-collapsible at once.
 			// We'll apply the same logic to each instance (covers single/multiple blocks).
 			filters.forEach(function(filterEl) {
 				var selects = filterEl.querySelectorAll('select');
@@ -128,9 +128,9 @@
 				selects.forEach(function(selectEl) {
 					selectEl.addEventListener('change', function() {
 						if (selectEl.value !== '') {
-							selectEl.classList.add('alm-filter-active');
+							selectEl.classList.add('almgr-filter-active');
 						} else {
-							selectEl.classList.remove('alm-filter-active');
+							selectEl.classList.remove('almgr-filter-active');
 						}
 					});
 
@@ -148,7 +148,7 @@
 		 * Example: live search in asset list.
 		 */
 		initAssetSearch: function() {
-			var searchInput = document.querySelector('.alm-asset-search-input');
+			var searchInput = document.querySelector('.almgr-asset-search-input');
 			if (!searchInput) {
 				return;
 			}
@@ -177,15 +177,15 @@
 		 * Handles loan request submission via AJAX.
 		 */
 		initLoanRequestForm: function() {
-			var form = document.getElementById('alm-loan-request-form');
+			var form = document.getElementById('almgr-loan-request-form');
 
 			if (!form) {
 				return;
 			}
 
 			// Character counter for request message
-			var messageField = document.getElementById('alm-request-message');
-			var charCount = document.getElementById('alm-request-char-count');
+			var messageField = document.getElementById('almgr-request-message');
+			var charCount = document.getElementById('almgr-request-char-count');
 
 			if (messageField && charCount) {
 				messageField.addEventListener('input', function() {
@@ -204,8 +204,8 @@
 				e.preventDefault();
 
 				var submitBtn = form.querySelector('button[type="submit"]');
-				var responseDiv = document.getElementById('alm-loan-request-response');
-				var messageField = document.getElementById('alm-request-message');
+				var responseDiv = document.getElementById('almgr-loan-request-response');
+				var messageField = document.getElementById('almgr-request-message');
 
 				// Get asset ID from page context
 				var assetId = ALMGR_Frontend.getAssetIdFromPage();
@@ -295,15 +295,15 @@
 		 * direct asset assignment feature.
 		 */
 		initDirectAssignForm: function() {
-			var form = document.getElementById('alm-direct-assign-form');
+			var form = document.getElementById('almgr-direct-assign-form');
 
 			if (!form) {
 				return;
 			}
 
 			// Character counter for reason field.
-			var reasonField = document.getElementById('alm-direct-assign-reason');
-			var charCount   = document.getElementById('alm-direct-assign-char-count');
+			var reasonField = document.getElementById('almgr-direct-assign-reason');
+			var charCount   = document.getElementById('almgr-direct-assign-char-count');
 
 			if (reasonField && charCount) {
 				reasonField.addEventListener('input', function() {
@@ -317,9 +317,9 @@
 				e.preventDefault();
 
 				var submitBtn    = form.querySelector('button[type="submit"]');
-				var responseDiv  = document.getElementById('alm-direct-assign-response');
-				var assigneeId   = document.getElementById('alm-direct-assign-user-id');
-				var reasonField  = document.getElementById('alm-direct-assign-reason');
+				var responseDiv  = document.getElementById('almgr-direct-assign-response');
+				var assigneeId   = document.getElementById('almgr-direct-assign-user-id');
+				var reasonField  = document.getElementById('almgr-direct-assign-reason');
 
 				var assetId = ALMGR_Frontend.getAssetIdFromPage();
 				if (!assetId) {
@@ -400,15 +400,15 @@
 		 * Two submit buttons carry a data-target-state attribute to distinguish the action.
 		 */
 		initChangeStateForm: function() {
-			var form = document.getElementById('alm-change-state-form');
+			var form = document.getElementById('almgr-change-state-form');
 
 			if (!form) {
 				return;
 			}
 
 			// Character counter for notes field.
-			var notesField = document.getElementById('alm-change-state-notes');
-			var charCount  = document.getElementById('alm-change-state-char-count');
+			var notesField = document.getElementById('almgr-change-state-notes');
+			var charCount  = document.getElementById('almgr-change-state-char-count');
 
 			if (notesField && charCount) {
 				notesField.addEventListener('input', function() {
@@ -422,7 +422,7 @@
 
 				var clickedBtn  = e.submitter || form.querySelector('button[type="submit"]');
 				var targetState = clickedBtn ? clickedBtn.getAttribute('data-target-state') : '';
-				var responseDiv = document.getElementById('alm-change-state-response');
+				var responseDiv = document.getElementById('almgr-change-state-response');
 				var submitBtns  = form.querySelectorAll('button[type="submit"]');
 
 				if (!targetState) {
@@ -448,7 +448,7 @@
 				});
 				responseDiv.style.display = 'none';
 
-				var locationField = document.getElementById('alm-change-state-location');
+				var locationField = document.getElementById('almgr-change-state-location');
 
 				var formData = new FormData();
 				formData.append('action',       'almgr_change_asset_state');
@@ -490,15 +490,15 @@
 		 * Handles form submission for restoring an asset from maintenance or retired to available.
 		 */
 		initRestoreStateForm: function() {
-			var form = document.getElementById('alm-restore-state-form');
+			var form = document.getElementById('almgr-restore-state-form');
 
 			if (!form) {
 				return;
 			}
 
 			// Character counter for notes field.
-			var notesField = document.getElementById('alm-restore-state-notes');
-			var charCount  = document.getElementById('alm-restore-state-char-count');
+			var notesField = document.getElementById('almgr-restore-state-notes');
+			var charCount  = document.getElementById('almgr-restore-state-char-count');
 
 			if (notesField && charCount) {
 				notesField.addEventListener('input', function() {
@@ -510,7 +510,7 @@
 			form.addEventListener('submit', function(e) {
 				e.preventDefault();
 
-				var responseDiv = document.getElementById('alm-restore-state-response');
+				var responseDiv = document.getElementById('almgr-restore-state-response');
 				var submitBtn   = form.querySelector('button[type="submit"]');
 
 				if (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.restoreStateNonce) {
@@ -531,7 +531,7 @@
 				}
 				responseDiv.style.display = 'none';
 
-				var locationField = document.getElementById('alm-restore-state-location');
+				var locationField = document.getElementById('almgr-restore-state-location');
 
 				var formData = new FormData();
 				formData.append('action',    'almgr_restore_asset_state');
@@ -632,34 +632,34 @@
 		showConfirmModal: function(title, message, onConfirm) {
 			// Create modal overlay
 			var overlay = document.createElement('div');
-			overlay.className = 'alm-modal-overlay alm-confirm-modal';
+			overlay.className = 'almgr-modal-overlay almgr-confirm-modal';
 
 			// Create modal content
 			var content = document.createElement('div');
-			content.className = 'alm-modal-content';
+			content.className = 'almgr-modal-content';
 
 			// Modal header
 			var header = document.createElement('div');
-			header.className = 'alm-modal-header';
+			header.className = 'almgr-modal-header';
 			header.innerHTML = '<h2>' + this.escapeHtml(title) + '</h2>';
 
 			// Modal body
 			var body = document.createElement('div');
-			body.className = 'alm-modal-body';
+			body.className = 'almgr-modal-body';
 			body.innerHTML = '<p>' + this.escapeHtml(message) + '</p>';
 
 			// Modal footer
 			var footer = document.createElement('div');
-			footer.className = 'alm-modal-footer';
+			footer.className = 'almgr-modal-footer';
 
 			var cancelBtn = document.createElement('button');
 			cancelBtn.type = 'button';
-			cancelBtn.className = 'alm-button alm-button--secondary';
+			cancelBtn.className = 'almgr-button almgr-button--secondary';
 			cancelBtn.textContent = __( 'Cancel', 'asset-lending-manager' );
 
 			var confirmBtn = document.createElement('button');
 			confirmBtn.type = 'button';
-			confirmBtn.className = 'alm-button alm-button--primary';
+			confirmBtn.className = 'almgr-button almgr-button--primary';
 			confirmBtn.textContent = __( 'Confirm', 'asset-lending-manager' );
 
 			footer.appendChild(cancelBtn);
@@ -733,7 +733,7 @@
 			// Disable all other action buttons in the same row
 			var row = btn.closest('tr');
 			if (row) {
-				var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+				var actionBtns = row.querySelectorAll('.almgr-button--approve, .almgr-button--reject');
 				actionBtns.forEach(function(actionBtn) {
 					actionBtn.disabled = true;
 				});
@@ -771,7 +771,7 @@
 					btn.textContent = originalBtnText;
 
 					if (row) {
-						var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+						var actionBtns = row.querySelectorAll('.almgr-button--approve, .almgr-button--reject');
 						actionBtns.forEach(function(actionBtn) {
 							actionBtn.disabled = false;
 						});
@@ -787,7 +787,7 @@
 				btn.textContent = originalBtnText;
 
 				if (row) {
-					var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+					var actionBtns = row.querySelectorAll('.almgr-button--approve, .almgr-button--reject');
 					actionBtns.forEach(function(actionBtn) {
 						actionBtn.disabled = false;
 					});
@@ -817,25 +817,25 @@
 		showRejectionModal: function(requestId, assetId) {
 			// Create modal overlay
 			var modal = document.createElement('div');
-			modal.className = 'alm-modal-overlay';
+			modal.className = 'almgr-modal-overlay';
 			modal.setAttribute('role', 'dialog');
-			modal.setAttribute('aria-labelledby', 'alm-reject-modal-title');
+			modal.setAttribute('aria-labelledby', 'almgr-reject-modal-title');
 			modal.setAttribute('aria-modal', 'true');
 
 			// Modal content
 			var modalContent = document.createElement('div');
-			modalContent.className = 'alm-modal-content';
+			modalContent.className = 'almgr-modal-content';
 
 			// Modal header
 			var modalHeader = document.createElement('div');
-			modalHeader.className = 'alm-modal-header';
+			modalHeader.className = 'almgr-modal-header';
 
 			var modalTitle = document.createElement('h2');
-			modalTitle.id = 'alm-reject-modal-title';
+			modalTitle.id = 'almgr-reject-modal-title';
 			modalTitle.textContent = __( 'Reject Loan Request', 'asset-lending-manager' );
 
 			var closeBtn = document.createElement('button');
-			closeBtn.className = 'alm-modal-close';
+			closeBtn.className = 'almgr-modal-close';
 			closeBtn.setAttribute('aria-label', __( 'Close dialog', 'asset-lending-manager' ));
 			closeBtn.innerHTML = '&times;';
 			closeBtn.addEventListener('click', function() {
@@ -847,18 +847,18 @@
 
 			// Modal body
 			var modalBody = document.createElement('div');
-			modalBody.className = 'alm-modal-body';
+			modalBody.className = 'almgr-modal-body';
 
 			var form = document.createElement('form');
-			form.id = 'alm-reject-request-form';
+			form.id = 'almgr-reject-request-form';
 
 			var label = document.createElement('label');
-			label.setAttribute('for', 'alm-rejection-message');
+			label.setAttribute('for', 'almgr-rejection-message');
 			var rejMaxLen = parseInt(almgrFrontend.rejectionMessageMaxLength, 10) || 255;
 			label.textContent = sprintf(__( 'Rejection reason (required, max %d characters):', 'asset-lending-manager' ), rejMaxLen);
 
 			var textarea = document.createElement('textarea');
-			textarea.id = 'alm-rejection-message';
+			textarea.id = 'almgr-rejection-message';
 			textarea.name = 'rejection_message';
 			textarea.rows = 4;
 			textarea.maxLength = rejMaxLen;
@@ -866,7 +866,7 @@
 			textarea.placeholder = __( 'Please provide a reason for rejecting this loan request...', 'asset-lending-manager' );
 
 			var charCount = document.createElement('div');
-			charCount.className = 'alm-char-count';
+			charCount.className = 'almgr-char-count';
 			charCount.textContent = '0 / ' + rejMaxLen;
 
 			textarea.addEventListener('input', function() {
@@ -881,8 +881,8 @@
 			});
 
 			var responseDiv = document.createElement('div');
-			responseDiv.id = 'alm-reject-response';
-			responseDiv.className = 'alm-response-message';
+			responseDiv.id = 'almgr-reject-response';
+			responseDiv.className = 'almgr-response-message';
 			responseDiv.style.display = 'none';
 
 			form.appendChild(label);
@@ -892,11 +892,11 @@
 
 			// Modal footer (inside form so submit button works)
 			var modalFooter = document.createElement('div');
-			modalFooter.className = 'alm-modal-footer';
+			modalFooter.className = 'almgr-modal-footer';
 
 			var cancelBtn = document.createElement('button');
 			cancelBtn.type = 'button';
-			cancelBtn.className = 'alm-button alm-button--secondary';
+			cancelBtn.className = 'almgr-button almgr-button--secondary';
 			cancelBtn.textContent = __( 'Cancel', 'asset-lending-manager' );
 			cancelBtn.addEventListener('click', function() {
 				ALMGR_Frontend.closeModal(modal);
@@ -904,7 +904,7 @@
 
 			var submitBtn = document.createElement('button');
 			submitBtn.type = 'submit';
-			submitBtn.className = 'alm-button alm-button--reject';
+			submitBtn.className = 'almgr-button almgr-button--reject';
 			submitBtn.textContent = __( 'Reject Request', 'asset-lending-manager' );
 
 			modalFooter.appendChild(cancelBtn);
@@ -1156,7 +1156,7 @@
 			}
 
 			// Find all QR canvas elements on the page.
-			const containers = document.querySelectorAll('.alm-qr-canvas');
+			const containers = document.querySelectorAll('.almgr-qr-canvas');
 			if (!containers.length) {
 				return;
 			}
@@ -1182,7 +1182,7 @@
 			});
 
 			// Print button (first one found).
-			const printBtn = document.querySelector('.alm-qr-print');
+			const printBtn = document.querySelector('.almgr-qr-print');
 			if (printBtn) {
 				printBtn.addEventListener('click', function() {
 					window.print();
@@ -1191,20 +1191,20 @@
 
 			// Build the print label card (hidden in normal view, shown only when printing).
 			const printCard = document.createElement('div');
-			printCard.className = 'alm-qr-print-card';
+			printCard.className = 'almgr-qr-print-card';
 			printCard.setAttribute('aria-hidden', 'true');
 
 			const printQr = document.createElement('div');
-			printQr.className = 'alm-qr-print-card__qr';
+			printQr.className = 'almgr-qr-print-card__qr';
 			printQr.innerHTML = svgMarkup;
 
 			const printTitle = document.createElement('p');
-			printTitle.className = 'alm-qr-print-card__title';
-			const titleEl = document.querySelector('.alm-asset-title');
+			printTitle.className = 'almgr-qr-print-card__title';
+			const titleEl = document.querySelector('.almgr-asset-title');
 			printTitle.textContent = titleEl ? titleEl.textContent.trim() : '';
 
 			const printCode = document.createElement('p');
-			printCode.className = 'alm-qr-print-card__code';
+			printCode.className = 'almgr-qr-print-card__code';
 			printCode.textContent = assetCode || '';
 
 			printCard.appendChild(printQr);
@@ -1223,7 +1223,7 @@
 		 * detail page. Foreign-origin URLs are silently ignored.
 		 */
 		initQrScanner: function() {
-			var btn = document.querySelector('.alm-qr-scan-btn');
+			var btn = document.querySelector('.almgr-qr-scan-btn');
 			if (!btn) {
 				return;
 			}
@@ -1251,11 +1251,11 @@
 				var rafId      = null;
 				var stopped    = false;
 
-				overlay.className  = 'alm-qr-scanner-overlay';
-				inner.className    = 'alm-qr-scanner-overlay__inner';
-				video.className    = 'alm-qr-scanner-overlay__video';
-				statusEl.className = 'alm-qr-scanner-overlay__status';
-				closeBtn.className = 'alm-qr-scanner-overlay__close alm-button alm-button--secondary';
+				overlay.className  = 'almgr-qr-scanner-overlay';
+				inner.className    = 'almgr-qr-scanner-overlay__inner';
+				video.className    = 'almgr-qr-scanner-overlay__video';
+				statusEl.className = 'almgr-qr-scanner-overlay__status';
+				closeBtn.className = 'almgr-qr-scanner-overlay__close almgr-button almgr-button--secondary';
 
 				video.setAttribute('playsinline', '');
 				video.setAttribute('muted', '');
@@ -1351,7 +1351,7 @@
 					})
 					.catch(function() {
 						statusEl.textContent = __( 'Camera access denied. Please allow camera permissions.', 'asset-lending-manager' );
-						statusEl.classList.add('alm-qr-scanner-overlay__status--error');
+						statusEl.classList.add('almgr-qr-scanner-overlay__status--error');
 					});
 			});
 		},
@@ -1364,14 +1364,14 @@
 		 */
 		showGlobalMessage: function(message, type) {
 			// Check if message already exists
-			var existingMessage = document.querySelector('.alm-global-message');
+			var existingMessage = document.querySelector('.almgr-global-message');
 			if (existingMessage) {
 				existingMessage.remove();
 			}
 
 			// Create message element
 			var messageEl = document.createElement('div');
-			messageEl.className = 'alm-global-message alm-global-message--' + type;
+			messageEl.className = 'almgr-global-message almgr-global-message--' + type;
 			messageEl.setAttribute('role', 'alert');
 			messageEl.setAttribute('aria-live', 'polite');
 
@@ -1379,7 +1379,7 @@
 			messageText.textContent = message;
 
 			var closeBtn = document.createElement('button');
-			closeBtn.className = 'alm-global-message-close';
+			closeBtn.className = 'almgr-global-message-close';
 			closeBtn.setAttribute('aria-label', __( 'Close message', 'asset-lending-manager' ));
 			closeBtn.innerHTML = '&times;';
 			closeBtn.addEventListener('click', function() {
@@ -1395,7 +1395,7 @@
 			messageEl.appendChild(closeBtn);
 
 			// Insert at the beginning of the main content
-			var content = document.querySelector('.alm-asset-detail') || document.querySelector('.entry-content') || document.body;
+			var content = document.querySelector('.almgr-asset-detail') || document.querySelector('.entry-content') || document.body;
 			content.insertBefore(messageEl, content.firstChild);
 
 			// Show with animation
@@ -1423,7 +1423,7 @@
 		 */
 		getAssetIdFromPage: function() {
 			// Try to get from article data attribute
-			var article = document.querySelector('.alm-asset-detail');
+			var article = document.querySelector('.almgr-asset-detail');
 			if (article && article.dataset.assetId) {
 				return parseInt(article.dataset.assetId, 10);
 			}
@@ -1451,7 +1451,7 @@
 				return;
 			}
 
-			el.className = 'alm-response-message alm-response--' + type;
+			el.className = 'almgr-response-message almgr-response--' + type;
 			el.innerHTML = '<p>' + this.escapeHtml(message) + '</p>';
 			el.style.display = 'block';
 		},
@@ -1479,13 +1479,13 @@
 	var style = document.createElement('style');
 	style.textContent = `
 		/* Filter active state */
-		.alm-filter-active {
+		.almgr-filter-active {
 			border-color: #0073aa !important;
 			background-color: #f0f8ff !important;
 		}
 
 		/* Lightbox */
-		.alm-lightbox {
+		.almgr-lightbox {
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -1500,17 +1500,17 @@
 			transition: opacity 0.3s ease;
 			cursor: pointer;
 		}
-		.alm-lightbox.active {
+		.almgr-lightbox.active {
 			opacity: 1;
 		}
-		.alm-lightbox img {
+		.almgr-lightbox img {
 			max-width: 90%;
 			max-height: 90%;
 			box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 		}
 
 		/* Modal overlay */
-		.alm-modal-overlay {
+		.almgr-modal-overlay {
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -1524,12 +1524,12 @@
 			opacity: 0;
 			transition: opacity 0.3s ease;
 		}
-		.alm-modal-overlay.active {
+		.almgr-modal-overlay.active {
 			opacity: 1;
 		}
 
 		/* Modal content */
-		.alm-modal-content {
+		.almgr-modal-content {
 			background: white;
 			border-radius: 8px;
 			max-width: 600px;
@@ -1540,24 +1540,24 @@
 			transform: translateY(-20px);
 			transition: transform 0.3s ease;
 		}
-		.alm-modal-overlay.active .alm-modal-content {
+		.almgr-modal-overlay.active .almgr-modal-content {
 			transform: translateY(0);
 		}
 
 		/* Modal header */
-		.alm-modal-header {
+		.almgr-modal-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			padding: 20px 24px;
 			border-bottom: 1px solid #dee2e6;
 		}
-		.alm-modal-header h2 {
+		.almgr-modal-header h2 {
 			margin: 0;
 			font-size: 20px;
 			color: #333;
 		}
-		.alm-modal-close {
+		.almgr-modal-close {
 			background: none;
 			border: none;
 			font-size: 28px;
@@ -1573,26 +1573,26 @@
 			border-radius: 4px;
 			transition: background-color 0.2s ease;
 		}
-		.alm-modal-close:hover {
+		.almgr-modal-close:hover {
 			background-color: #f8f9fa;
 			color: #333;
 		}
-		.alm-modal-close:focus {
+		.almgr-modal-close:focus {
 			outline: 2px solid #0073aa;
 			outline-offset: 2px;
 		}
 
 		/* Modal body */
-		.alm-modal-body {
+		.almgr-modal-body {
 			padding: 24px;
 		}
-		.alm-modal-body label {
+		.almgr-modal-body label {
 			display: block;
 			margin-bottom: 8px;
 			font-weight: 600;
 			color: #333;
 		}
-		.alm-modal-body textarea {
+		.almgr-modal-body textarea {
 			width: 100%;
 			padding: 10px 12px;
 			border: 1px solid #dee2e6;
@@ -1603,12 +1603,12 @@
 			resize: vertical;
 			min-height: 100px;
 		}
-		.alm-modal-body textarea:focus {
+		.almgr-modal-body textarea:focus {
 			outline: none;
 			border-color: #0073aa;
 			box-shadow: 0 0 0 3px rgba(0, 115, 170, 0.1);
 		}
-		.alm-char-count {
+		.almgr-char-count {
 			margin-top: 6px;
 			font-size: 13px;
 			color: #6c757d;
@@ -1616,23 +1616,23 @@
 		}
 
 		/* Modal footer */
-		.alm-modal-footer {
+		.almgr-modal-footer {
 			display: flex;
 			justify-content: flex-end;
 			gap: 12px;
 			padding: 20px 24px;
 			border-top: 1px solid #dee2e6;
 		}
-		.alm-button--secondary {
+		.almgr-button--secondary {
 			background-color: #6c757d;
 			color: white;
 		}
-		.alm-button--secondary:hover {
+		.almgr-button--secondary:hover {
 			background-color: #5a6268;
 		}
 
 		/* Global message */
-		.alm-global-message {
+		.almgr-global-message {
 			position: relative;
 			padding: 16px 48px 16px 20px;
 			margin-bottom: 24px;
@@ -1642,25 +1642,25 @@
 			transform: translateY(-10px);
 			transition: all 0.3s ease;
 		}
-		.alm-global-message.active {
+		.almgr-global-message.active {
 			opacity: 1;
 			transform: translateY(0);
 		}
-		.alm-global-message--success {
+		.almgr-global-message--success {
 			background-color: #d4edda;
 			border-color: #28a745;
 			color: #155724;
 		}
-		.alm-global-message--error {
+		.almgr-global-message--error {
 			background-color: #f8d7da;
 			border-color: #dc3545;
 			color: #721c24;
 		}
-		.alm-global-message p {
+		.almgr-global-message p {
 			margin: 0;
 			font-weight: 500;
 		}
-		.alm-global-message-close {
+		.almgr-global-message-close {
 			position: absolute;
 			top: 12px;
 			right: 12px;
@@ -1680,43 +1680,43 @@
 			opacity: 0.7;
 			transition: opacity 0.2s ease;
 		}
-		.alm-global-message-close:hover {
+		.almgr-global-message-close:hover {
 			opacity: 1;
 		}
-		.alm-global-message-close:focus {
+		.almgr-global-message-close:focus {
 			outline: 2px solid currentColor;
 			outline-offset: 2px;
 		}
 
 		/* Response messages in modal */
-		.alm-response-message {
+		.almgr-response-message {
 			margin-top: 16px;
 			padding: 12px;
 			border-radius: 4px;
 		}
-		.alm-response--success {
+		.almgr-response--success {
 			background-color: #d4edda;
 			border: 1px solid #c3e6cb;
 			color: #155724;
 		}
-		.alm-response--error {
+		.almgr-response--error {
 			background-color: #f8d7da;
 			border: 1px solid #f5c6cb;
 			color: #721c24;
 		}
-		.alm-response-message p {
+		.almgr-response-message p {
 			margin: 0;
 		}
 
 		/* Responsive */
 		@media (max-width: 768px) {
-			.alm-modal-content {
+			.almgr-modal-content {
 				width: 95%;
 				max-height: 95vh;
 			}
-			.alm-modal-header,
-			.alm-modal-body,
-			.alm-modal-footer {
+			.almgr-modal-header,
+			.almgr-modal-body,
+			.almgr-modal-footer {
 				padding: 16px;
 			}
 		}

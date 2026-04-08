@@ -241,7 +241,7 @@ class ALMGR_Asset_Manager {
 			$wrapper->thumbnail = get_the_post_thumbnail( $asset, $thumbnail_size );
 		} else {
 			$wrapper->thumbnail = sprintf(
-				'<img src="%s" alt="%s" class="alm-asset-default-thumbnail">',
+				'<img src="%s" alt="%s" class="almgr-asset-default-thumbnail">',
 				esc_url( ALMGR_PLUGIN_URL . 'assets/img/default_asset_color_bw.png' ),
 				esc_attr( get_the_title( $asset ) )
 			);
@@ -480,10 +480,10 @@ class ALMGR_Asset_Manager {
 	 */
 	public static function get_state_classes() {
 		return array(
-			'available'   => 'alm-state-available',
-			'on-loan'     => 'alm-state-on-loan',
-			'maintenance' => 'alm-state-maintenance',
-			'retired'     => 'alm-state-retired',
+			'available'   => 'almgr-state-available',
+			'on-loan'     => 'almgr-state-on-loan',
+			'maintenance' => 'almgr-state-maintenance',
+			'retired'     => 'almgr-state-retired',
 		);
 	}
 
