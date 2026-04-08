@@ -57,8 +57,8 @@
 
 	<!-- Template files included inside a method scope: local variables are not global. -->
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
-		<exclude-pattern>*/admin/alm-settings-page.php</exclude-pattern>
-		<exclude-pattern>*/admin/alm-tools-page.php</exclude-pattern>
+		<exclude-pattern>*/admin/almgr-settings-page.php</exclude-pattern>
+		<exclude-pattern>*/admin/almgr-tools-page.php</exclude-pattern>
 		<exclude-pattern>*/admin/plugin-main-page.php</exclude-pattern>
 		<exclude-pattern>*/templates/*</exclude-pattern>
 	</rule>

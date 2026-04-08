@@ -423,7 +423,7 @@ class ALMGR_Plugin_Manager {
 		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
 		}
-		require_once ALMGR_PLUGIN_DIR . 'admin/alm-tools-page.php';
+		require_once ALMGR_PLUGIN_DIR . 'admin/almgr-tools-page.php';
 	}
 
 	/**
@@ -435,7 +435,7 @@ class ALMGR_Plugin_Manager {
 		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'asset-lending-manager' ) );
 		}
-		require_once ALMGR_PLUGIN_DIR . 'admin/alm-settings-page.php';
+		require_once ALMGR_PLUGIN_DIR . 'admin/almgr-settings-page.php';
 	}
 
 	/**

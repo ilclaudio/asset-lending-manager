@@ -1,17 +1,20 @@
 <?php
 /**
  * Integration Tests Bootstrap.
+ *
+ * @package AssetLendingManager
  */
 
-// Get the tests directory
+// Get the tests directory.
 $almgr_tests_dir = getenv( 'WP_TESTS_DIR' );
 
 if ( ! $almgr_tests_dir ) {
 	$almgr_tests_dir = 'C:/WordpressDEV/wordpress-develop/tests/phpunit';
 }
 
-// Verify the path exists
+// Verify the path exists.
 if ( ! file_exists( $almgr_tests_dir . '/includes/functions.php' ) ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Test bootstrap diagnostic output, not user-facing.
 	die( "WordPress test library not found at: {$almgr_tests_dir}\n" );
 }
 

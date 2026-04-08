@@ -314,7 +314,7 @@ class ALMGR_Asset_Manager {
 				)
 			);
 			foreach ( $almgr_kit_query->posts as $almgr_kit_id ) {
-				$almgr_kit_id             = (int) $almgr_kit_id;
+				$almgr_kit_id           = (int) $almgr_kit_id;
 				$wrapper->parent_kits[] = array(
 					'id'        => $almgr_kit_id,
 					'title'     => get_the_title( $almgr_kit_id ),

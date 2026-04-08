@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for Plugin Manager modules initialization.
+ *
+ * @package AssetLendingManager
  */
 
 use PHPUnit\Framework\TestCase;
@@ -17,6 +19,9 @@ class PluginManagerModulesTest extends TestCase {
 	 */
 	private $plugin_manager;
 
+	/**
+	 * Set up test fixtures.
+	 */
 	protected function setUp(): void {
 		parent::setUp();
 		$this->plugin_manager = ALMGR_Plugin_Manager::get_instance();
@@ -78,7 +83,7 @@ class PluginManagerModulesTest extends TestCase {
 	 *
 	 * @return bool
 	 */
-	private function modules_contain_instance_of( array $modules, string $class ): bool {
+	private function modules_contain_instance_of( array $modules, string $class ): bool { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound -- $class holds a class name string.
 		foreach ( $modules as $module ) {
 			if ( $module instanceof $class ) {
 				return true;

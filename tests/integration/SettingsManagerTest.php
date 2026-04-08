@@ -5,6 +5,9 @@
  * @package AssetLendingManager
  */
 
+/**
+ * Test class for ALMGR_Settings_Manager.
+ */
 class ALMGR_Settings_Manager_Test extends WP_UnitTestCase {
 
 	/**
@@ -22,7 +25,7 @@ class ALMGR_Settings_Manager_Test extends WP_UnitTestCase {
 
 		$this->settings = new ALMGR_Settings_Manager();
 
-		// Reset settings before each test to start clean
+		// Reset settings before each test to start clean.
 		$this->settings->reset();
 	}
 
@@ -30,7 +33,7 @@ class ALMGR_Settings_Manager_Test extends WP_UnitTestCase {
 	 * Teardown after each test.
 	 */
 	public function tearDown(): void {
-		// Clean up options from database
+		// Clean up options from database.
 		delete_option( 'almgr_settings' );
 
 		parent::tearDown();
@@ -99,7 +102,7 @@ class ALMGR_Settings_Manager_Test extends WP_UnitTestCase {
 	public function test_settings_persist_to_database() {
 		$this->settings->set( 'email.from_name', 'Test Name' );
 
-		// Create new instance to verify persistence
+		// Create new instance to verify persistence.
 		$new_settings = new ALMGR_Settings_Manager();
 		$result       = $new_settings->get( 'email.from_name' );
 

@@ -1,6 +1,8 @@
 <?php
 /**
- * Unit tests fo the Plugin Manager.
+ * Unit tests for the Plugin Manager.
+ *
+ * @package AssetLendingManager
  */
 
 use PHPUnit\Framework\TestCase;
@@ -39,6 +41,7 @@ class Plugin_Manager_Test extends TestCase {
 		$instance = ALMGR_Plugin_Manager::get_instance();
 
 		$this->expectException( Exception::class );
-		unserialize( serialize( $instance ) ); // Unserialization should throw an exception.
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize,WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- Intentional: testing that unserialize throws an exception.
+		unserialize( serialize( $instance ) );
 	}
 }

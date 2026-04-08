@@ -75,9 +75,9 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 		<!-- Asset taxonomies -->
 		<?php
 		// Get taxonomy values.
-		$almgr_structure = isset( $asset->almgr_structure ) ? implode( ', ', $asset->almgr_structure ) : '-';
-		$almgr_type      = isset( $asset->almgr_type ) ? implode( ', ', $asset->almgr_type ) : '-';
-		$almgr_level     = isset( $asset->almgr_level ) ? implode( ', ', $asset->almgr_level ) : '-';
+		$almgr_structure   = isset( $asset->almgr_structure ) ? implode( ', ', $asset->almgr_structure ) : '-';
+		$almgr_type        = isset( $asset->almgr_type ) ? implode( ', ', $asset->almgr_type ) : '-';
+		$almgr_level       = isset( $asset->almgr_level ) ? implode( ', ', $asset->almgr_level ) : '-';
 		$almgr_state_terms = get_the_terms( $almgr_asset_id, 'almgr_state' );
 		$almgr_state_slug  = '';
 		$almgr_state_label = '';

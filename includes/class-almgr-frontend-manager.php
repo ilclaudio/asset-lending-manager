@@ -74,10 +74,10 @@ class ALMGR_Frontend_Manager {
 	 */
 	public function load_asset_template( $template ) {
 		if ( is_post_type_archive( ALMGR_ASSET_CPT_SLUG ) ) {
-			return $this->locate_template( 'archive-alm-asset.php', $template );
+			return $this->locate_template( 'archive-almgr-asset.php', $template );
 		}
 		if ( is_singular( ALMGR_ASSET_CPT_SLUG ) ) {
-			return $this->locate_template( 'single-alm-asset.php', $template );
+			return $this->locate_template( 'single-almgr-asset.php', $template );
 		}
 		return $template;
 	}
