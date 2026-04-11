@@ -39,3 +39,29 @@ ALMGR_Installer::drop_tables();
 
 // Remove plugin options.
 delete_option( 'almgr_settings' );
+
+// Optional full data cleanup, enabled only via wp-config.php.
+// Example value: define( 'ALMGR_REMOVE_ALL_DATA', true ).
+$almgr_remove_all_data = defined( 'ALMGR_REMOVE_ALL_DATA' ) && ALMGR_REMOVE_ALL_DATA;
+
+if ( $almgr_remove_all_data ) {
+	$almgr_asset_ids = get_posts(
+		array(
+			'post_type'              => ALMGR_ASSET_CPT_SLUG,
+			'post_status'            => 'any',
+			'posts_per_page'         => -1,
+			'fields'                 => 'ids',
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		)
+	);
+
+	foreach ( $almgr_asset_ids as $almgr_asset_id ) {
+		wp_delete_post( (int) $almgr_asset_id, true );
+	}
+
+	// Remove plugin post meta keys from all posts.
+	delete_post_meta_by_key( '_almgr_current_owner' );
+	delete_post_meta_by_key( '_almgr_removed_from_kit_ids' );
+}

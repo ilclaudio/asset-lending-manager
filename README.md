@@ -118,8 +118,13 @@ Uninstalling the plugin via the WordPress admin panel removes:
 - Pending loan requests table (`wp_almgr_loan_requests`)
 - Custom roles (`almgr_member`, `almgr_operator`) and their capabilities
 
-**Asset posts (`almgr_asset`) and their metadata are intentionally preserved.**
-Your inventory data is not deleted on uninstall, so it can be recovered if the plugin is reinstalled later.
+By default, asset posts (`almgr_asset`) and their metadata are preserved.
+
+If you want to remove **all** plugin data (including asset posts and functional asset meta), add this in `wp-config.php` before uninstalling:
+
+```php
+define( 'ALMGR_REMOVE_ALL_DATA', true );
+```
 
 ---
 

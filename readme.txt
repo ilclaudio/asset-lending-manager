@@ -90,7 +90,9 @@ Yes. Under the **ALM** menu in wp-admin you can configure the email sender, loan
 Yes. English and Italian are included out of the box. Other languages can be added using standard WordPress translation tools.
 
 = What data is removed when the plugin is uninstalled? =
-Uninstalling the plugin removes the plugin settings, the loan request history, the pending loan requests, and the custom user roles. Your asset inventory (posts and their data) is intentionally preserved so that it is not lost if you reinstall the plugin later.
+Uninstalling the plugin removes the plugin settings, the loan request history, the pending loan requests, and the custom user roles.
+By default, your asset inventory (posts and their data) is preserved.
+If you want to remove all plugin data, define `ALMGR_REMOVE_ALL_DATA` as `true` in `wp-config.php` before uninstalling.
 
 = What is the difference between an asset and a kit? =
 An asset is a single physical item (for example, a telescope, a book, or a camera). A kit is a collection of items that are lent together as a group (for example, a telescope with its eyepieces and carrying case). Managing kits allows you to track all components under a single loan request.
