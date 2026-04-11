@@ -15,6 +15,8 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Back-office Tools page (ALM -> Tools) with Import, Export, and Utilities tabs.
 - Users CSV import from Tools (admin only).
 - Users CSV export from Tools (admin and operator).
+- Assets CSV import from Tools (admin and operator).
+- Assets CSV export from Tools (admin and operator).
 - Notification policy setting to control if/when all operators are notified for a new loan request (`never`, `no_owner`, `always`).
 ### Changed
 - Massive refactoring: changed all plugin identifiers from `alm_` to `almgr_`.

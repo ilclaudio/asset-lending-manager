@@ -11,6 +11,9 @@ $almgr_status = isset( $_GET['almgr_status'] ) ? sanitize_key( wp_unslash( $_GET
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param to show last report.
 $almgr_show_users_import_report = isset( $_GET['almgr_users_import_report'] ) ? sanitize_key( wp_unslash( $_GET['almgr_users_import_report'] ) ) : '';
 $almgr_users_import_report      = array();
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param to show last report.
+$almgr_show_assets_import_report = isset( $_GET['almgr_assets_import_report'] ) ? sanitize_key( wp_unslash( $_GET['almgr_assets_import_report'] ) ) : '';
+$almgr_assets_import_report      = array();
 
 if ( '1' === $almgr_show_users_import_report && current_user_can( 'manage_options' ) ) {
 	$almgr_users_import_report_key = 'almgr_users_import_report_' . get_current_user_id();
@@ -18,6 +21,14 @@ if ( '1' === $almgr_show_users_import_report && current_user_can( 'manage_option
 	if ( is_array( $almgr_users_import_report_raw ) ) {
 		$almgr_users_import_report = $almgr_users_import_report_raw;
 		delete_transient( $almgr_users_import_report_key );
+	}
+}
+
+if ( '1' === $almgr_show_assets_import_report && ( current_user_can( 'manage_options' ) || current_user_can( ALMGR_EDIT_ASSET ) ) ) {
+	$almgr_assets_import_report_key = 'almgr_assets_import_report_' . get_current_user_id();
+	$almgr_assets_import_report_raw = get_transient( $almgr_assets_import_report_key );
+	if ( is_array( $almgr_assets_import_report_raw ) ) {
+		$almgr_assets_import_report = $almgr_assets_import_report_raw;
 	}
 }
 
@@ -46,9 +57,10 @@ $almgr_section_map = array(
 	),
 );
 
-$almgr_tools_page_url        = admin_url( 'admin.php?page=almgr-tools' );
-$almgr_users_csv_example_url = trailingslashit( ALMGR_PLUGIN_URL ) . 'assets/examples/almgr-users-import-example.csv';
-$almgr_current_section       = '';
+$almgr_tools_page_url         = admin_url( 'admin.php?page=almgr-tools' );
+$almgr_users_csv_example_url  = trailingslashit( ALMGR_PLUGIN_URL ) . 'assets/examples/almgr-users-import-example.csv';
+$almgr_assets_csv_example_url = trailingslashit( ALMGR_PLUGIN_URL ) . 'assets/examples/almgr-assets-import-example.csv';
+$almgr_current_section        = '';
 
 if ( isset( $almgr_section_map[ $almgr_current_tab ] ) ) {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param for section selection.
@@ -337,20 +349,213 @@ if ( isset( $almgr_section_map[ $almgr_current_tab ] ) ) {
 				<?php endif; ?>
 			<?php endif; ?>
 		<?php elseif ( 'assets' === $almgr_current_section ) : ?>
-			<div class="postbox">
-				<div class="inside">
-					<h3><?php esc_html_e( 'How It Works', 'asset-lending-manager' ); ?></h3>
-					<p><?php esc_html_e( 'Assets CSV import will be configured in this section with the same structure used for users.', 'asset-lending-manager' ); ?></p>
-					<p><?php esc_html_e( 'Target permission: administrators and operators.', 'asset-lending-manager' ); ?></p>
+			<?php if ( ! current_user_can( 'manage_options' ) && ! current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
+				<div class="notice notice-warning">
+					<p><?php esc_html_e( 'Only administrators and operators can import assets.', 'asset-lending-manager' ); ?></p>
 				</div>
-			</div>
-			<div class="postbox">
-				<div class="inside">
-					<h3><?php esc_html_e( 'Run Import', 'asset-lending-manager' ); ?></h3>
-					<p><?php esc_html_e( 'Assets import UI is not yet enabled.', 'asset-lending-manager' ); ?></p>
-					<p><button type="button" class="button button-secondary" disabled><?php esc_html_e( 'Run Assets Import', 'asset-lending-manager' ); ?></button></p>
+			<?php else : ?>
+				<div class="postbox">
+					<div class="inside">
+						<h3><?php esc_html_e( 'How It Works', 'asset-lending-manager' ); ?></h3>
+						<p><?php esc_html_e( 'Import assets from CSV using a strict fixed header and create-only behavior.', 'asset-lending-manager' ); ?></p>
+						<p>
+							<strong><?php esc_html_e( 'Required CSV header:', 'asset-lending-manager' ); ?></strong>
+							<code>Title;Structure;Type;State;Level;External_Code;Description;Manufacturer;Model;Wp_Status;Kit_Component_Titles</code>
+						</p>
+						<p>
+							<strong><?php esc_html_e( 'Allowed values:', 'asset-lending-manager' ); ?></strong>
+							<?php esc_html_e( 'Structure = component|kit, State = available|maintenance|retired, Wp_Status = publish|draft (default publish).', 'asset-lending-manager' ); ?>
+						</p>
+						<p><?php esc_html_e( 'Delimiter: semicolon (;). Existing assets are skipped in this MVP.', 'asset-lending-manager' ); ?></p>
+						<p>
+							<a class="button button-secondary" href="<?php echo esc_url( $almgr_assets_csv_example_url ); ?>">
+								<?php esc_html_e( 'Download Sample CSV', 'asset-lending-manager' ); ?>
+							</a>
+						</p>
+					</div>
 				</div>
-			</div>
+
+				<div class="postbox">
+					<div class="inside">
+						<h3><?php esc_html_e( 'Run Import', 'asset-lending-manager' ); ?></h3>
+						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
+							<?php wp_nonce_field( 'almgr_import_assets_csv_action', 'almgr_import_assets_csv_nonce' ); ?>
+							<input type="hidden" name="action" value="almgr_import_assets_csv">
+
+							<table class="form-table" role="presentation">
+								<tbody>
+									<tr>
+										<th scope="row">
+											<label for="almgr_assets_csv_file"><?php esc_html_e( 'CSV file', 'asset-lending-manager' ); ?></label>
+										</th>
+										<td>
+											<input type="file" name="almgr_assets_csv_file" id="almgr_assets_csv_file" accept=".csv,text/csv" required>
+											<p class="description"><?php esc_html_e( 'Maximum size: 1MB.', 'asset-lending-manager' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label><?php esc_html_e( 'Import mode', 'asset-lending-manager' ); ?></label>
+										</th>
+										<td>
+											<input type="text" value="<?php esc_attr_e( 'create_only', 'asset-lending-manager' ); ?>" readonly class="regular-text">
+											<p class="description"><?php esc_html_e( 'MVP behavior: existing assets are skipped (no updates).', 'asset-lending-manager' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="almgr_assets_run_mode"><?php esc_html_e( 'Execution mode', 'asset-lending-manager' ); ?></label>
+										</th>
+										<td>
+											<select name="almgr_assets_run_mode" id="almgr_assets_run_mode">
+												<option value="dry_run" selected><?php esc_html_e( 'dry_run (simulation)', 'asset-lending-manager' ); ?></option>
+												<option value="execute"><?php esc_html_e( 'execute (write changes)', 'asset-lending-manager' ); ?></option>
+											</select>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+							<?php submit_button( __( 'Run Assets Import', 'asset-lending-manager' ) ); ?>
+						</form>
+					</div>
+				</div>
+
+				<?php if ( ! empty( $almgr_assets_import_report ) ) : ?>
+					<?php
+					$almgr_assets_report_counts = isset( $almgr_assets_import_report['counts'] ) && is_array( $almgr_assets_import_report['counts'] )
+						? $almgr_assets_import_report['counts']
+						: array();
+					$almgr_assets_report_logs   = isset( $almgr_assets_import_report['logs'] ) && is_array( $almgr_assets_import_report['logs'] )
+						? $almgr_assets_import_report['logs']
+						: array();
+					$almgr_assets_report_errors = isset( $almgr_assets_import_report['errors'] ) && is_array( $almgr_assets_import_report['errors'] )
+						? $almgr_assets_import_report['errors']
+						: array();
+					$almgr_assets_is_dry_run    = 'dry_run' === (string) ( $almgr_assets_import_report['run_mode'] ?? '' );
+					$almgr_assets_log_statuses  = array(
+						'ok'      => array(
+							'label' => __( 'OK', 'asset-lending-manager' ),
+							'color' => '#1f7a1f',
+						),
+						'skipped' => array(
+							'label' => __( 'skipped', 'asset-lending-manager' ),
+							'color' => '#8a6d3b',
+						),
+						'error'   => array(
+							'label' => __( 'error', 'asset-lending-manager' ),
+							'color' => '#b32d2e',
+						),
+					);
+					?>
+					<h3>
+						<?php esc_html_e( 'Import Report', 'asset-lending-manager' ); ?>
+						<?php if ( $almgr_assets_is_dry_run ) : ?>
+							<span style="<?php echo esc_attr( 'margin-left: 6px; color: #8a6d3b; font-weight: 600;' ); ?>">
+								<?php esc_html_e( 'dry run', 'asset-lending-manager' ); ?>
+							</span>
+						<?php endif; ?>
+					</h3>
+					<p>
+						<?php
+						printf(
+							/* translators: 1: run mode, 2: import mode, 3: file name. */
+							esc_html__( 'Run mode: %1$s | Import mode: %2$s | File: %3$s', 'asset-lending-manager' ),
+							esc_html( (string) ( $almgr_assets_import_report['run_mode'] ?? '' ) ),
+							esc_html( (string) ( $almgr_assets_import_report['import_mode'] ?? '' ) ),
+							esc_html( (string) ( $almgr_assets_import_report['file_name'] ?? '' ) )
+						);
+						?>
+					</p>
+
+					<table class="widefat striped" style="max-width: 680px;">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Processed', 'asset-lending-manager' ); ?></th>
+								<th><?php esc_html_e( 'Created', 'asset-lending-manager' ); ?></th>
+								<th><?php esc_html_e( 'Updated', 'asset-lending-manager' ); ?></th>
+								<th><?php esc_html_e( 'Skipped', 'asset-lending-manager' ); ?></th>
+								<th><?php esc_html_e( 'Errors', 'asset-lending-manager' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><?php echo esc_html( (string) ( $almgr_assets_report_counts['processed'] ?? 0 ) ); ?></td>
+								<td><?php echo esc_html( (string) ( $almgr_assets_report_counts['created'] ?? 0 ) ); ?></td>
+								<td><?php echo esc_html( (string) ( $almgr_assets_report_counts['updated'] ?? 0 ) ); ?></td>
+								<td><?php echo esc_html( (string) ( $almgr_assets_report_counts['skipped'] ?? 0 ) ); ?></td>
+								<td><?php echo esc_html( (string) ( $almgr_assets_report_counts['errors'] ?? 0 ) ); ?></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<?php if ( ! empty( $almgr_assets_report_errors ) ) : ?>
+						<h4><?php esc_html_e( 'Errors', 'asset-lending-manager' ); ?></h4>
+						<table class="widefat striped">
+							<thead>
+								<tr>
+									<th><?php esc_html_e( 'Line', 'asset-lending-manager' ); ?></th>
+									<th><?php esc_html_e( 'Title', 'asset-lending-manager' ); ?></th>
+									<th><?php esc_html_e( 'Message', 'asset-lending-manager' ); ?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach ( $almgr_assets_report_errors as $almgr_assets_report_error ) : ?>
+									<tr>
+										<td><?php echo esc_html( (string) ( $almgr_assets_report_error['line'] ?? '' ) ); ?></td>
+										<td><?php echo esc_html( (string) ( $almgr_assets_report_error['title'] ?? '' ) ); ?></td>
+										<td><?php echo esc_html( (string) ( $almgr_assets_report_error['message'] ?? '' ) ); ?></td>
+									</tr>
+								<?php endforeach; ?>
+							</tbody>
+						</table>
+
+						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="<?php echo esc_attr( 'margin-top: 10px;' ); ?>">
+							<?php wp_nonce_field( 'almgr_download_assets_import_errors_csv_action', 'almgr_download_assets_import_errors_csv_nonce' ); ?>
+							<input type="hidden" name="action" value="almgr_download_assets_import_errors_csv">
+							<?php submit_button( __( 'Download Errors CSV', 'asset-lending-manager' ), 'secondary', 'submit', false ); ?>
+						</form>
+					<?php endif; ?>
+
+					<div class="postbox">
+						<div class="inside">
+							<h3><?php esc_html_e( 'Import Log', 'asset-lending-manager' ); ?></h3>
+							<?php if ( ! empty( $almgr_assets_report_logs ) ) : ?>
+								<table class="widefat striped">
+									<thead>
+										<tr>
+											<th><?php esc_html_e( 'Line', 'asset-lending-manager' ); ?></th>
+											<th><?php esc_html_e( 'Title', 'asset-lending-manager' ); ?></th>
+											<th><?php esc_html_e( 'Status', 'asset-lending-manager' ); ?></th>
+											<th><?php esc_html_e( 'Message', 'asset-lending-manager' ); ?></th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ( $almgr_assets_report_logs as $almgr_assets_report_log ) : ?>
+											<?php
+											$almgr_assets_status_key   = sanitize_key( (string) ( $almgr_assets_report_log['status'] ?? '' ) );
+											$almgr_assets_status_style = $almgr_assets_log_statuses[ $almgr_assets_status_key ] ?? $almgr_assets_log_statuses['error'];
+											?>
+											<tr>
+												<td><?php echo esc_html( (string) ( $almgr_assets_report_log['line'] ?? '' ) ); ?></td>
+												<td><?php echo esc_html( (string) ( $almgr_assets_report_log['title'] ?? '' ) ); ?></td>
+												<td>
+													<span style="<?php echo esc_attr( 'font-weight: 600; color: ' . $almgr_assets_status_style['color'] . ';' ); ?>">
+														<?php echo esc_html( $almgr_assets_status_style['label'] ); ?>
+													</span>
+												</td>
+												<td><?php echo esc_html( (string) ( $almgr_assets_report_log['message'] ?? '' ) ); ?></td>
+											</tr>
+										<?php endforeach; ?>
+									</tbody>
+								</table>
+							<?php else : ?>
+								<p><?php esc_html_e( 'No rows were processed for this run.', 'asset-lending-manager' ); ?></p>
+							<?php endif; ?>
+						</div>
+					</div>
+				<?php endif; ?>
+			<?php endif; ?>
 		<?php endif; ?>
 	<?php elseif ( 'export' === $almgr_current_tab ) : ?>
 		<h2><?php esc_html_e( 'Export Tools', 'asset-lending-manager' ); ?></h2>
@@ -410,22 +615,33 @@ if ( isset( $almgr_section_map[ $almgr_current_tab ] ) ) {
 				</div>
 			<?php endif; ?>
 		<?php elseif ( 'assets' === $almgr_current_section ) : ?>
-			<div class="postbox">
-				<div class="inside">
-					<h3><?php esc_html_e( 'How It Works', 'asset-lending-manager' ); ?></h3>
-					<p><?php esc_html_e( 'Assets export will support CSV format.', 'asset-lending-manager' ); ?></p>
-					<p><?php esc_html_e( 'Target permission: administrators and operators.', 'asset-lending-manager' ); ?></p>
+			<?php if ( ! current_user_can( 'manage_options' ) && ! current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
+				<div class="notice notice-warning">
+					<p><?php esc_html_e( 'Only administrators and operators can export assets.', 'asset-lending-manager' ); ?></p>
 				</div>
-			</div>
-			<div class="postbox">
-				<div class="inside">
-					<h3><?php esc_html_e( 'Run Export', 'asset-lending-manager' ); ?></h3>
-					<p><?php esc_html_e( 'Assets export actions will be added here.', 'asset-lending-manager' ); ?></p>
-					<p>
-						<button type="button" class="button button-secondary" disabled><?php esc_html_e( 'Export Assets CSV', 'asset-lending-manager' ); ?></button>
-					</p>
+			<?php else : ?>
+				<div class="postbox">
+					<div class="inside">
+						<h3><?php esc_html_e( 'How It Works', 'asset-lending-manager' ); ?></h3>
+						<p><?php esc_html_e( 'Export published assets to CSV with strict columns compatible with assets import.', 'asset-lending-manager' ); ?></p>
+						<p>
+							<strong><?php esc_html_e( 'Exported CSV header:', 'asset-lending-manager' ); ?></strong>
+							<code>Title;Structure;Type;State;Level;External_Code;Description;Manufacturer;Model;Wp_Status;Kit_Component_Titles</code>
+						</p>
+						<p><?php esc_html_e( 'Scope: published assets only. For kits, Kit_Component_Titles uses | as separator.', 'asset-lending-manager' ); ?></p>
+					</div>
 				</div>
-			</div>
+				<div class="postbox">
+					<div class="inside">
+						<h3><?php esc_html_e( 'Run Export', 'asset-lending-manager' ); ?></h3>
+						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+							<?php wp_nonce_field( 'almgr_export_assets_csv_action', 'almgr_export_assets_csv_nonce' ); ?>
+							<input type="hidden" name="action" value="almgr_export_assets_csv">
+							<?php submit_button( __( 'Export Assets CSV', 'asset-lending-manager' ) ); ?>
+						</form>
+					</div>
+				</div>
+			<?php endif; ?>
 		<?php endif; ?>
 	<?php elseif ( 'utilities' === $almgr_current_tab ) : ?>
 		<h2><?php esc_html_e( 'Utilities', 'asset-lending-manager' ); ?></h2>

@@ -38,8 +38,10 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)
 * Read-only JSON REST API at `/almgr/v1/` for asset list, asset detail, member list, and member assets; authentication via Application Passwords; works independently of the WordPress REST API global setting
 * Back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs
-* Users CSV import from the Tools page
-* Users CSV export from the Tools page
+* Users CSV import from the Tools page (admin only)
+* Users CSV export from the Tools page (admin and operator)
+* Assets CSV import from the Tools page (admin and operator)
+* Assets CSV export from the Tools page (admin and operator)
 * Translation-ready
 
 
@@ -112,6 +114,7 @@ For full release notes see `CHANGELOG.md`.
 * Changed: internal refactoring — all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
 * Added: back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs.
 * Added: users CSV import (admin only) and users CSV export (admin and operator) in Tools.
+* Added: assets CSV import (admin and operator) and assets CSV export (admin and operator) in Tools.
 * Added: notification policy setting to control if/when all operators are notified for a new loan request (`never`, `no owner`, `always`).
 * Fixed: operators can approve/reject requests for assets without a current owner.
 * Security: fixes and hardening from code audit.
