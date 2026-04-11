@@ -205,10 +205,6 @@ msgstr "Impostazioni ALM"
 msgid "ALM Tools"
 msgstr "Strumenti ALM"
 
-#: includes/class-almgr-manual-prefix-migration.php:567
-msgid "ALMGR Manual Prefix Migration"
-msgstr "Migrazione manuale del prefisso ALMGR"
-
 #. %s: example formatted code
 #: admin/almgr-settings-page.php:943
 #, php-format
@@ -525,10 +521,6 @@ msgstr "Endpoint disponibili"
 #: admin/almgr-settings-page.php:317
 msgid "Available placeholders:"
 msgstr "Segnaposto disponibili:"
-
-#: includes/class-almgr-manual-prefix-migration.php:574
-msgid "Back to admin"
-msgstr "Torna all'area amministrativa"
 
 #. %s: example base URL
 #: admin/almgr-settings-page.php:1050
@@ -2460,14 +2452,6 @@ msgstr "L'API ALM è disabilitata."
 msgid "The CSV file exceeds the 1MB limit."
 msgstr "Il file CSV supera il limite di 1MB."
 
-#: includes/class-almgr-manual-prefix-migration.php:568
-msgid ""
-"The migration ran as a manual one-shot task. Review the report below before "
-"continuing."
-msgstr ""
-"La migrazione è stata eseguita come operazione manuale una tantum. Controlla "
-"il report qui sotto prima di continuare."
-
 #: admin/plugin-main-page.php:85
 msgid ""
 "The plugin works out of the box on both classic and block themes — no "
@@ -2747,10 +2731,6 @@ msgstr "Hai già una richiesta in sospeso per questa risorsa."
 #: includes/class-almgr-loan-manager.php:172
 msgid "You already own this asset and cannot request it."
 msgstr "Sei già il proprietario di questa risorsa e non puoi richiederla."
-
-#: includes/class-almgr-manual-prefix-migration.php:89
-msgid "You are not allowed to run this migration."
-msgstr "Non sei autorizzato a eseguire questa migrazione."
 
 #: includes/class-almgr-autocomplete-manager.php:179
 msgid "You do not have permission to access asset autocomplete."
