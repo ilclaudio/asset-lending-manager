@@ -1358,7 +1358,7 @@ class ALMGR_Loan_Manager {
 	 * @return array Array of component post IDs.
 	 */
 	private function get_kit_components( $asset_id ) {
-		$components = ALMGR_ACF_Asset_Adapter::get_custom_field( 'components', $asset_id );
+		$components = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_components', $asset_id );
 
 		if ( ! is_array( $components ) || empty( $components ) ) {
 			return array();
@@ -1926,9 +1926,9 @@ class ALMGR_Loan_Manager {
 			$wpdb->query( 'COMMIT' );
 
 			// Update ACF location field on all affected assets (outside transaction).
-			if ( '' !== $location && function_exists( 'update_field' ) ) {
+			if ( '' !== $location ) {
 				foreach ( $location_targets as $target_id ) {
-					update_field( 'location', $location, $target_id );
+					ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
 				}
 			}
 
@@ -1988,7 +1988,7 @@ class ALMGR_Loan_Manager {
 				'fields'         => 'ids',
 				'meta_query'     => array(
 					array(
-						'key'     => 'components',
+						'key'     => 'almgr_components',
 						'value'   => '"' . $component_id . '"',
 						'compare' => 'LIKE',
 					),
@@ -2008,10 +2008,6 @@ class ALMGR_Loan_Manager {
 	 * @return void
 	 */
 	private function remove_component_from_kit( $component_id, $kit_id ) {
-		if ( ! function_exists( 'update_field' ) ) {
-			throw new Exception( esc_html__( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
-		}
-
 		$current_ids = $this->get_kit_components( $kit_id );
 		$updated_ids = array_values(
 			array_filter(
@@ -2022,7 +2018,7 @@ class ALMGR_Loan_Manager {
 			)
 		);
 
-		update_field( 'components', $updated_ids, $kit_id );
+		ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $updated_ids, $kit_id );
 	}
 
 	/**
@@ -2030,14 +2026,9 @@ class ALMGR_Loan_Manager {
 	 *
 	 * @param int $component_id Component asset ID to add.
 	 * @param int $kit_id       Kit asset ID.
-	 * @throws Exception When ACF is not available.
 	 * @return void
 	 */
 	private function add_component_to_kit( $component_id, $kit_id ) {
-		if ( ! function_exists( 'update_field' ) ) {
-			throw new Exception( esc_html__( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
-		}
-
 		$current_ids = $this->get_kit_components( $kit_id );
 
 		// Avoid duplicates.
@@ -2046,7 +2037,7 @@ class ALMGR_Loan_Manager {
 		}
 
 		$current_ids[] = (int) $component_id;
-		update_field( 'components', $current_ids, $kit_id );
+		ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $current_ids, $kit_id );
 	}
 
 	/**
@@ -2187,9 +2178,9 @@ class ALMGR_Loan_Manager {
 			$wpdb->query( 'COMMIT' );
 
 			// Update ACF location field on all affected assets (outside transaction).
-			if ( '' !== $location && function_exists( 'update_field' ) ) {
+			if ( '' !== $location ) {
 				foreach ( $location_targets as $target_id ) {
-					update_field( 'location', $location, $target_id );
+					ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
 				}
 			}
 

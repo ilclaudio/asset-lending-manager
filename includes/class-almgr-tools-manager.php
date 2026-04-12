@@ -450,10 +450,10 @@ class ALMGR_Tools_Manager {
 				$type         = $this->get_assets_export_term_slug( $asset_id, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
 				$state        = $this->get_assets_export_term_slug( $asset_id, ALMGR_ASSET_STATE_TAXONOMY_SLUG );
 				$level        = $this->get_assets_export_term_slug( $asset_id, ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
-				$external     = (string) get_post_meta( $asset_id, 'external_code', true );
+				$external     = (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_external_code', $asset_id );
 				$description  = (string) get_post_field( 'post_content', $asset_id );
-				$manufacturer = (string) get_post_meta( $asset_id, 'manufacturer', true );
-				$model        = (string) get_post_meta( $asset_id, 'model', true );
+				$manufacturer = (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_manufacturer', $asset_id );
+				$model        = (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_model', $asset_id );
 
 				$kit_titles = '';
 				if ( ALMGR_ASSET_KIT_SLUG === $structure ) {
@@ -522,13 +522,7 @@ class ALMGR_Tools_Manager {
 	 * @return string
 	 */
 	private function get_assets_export_kit_component_titles( $kit_id ) {
-		$raw_components = null;
-		if ( function_exists( 'get_field' ) ) {
-			$raw_components = get_field( 'components', (int) $kit_id );
-		}
-		if ( null === $raw_components ) {
-			$raw_components = get_post_meta( (int) $kit_id, 'components', true );
-		}
+		$raw_components = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_components', (int) $kit_id );
 
 		$component_ids = $this->normalize_assets_export_component_ids( $raw_components );
 		if ( empty( $component_ids ) ) {
@@ -1826,14 +1820,14 @@ class ALMGR_Tools_Manager {
 			}
 		}
 
-		update_post_meta( $asset_id, 'manufacturer', (string) $asset_row['manufacturer'] );
-		update_post_meta( $asset_id, 'model', (string) $asset_row['model'] );
+		ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_manufacturer', (string) $asset_row['manufacturer'], $asset_id );
+		ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_model', (string) $asset_row['model'], $asset_id );
 		update_post_meta( $asset_id, '_almgr_current_owner', 0 );
 
 		if ( '' !== (string) $asset_row['external_code'] ) {
-			update_post_meta( $asset_id, 'external_code', (string) $asset_row['external_code'] );
+			ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_external_code', (string) $asset_row['external_code'], $asset_id );
 		} else {
-			delete_post_meta( $asset_id, 'external_code' );
+			ALMGR_ACF_Asset_Adapter::delete_custom_field( 'almgr_external_code', $asset_id );
 		}
 
 		if ( ALMGR_ASSET_KIT_SLUG === $structure && ! empty( $component_ids ) ) {
@@ -1883,22 +1877,11 @@ class ALMGR_Tools_Manager {
 			return true;
 		}
 
-		if ( function_exists( 'update_field' ) ) {
-			$update_result = update_field( 'components', $component_ids, $kit_id );
-			if ( false === $update_result ) {
-				return new WP_Error(
-					'assets_import_components_update_failed',
-					__( 'Unable to link kit components using ACF.', 'asset-lending-manager' )
-				);
-			}
-			return true;
-		}
-
-		$meta_result = update_post_meta( $kit_id, 'components', $component_ids );
-		if ( false === $meta_result ) {
+		$update_result = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $component_ids, $kit_id );
+		if ( ! $update_result ) {
 			return new WP_Error(
 				'assets_import_components_update_failed',
-				__( 'Unable to link kit components.', 'asset-lending-manager' )
+				__( 'Unable to link kit components using ACF.', 'asset-lending-manager' )
 			);
 		}
 

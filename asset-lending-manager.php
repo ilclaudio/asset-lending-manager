@@ -35,6 +35,7 @@ require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-admin-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-tools-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-autocomplete-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-rest-manager.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-meta-migration-manager.php';
 
 // Get the singleton Plugin Manager.
 $almgr_plugin_manager = ALMGR_Plugin_Manager::get_instance();

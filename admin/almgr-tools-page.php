@@ -652,5 +652,17 @@ if ( isset( $almgr_section_map[ $almgr_current_tab ] ) ) {
 			<input type="hidden" name="action" value="almgr_reload_default_terms">
 			<?php submit_button( __( 'Reload Default Taxonomies Terms', 'asset-lending-manager' ) ); ?>
 		</form>
+
+		<hr>
+
+		<h3><?php esc_html_e( 'Migrate ACF Field Names', 'asset-lending-manager' ); ?></h3>
+		<p>
+			<?php esc_html_e( 'Renames legacy unprefixed ACF post-meta keys (e.g. manufacturer, model) to the prefixed versions (almgr_manufacturer, almgr_model) for all assets. The operation is idempotent: running it multiple times is safe.', 'asset-lending-manager' ); ?>
+		</p>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php wp_nonce_field( ALMGR_Meta_Migration_Manager::NONCE_ACTION, ALMGR_Meta_Migration_Manager::NONCE_FIELD ); ?>
+			<input type="hidden" name="action" value="almgr_migrate_acf_field_names">
+			<?php submit_button( __( 'Run ACF Fields Migration', 'asset-lending-manager' ), 'secondary' ); ?>
+		</form>
 	<?php endif; ?>
 </div>

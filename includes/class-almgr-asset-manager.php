@@ -306,7 +306,7 @@ class ALMGR_Asset_Manager {
 					'fields'         => 'ids',
 					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 						array(
-							'key'     => 'components',
+							'key'     => 'almgr_components',
 							'value'   => '"' . $asset_id . '"',
 							'compare' => 'LIKE',
 						),
@@ -340,37 +340,37 @@ class ALMGR_Asset_Manager {
 		 * ACF fields (ordered as defined in adapter).
 		 */
 		$order             = array(
-			'manufacturer',
-			'model',
-			'data_acquisto',
-			'cost',
-			'dimensions',
-			'weight',
-			'location',
-			'user_manual',
-			'technical_data_sheet',
-			'serial_number',
-			'external_code',
-			'notes',
-			'components',
+			'almgr_manufacturer',
+			'almgr_model',
+			'almgr_data_acquisto',
+			'almgr_cost',
+			'almgr_dimensions',
+			'almgr_weight',
+			'almgr_location',
+			'almgr_user_manual',
+			'almgr_technical_data_sheet',
+			'almgr_serial_number',
+			'almgr_external_code',
+			'almgr_notes',
+			'almgr_components',
 		);
 		$translated_labels = array(
-			'manufacturer'         => __( 'Manufacturer', 'asset-lending-manager' ),
-			'model'                => __( 'Model', 'asset-lending-manager' ),
-			'data_acquisto'        => __( 'Purchase date', 'asset-lending-manager' ),
-			'cost'                 => __( 'Cost', 'asset-lending-manager' ),
-			'dimensions'           => __( 'Dimensions', 'asset-lending-manager' ),
-			'weight'               => __( 'Weight', 'asset-lending-manager' ),
-			'location'             => __( 'Location', 'asset-lending-manager' ),
-			'user_manual'          => __( 'User manual', 'asset-lending-manager' ),
-			'technical_data_sheet' => __( 'Technical data sheet', 'asset-lending-manager' ),
-			'serial_number'        => __( 'Serial number', 'asset-lending-manager' ),
-			'external_code'        => __( 'External code', 'asset-lending-manager' ),
-			'notes'                => __( 'Notes', 'asset-lending-manager' ),
-			'components'           => __( 'Components', 'asset-lending-manager' ),
+			'almgr_manufacturer'         => __( 'Manufacturer', 'asset-lending-manager' ),
+			'almgr_model'                => __( 'Model', 'asset-lending-manager' ),
+			'almgr_data_acquisto'        => __( 'Purchase date', 'asset-lending-manager' ),
+			'almgr_cost'                 => __( 'Cost', 'asset-lending-manager' ),
+			'almgr_dimensions'           => __( 'Dimensions', 'asset-lending-manager' ),
+			'almgr_weight'               => __( 'Weight', 'asset-lending-manager' ),
+			'almgr_location'             => __( 'Location', 'asset-lending-manager' ),
+			'almgr_user_manual'          => __( 'User manual', 'asset-lending-manager' ),
+			'almgr_technical_data_sheet' => __( 'Technical data sheet', 'asset-lending-manager' ),
+			'almgr_serial_number'        => __( 'Serial number', 'asset-lending-manager' ),
+			'almgr_external_code'        => __( 'External code', 'asset-lending-manager' ),
+			'almgr_notes'                => __( 'Notes', 'asset-lending-manager' ),
+			'almgr_components'           => __( 'Components', 'asset-lending-manager' ),
 		);
 		// Fields restricted to logged-in users only (financial data, personal locations, internal notes).
-		$members_only_fields = array( 'cost', 'data_acquisto', 'serial_number', 'notes', 'location' );
+		$members_only_fields = array( 'almgr_cost', 'almgr_data_acquisto', 'almgr_serial_number', 'almgr_notes', 'almgr_location' );
 
 		$field_objects     = ALMGR_ACF_Asset_Adapter::get_custom_fields( $asset_id );
 		// Build an array with the fields ordered based on $order.
@@ -405,7 +405,7 @@ class ALMGR_Asset_Manager {
 					'posts_per_page' => 1,
 					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 						array(
-							'key'     => 'components',
+							'key'     => 'almgr_components',
 							'value'   => '"' . $asset_id . '"',
 							'compare' => 'LIKE',
 						),

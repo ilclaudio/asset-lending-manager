@@ -566,7 +566,7 @@ class ALMGR_REST_Manager {
 		// Kit/component relationships.
 		$data['parent_kits'] = $wrapper->parent_kits ?? array();
 
-		$raw_components     = ALMGR_ACF_Asset_Adapter::get_custom_field( 'components', $post_id );
+		$raw_components     = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_components', $post_id );
 		$data['components'] = array();
 		if ( is_array( $raw_components ) ) {
 			foreach ( $raw_components as $component ) {
@@ -582,27 +582,31 @@ class ALMGR_REST_Manager {
 		}
 
 		// ACF fields visible to all authenticated users.
+		// Keys use the prefixed internal name (almgr_*) to read from ACF,
+		// but are exposed in the response without the prefix for API stability.
 		$acf             = ALMGR_ACF_Asset_Adapter::get_custom_fields( $post_id );
 		$public_acf_keys = array(
-			'manufacturer',
-			'model',
-			'serial_number',
-			'external_code',
-			'location',
-			'dimensions',
-			'weight',
-			'user_manual',
-			'technical_data_sheet',
+			'almgr_manufacturer',
+			'almgr_model',
+			'almgr_serial_number',
+			'almgr_external_code',
+			'almgr_location',
+			'almgr_dimensions',
+			'almgr_weight',
+			'almgr_user_manual',
+			'almgr_technical_data_sheet',
 		);
 		foreach ( $public_acf_keys as $key ) {
-			$data[ $key ] = isset( $acf[ $key ] ) ? ( isset( $acf[ $key ]['value'] ) ? $acf[ $key ]['value'] : null ) : null;
+			$response_key          = str_replace( 'almgr_', '', $key );
+			$data[ $response_key ] = isset( $acf[ $key ] ) ? ( isset( $acf[ $key ]['value'] ) ? $acf[ $key ]['value'] : null ) : null;
 		}
 
 		// Operator-only fields: cost, purchase date, notes, and loan history.
 		if ( $this->is_operator() ) {
-			$operator_keys = array( 'cost', 'data_acquisto', 'notes' );
+			$operator_keys = array( 'almgr_cost', 'almgr_data_acquisto', 'almgr_notes' );
 			foreach ( $operator_keys as $key ) {
-				$data[ $key ] = isset( $acf[ $key ] ) ? ( isset( $acf[ $key ]['value'] ) ? $acf[ $key ]['value'] : null ) : null;
+				$response_key          = str_replace( 'almgr_', '', $key );
+				$data[ $response_key ] = isset( $acf[ $key ] ) ? ( isset( $acf[ $key ]['value'] ) ? $acf[ $key ]['value'] : null ) : null;
 			}
 
 			// Last 10 history entries. Current user is operator so get_asset_history
@@ -672,8 +676,8 @@ class ALMGR_REST_Manager {
 			'title'         => $wrapper ? $wrapper->title : get_the_title( $post_id ),
 			'structure'     => ( $struct_terms && ! is_wp_error( $struct_terms ) ) ? wp_list_pluck( $struct_terms, 'slug' ) : array(),
 			'type'          => ( $type_terms && ! is_wp_error( $type_terms ) ) ? wp_list_pluck( $type_terms, 'slug' ) : array(),
-			'external_code' => (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'external_code', $post_id ),
-			'location'      => (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'location', $post_id ),
+			'external_code' => (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_external_code', $post_id ),
+			'location'      => (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $post_id ),
 			'thumbnail_url' => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ? get_the_post_thumbnail_url( $post_id, 'thumbnail' ) : null,
 			'permalink'     => get_permalink( $post_id ),
 		);

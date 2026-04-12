@@ -49,12 +49,9 @@ class ALMGR_ACF_Asset_Adapter {
 	 * Returns an array keyed by field name, identical to get_field_objects().
 	 *
 	 * @param int $post_id The post ID.
-	 * @return array Field objects keyed by field name, or empty array if ACF is not active.
+	 * @return array Field objects keyed by field name.
 	 */
 	public static function get_custom_fields( int $post_id ): array {
-		if ( ! function_exists( 'get_field_objects' ) ) {
-			return array();
-		}
 		$result = get_field_objects( $post_id );
 		return is_array( $result ) ? $result : array();
 	}
@@ -67,13 +64,38 @@ class ALMGR_ACF_Asset_Adapter {
 	 *
 	 * @param string $field_name The ACF field name (meta_key).
 	 * @param int    $post_id    The post ID.
-	 * @return mixed Field value, or null if ACF is not active.
+	 * @return mixed Field value.
 	 */
 	public static function get_custom_field( string $field_name, int $post_id ) {
-		if ( ! function_exists( 'get_field' ) ) {
-			return null;
-		}
 		return get_field( $field_name, $post_id );
+	}
+
+	/**
+	 * Write a single ACF custom field value for a given post.
+	 *
+	 * Single ACF write entry point. Returns true on success, false on failure.
+	 *
+	 * @param string $field_name The ACF field name (meta_key).
+	 * @param mixed  $value      The value to store.
+	 * @param int    $post_id    The post ID.
+	 * @return bool
+	 */
+	public static function set_custom_field( string $field_name, $value, int $post_id ): bool {
+		return (bool) update_field( $field_name, $value, $post_id );
+	}
+
+	/**
+	 * Delete a single ACF custom field value for a given post.
+	 *
+	 * ACF does not provide a native delete function; deleting the post meta
+	 * key directly is the correct approach.
+	 *
+	 * @param string $field_name The ACF field name (meta_key).
+	 * @param int    $post_id    The post ID.
+	 * @return void
+	 */
+	public static function delete_custom_field( string $field_name, int $post_id ): void {
+		delete_post_meta( $post_id, $field_name );
 	}
 
 	/**
@@ -96,7 +118,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a656243fca',
 						'label'             => 'Manufacturer',
-						'name'              => 'manufacturer',
+						'name'              => 'almgr_manufacturer',
 						'aria-label'        => '',
 						'type'              => 'text',
 						'instructions'      => '',
@@ -117,7 +139,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a65e643fcb',
 						'label'             => 'Model',
-						'name'              => 'model',
+						'name'              => 'almgr_model',
 						'aria-label'        => '',
 						'type'              => 'text',
 						'instructions'      => '',
@@ -138,7 +160,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'                     => 'field_694a65fa43fcc',
 						'label'                   => 'Purchase date',
-						'name'                    => 'data_acquisto',
+						'name'                    => 'almgr_data_acquisto',
 						'aria-label'              => '',
 						'type'                    => 'date_picker',
 						'instructions'            => '',
@@ -158,7 +180,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a665243fcd',
 						'label'             => 'Cost',
-						'name'              => 'cost',
+						'name'              => 'almgr_cost',
 						'aria-label'        => '',
 						'type'              => 'number',
 						'instructions'      => '',
@@ -181,7 +203,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a668743fce',
 						'label'             => 'Dimensions',
-						'name'              => 'dimensions',
+						'name'              => 'almgr_dimensions',
 						'aria-label'        => '',
 						'type'              => 'text',
 						'instructions'      => '',
@@ -202,7 +224,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a66a443fcf',
 						'label'             => 'Weight',
-						'name'              => 'weight',
+						'name'              => 'almgr_weight',
 						'aria-label'        => '',
 						'type'              => 'text',
 						'instructions'      => '',
@@ -223,7 +245,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a66be43fd0',
 						'label'             => 'Location',
-						'name'              => 'location',
+						'name'              => 'almgr_location',
 						'aria-label'        => '',
 						'type'              => 'text',
 						'instructions'      => '',
@@ -244,7 +266,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'                  => 'field_694a66df43fd1',
 						'label'                => 'Components',
-						'name'                 => 'components',
+						'name'                 => 'almgr_components',
 						'aria-label'           => '',
 						'type'                 => 'post_object',
 						'instructions'         => '',
@@ -271,7 +293,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a672043fd2',
 						'label'             => 'User manual',
-						'name'              => 'user_manual',
+						'name'              => 'almgr_user_manual',
 						'aria-label'        => '',
 						'type'              => 'file',
 						'instructions'      => '',
@@ -292,7 +314,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a675043fd3',
 						'label'             => 'Technical data sheet',
-						'name'              => 'technical_data_sheet',
+						'name'              => 'almgr_technical_data_sheet',
 						'aria-label'        => '',
 						'type'              => 'file',
 						'instructions'      => '',
@@ -313,7 +335,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a677143fd4',
 						'label'             => 'Serial number',
-						'name'              => 'serial_number',
+						'name'              => 'almgr_serial_number',
 						'aria-label'        => '',
 						'type'              => 'text',
 						'instructions'      => '',
@@ -334,7 +356,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a677b43fd5',
 						'label'             => 'External code',
-						'name'              => 'external_code',
+						'name'              => 'almgr_external_code',
 						'aria-label'        => '',
 						'type'              => 'text',
 						'instructions'      => '',
@@ -355,7 +377,7 @@ class ALMGR_ACF_Asset_Adapter {
 					array(
 						'key'               => 'field_694a679543fd6',
 						'label'             => 'Notes',
-						'name'              => 'notes',
+						'name'              => 'almgr_notes',
 						'aria-label'        => '',
 						'type'              => 'textarea',
 						'instructions'      => '',
