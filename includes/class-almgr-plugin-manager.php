@@ -147,7 +147,6 @@ class ALMGR_Plugin_Manager {
 				'tools'        => new ALMGR_Tools_Manager(),
 				'autocomplete' => new ALMGR_Autocomplete_Manager( $settings ),
 				'rest'         => new ALMGR_REST_Manager( $settings, $loan ),
-				'migration'    => new ALMGR_Meta_Migration_Manager(),
 			);
 		}
 	}

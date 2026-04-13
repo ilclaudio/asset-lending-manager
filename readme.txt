@@ -116,7 +116,7 @@ For full release notes see `CHANGELOG.md`.
 
 = 0.2.1 =
 * Changed: internal refactoring — all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
-* Changed: all ACF custom field storage keys now use the `almgr_` prefix for WordPress.org namespace compliance. Existing installations must run the one-time migration from ALM → Tools → Utilities.
+* Changed: all ACF custom field storage keys now use the `almgr_` prefix for WordPress.org namespace compliance.
 * Added: back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs.
 * Added: users CSV import (admin only) and users CSV export (admin and operator) in Tools.
 * Added: assets CSV import (admin and operator) and assets CSV export (admin and operator) in Tools.
@@ -157,8 +157,7 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 == Upgrade Notice ==
 
 = 0.2.1 =
-Internal refactoring release. All plugin database tables, options, and identifiers have been renamed from the `alm_` prefix to `almgr_`. A one-time automatic data migration runs on upgrade for tables and options.
-If upgrading from a version that stored ACF field data without the `almgr_` prefix, run the one-time ACF field migration from ALM → Tools → Utilities (requires administrator access).
+Internal refactoring release. All plugin database tables, options, identifiers, and ACF field storage keys have been renamed from the `alm_` / unprefixed form to the `almgr_` prefix.
 
 = 0.1.0 =
 First public release.
