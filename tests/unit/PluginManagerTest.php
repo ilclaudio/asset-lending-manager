@@ -41,7 +41,6 @@ class Plugin_Manager_Test extends TestCase {
 		$instance = ALMGR_Plugin_Manager::get_instance();
 
 		$this->expectException( Exception::class );
-		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize,WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- Intentional: testing that unserialize throws an exception.
 		unserialize( serialize( $instance ) );
 	}
 }

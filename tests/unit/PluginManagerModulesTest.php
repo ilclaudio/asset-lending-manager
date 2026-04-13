@@ -83,7 +83,7 @@ class PluginManagerModulesTest extends TestCase {
 	 *
 	 * @return bool
 	 */
-	private function modules_contain_instance_of( array $modules, string $class ): bool { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.classFound -- $class holds a class name string.
+	private function modules_contain_instance_of( array $modules, string $class ): bool {
 		foreach ( $modules as $module ) {
 			if ( $module instanceof $class ) {
 				return true;

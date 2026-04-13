@@ -57,7 +57,6 @@ class ALMGR_Installer {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
 		$table_name      = $wpdb->prefix . 'almgr_loan_requests';
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
 		$sql          = "CREATE TABLE $table_name (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -81,7 +80,6 @@ class ALMGR_Installer {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 		// Verify table was created or updated.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
 			if ( $table_exists ) {
 				ALMGR_Logger::info( 'Table almgr_loan_requests schema verified/updated successfully.' );
@@ -114,7 +112,6 @@ class ALMGR_Installer {
 				continue;
 			}
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table identifier is internal and validated by is_safe_table_identifier().
 			$wpdb->query( "DROP TABLE IF EXISTS `$table`" );
 			ALMGR_Logger::info( "Dropped table $table" );
 		}
@@ -145,7 +142,6 @@ class ALMGR_Installer {
 		$table_name      = $wpdb->prefix . 'almgr_loan_requests_history';
 		$charset_collate = $wpdb->get_charset_collate();
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
 
 		$sql = "CREATE TABLE $table_name (
@@ -172,7 +168,6 @@ class ALMGR_Installer {
 		dbDelta( $sql );
 
 		// Verify creation or schema update.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
 			if ( $table_exists ) {
 				ALMGR_Logger::info( 'Table almgr_loan_requests_history schema verified/updated successfully.' );

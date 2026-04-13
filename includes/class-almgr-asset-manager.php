@@ -233,7 +233,6 @@ class ALMGR_Asset_Manager {
 		$wrapper->id        = $asset->ID;
 		$wrapper->title     = get_the_title( $asset );
 		$wrapper->permalink = get_permalink( $asset );
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WordPress filter.
 		$wrapper->content = apply_filters( 'the_content', $asset->post_content );
 		// Manage the asset image.
 		$thumbnail_size = 'thumbnail';
@@ -304,7 +303,7 @@ class ALMGR_Asset_Manager {
 					'post_status'    => 'publish',
 					'posts_per_page' => -1,
 					'fields'         => 'ids',
-					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					'meta_query'     => array(
 						array(
 							'key'     => 'almgr_components',
 							'value'   => '"' . $asset_id . '"',
@@ -403,7 +402,7 @@ class ALMGR_Asset_Manager {
 					'post_type'      => ALMGR_ASSET_CPT_SLUG,
 					'post_status'    => 'publish',
 					'posts_per_page' => 1,
-					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					'meta_query'     => array(
 						array(
 							'key'     => 'almgr_components',
 							'value'   => '"' . $asset_id . '"',

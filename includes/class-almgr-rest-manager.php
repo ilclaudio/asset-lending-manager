@@ -193,7 +193,6 @@ class ALMGR_REST_Manager {
 		if ( ! isset( $_SERVER['PHP_AUTH_USER'] ) ) {
 			$auth_header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_AUTHORIZATION'] ) ) : '';
 			if ( 0 === stripos( $auth_header, 'basic ' ) ) {
-				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- Required to decode Basic Auth credentials for Application Passwords.
 				$decoded = base64_decode( substr( $auth_header, 6 ), true );
 				if ( $decoded ) {
 					$parts                    = explode( ':', $decoded, 2 );
@@ -210,7 +209,6 @@ class ALMGR_REST_Manager {
 		// Signal API context so Application Passwords authentication is active.
 		add_filter( 'application_password_is_api_request', '__return_true' );
 		$auth_user = sanitize_user( wp_unslash( $_SERVER['PHP_AUTH_USER'] ) );
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Passwords must be passed raw to wp_authenticate().
 		$auth_pass = isset( $_SERVER['PHP_AUTH_PW'] ) ? (string) wp_unslash( $_SERVER['PHP_AUTH_PW'] ) : '';
 		$user      = wp_authenticate( $auth_user, $auth_pass );
 		remove_filter( 'application_password_is_api_request', '__return_true' );
@@ -297,7 +295,6 @@ class ALMGR_REST_Manager {
 			$this->send_error( 'almgr_forbidden', __( 'You do not have permission to view assets.', 'asset-lending-manager' ), 403 );
 		}
 
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only GET, nonce not applicable.
 		$page     = max( 1, absint( isset( $_GET['page'] ) ? $_GET['page'] : 1 ) );
 		$per_page = $this->clamp_per_page( absint( isset( $_GET['per_page'] ) ? $_GET['per_page'] : self::DEFAULT_PER_PAGE ) );
 
@@ -332,12 +329,12 @@ class ALMGR_REST_Manager {
 			}
 		}
 		if ( ! empty( $tax_query ) ) {
-			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- taxonomy filter, no alternative.
+			$args['tax_query'] = $tax_query;
 		}
 
 		$owner = isset( $_GET['owner'] ) ? absint( $_GET['owner'] ) : 0;
 		if ( $owner > 0 ) {
-			$args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- owner filter via post meta, no alternative.
+			$args['meta_query'] = array(
 				array(
 					'key'   => '_almgr_current_owner',
 					'value' => $owner,
@@ -411,7 +408,6 @@ class ALMGR_REST_Manager {
 			$this->send_error( 'almgr_forbidden', __( 'You do not have permission to view members.', 'asset-lending-manager' ), 403 );
 		}
 
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only GET, nonce not applicable.
 		$page     = max( 1, absint( isset( $_GET['page'] ) ? $_GET['page'] : 1 ) );
 		$per_page = $this->clamp_per_page( absint( isset( $_GET['per_page'] ) ? $_GET['per_page'] : self::DEFAULT_PER_PAGE ) );
 		$offset   = ( $page - 1 ) * $per_page;
@@ -489,7 +485,7 @@ class ALMGR_REST_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- owner lookup via post meta, no alternative.
+				'meta_query'     => array(
 					array(
 						'key'   => '_almgr_current_owner',
 						'value' => $member_id,
@@ -701,7 +697,6 @@ class ALMGR_REST_Manager {
 		foreach ( $headers as $name => $value ) {
 			header( esc_attr( $name ) . ': ' . esc_attr( (string) $value ) );
 		}
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode produces safe JSON output.
 		echo wp_json_encode( $data );
 		exit;
 	}
@@ -770,7 +765,7 @@ class ALMGR_REST_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- active loan count by owner, no alternative.
+				'meta_query'     => array(
 					array(
 						'key'   => '_almgr_current_owner',
 						'value' => $user_id,

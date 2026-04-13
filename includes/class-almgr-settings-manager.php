@@ -173,7 +173,7 @@ class ALMGR_Settings_Manager {
 	 * @param mixed  $default Default value returned if the setting is not found.
 	 * @return mixed Setting value or default.
 	 */
-	public function get( $key, $default = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound -- $default is the conventional name for this parameter.
+	public function get( $key, $default = null ) {
 		$settings = $this->get_all();
 		$keys     = explode( '.', $key );
 

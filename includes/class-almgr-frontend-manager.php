@@ -324,12 +324,10 @@ class ALMGR_Frontend_Manager {
 	 * @return string
 	 */
 	private function get_sanitized_query_text( $key ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only frontend filter/query parsing.
 		if ( ! isset( $_GET[ $key ] ) ) {
 			return '';
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only frontend filter/query parsing.
 		return sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
 	}
 
@@ -547,12 +545,10 @@ class ALMGR_Frontend_Manager {
 		}
 		// Add tax_query to query args if we have filters.
 		if ( count( $tax_query ) > 1 ) {
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required dynamic taxonomy filters for list UI.
 			$query_args['tax_query'] = $tax_query;
 		}
 		// Add meta_query to filter by owner if set.
 		if ( $filter_owner > 0 ) {
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required owner filter based on current assignment meta.
 			$query_args['meta_query'] = array(
 				array(
 					'key'     => '_almgr_current_owner',
@@ -607,11 +603,9 @@ class ALMGR_Frontend_Manager {
 	 * @return void
 	 */
 	public function handle_almgr_scan_redirect() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
 		if ( ! isset( $_GET['almgr_scan'] ) ) {
 			return;
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
 		$code    = sanitize_text_field( wp_unslash( $_GET['almgr_scan'] ) );
 		$post_id = ALMGR_Asset_Manager::get_asset_id_from_code( $code );
 		if ( $post_id > 0 ) {

@@ -6,12 +6,9 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param for status display.
 $almgr_status = isset( $_GET['almgr_status'] ) ? sanitize_key( wp_unslash( $_GET['almgr_status'] ) ) : '';
-// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param to show last report.
 $almgr_show_users_import_report = isset( $_GET['almgr_users_import_report'] ) ? sanitize_key( wp_unslash( $_GET['almgr_users_import_report'] ) ) : '';
 $almgr_users_import_report      = array();
-// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param to show last report.
 $almgr_show_assets_import_report = isset( $_GET['almgr_assets_import_report'] ) ? sanitize_key( wp_unslash( $_GET['almgr_assets_import_report'] ) ) : '';
 $almgr_assets_import_report      = array();
 
@@ -33,7 +30,6 @@ if ( '1' === $almgr_show_assets_import_report && ( current_user_can( 'manage_opt
 }
 
 $almgr_allowed_tabs = array( 'overview', 'import', 'export', 'utilities' );
-// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param for tab selection.
 $almgr_current_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'overview';
 
 if ( ! in_array( $almgr_current_tab, $almgr_allowed_tabs, true ) ) {
@@ -63,7 +59,6 @@ $almgr_assets_csv_example_url = trailingslashit( ALMGR_PLUGIN_URL ) . 'assets/ex
 $almgr_current_section        = '';
 
 if ( isset( $almgr_section_map[ $almgr_current_tab ] ) ) {
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only GET param for section selection.
 	$almgr_current_section = isset( $_GET['section'] ) ? sanitize_key( wp_unslash( $_GET['section'] ) ) : 'users';
 	if ( ! isset( $almgr_section_map[ $almgr_current_tab ][ $almgr_current_section ] ) ) {
 		$almgr_current_section = 'users';

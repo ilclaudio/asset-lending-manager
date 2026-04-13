@@ -7,7 +7,6 @@
  * @package AssetLendingManager
  */
 
-// phpcs:disable WordPress.DB.RestrictedFunctions,WordPress.DB.DirectDatabaseQuery,WordPress.WP.GlobalVariablesOverride,WordPress.Security.EscapeOutput.OutputNotEscaped -- Intentional direct mysqli connection for diagnostic purposes, not user-facing output.
 $link = mysqli_connect( 'localhost', 'admin', 'admin', 'wp_almgr_tests' );
 
 if ( ! $link ) {

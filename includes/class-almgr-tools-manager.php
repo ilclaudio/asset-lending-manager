@@ -201,7 +201,6 @@ class ALMGR_Tools_Manager {
 			wp_die( esc_html__( 'Unable to generate CSV export output stream.', 'asset-lending-manager' ) );
 		}
 
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Writing BOM to php://output stream.
 		fwrite( $output, "\xEF\xBB\xBF" );
 
 		fputcsv(
@@ -226,7 +225,6 @@ class ALMGR_Tools_Manager {
 			);
 		}
 
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing php://output stream handle after CSV stream.
 		fclose( $output );
 		exit;
 	}
@@ -309,7 +307,6 @@ class ALMGR_Tools_Manager {
 		}
 
 		// Add UTF-8 BOM to improve compatibility with spreadsheet applications.
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Writing BOM to php://output stream.
 		fwrite( $output, "\xEF\xBB\xBF" );
 
 		fputcsv(
@@ -373,7 +370,6 @@ class ALMGR_Tools_Manager {
 			$offset += $per_page;
 		} while ( $rows === $per_page );
 
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing php://output stream handle after CSV stream.
 		fclose( $output );
 		exit;
 	}
@@ -406,7 +402,6 @@ class ALMGR_Tools_Manager {
 		}
 
 		// Add UTF-8 BOM to improve compatibility with spreadsheet applications.
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Writing BOM to php://output stream.
 		fwrite( $output, "\xEF\xBB\xBF" );
 
 		fputcsv(
@@ -434,7 +429,6 @@ class ALMGR_Tools_Manager {
 					'no_found_rows'          => true,
 					'update_post_meta_cache' => false,
 					'update_post_term_cache' => false,
-					'suppress_filters'       => true,
 				)
 			);
 
@@ -487,7 +481,6 @@ class ALMGR_Tools_Manager {
 			$offset += $per_page;
 		} while ( $rows === $per_page );
 
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing php://output stream handle after CSV stream.
 		fclose( $output );
 		exit;
 	}
@@ -656,12 +649,10 @@ class ALMGR_Tools_Manager {
 	 * @return array|WP_Error
 	 */
 	private function get_users_csv_upload() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified in handle_import_users_csv().
 		if ( ! isset( $_FILES['almgr_users_csv_file'] ) || ! is_array( $_FILES['almgr_users_csv_file'] ) ) {
 			return new WP_Error( 'missing_file', __( 'Select a CSV file to import.', 'asset-lending-manager' ) );
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload array is validated/sanitized field-by-field below.
 		$file = $_FILES['almgr_users_csv_file'];
 
 		$error_code = isset( $file['error'] ) ? (int) $file['error'] : UPLOAD_ERR_NO_FILE;
@@ -1284,12 +1275,10 @@ class ALMGR_Tools_Manager {
 	 * @return array|WP_Error
 	 */
 	private function get_assets_csv_upload() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified in handle_import_assets_csv().
 		if ( ! isset( $_FILES['almgr_assets_csv_file'] ) || ! is_array( $_FILES['almgr_assets_csv_file'] ) ) {
 			return new WP_Error( 'missing_file', __( 'Select a CSV file to import.', 'asset-lending-manager' ) );
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload array is validated/sanitized field-by-field below.
 		$file = $_FILES['almgr_assets_csv_file'];
 
 		$error_code = isset( $file['error'] ) ? (int) $file['error'] : UPLOAD_ERR_NO_FILE;
@@ -1724,7 +1713,6 @@ class ALMGR_Tools_Manager {
 				'no_found_rows'          => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
-				'suppress_filters'       => true,
 			)
 		);
 
