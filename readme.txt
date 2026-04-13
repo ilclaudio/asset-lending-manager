@@ -47,7 +47,10 @@ Born within an association of amateur astronomers to manage telescopes and equip
 
 == Requirements ==
 This plugin requires the **Advanced Custom Fields** plugin (free version is sufficient).
-You can install it for free from the WordPress plugin directory.
+You can install it for free from the WordPress plugin directory: https://wordpress.org/plugins/advanced-custom-fields/
+
+ACF is used to store and retrieve all custom asset fields (manufacturer, model, location, serial number, etc.).
+The plugin registers the ACF field group automatically — no manual configuration of ACF fields is needed.
 
 
 == Loan Workflow ==
@@ -63,7 +66,8 @@ You can install it for free from the WordPress plugin directory.
 == Installation ==
 1. In your WordPress admin, go to Plugins > Add New > Upload Plugin.
 2. Upload the plugin ZIP file and click Install Now, then Activate.
-3. Install and activate the **Advanced Custom Fields** (ACF) plugin — the free version is sufficient and available in the WordPress plugin directory.
+3. Install and activate the **Advanced Custom Fields** (ACF) plugin — the free version is sufficient and available at https://wordpress.org/plugins/advanced-custom-fields/
+   The plugin registers the ACF field group automatically — no manual ACF configuration is needed.
 4. The plugin works out of the box on both classic and block themes — no shortcodes required for normal use. Asset pages are served automatically:
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page
@@ -112,10 +116,13 @@ For full release notes see `CHANGELOG.md`.
 
 = 0.2.1 =
 * Changed: internal refactoring — all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
+* Changed: all ACF custom field storage keys now use the `almgr_` prefix for WordPress.org namespace compliance. Existing installations must run the one-time migration from ALM → Tools → Utilities.
 * Added: back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs.
 * Added: users CSV import (admin only) and users CSV export (admin and operator) in Tools.
 * Added: assets CSV import (admin and operator) and assets CSV export (admin and operator) in Tools.
+* Added: kit import and export — kit components and their ACF fields are included in the asset CSV.
 * Added: notification policy setting to control if/when all operators are notified for a new loan request (`never`, `no owner`, `always`).
+* Added: `ALMGR_REMOVE_ALL_DATA` constant — define as `true` in `wp-config.php` before uninstalling to remove all plugin data including assets.
 * Fixed: operators can approve/reject requests for assets without a current owner.
 * Security: fixes and hardening from code audit.
 
@@ -150,7 +157,8 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 == Upgrade Notice ==
 
 = 0.2.1 =
-Internal refactoring release. All plugin database tables, options, and identifiers have been renamed from the `alm_` prefix to `almgr_`. A one-time automatic migration runs on upgrade — no manual action required.
+Internal refactoring release. All plugin database tables, options, and identifiers have been renamed from the `alm_` prefix to `almgr_`. A one-time automatic data migration runs on upgrade for tables and options.
+If upgrading from a version that stored ACF field data without the `almgr_` prefix, run the one-time ACF field migration from ALM → Tools → Utilities (requires administrator access).
 
 = 0.1.0 =
 First public release.
