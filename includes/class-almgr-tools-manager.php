@@ -201,7 +201,7 @@ class ALMGR_Tools_Manager {
 			wp_die( esc_html__( 'Unable to generate CSV export output stream.', 'asset-lending-manager' ) );
 		}
 
-		fwrite( $output, "\xEF\xBB\xBF" );
+		echo "\xEF\xBB\xBF"; // UTF-8 BOM for Excel compatibility.
 
 		fputcsv(
 			$output,
@@ -225,7 +225,6 @@ class ALMGR_Tools_Manager {
 			);
 		}
 
-		fclose( $output );
 		exit;
 	}
 
@@ -307,7 +306,7 @@ class ALMGR_Tools_Manager {
 		}
 
 		// Add UTF-8 BOM to improve compatibility with spreadsheet applications.
-		fwrite( $output, "\xEF\xBB\xBF" );
+		echo "\xEF\xBB\xBF"; // UTF-8 BOM for Excel compatibility.
 
 		fputcsv(
 			$output,
@@ -370,7 +369,6 @@ class ALMGR_Tools_Manager {
 			$offset += $per_page;
 		} while ( $rows === $per_page );
 
-		fclose( $output );
 		exit;
 	}
 
@@ -402,7 +400,7 @@ class ALMGR_Tools_Manager {
 		}
 
 		// Add UTF-8 BOM to improve compatibility with spreadsheet applications.
-		fwrite( $output, "\xEF\xBB\xBF" );
+		echo "\xEF\xBB\xBF"; // UTF-8 BOM for Excel compatibility.
 
 		fputcsv(
 			$output,
@@ -481,7 +479,6 @@ class ALMGR_Tools_Manager {
 			$offset += $per_page;
 		} while ( $rows === $per_page );
 
-		fclose( $output );
 		exit;
 	}
 
