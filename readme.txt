@@ -1,25 +1,25 @@
 === Asset Lending Manager ===
-Contributors: ilclaudio
+Contributors: ioclaudio
 Author URI: https://www.claudiobattaglino.it/
 Author: IoClaudio
 Tags: asset management, loans, library, equipment, organization
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Free plugin to manage shared physical assets and loan workflows for associations, schools, libraries, and any organization.
+Open-source plugin to manage shared physical assets and loan workflows for associations, schools, libraries, and any organization.
 
 == Description ==
-Asset Lending Manager is a free, open-source WordPress plugin that helps any organization manage shared physical assets and internal lending workflows.
+Asset Lending Manager is an open-source WordPress plugin that helps any organization manage shared physical assets and internal lending workflows.
 
 Designed for clubs, associations, schools, public bodies, libraries, laboratories, makerspaces, and any group that loans equipment or materials to its members.
 
 Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
-Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
+Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool usable by any organization.
 
 **Requires the Advanced Custom Fields (ACF) plugin** (free version) to store and manage asset details.
 
@@ -36,12 +36,21 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Asset state management from the frontend: operators can set assets to maintenance or retired, or force-return on-loan assets directly to available; a location is required on every state change
 * Full loan history for each asset
 * Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)
+* Read-only JSON REST API at `/almgr/v1/` for asset list, asset detail, member list, and member assets; authentication via Application Passwords; works independently of the WordPress REST API global setting
+* Back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs
+* Users CSV import from the Tools page (admin only)
+* Users CSV export from the Tools page (admin and operator)
+* Assets CSV import from the Tools page (admin and operator)
+* Assets CSV export from the Tools page (admin and operator)
 * Translation-ready
 
 
 == Requirements ==
 This plugin requires the **Advanced Custom Fields** plugin (free version is sufficient).
-You can install it for free from the WordPress plugin directory.
+You can install it for free from the WordPress plugin directory: https://wordpress.org/plugins/advanced-custom-fields/
+
+ACF is used to store and retrieve all custom asset fields (manufacturer, model, location, serial number, etc.).
+The plugin registers the ACF field group automatically — no manual configuration of ACF fields is needed.
 
 
 == Loan Workflow ==
@@ -55,15 +64,18 @@ You can install it for free from the WordPress plugin directory.
 
 
 == Installation ==
-1. In your WordPress admin, go to Plugins > Add New > Upload Plugin.
-2. Upload the plugin ZIP file and click Install Now, then Activate.
-3. Install and activate the **Advanced Custom Fields** (ACF) plugin — the free version is sufficient and available in the WordPress plugin directory.
-4. The plugin works out of the box on both classic and block themes — no shortcodes required for normal use. Asset pages are served automatically:
+1. Install and activate the **Advanced Custom Fields** (ACF) plugin (free version is enough): https://wordpress.org/plugins/advanced-custom-fields/
+   The plugin registers its ACF field group automatically. No manual ACF setup is required.
+2. In WordPress admin, go to Plugins > Add New > Upload Plugin.
+3. Upload the plugin ZIP file, click Install Now, then Activate.
+4. The plugin works out of the box on both classic and block themes. No shortcode is required for standard usage.
+   Asset pages are available automatically:
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page
-5. Optionally, use the shortcodes to embed a view inside an existing WordPress page:
-   * `[alm_asset_list]` — embeds the asset catalog into any page or post
-   * `[alm_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
+5. If `/asset/` returns 404, go to Settings > Permalinks and click Save Changes once.
+6. Use shortcodes only when you want to embed views in an existing page:
+   * `[almgr_asset_list]` — embeds the asset catalog into any page or post
+   * `[almgr_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
 
 
 == Frequently Asked Questions ==
@@ -86,7 +98,9 @@ Yes. Under the **ALM** menu in wp-admin you can configure the email sender, loan
 Yes. English and Italian are included out of the box. Other languages can be added using standard WordPress translation tools.
 
 = What data is removed when the plugin is uninstalled? =
-Uninstalling the plugin removes the plugin settings, the loan request history, the pending loan requests, and the custom user roles. Your asset inventory (posts and their data) is intentionally preserved so that it is not lost if you reinstall the plugin later.
+Uninstalling the plugin removes the plugin settings, the loan request history, the pending loan requests, and the custom user roles.
+By default, your asset inventory (posts and their data) is preserved.
+If you want to remove all plugin data, define `ALMGR_REMOVE_ALL_DATA` as `true` in `wp-config.php` before uninstalling.
 
 = What is the difference between an asset and a kit? =
 An asset is a single physical item (for example, a telescope, a book, or a camera). A kit is a collection of items that are lent together as a group (for example, a telescope with its eyepieces and carrying case). Managing kits allows you to track all components under a single loan request.
@@ -100,10 +114,29 @@ Basic setup only requires installing the plugin and activating ACF — no shortc
 
 == Changelog ==
 
+For full release notes see `CHANGELOG.md`.
+
+= 0.2.1 =
+* Changed: internal refactoring, all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
+* Changed: all ACF custom field storage keys now use the `almgr_` prefix for WordPress.org namespace compliance.
+* Added: back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs.
+* Added: users CSV import (admin only) and users CSV export (admin and operator) in Tools.
+* Added: assets CSV import (admin and operator) and assets CSV export (admin and operator) in Tools.
+* Added: kit import and export — kit components and their ACF fields are included in the asset CSV.
+* Added: notification policy setting to control if/when all operators are notified for a new loan request (`never`, `no owner`, `always`).
+* Added: `ALMGR_REMOVE_ALL_DATA` constant — define as `true` in `wp-config.php` before uninstalling to remove all plugin data including assets.
+* Fixed: operators can approve/reject requests for assets without a current owner.
+* Security: fixes and hardening from code audit.
+
+= 0.1.1 =
+* Added: read-only JSON REST API at `/almgr/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress Application Passwords. Independent of the global WP REST API toggle.
+* Added: REST API settings tab in wp-admin (admin only) with enable/disable toggle, endpoint reference, and authentication guide.
+* Security: added resource-status checks on all AJAX endpoints.
+
 = 0.1.0 =
 * First public release.
 * Asset and kit management with full loan workflow (request, approve, reject, direct assign).
-* Role-based access control (alm_member, alm_operator).
+* Role-based access control (almgr_member, almgr_operator).
 * Email notifications for all loan workflow events.
 * Loan history tracking, including per-component entries for kit operations.
 * Frontend asset browsing with filters, QR code generation, and QR scanner.
@@ -117,13 +150,16 @@ Basic setup only requires installing the plugin and activating ACF — no shortc
 
 This plugin bundles the following third-party JavaScript libraries:
 
-* **qrcode-generator** by Kazuhiko Arase (http://www.d-project.com/) — MIT License
-* **jsQR** by cozmo (https://github.com/cozmo/jsQR) — Apache License 2.0
+* **qrcode-generator** by Kazuhiko Arase (http://www.d-project.com/), MIT License
+* **jsQR** by cozmo (https://github.com/cozmo/jsQR), Apache License 2.0
 
 Both licenses are compatible with GPLv2 or later. License files are included in `assets/js/vendor/`.
 
 
 == Upgrade Notice ==
+
+= 0.2.1 =
+Internal refactoring release. All plugin database tables, options, identifiers, and ACF field storage keys have been renamed from the `alm_` / unprefixed form to the `almgr_` prefix.
 
 = 0.1.0 =
 First public release.

@@ -1,12 +1,12 @@
 <?php
 /**
- * ALM Admin Manager.
+ * ALMGR Admin Manager.
  *
  * Handles admin UI customizations and access restrictions for specific roles.
  *
  * Responsibilities:
  * - Manage admin menu visibility and redirects for restricted users.
- * - Enqueue admin CSS and JS for ALM pages.
+ * - Enqueue admin CSS and JS for ALMGR pages.
  *
  * @package AssetLendingManager
  */
@@ -16,14 +16,14 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Manager of the plugin backoffice.
  */
-class ALM_Admin_Manager {
+class ALMGR_Admin_Manager {
 
 	/**
 	 * Roles affected by admin restrictions.
 	 *
 	 * @var array
 	 */
-	private $restricted_roles = array( ALM_MEMBER_ROLE );
+	private $restricted_roles = array( ALMGR_MEMBER_ROLE );
 
 	/**
 	 * Plugin activation hook.
@@ -80,75 +80,75 @@ class ALM_Admin_Manager {
 	}
 
 	/**
-	 * Enqueue admin CSS and JS for ALM pages.
+	 * Enqueue admin CSS and JS for ALMGR pages.
 	 *
 	 * Loads assets only on plugin-related admin pages:
 	 * - Asset post type pages (list, edit, add)
-	 * - ALM custom admin pages
-	 * - ALM taxonomy pages
+	 * - ALMGR custom admin pages
+	 * - ALMGR taxonomy pages
 	 *
 	 * @param string $hook Current admin page hook.
 	 * @return void
 	 */
 	public function enqueue_admin_assets( $hook ) {
-		// Load only on ALM admin pages.
-		if ( ! $this->is_alm_admin_page( $hook ) ) {
+		// Load only on ALMGR admin pages.
+		if ( ! $this->is_almgr_admin_page( $hook ) ) {
 			return;
 		}
 
 		// Enqueue CSS.
 		wp_enqueue_style(
-			'alm-admin-assets',
-			ALM_PLUGIN_URL . 'assets/css/admin-assets.css',
+			'almgr-admin-assets',
+			ALMGR_PLUGIN_URL . 'assets/css/admin-assets.css',
 			array(),
-			ALM_VERSION,
+			ALMGR_VERSION,
 			'all'
 		);
 
 			// Enqueue JS.
 			wp_enqueue_script(
-				'alm-admin-assets',
-				ALM_PLUGIN_URL . 'assets/js/admin-assets.js',
+				'almgr-admin-assets',
+				ALMGR_PLUGIN_URL . 'assets/js/admin-assets.js',
 				array( 'wp-i18n' ),
-				ALM_VERSION,
+				ALMGR_VERSION,
 				true
 			);
 			wp_set_script_translations(
-				'alm-admin-assets',
-				ALM_TEXT_DOMAIN,
-				ALM_PLUGIN_DIR . 'languages'
+				'almgr-admin-assets',
+				ALMGR_TEXT_DOMAIN,
+				ALMGR_PLUGIN_DIR . 'languages'
 			);
 
 		// Pass data from PHP to JavaScript (useful for AJAX).
 		wp_localize_script(
-			'alm-admin-assets',
-			'almAdmin',
+			'almgr-admin-assets',
+			'almgrAdmin',
 			array(
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'alm_admin_nonce' ),
+				'nonce'   => wp_create_nonce( 'almgr_admin_nonce' ),
 			)
 		);
 	}
 
 	/**
-	 * Check if current admin page is ALM-related.
+	 * Check if current admin page is ALMGR-related.
 	 *
 	 * @param string $hook Current admin page hook.
-	 * @return bool True if on ALM admin page.
+	 * @return bool True if on ALMGR admin page.
 	 */
-	private function is_alm_admin_page( $hook ) {
+	private function is_almgr_admin_page( $hook ) {
 		global $post_type;
 		// Asset CPT pages (edit, list, add new).
-		if ( ALM_ASSET_CPT_SLUG === $post_type ) {
+		if ( ALMGR_ASSET_CPT_SLUG === $post_type ) {
 			return true;
 		}
-		// ALM custom admin pages (main menu, tools, etc).
-		if ( strpos( $hook, 'alm' ) !== false ) {
+		// ALMGR custom admin pages (main menu, tools, etc).
+		if ( strpos( $hook, 'almgr' ) !== false ) {
 			return true;
 		}
-		// ALM taxonomies pages.
+		// ALMGR taxonomies pages.
 		$screen = get_current_screen();
-		if ( $screen && in_array( $screen->taxonomy, ALM_CUSTOM_TAXONOMIES, true ) ) {
+		if ( $screen && in_array( $screen->taxonomy, ALMGR_CUSTOM_TAXONOMIES, true ) ) {
 			return true;
 		}
 		return false;

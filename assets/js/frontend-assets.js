@@ -1,5 +1,5 @@
 /**
- * Frontend JavaScript for ALM assets
+ * Frontend JavaScript for ALMGR assets
  *
  * Loaded only on asset archive, single, and pages with asset shortcodes.
  *
@@ -17,13 +17,13 @@
 	 * Initialize when DOM is ready.
 	 */
 	document.addEventListener('DOMContentLoaded', function() {
-		ALM_Frontend.init();
+		ALMGR_Frontend.init();
 	});
 
 	/**
-	 * ALM Frontend object.
+	 * ALMGR Frontend object.
 	 */
-	var ALM_Frontend = {
+	var ALMGR_Frontend = {
 
 		/**
 		 * Initialize frontend functionality.
@@ -49,7 +49,7 @@
 		 * Opens asset images in a simple lightbox overlay.
 		 */
 		initImageLightbox: function() {
-			var images = document.querySelectorAll('.alm-asset-thumbnail img');
+			var images = document.querySelectorAll('.almgr-asset-thumbnail img');
 			if (!images.length) {
 				return;
 			}
@@ -57,40 +57,72 @@
 			images.forEach(function(imgEl) {
 				imgEl.addEventListener('click', function(e) {
 					// Only in single asset view.
-					if (!document.querySelector('.alm-asset-single')) {
+					if (!document.querySelector('.almgr-asset-single')) {
 						return;
 					}
 
 					e.preventDefault();
 
 					var imgSrc = imgEl.getAttribute('src');
-					var imgAlt = imgEl.getAttribute('alt');
+					var imgAlt = imgEl.getAttribute('alt') || __( 'Asset image', 'asset-lending-manager' );
 
 					// Create lightbox overlay.
 					var lightbox = document.createElement('div');
-					lightbox.className = 'alm-lightbox';
+					lightbox.className = 'almgr-lightbox';
+					lightbox.setAttribute('role', 'dialog');
+					lightbox.setAttribute('aria-modal', 'true');
+					lightbox.setAttribute('aria-label', imgAlt);
+
+					var closeBtn = document.createElement('button');
+					closeBtn.className = 'almgr-lightbox__close';
+					closeBtn.type = 'button';
+					closeBtn.setAttribute('aria-label', __( 'Close image', 'asset-lending-manager' ));
+					closeBtn.innerHTML = '&times;';
 
 					var img = document.createElement('img');
 					img.setAttribute('src', imgSrc || '');
-					img.setAttribute('alt', imgAlt || '');
+					img.setAttribute('alt', imgAlt);
 
+					lightbox.appendChild(closeBtn);
 					lightbox.appendChild(img);
 					document.body.appendChild(lightbox);
 
-					// Show lightbox.
+					// Show lightbox and move focus to close button.
 					setTimeout(function() {
 						lightbox.classList.add('active');
+						closeBtn.focus();
 					}, 10);
 
-					// Close on click.
-					lightbox.addEventListener('click', function() {
+					// Close lightbox and restore focus to the thumbnail.
+					function closeLightbox() {
 						lightbox.classList.remove('active');
 						setTimeout(function() {
 							if (lightbox && lightbox.parentNode) {
 								lightbox.parentNode.removeChild(lightbox);
 							}
 						}, 300);
+						imgEl.focus();
+					}
+
+					closeBtn.addEventListener('click', closeLightbox);
+
+					// Close on click outside the image.
+					lightbox.addEventListener('click', function(e) {
+						if (e.target === lightbox) {
+							closeLightbox();
+						}
 					});
+
+					// Close on Escape key.
+					function onLightboxKeyDown(e) {
+						if (e.key === 'Escape') {
+							closeLightbox();
+							document.removeEventListener('keydown', onLightboxKeyDown);
+						}
+					}
+					document.addEventListener('keydown', onLightboxKeyDown);
+
+					ALMGR_Frontend.trapFocus(lightbox);
 				});
 			});
 		},
@@ -102,12 +134,12 @@
 		 * Does NOT interfere with autocomplete functionality.
 		 */
 		initAssetFilters: function() {
-			var filters = document.querySelectorAll('.alm-filters-collapsible');
+			var filters = document.querySelectorAll('.almgr-filters-collapsible');
 			if (!filters.length) {
 				return;
 			}
 
-			// In jQuery code it targets all .alm-filters-collapsible at once.
+			// In jQuery code it targets all .almgr-filters-collapsible at once.
 			// We'll apply the same logic to each instance (covers single/multiple blocks).
 			filters.forEach(function(filterEl) {
 				var selects = filterEl.querySelectorAll('select');
@@ -128,9 +160,9 @@
 				selects.forEach(function(selectEl) {
 					selectEl.addEventListener('change', function() {
 						if (selectEl.value !== '') {
-							selectEl.classList.add('alm-filter-active');
+							selectEl.classList.add('almgr-filter-active');
 						} else {
-							selectEl.classList.remove('alm-filter-active');
+							selectEl.classList.remove('almgr-filter-active');
 						}
 					});
 
@@ -148,7 +180,7 @@
 		 * Example: live search in asset list.
 		 */
 		initAssetSearch: function() {
-			var searchInput = document.querySelector('.alm-asset-search-input');
+			var searchInput = document.querySelector('.almgr-asset-search-input');
 			if (!searchInput) {
 				return;
 			}
@@ -173,30 +205,26 @@
 
 		/**
 		 * Initialize loan request form.
-		 * 
+		 *
 		 * Handles loan request submission via AJAX.
 		 */
 		initLoanRequestForm: function() {
-			var form = document.getElementById('alm-loan-request-form');
-			
+			var form = document.getElementById('almgr-loan-request-form');
+
 			if (!form) {
 				return;
 			}
 
 			// Character counter for request message
-			var messageField = document.getElementById('alm-request-message');
-			var charCount = document.getElementById('alm-request-char-count');
+			var messageField = document.getElementById('almgr-request-message');
+			var charCount = document.getElementById('almgr-request-char-count');
 
 			if (messageField && charCount) {
+				var requestCharMaxLen = parseInt(almgrFrontend.requestMessageMaxLength, 10) || 500;
 				messageField.addEventListener('input', function() {
 					var length = messageField.value.length;
-					charCount.textContent = length + ' / ' + (parseInt(almFrontend.directAssignReasonMaxLength, 10) || 500);
-					
-					if (length >= 500) {
-						charCount.style.color = '#dc3545';
-					} else {
-						charCount.style.color = '#6c757d';
-					}
+					charCount.textContent = length + ' / ' + requestCharMaxLen;
+					charCount.style.color = length >= requestCharMaxLen ? '#dc3545' : '#6c757d';
 				});
 			}
 
@@ -204,26 +232,26 @@
 				e.preventDefault();
 
 				var submitBtn = form.querySelector('button[type="submit"]');
-				var responseDiv = document.getElementById('alm-loan-request-response');
-				var messageField = document.getElementById('alm-request-message');
+				var responseDiv = document.getElementById('almgr-loan-request-response');
+				var messageField = document.getElementById('almgr-request-message');
 
 				// Get asset ID from page context
-				var assetId = ALM_Frontend.getAssetIdFromPage();
+				var assetId = ALMGR_Frontend.getAssetIdFromPage();
 				if (!assetId) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
 					return;
 				}
 
 				// Validate message
 				if (!messageField.value.trim()) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Please enter a message.', 'asset-lending-manager' ));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Please enter a message.', 'asset-lending-manager' ));
 					return;
 				}
 
 				// Validate message length.
-				var requestMaxLen = parseInt(almFrontend.requestMessageMaxLength, 10) || 500;
+				var requestMaxLen = parseInt(almgrFrontend.requestMessageMaxLength, 10) || 500;
 				if (messageField.value.length > requestMaxLen) {
-					ALM_Frontend.showResponse(responseDiv, 'error', sprintf(__( 'Request message must not exceed %d characters.', 'asset-lending-manager' ), requestMaxLen));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', sprintf(__( 'Request message must not exceed %d characters.', 'asset-lending-manager' ), requestMaxLen));
 					return;
 				}
 
@@ -235,16 +263,16 @@
 
 				// Prepare form data
 				var formData = new FormData(form);
-				formData.append('action', 'alm_submit_loan_request');
+				formData.append('action', 'almgr_submit_loan_request');
 				formData.append('asset_id', assetId);
 				formData.append('message', messageField.value.trim());
 
 				// Fallback: keep compatibility when nonce field is not present in DOM.
 				if (!formData.get('nonce')) {
-					if (typeof window.almFrontend !== 'undefined' && window.almFrontend.loanRequestNonce) {
-						formData.append('nonce', window.almFrontend.loanRequestNonce);
+					if (typeof window.almgrFrontend !== 'undefined' && window.almgrFrontend.loanRequestNonce) {
+						formData.append('nonce', window.almgrFrontend.loanRequestNonce);
 					} else {
-						ALM_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
+						ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
 						submitBtn.disabled = false;
 						submitBtn.textContent = originalBtnText;
 						return;
@@ -252,7 +280,7 @@
 				}
 
 				// Send AJAX request
-				fetch(window.almFrontend.ajaxUrl, {
+				fetch(window.almgrFrontend.ajaxUrl, {
 					method: 'POST',
 					body: formData,
 					credentials: 'same-origin'
@@ -262,24 +290,22 @@
 				})
 				.then(function(data) {
 					if (data.success) {
-						
+
 						// Reload page with success message
 						var currentUrl = window.location.href.split('?')[0];
-						window.location.href = currentUrl + '?alm_action=send_request&alm_status=success';
+						window.location.href = currentUrl + '?almgr_action=send_request&almgr_status=success';
 					} else {
 						var errorMsg = data.data && data.data.message ? data.data.message : __( 'Request failed. Please try again.', 'asset-lending-manager' );
-						ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
-						console.error('*** Loan request failed:', errorMsg);
-						
+						ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
+
 						// Re-enable submit button only on error
 						submitBtn.disabled = false;
 						submitBtn.textContent = originalBtnText;
 					}
 				})
 				.catch(function(error) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-					console.error('*** AJAX error:', error);
-					
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
+
 					// Re-enable submit button only on error
 					submitBtn.disabled = false;
 					submitBtn.textContent = originalBtnText;
@@ -295,21 +321,22 @@
 		 * direct asset assignment feature.
 		 */
 		initDirectAssignForm: function() {
-			var form = document.getElementById('alm-direct-assign-form');
+			var form = document.getElementById('almgr-direct-assign-form');
 
 			if (!form) {
 				return;
 			}
 
 			// Character counter for reason field.
-			var reasonField = document.getElementById('alm-direct-assign-reason');
-			var charCount   = document.getElementById('alm-direct-assign-char-count');
+			var reasonField = document.getElementById('almgr-direct-assign-reason');
+			var charCount   = document.getElementById('almgr-direct-assign-char-count');
 
 			if (reasonField && charCount) {
+				var directAssignCharMaxLen = parseInt(almgrFrontend.directAssignReasonMaxLength, 10) || 500;
 				reasonField.addEventListener('input', function() {
 					var length = reasonField.value.length;
-					charCount.textContent = length + ' / 500';
-					charCount.style.color = length >= 500 ? '#dc3545' : '#6c757d';
+					charCount.textContent = length + ' / ' + directAssignCharMaxLen;
+					charCount.style.color = length >= directAssignCharMaxLen ? '#dc3545' : '#6c757d';
 				});
 			}
 
@@ -317,37 +344,37 @@
 				e.preventDefault();
 
 				var submitBtn    = form.querySelector('button[type="submit"]');
-				var responseDiv  = document.getElementById('alm-direct-assign-response');
-				var assigneeId   = document.getElementById('alm-direct-assign-user-id');
-				var reasonField  = document.getElementById('alm-direct-assign-reason');
+				var responseDiv  = document.getElementById('almgr-direct-assign-response');
+				var assigneeId   = document.getElementById('almgr-direct-assign-user-id');
+				var reasonField  = document.getElementById('almgr-direct-assign-reason');
 
-				var assetId = ALM_Frontend.getAssetIdFromPage();
+				var assetId = ALMGR_Frontend.getAssetIdFromPage();
 				if (!assetId) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
 					return;
 				}
 
 				// Validate assignee selection.
 				if (!assigneeId || !assigneeId.value || parseInt(assigneeId.value, 10) <= 0) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Please select a user from the list.', 'asset-lending-manager' ));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Please select a user from the list.', 'asset-lending-manager' ));
 					return;
 				}
 
 				// Validate reason.
 				if (!reasonField || !reasonField.value.trim()) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Please enter the assignment reason.', 'asset-lending-manager' ));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Please enter the assignment reason.', 'asset-lending-manager' ));
 					return;
 				}
 
-				var directAssignMaxLen = parseInt(almFrontend.directAssignReasonMaxLength, 10) || 500;
+				var directAssignMaxLen = parseInt(almgrFrontend.directAssignReasonMaxLength, 10) || 500;
 				if (reasonField.value.length > directAssignMaxLen) {
-					ALM_Frontend.showResponse(responseDiv, 'error', sprintf(__( 'Reason must not exceed %d characters.', 'asset-lending-manager' ), directAssignMaxLen));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', sprintf(__( 'Reason must not exceed %d characters.', 'asset-lending-manager' ), directAssignMaxLen));
 					return;
 				}
 
 				// Verify nonce is available.
-				if (typeof window.almFrontend === 'undefined' || !window.almFrontend.directAssignNonce) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
+				if (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.directAssignNonce) {
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
 					return;
 				}
 
@@ -359,13 +386,13 @@
 
 				// Prepare form data.
 				var formData = new FormData();
-				formData.append('action',      'alm_direct_assign_asset');
-				formData.append('nonce',       window.almFrontend.directAssignNonce);
+				formData.append('action',      'almgr_direct_assign_asset');
+				formData.append('nonce',       window.almgrFrontend.directAssignNonce);
 				formData.append('asset_id',    assetId);
 				formData.append('assignee_id', assigneeId.value);
 				formData.append('reason',      reasonField.value.trim());
 
-				fetch(window.almFrontend.ajaxUrl, {
+				fetch(window.almgrFrontend.ajaxUrl, {
 					method:      'POST',
 					body:        formData,
 					credentials: 'same-origin'
@@ -376,17 +403,16 @@
 				.then(function(data) {
 					if (data.success) {
 						var currentUrl = window.location.href.split('?')[0];
-						window.location.href = currentUrl + '?alm_action=direct_assign&alm_status=success';
+						window.location.href = currentUrl + '?almgr_action=direct_assign&almgr_status=success';
 					} else {
 						var errorMsg = data.data && data.data.message ? data.data.message : __( 'Assignment failed. Please try again.', 'asset-lending-manager' );
-						ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
+						ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
 						submitBtn.disabled    = false;
 						submitBtn.textContent = originalBtnText;
 					}
 				})
 				.catch(function(error) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-					console.error('*** Direct assign AJAX error:', error);
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
 					submitBtn.disabled    = false;
 					submitBtn.textContent = originalBtnText;
 				});
@@ -400,15 +426,15 @@
 		 * Two submit buttons carry a data-target-state attribute to distinguish the action.
 		 */
 		initChangeStateForm: function() {
-			var form = document.getElementById('alm-change-state-form');
+			var form = document.getElementById('almgr-change-state-form');
 
 			if (!form) {
 				return;
 			}
 
 			// Character counter for notes field.
-			var notesField = document.getElementById('alm-change-state-notes');
-			var charCount  = document.getElementById('alm-change-state-char-count');
+			var notesField = document.getElementById('almgr-change-state-notes');
+			var charCount  = document.getElementById('almgr-change-state-char-count');
 
 			if (notesField && charCount) {
 				notesField.addEventListener('input', function() {
@@ -422,22 +448,22 @@
 
 				var clickedBtn  = e.submitter || form.querySelector('button[type="submit"]');
 				var targetState = clickedBtn ? clickedBtn.getAttribute('data-target-state') : '';
-				var responseDiv = document.getElementById('alm-change-state-response');
+				var responseDiv = document.getElementById('almgr-change-state-response');
 				var submitBtns  = form.querySelectorAll('button[type="submit"]');
 
 				if (!targetState) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Could not determine target state.', 'asset-lending-manager' ));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Could not determine target state.', 'asset-lending-manager' ));
 					return;
 				}
 
-				if (typeof window.almFrontend === 'undefined' || !window.almFrontend.changeStateNonce) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
+				if (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.changeStateNonce) {
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
 					return;
 				}
 
-				var assetId = ALM_Frontend.getAssetIdFromPage();
+				var assetId = ALMGR_Frontend.getAssetIdFromPage();
 				if (!assetId) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
 					return;
 				}
 
@@ -448,25 +474,25 @@
 				});
 				responseDiv.style.display = 'none';
 
-				var locationField = document.getElementById('alm-change-state-location');
+				var locationField = document.getElementById('almgr-change-state-location');
 
 				var formData = new FormData();
-				formData.append('action',       'alm_change_asset_state');
-				formData.append('nonce',        window.almFrontend.changeStateNonce);
+				formData.append('action',       'almgr_change_asset_state');
+				formData.append('nonce',        window.almgrFrontend.changeStateNonce);
 				formData.append('asset_id',     assetId);
 				formData.append('target_state', targetState);
 				formData.append('location',     locationField ? locationField.value.trim() : '');
 				formData.append('notes',        notesField ? notesField.value.trim() : '');
 
-				fetch(window.almFrontend.ajaxUrl, { method: 'POST', body: formData })
+				fetch(window.almgrFrontend.ajaxUrl, { method: 'POST', body: formData })
 					.then(function(response) { return response.json(); })
 					.then(function(data) {
 						if (data.success) {
 							var currentUrl = window.location.href.split('?')[0];
-							window.location.href = currentUrl + '?alm_action=change_state&alm_status=success&alm_state=' + encodeURIComponent(targetState);
+							window.location.href = currentUrl + '?almgr_action=change_state&almgr_status=success&almgr_state=' + encodeURIComponent(targetState);
 						} else {
 							var errorMsg = data.data && data.data.message ? data.data.message : __( 'State change failed. Please try again.', 'asset-lending-manager' );
-							ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
+							ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
 							submitBtns.forEach(function(btn, i) {
 								btn.disabled    = false;
 								btn.textContent = originalTexts[i];
@@ -474,8 +500,7 @@
 						}
 					})
 					.catch(function(error) {
-						ALM_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-						console.error('*** Change state AJAX error:', error);
+						ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
 						submitBtns.forEach(function(btn, i) {
 							btn.disabled    = false;
 							btn.textContent = originalTexts[i];
@@ -490,15 +515,15 @@
 		 * Handles form submission for restoring an asset from maintenance or retired to available.
 		 */
 		initRestoreStateForm: function() {
-			var form = document.getElementById('alm-restore-state-form');
+			var form = document.getElementById('almgr-restore-state-form');
 
 			if (!form) {
 				return;
 			}
 
 			// Character counter for notes field.
-			var notesField = document.getElementById('alm-restore-state-notes');
-			var charCount  = document.getElementById('alm-restore-state-char-count');
+			var notesField = document.getElementById('almgr-restore-state-notes');
+			var charCount  = document.getElementById('almgr-restore-state-char-count');
 
 			if (notesField && charCount) {
 				notesField.addEventListener('input', function() {
@@ -510,17 +535,17 @@
 			form.addEventListener('submit', function(e) {
 				e.preventDefault();
 
-				var responseDiv = document.getElementById('alm-restore-state-response');
+				var responseDiv = document.getElementById('almgr-restore-state-response');
 				var submitBtn   = form.querySelector('button[type="submit"]');
 
-				if (typeof window.almFrontend === 'undefined' || !window.almFrontend.restoreStateNonce) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
+				if (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.restoreStateNonce) {
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
 					return;
 				}
 
-				var assetId = ALM_Frontend.getAssetIdFromPage();
+				var assetId = ALMGR_Frontend.getAssetIdFromPage();
 				if (!assetId) {
-					ALM_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
 					return;
 				}
 
@@ -531,24 +556,24 @@
 				}
 				responseDiv.style.display = 'none';
 
-				var locationField = document.getElementById('alm-restore-state-location');
+				var locationField = document.getElementById('almgr-restore-state-location');
 
 				var formData = new FormData();
-				formData.append('action',    'alm_restore_asset_state');
-				formData.append('nonce',     window.almFrontend.restoreStateNonce);
+				formData.append('action',    'almgr_restore_asset_state');
+				formData.append('nonce',     window.almgrFrontend.restoreStateNonce);
 				formData.append('asset_id',  assetId);
 				formData.append('location',  locationField ? locationField.value.trim() : '');
 				formData.append('notes',     notesField ? notesField.value.trim() : '');
 
-				fetch(window.almFrontend.ajaxUrl, { method: 'POST', body: formData })
+				fetch(window.almgrFrontend.ajaxUrl, { method: 'POST', body: formData })
 					.then(function(response) { return response.json(); })
 					.then(function(data) {
 						if (data.success) {
 							var currentUrl = window.location.href.split('?')[0];
-							window.location.href = currentUrl + '?alm_action=restore_state&alm_status=success';
+							window.location.href = currentUrl + '?almgr_action=restore_state&almgr_status=success';
 						} else {
 							var errorMsg = data.data && data.data.message ? data.data.message : __( 'Restore failed. Please try again.', 'asset-lending-manager' );
-							ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
+							ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
 							if (submitBtn) {
 								submitBtn.disabled    = false;
 								submitBtn.textContent = originalBtnText;
@@ -556,8 +581,7 @@
 						}
 					})
 					.catch(function(error) {
-						ALM_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-						console.error('*** Restore state AJAX error:', error);
+						ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
 						if (submitBtn) {
 							submitBtn.disabled    = false;
 							submitBtn.textContent = originalBtnText;
@@ -583,7 +607,7 @@
 			approveButtons.forEach(function(btn) {
 				btn.addEventListener('click', function(e) {
 					e.preventDefault();
-					ALM_Frontend.handleApproveRequest(btn);
+					ALMGR_Frontend.handleApproveRequest(btn);
 				});
 			});
 
@@ -591,7 +615,7 @@
 			rejectButtons.forEach(function(btn) {
 				btn.addEventListener('click', function(e) {
 					e.preventDefault();
-					ALM_Frontend.handleRejectRequest(btn);
+					ALMGR_Frontend.handleRejectRequest(btn);
 				});
 			});
 
@@ -599,7 +623,7 @@
 
 		/**
 		 * Handle approve request action.
-		 * 
+		 *
 		 * @param {HTMLElement} btn Button element
 		 */
 		handleApproveRequest: function(btn) {
@@ -607,59 +631,66 @@
 			var assetId = btn.getAttribute('data-asset-id');
 
 			if (!requestId || !assetId) {
-				console.error('Missing request ID or asset ID');
 				return;
 			}
 
 			// Show confirmation modal
-			ALM_Frontend.showConfirmModal(
+			ALMGR_Frontend.showConfirmModal(
 				__( 'Confirm Approval', 'asset-lending-manager' ),
 				__( 'Are you sure you want to approve this loan request?', 'asset-lending-manager' ),
 				function() {
 					// On confirm
-					ALM_Frontend.submitApprovalRequest(btn, requestId, assetId);
-				}
+					ALMGR_Frontend.submitApprovalRequest(btn, requestId, assetId);
+				},
+				btn
 			);
 		},
 
 		/**
 		 * Show confirmation modal.
-		 * 
+		 *
 		 * @param {string} title Modal title
 		 * @param {string} message Modal message
 		 * @param {Function} onConfirm Callback on confirm
 		 */
-		showConfirmModal: function(title, message, onConfirm) {
+		showConfirmModal: function(title, message, onConfirm, triggerEl) {
 			// Create modal overlay
 			var overlay = document.createElement('div');
-			overlay.className = 'alm-modal-overlay alm-confirm-modal';
+			overlay.className = 'almgr-modal-overlay almgr-confirm-modal';
+			overlay.setAttribute('role', 'dialog');
+			overlay.setAttribute('aria-modal', 'true');
+			overlay.setAttribute('aria-labelledby', 'almgr-confirm-modal-title');
 
 			// Create modal content
 			var content = document.createElement('div');
-			content.className = 'alm-modal-content';
+			content.className = 'almgr-modal-content';
 
 			// Modal header
 			var header = document.createElement('div');
-			header.className = 'alm-modal-header';
-			header.innerHTML = '<h2>' + this.escapeHtml(title) + '</h2>';
+			header.className = 'almgr-modal-header';
+
+			var titleEl = document.createElement('h2');
+			titleEl.id = 'almgr-confirm-modal-title';
+			titleEl.textContent = title;
+			header.appendChild(titleEl);
 
 			// Modal body
 			var body = document.createElement('div');
-			body.className = 'alm-modal-body';
+			body.className = 'almgr-modal-body';
 			body.innerHTML = '<p>' + this.escapeHtml(message) + '</p>';
 
 			// Modal footer
 			var footer = document.createElement('div');
-			footer.className = 'alm-modal-footer';
+			footer.className = 'almgr-modal-footer';
 
 			var cancelBtn = document.createElement('button');
 			cancelBtn.type = 'button';
-			cancelBtn.className = 'alm-button alm-button--secondary';
+			cancelBtn.className = 'almgr-button almgr-button--secondary';
 			cancelBtn.textContent = __( 'Cancel', 'asset-lending-manager' );
 
 			var confirmBtn = document.createElement('button');
 			confirmBtn.type = 'button';
-			confirmBtn.className = 'alm-button alm-button--primary';
+			confirmBtn.className = 'almgr-button almgr-button--primary';
 			confirmBtn.textContent = __( 'Confirm', 'asset-lending-manager' );
 
 			footer.appendChild(cancelBtn);
@@ -672,12 +703,14 @@
 			overlay.appendChild(content);
 			document.body.appendChild(overlay);
 
-			// Show modal with animation
+			// Show modal, move focus to cancel button, trap focus.
 			setTimeout(function() {
 				overlay.classList.add('active');
+				cancelBtn.focus();
 			}, 10);
+			ALMGR_Frontend.trapFocus(overlay);
 
-			// Handle cancel
+			// Handle cancel and close.
 			var closeModal = function() {
 				overlay.classList.remove('active');
 				setTimeout(function() {
@@ -685,9 +718,22 @@
 						overlay.parentNode.removeChild(overlay);
 					}
 				}, 300);
+				// Restore focus to the element that opened the modal.
+				if (triggerEl) {
+					triggerEl.focus();
+				}
 			};
 
 			cancelBtn.addEventListener('click', closeModal);
+
+			// Close on Escape key.
+			var escHandler = function(e) {
+				if (e.key === 'Escape') {
+					closeModal();
+					document.removeEventListener('keydown', escHandler);
+				}
+			};
+			document.addEventListener('keydown', escHandler);
 
 			// Close on overlay click (outside modal)
 			overlay.addEventListener('click', function(e) {
@@ -704,7 +750,7 @@
 				cancelBtn.disabled = true;
 
 				closeModal();
-				
+
 				if (typeof onConfirm === 'function') {
 					onConfirm();
 				}
@@ -713,14 +759,14 @@
 
 		/**
 		 * Submit approval request via AJAX.
-		 * 
+		 *
 		 * @param {HTMLElement} btn Button element
 		 * @param {string} requestId Request ID
 		 * @param {string} assetId Asset ID
 		 */
 		submitApprovalRequest: function(btn, requestId, assetId) {
-			// Check if almFrontend is available
-			if (typeof window.almFrontend === 'undefined' || !window.almFrontend.loanRequestNonce) {
+			// Check if almgrFrontend is available
+			if (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.loanRequestNonce) {
 				alert( __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ) );
 				return;
 			}
@@ -733,7 +779,7 @@
 			// Disable all other action buttons in the same row
 			var row = btn.closest('tr');
 			if (row) {
-				var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+				var actionBtns = row.querySelectorAll('.almgr-button--approve, .almgr-button--reject');
 				actionBtns.forEach(function(actionBtn) {
 					actionBtn.disabled = true;
 				});
@@ -741,13 +787,13 @@
 
 			// Prepare form data
 			var formData = new FormData();
-			formData.append('action', 'alm_approve_loan_request');
-			formData.append('nonce', window.almFrontend.loanRequestNonce);
+			formData.append('action', 'almgr_approve_loan_request');
+			formData.append('nonce', window.almgrFrontend.loanRequestNonce);
 			formData.append('request_id', requestId);
 			formData.append('asset_id', assetId);
 
 			// Send AJAX request
-			fetch(window.almFrontend.ajaxUrl, {
+			fetch(window.almgrFrontend.ajaxUrl, {
 				method: 'POST',
 				body: formData,
 				credentials: 'same-origin'
@@ -757,21 +803,20 @@
 			})
 			.then(function(data) {
 				if (data.success) {
-					
+
 					// Reload page with success message
 					var currentUrl = window.location.href.split('?')[0];
-					window.location.href = currentUrl + '?alm_action=approve&alm_status=success';
+					window.location.href = currentUrl + '?almgr_action=approve&almgr_status=success';
 				} else {
 					var errorMsg = data.data && data.data.message ? data.data.message : __( 'Approval failed. Please try again.', 'asset-lending-manager' );
 					alert(errorMsg);
-					console.error('*** Approval failed:', errorMsg);
-					
+
 					// Re-enable buttons on error
 					btn.disabled = false;
 					btn.textContent = originalBtnText;
-					
+
 					if (row) {
-						var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+						var actionBtns = row.querySelectorAll('.almgr-button--approve, .almgr-button--reject');
 						actionBtns.forEach(function(actionBtn) {
 							actionBtn.disabled = false;
 						});
@@ -780,14 +825,13 @@
 			})
 			.catch(function(error) {
 				alert( __( 'Approval request failed. Please try again.', 'asset-lending-manager' ) );
-				console.error('*** AJAX error:', error);
-				
+
 				// Re-enable buttons on error
 				btn.disabled = false;
 				btn.textContent = originalBtnText;
-				
+
 				if (row) {
-					var actionBtns = row.querySelectorAll('.alm-button--approve, .alm-button--reject');
+					var actionBtns = row.querySelectorAll('.almgr-button--approve, .almgr-button--reject');
 					actionBtns.forEach(function(actionBtn) {
 						actionBtn.disabled = false;
 					});
@@ -797,7 +841,7 @@
 
 		/**
 		 * Handle reject request action.
-		 * 
+		 *
 		 * @param {HTMLElement} btn Button element
 		 */
 		handleRejectRequest: function(btn) {
@@ -810,36 +854,36 @@
 
 		/**
 		 * Show rejection modal.
-		 * 
+		 *
 		 * @param {string} requestId Request ID
 		 * @param {string} assetId Asset ID
 		 */
 		showRejectionModal: function(requestId, assetId) {
 			// Create modal overlay
 			var modal = document.createElement('div');
-			modal.className = 'alm-modal-overlay';
+			modal.className = 'almgr-modal-overlay';
 			modal.setAttribute('role', 'dialog');
-			modal.setAttribute('aria-labelledby', 'alm-reject-modal-title');
+			modal.setAttribute('aria-labelledby', 'almgr-reject-modal-title');
 			modal.setAttribute('aria-modal', 'true');
 
 			// Modal content
 			var modalContent = document.createElement('div');
-			modalContent.className = 'alm-modal-content';
+			modalContent.className = 'almgr-modal-content';
 
 			// Modal header
 			var modalHeader = document.createElement('div');
-			modalHeader.className = 'alm-modal-header';
-			
+			modalHeader.className = 'almgr-modal-header';
+
 			var modalTitle = document.createElement('h2');
-			modalTitle.id = 'alm-reject-modal-title';
+			modalTitle.id = 'almgr-reject-modal-title';
 			modalTitle.textContent = __( 'Reject Loan Request', 'asset-lending-manager' );
-			
+
 			var closeBtn = document.createElement('button');
-			closeBtn.className = 'alm-modal-close';
+			closeBtn.className = 'almgr-modal-close';
 			closeBtn.setAttribute('aria-label', __( 'Close dialog', 'asset-lending-manager' ));
 			closeBtn.innerHTML = '&times;';
 			closeBtn.addEventListener('click', function() {
-				ALM_Frontend.closeModal(modal);
+				ALMGR_Frontend.closeModal(modal);
 			});
 
 			modalHeader.appendChild(modalTitle);
@@ -847,18 +891,18 @@
 
 			// Modal body
 			var modalBody = document.createElement('div');
-			modalBody.className = 'alm-modal-body';
+			modalBody.className = 'almgr-modal-body';
 
 			var form = document.createElement('form');
-			form.id = 'alm-reject-request-form';
+			form.id = 'almgr-reject-request-form';
 
 			var label = document.createElement('label');
-			label.setAttribute('for', 'alm-rejection-message');
-			var rejMaxLen = parseInt(almFrontend.rejectionMessageMaxLength, 10) || 255;
+			label.setAttribute('for', 'almgr-rejection-message');
+			var rejMaxLen = parseInt(almgrFrontend.rejectionMessageMaxLength, 10) || 255;
 			label.textContent = sprintf(__( 'Rejection reason (required, max %d characters):', 'asset-lending-manager' ), rejMaxLen);
 
 			var textarea = document.createElement('textarea');
-			textarea.id = 'alm-rejection-message';
+			textarea.id = 'almgr-rejection-message';
 			textarea.name = 'rejection_message';
 			textarea.rows = 4;
 			textarea.maxLength = rejMaxLen;
@@ -866,13 +910,13 @@
 			textarea.placeholder = __( 'Please provide a reason for rejecting this loan request...', 'asset-lending-manager' );
 
 			var charCount = document.createElement('div');
-			charCount.className = 'alm-char-count';
+			charCount.className = 'almgr-char-count';
 			charCount.textContent = '0 / ' + rejMaxLen;
 
 			textarea.addEventListener('input', function() {
 				var length = textarea.value.length;
 				charCount.textContent = length + ' / ' + rejMaxLen;
-				
+
 				if (length >= rejMaxLen) {
 					charCount.style.color = '#dc3545';
 				} else {
@@ -881,8 +925,8 @@
 			});
 
 			var responseDiv = document.createElement('div');
-			responseDiv.id = 'alm-reject-response';
-			responseDiv.className = 'alm-response-message';
+			responseDiv.id = 'almgr-reject-response';
+			responseDiv.className = 'almgr-response-message';
 			responseDiv.style.display = 'none';
 
 			form.appendChild(label);
@@ -892,24 +936,24 @@
 
 			// Modal footer (inside form so submit button works)
 			var modalFooter = document.createElement('div');
-			modalFooter.className = 'alm-modal-footer';
+			modalFooter.className = 'almgr-modal-footer';
 
 			var cancelBtn = document.createElement('button');
 			cancelBtn.type = 'button';
-			cancelBtn.className = 'alm-button alm-button--secondary';
+			cancelBtn.className = 'almgr-button almgr-button--secondary';
 			cancelBtn.textContent = __( 'Cancel', 'asset-lending-manager' );
 			cancelBtn.addEventListener('click', function() {
-				ALM_Frontend.closeModal(modal);
+				ALMGR_Frontend.closeModal(modal);
 			});
 
 			var submitBtn = document.createElement('button');
 			submitBtn.type = 'submit';
-			submitBtn.className = 'alm-button alm-button--reject';
+			submitBtn.className = 'almgr-button almgr-button--reject';
 			submitBtn.textContent = __( 'Reject Request', 'asset-lending-manager' );
 
 			modalFooter.appendChild(cancelBtn);
 			modalFooter.appendChild(submitBtn);
-			
+
 			// Add footer to form
 			form.appendChild(modalFooter);
 
@@ -932,20 +976,20 @@
 			// Handle form submission
 			form.addEventListener('submit', function(e) {
 				e.preventDefault();
-				ALM_Frontend.submitRejectRequest(requestId, assetId, textarea.value, submitBtn, responseDiv, modal);
+				ALMGR_Frontend.submitRejectRequest(requestId, assetId, textarea.value, submitBtn, responseDiv, modal);
 			});
 
 			// Close on overlay click
 			modal.addEventListener('click', function(e) {
 				if (e.target === modal) {
-					ALM_Frontend.closeModal(modal);
+					ALMGR_Frontend.closeModal(modal);
 				}
 			});
 
 			// Close on ESC key
 			var escHandler = function(e) {
 				if (e.key === 'Escape') {
-					ALM_Frontend.closeModal(modal);
+					ALMGR_Frontend.closeModal(modal);
 					document.removeEventListener('keydown', escHandler);
 				}
 			};
@@ -957,7 +1001,7 @@
 
 		/**
 		 * Submit reject request via AJAX.
-		 * 
+		 *
 		 * @param {string} requestId Request ID
 		 * @param {string} assetId Asset ID
 		 * @param {string} message Rejection message
@@ -972,13 +1016,14 @@
 				return;
 			}
 
-			if (message.length > 255) {
-				this.showResponse(responseDiv, 'error', __( 'Rejection reason must not exceed 255 characters.', 'asset-lending-manager' ));
+			var rejSubmitMaxLen = parseInt(almgrFrontend.rejectionMessageMaxLength, 10) || 255;
+			if (message.length > rejSubmitMaxLen) {
+				this.showResponse(responseDiv, 'error', sprintf(__( 'Rejection reason must not exceed %d characters.', 'asset-lending-manager' ), rejSubmitMaxLen));
 				return;
 			}
 
-			// Check if almFrontend is available
-			if (typeof window.almFrontend === 'undefined' || !window.almFrontend.loanRequestNonce) {
+			// Check if almgrFrontend is available
+			if (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.loanRequestNonce) {
 				this.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
 				return;
 			}
@@ -991,14 +1036,14 @@
 
 			// Prepare form data
 			var formData = new FormData();
-			formData.append('action', 'alm_reject_loan_request');
-			formData.append('nonce', window.almFrontend.loanRequestNonce);
+			formData.append('action', 'almgr_reject_loan_request');
+			formData.append('nonce', window.almgrFrontend.loanRequestNonce);
 			formData.append('request_id', requestId);
 			formData.append('asset_id', assetId);
 			formData.append('rejection_message', message.trim());
 
 			// Send AJAX request
-			fetch(window.almFrontend.ajaxUrl, {
+			fetch(window.almgrFrontend.ajaxUrl, {
 				method: 'POST',
 				body: formData,
 				credentials: 'same-origin'
@@ -1008,27 +1053,25 @@
 			})
 			.then(function(data) {
 				if (data.success) {
-					
+
 					// Close modal
-					ALM_Frontend.closeModal(modal);
-					
+					ALMGR_Frontend.closeModal(modal);
+
 					// Reload page with success message
 					var currentUrl = window.location.href.split('?')[0];
-					window.location.href = currentUrl + '?alm_action=reject&alm_status=success';
+					window.location.href = currentUrl + '?almgr_action=reject&almgr_status=success';
 				} else {
 					var errorMsg = data.data && data.data.message ? data.data.message : __( 'Failed to reject request. Please try again.', 'asset-lending-manager' );
-					ALM_Frontend.showResponse(responseDiv, 'error', errorMsg);
-					console.error('*** Rejection failed:', errorMsg);
-					
+					ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
+
 					// Re-enable submit button
 					submitBtn.disabled = false;
 					submitBtn.textContent = originalBtnText;
 				}
 			})
 			.catch(function(error) {
-				ALM_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-				console.error('*** AJAX error:', error);
-				
+				ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
+
 				// Re-enable submit button
 				submitBtn.disabled = false;
 				submitBtn.textContent = originalBtnText;
@@ -1037,7 +1080,7 @@
 
 		/**
 		 * Close modal.
-		 * 
+		 *
 		 * @param {HTMLElement} modal Modal element
 		 */
 		closeModal: function(modal) {
@@ -1046,7 +1089,7 @@
 			}
 
 			modal.classList.remove('active');
-			
+
 			setTimeout(function() {
 				if (modal && modal.parentNode) {
 					modal.parentNode.removeChild(modal);
@@ -1056,14 +1099,14 @@
 
 		/**
 		 * Trap focus inside modal for accessibility.
-		 * 
+		 *
 		 * @param {HTMLElement} modal Modal element
 		 */
 		trapFocus: function(modal) {
 			var focusableElements = modal.querySelectorAll(
 				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 			);
-			
+
 			if (!focusableElements.length) {
 				return;
 			}
@@ -1094,13 +1137,13 @@
 
 		/**
 		 * Show action result message after page reload.
-		 * 
+		 *
 		 * Display global message based on URL parameters.
 		 */
 		showActionResultMessage: function() {
 			var urlParams = new URLSearchParams(window.location.search);
-			var action = urlParams.get('alm_action');
-			var status = urlParams.get('alm_status');
+			var action = urlParams.get('almgr_action');
+			var status = urlParams.get('almgr_status');
 
 			if (!action || !status) {
 				return;
@@ -1137,7 +1180,7 @@
 
 			if (message) {
 				this.showGlobalMessage(message, messageType);
-				
+
 				// Clean URL (remove query parameters)
 				var cleanUrl = window.location.href.split('?')[0];
 				window.history.replaceState({}, document.title, cleanUrl);
@@ -1156,7 +1199,7 @@
 			}
 
 			// Find all QR canvas elements on the page.
-			const containers = document.querySelectorAll('.alm-qr-canvas');
+			const containers = document.querySelectorAll('.almgr-qr-canvas');
 			if (!containers.length) {
 				return;
 			}
@@ -1182,7 +1225,7 @@
 			});
 
 			// Print button (first one found).
-			const printBtn = document.querySelector('.alm-qr-print');
+			const printBtn = document.querySelector('.almgr-qr-print');
 			if (printBtn) {
 				printBtn.addEventListener('click', function() {
 					window.print();
@@ -1191,20 +1234,20 @@
 
 			// Build the print label card (hidden in normal view, shown only when printing).
 			const printCard = document.createElement('div');
-			printCard.className = 'alm-qr-print-card';
+			printCard.className = 'almgr-qr-print-card';
 			printCard.setAttribute('aria-hidden', 'true');
 
 			const printQr = document.createElement('div');
-			printQr.className = 'alm-qr-print-card__qr';
+			printQr.className = 'almgr-qr-print-card__qr';
 			printQr.innerHTML = svgMarkup;
 
 			const printTitle = document.createElement('p');
-			printTitle.className = 'alm-qr-print-card__title';
-			const titleEl = document.querySelector('.alm-asset-title');
+			printTitle.className = 'almgr-qr-print-card__title';
+			const titleEl = document.querySelector('.almgr-asset-title');
 			printTitle.textContent = titleEl ? titleEl.textContent.trim() : '';
 
 			const printCode = document.createElement('p');
-			printCode.className = 'alm-qr-print-card__code';
+			printCode.className = 'almgr-qr-print-card__code';
 			printCode.textContent = assetCode || '';
 
 			printCard.appendChild(printQr);
@@ -1219,17 +1262,17 @@
 		 * Shows a "Scan QR" button next to the search input. On click, opens a
 		 * full-screen overlay with the device camera. jsQR decodes each video frame;
 		 * when a valid same-origin URL is found the browser navigates to it, which
-		 * triggers the handle_alm_scan_redirect() PHP handler and lands on the asset
+		 * triggers the handle_almgr_scan_redirect() PHP handler and lands on the asset
 		 * detail page. Foreign-origin URLs are silently ignored.
 		 */
 		initQrScanner: function() {
-			var btn = document.querySelector('.alm-qr-scan-btn');
+			var btn = document.querySelector('.almgr-qr-scan-btn');
 			if (!btn) {
 				return;
 			}
 
 			// Hide the button if QR scan is disabled via settings.
-			if (typeof window.almFrontend !== 'undefined' && window.almFrontend.qrScanEnabled === false) {
+			if (typeof window.almgrFrontend !== 'undefined' && window.almgrFrontend.qrScanEnabled === false) {
 				btn.style.display = 'none';
 				return;
 			}
@@ -1251,11 +1294,14 @@
 				var rafId      = null;
 				var stopped    = false;
 
-				overlay.className  = 'alm-qr-scanner-overlay';
-				inner.className    = 'alm-qr-scanner-overlay__inner';
-				video.className    = 'alm-qr-scanner-overlay__video';
-				statusEl.className = 'alm-qr-scanner-overlay__status';
-				closeBtn.className = 'alm-qr-scanner-overlay__close alm-button alm-button--secondary';
+				overlay.className  = 'almgr-qr-scanner-overlay';
+				overlay.setAttribute('role', 'dialog');
+				overlay.setAttribute('aria-modal', 'true');
+				overlay.setAttribute('aria-label', __( 'QR code scanner', 'asset-lending-manager' ));
+				inner.className    = 'almgr-qr-scanner-overlay__inner';
+				video.className    = 'almgr-qr-scanner-overlay__video';
+				statusEl.className = 'almgr-qr-scanner-overlay__status';
+				closeBtn.className = 'almgr-qr-scanner-overlay__close almgr-button almgr-button--secondary';
 
 				video.setAttribute('playsinline', '');
 				video.setAttribute('muted', '');
@@ -1273,7 +1319,11 @@
 				overlay.appendChild(inner);
 				document.body.appendChild(overlay);
 
-				// Stop camera and remove overlay.
+				// Move focus to close button and trap focus inside overlay.
+				closeBtn.focus();
+				ALMGR_Frontend.trapFocus(overlay);
+
+				// Stop camera, remove overlay and restore focus to the scan button.
 				function stopScanner() {
 					if (stopped) {
 						return;
@@ -1290,6 +1340,7 @@
 					if (overlay.parentNode) {
 						overlay.parentNode.removeChild(overlay);
 					}
+					btn.focus();
 				}
 
 				closeBtn.addEventListener('click', stopScanner);
@@ -1334,12 +1385,12 @@
 									try {
 										var decoded = code.data;
 										var parsed  = new URL(decoded);
-										if (parsed.origin === window.location.origin && parsed.searchParams.has('alm_scan')) {
+										if (parsed.origin === window.location.origin && parsed.searchParams.has('almgr_scan')) {
 											stopScanner();
 											window.location.href = decoded;
 											return;
 										}
-										// Non-ALM or foreign-origin QR: ignore and keep scanning.
+										// Non-ALMGR or foreign-origin QR: ignore and keep scanning.
 									} catch (err) {
 										// Not a valid URL: ignore and keep scanning.
 									}
@@ -1351,7 +1402,7 @@
 					})
 					.catch(function() {
 						statusEl.textContent = __( 'Camera access denied. Please allow camera permissions.', 'asset-lending-manager' );
-						statusEl.classList.add('alm-qr-scanner-overlay__status--error');
+						statusEl.classList.add('almgr-qr-scanner-overlay__status--error');
 					});
 			});
 		},
@@ -1364,22 +1415,22 @@
 		 */
 		showGlobalMessage: function(message, type) {
 			// Check if message already exists
-			var existingMessage = document.querySelector('.alm-global-message');
+			var existingMessage = document.querySelector('.almgr-global-message');
 			if (existingMessage) {
 				existingMessage.remove();
 			}
 
 			// Create message element
 			var messageEl = document.createElement('div');
-			messageEl.className = 'alm-global-message alm-global-message--' + type;
+			messageEl.className = 'almgr-global-message almgr-global-message--' + type;
 			messageEl.setAttribute('role', 'alert');
 			messageEl.setAttribute('aria-live', 'polite');
-			
+
 			var messageText = document.createElement('p');
 			messageText.textContent = message;
-			
+
 			var closeBtn = document.createElement('button');
-			closeBtn.className = 'alm-global-message-close';
+			closeBtn.className = 'almgr-global-message-close';
 			closeBtn.setAttribute('aria-label', __( 'Close message', 'asset-lending-manager' ));
 			closeBtn.innerHTML = '&times;';
 			closeBtn.addEventListener('click', function() {
@@ -1395,7 +1446,7 @@
 			messageEl.appendChild(closeBtn);
 
 			// Insert at the beginning of the main content
-			var content = document.querySelector('.alm-asset-detail') || document.querySelector('.entry-content') || document.body;
+			var content = document.querySelector('.almgr-asset-detail') || document.querySelector('.entry-content') || document.body;
 			content.insertBefore(messageEl, content.firstChild);
 
 			// Show with animation
@@ -1418,12 +1469,12 @@
 
 		/**
 		 * Get asset ID from the current page.
-		 * 
+		 *
 		 * @return {number|null} Asset ID or null if not found
 		 */
 		getAssetIdFromPage: function() {
 			// Try to get from article data attribute
-			var article = document.querySelector('.alm-asset-detail');
+			var article = document.querySelector('.almgr-asset-detail');
 			if (article && article.dataset.assetId) {
 				return parseInt(article.dataset.assetId, 10);
 			}
@@ -1431,7 +1482,7 @@
 			// Fallback: try to get from body class (WordPress adds postid-XXX)
 			var bodyClasses = document.body.className;
 			var match = bodyClasses.match(/postid-(\d+)/);
-			
+
 			if (match && match[1]) {
 				return parseInt(match[1], 10);
 			}
@@ -1441,7 +1492,7 @@
 
 		/**
 		 * Show response message.
-		 * 
+		 *
 		 * @param {HTMLElement} el DOM element
 		 * @param {string} type 'success' or 'error'
 		 * @param {string} message Message text
@@ -1450,15 +1501,15 @@
 			if (!el) {
 				return;
 			}
-			
-			el.className = 'alm-response-message alm-response--' + type;
+
+			el.className = 'almgr-response-message almgr-response--' + type;
 			el.innerHTML = '<p>' + this.escapeHtml(message) + '</p>';
 			el.style.display = 'block';
 		},
 
 		/**
 		 * Escape HTML to prevent XSS.
-		 * 
+		 *
 		 * @param {string} text Text to escape
 		 * @return {string} Escaped text
 		 */
@@ -1479,13 +1530,13 @@
 	var style = document.createElement('style');
 	style.textContent = `
 		/* Filter active state */
-		.alm-filter-active {
+		.almgr-filter-active {
 			border-color: #0073aa !important;
 			background-color: #f0f8ff !important;
 		}
 
 		/* Lightbox */
-		.alm-lightbox {
+		.almgr-lightbox {
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -1500,17 +1551,41 @@
 			transition: opacity 0.3s ease;
 			cursor: pointer;
 		}
-		.alm-lightbox.active {
+		.almgr-lightbox.active {
 			opacity: 1;
 		}
-		.alm-lightbox img {
+		.almgr-lightbox img {
 			max-width: 90%;
 			max-height: 90%;
 			box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 		}
+		.almgr-lightbox__close {
+			position: absolute;
+			top: 16px;
+			right: 16px;
+			background: rgba(0, 0, 0, 0.6);
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			width: 32px;
+			height: 32px;
+			padding: 0;
+			font-size: 24px;
+			line-height: 1;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.almgr-lightbox__close:hover,
+		.almgr-lightbox__close:focus {
+			background: rgba(255, 255, 255, 0.2);
+			outline: 2px solid #fff;
+			outline-offset: 2px;
+		}
 
 		/* Modal overlay */
-		.alm-modal-overlay {
+		.almgr-modal-overlay {
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -1524,12 +1599,12 @@
 			opacity: 0;
 			transition: opacity 0.3s ease;
 		}
-		.alm-modal-overlay.active {
+		.almgr-modal-overlay.active {
 			opacity: 1;
 		}
 
 		/* Modal content */
-		.alm-modal-content {
+		.almgr-modal-content {
 			background: white;
 			border-radius: 8px;
 			max-width: 600px;
@@ -1540,24 +1615,24 @@
 			transform: translateY(-20px);
 			transition: transform 0.3s ease;
 		}
-		.alm-modal-overlay.active .alm-modal-content {
+		.almgr-modal-overlay.active .almgr-modal-content {
 			transform: translateY(0);
 		}
 
 		/* Modal header */
-		.alm-modal-header {
+		.almgr-modal-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			padding: 20px 24px;
 			border-bottom: 1px solid #dee2e6;
 		}
-		.alm-modal-header h2 {
+		.almgr-modal-header h2 {
 			margin: 0;
 			font-size: 20px;
 			color: #333;
 		}
-		.alm-modal-close {
+		.almgr-modal-close {
 			background: none;
 			border: none;
 			font-size: 28px;
@@ -1573,26 +1648,26 @@
 			border-radius: 4px;
 			transition: background-color 0.2s ease;
 		}
-		.alm-modal-close:hover {
+		.almgr-modal-close:hover {
 			background-color: #f8f9fa;
 			color: #333;
 		}
-		.alm-modal-close:focus {
+		.almgr-modal-close:focus {
 			outline: 2px solid #0073aa;
 			outline-offset: 2px;
 		}
 
 		/* Modal body */
-		.alm-modal-body {
+		.almgr-modal-body {
 			padding: 24px;
 		}
-		.alm-modal-body label {
+		.almgr-modal-body label {
 			display: block;
 			margin-bottom: 8px;
 			font-weight: 600;
 			color: #333;
 		}
-		.alm-modal-body textarea {
+		.almgr-modal-body textarea {
 			width: 100%;
 			padding: 10px 12px;
 			border: 1px solid #dee2e6;
@@ -1603,12 +1678,12 @@
 			resize: vertical;
 			min-height: 100px;
 		}
-		.alm-modal-body textarea:focus {
+		.almgr-modal-body textarea:focus {
 			outline: none;
 			border-color: #0073aa;
 			box-shadow: 0 0 0 3px rgba(0, 115, 170, 0.1);
 		}
-		.alm-char-count {
+		.almgr-char-count {
 			margin-top: 6px;
 			font-size: 13px;
 			color: #6c757d;
@@ -1616,23 +1691,23 @@
 		}
 
 		/* Modal footer */
-		.alm-modal-footer {
+		.almgr-modal-footer {
 			display: flex;
 			justify-content: flex-end;
 			gap: 12px;
 			padding: 20px 24px;
 			border-top: 1px solid #dee2e6;
 		}
-		.alm-button--secondary {
+		.almgr-button--secondary {
 			background-color: #6c757d;
 			color: white;
 		}
-		.alm-button--secondary:hover {
+		.almgr-button--secondary:hover {
 			background-color: #5a6268;
 		}
 
 		/* Global message */
-		.alm-global-message {
+		.almgr-global-message {
 			position: relative;
 			padding: 16px 48px 16px 20px;
 			margin-bottom: 24px;
@@ -1642,25 +1717,25 @@
 			transform: translateY(-10px);
 			transition: all 0.3s ease;
 		}
-		.alm-global-message.active {
+		.almgr-global-message.active {
 			opacity: 1;
 			transform: translateY(0);
 		}
-		.alm-global-message--success {
+		.almgr-global-message--success {
 			background-color: #d4edda;
 			border-color: #28a745;
 			color: #155724;
 		}
-		.alm-global-message--error {
+		.almgr-global-message--error {
 			background-color: #f8d7da;
 			border-color: #dc3545;
 			color: #721c24;
 		}
-		.alm-global-message p {
+		.almgr-global-message p {
 			margin: 0;
 			font-weight: 500;
 		}
-		.alm-global-message-close {
+		.almgr-global-message-close {
 			position: absolute;
 			top: 12px;
 			right: 12px;
@@ -1680,43 +1755,43 @@
 			opacity: 0.7;
 			transition: opacity 0.2s ease;
 		}
-		.alm-global-message-close:hover {
+		.almgr-global-message-close:hover {
 			opacity: 1;
 		}
-		.alm-global-message-close:focus {
+		.almgr-global-message-close:focus {
 			outline: 2px solid currentColor;
 			outline-offset: 2px;
 		}
 
 		/* Response messages in modal */
-		.alm-response-message {
+		.almgr-response-message {
 			margin-top: 16px;
 			padding: 12px;
 			border-radius: 4px;
 		}
-		.alm-response--success {
+		.almgr-response--success {
 			background-color: #d4edda;
 			border: 1px solid #c3e6cb;
 			color: #155724;
 		}
-		.alm-response--error {
+		.almgr-response--error {
 			background-color: #f8d7da;
 			border: 1px solid #f5c6cb;
 			color: #721c24;
 		}
-		.alm-response-message p {
+		.almgr-response-message p {
 			margin: 0;
 		}
 
 		/* Responsive */
 		@media (max-width: 768px) {
-			.alm-modal-content {
+			.almgr-modal-content {
 				width: 95%;
 				max-height: 95vh;
 			}
-			.alm-modal-header,
-			.alm-modal-body,
-			.alm-modal-footer {
+			.almgr-modal-header,
+			.almgr-modal-body,
+			.almgr-modal-footer {
 				padding: 16px;
 			}
 		}

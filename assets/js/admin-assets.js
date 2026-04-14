@@ -1,7 +1,7 @@
 /**
- * Admin JavaScript for ALM assets.
+ * Admin JavaScript for ALMGR assets.
  *
- * Loaded only on ALM admin pages (asset edit, list, taxonomies, custom pages).
+ * Loaded only on ALMGR admin pages (asset edit, list, taxonomies, custom pages).
  *
  * @package AssetLendingManager
  */
@@ -13,7 +13,7 @@
 		return text;
 	};
 
-	var ALM_Admin = {
+	var ALMGR_Admin = {
 		/**
 		 * Initialize admin functionality.
 		 */
@@ -27,10 +27,10 @@
 		 * Add status badges to asset list table.
 		 */
 		initAssetStatusBadges: function() {
-			var rows = document.querySelectorAll('.post-type-alm_asset .wp-list-table tbody tr');
+			var rows = document.querySelectorAll('.post-type-almgr_asset .wp-list-table tbody tr');
 
 			rows.forEach(function(row) {
-				var stateCell = row.querySelector('.column-taxonomy-alm_state');
+				var stateCell = row.querySelector('.column-taxonomy-almgr_state');
 				if (!stateCell) {
 					return;
 				}
@@ -46,12 +46,12 @@
 					badgeClass = 'maintenance';
 				}
 
-				if (!badgeClass || stateCell.querySelector('.alm-status-badge')) {
+				if (!badgeClass || stateCell.querySelector('.almgr-status-badge')) {
 					return;
 				}
 
 				var wrapper = document.createElement('span');
-				wrapper.className = 'alm-status-badge ' + badgeClass;
+				wrapper.className = 'almgr-status-badge ' + badgeClass;
 				while (stateCell.firstChild) {
 					wrapper.appendChild(stateCell.firstChild);
 				}
@@ -63,7 +63,7 @@
 		 * Initialize quick actions for assets.
 		 */
 		initQuickActions: function() {
-			var actionsRows = document.querySelectorAll('.post-type-alm_asset .row-actions');
+			var actionsRows = document.querySelectorAll('.post-type-almgr_asset .row-actions');
 
 			actionsRows.forEach(function(actions) {
 				var row = actions.closest('tr');
@@ -81,8 +81,8 @@
 				var separator = document.createTextNode(' | ');
 				var viewLink = document.createElement('a');
 
-				viewWrapper.className = 'alm-view-frontend';
-				viewLink.href = ALM_Admin.getAssetPermalink(postId);
+				viewWrapper.className = 'almgr-view-frontend';
+				viewLink.href = ALMGR_Admin.getAssetPermalink(postId);
 				viewLink.target = '_blank';
 				viewLink.rel = 'noopener noreferrer';
 				viewLink.textContent = viewLabel;
@@ -108,7 +108,7 @@
 		 */
 		initFormValidation: function() {
 			var body = document.body;
-			if (!body.classList.contains('post-type-alm_asset') || !body.classList.contains('post-php')) {
+			if (!body.classList.contains('post-type-almgr_asset') || !body.classList.contains('post-php')) {
 				return;
 			}
 
@@ -128,7 +128,7 @@
 					isValid = false;
 				}
 
-				var assetType = document.querySelectorAll('input[name="tax_input[alm_type][]"]:checked').length;
+				var assetType = document.querySelectorAll('input[name="tax_input[almgr_type][]"]:checked').length;
 				if (0 === assetType) {
 					errors.push( __( 'Please select a asset type.', 'asset-lending-manager' ) );
 					isValid = false;
@@ -147,11 +147,11 @@
 		 * @param {HTMLElement} element Element to show spinner next to.
 		 */
 		showSpinner: function(element) {
-			if (!element || element.querySelector('.alm-spinner')) {
+			if (!element || element.querySelector('.almgr-spinner')) {
 				return;
 			}
 			var spinner = document.createElement('span');
-			spinner.className = 'alm-spinner';
+			spinner.className = 'almgr-spinner';
 			element.appendChild(spinner);
 		},
 
@@ -164,7 +164,7 @@
 			if (!element) {
 				return;
 			}
-			var spinner = element.querySelector('.alm-spinner');
+			var spinner = element.querySelector('.almgr-spinner');
 			if (spinner) {
 				spinner.remove();
 			}
@@ -179,7 +179,7 @@
 		showNotice: function(message, type) {
 			var noticeType = type || 'success';
 			var notice = document.createElement('div');
-			notice.className = 'alm-notice ' + noticeType;
+			notice.className = 'almgr-notice ' + noticeType;
 			notice.textContent = message;
 
 			var heading = document.querySelector('.wrap h1');
@@ -194,6 +194,6 @@
 	};
 
 	document.addEventListener('DOMContentLoaded', function() {
-		ALM_Admin.init();
+		ALMGR_Admin.init();
 	});
 })();

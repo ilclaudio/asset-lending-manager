@@ -10,9 +10,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class ALM_Loan_Manager
+ * Class ALMGR_Loan_Manager
  */
-class ALM_Loan_Manager {
+class ALMGR_Loan_Manager {
 
 	/**
 	 * Maximum length for rejection message.
@@ -44,16 +44,16 @@ class ALM_Loan_Manager {
 	/**
 	 * Settings manager instance.
 	 *
-	 * @var ALM_Settings_Manager
+	 * @var ALMGR_Settings_Manager
 	 */
 	private $settings;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param ALM_Settings_Manager $settings Plugin settings instance.
+	 * @param ALMGR_Settings_Manager $settings Plugin settings instance.
 	 */
-	public function __construct( ALM_Settings_Manager $settings ) {
+	public function __construct( ALMGR_Settings_Manager $settings ) {
 		$this->settings = $settings;
 	}
 
@@ -63,8 +63,8 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function activate() {
-		require_once plugin_dir_path( __FILE__ ) . 'class-alm-installer.php';
-		ALM_Installer::create_tables();
+		require_once plugin_dir_path( __FILE__ ) . 'class-almgr-installer.php';
+		ALMGR_Installer::create_tables();
 	}
 
 	/**
@@ -74,12 +74,12 @@ class ALM_Loan_Manager {
 	 */
 	public function register() {
 		// AJAX handler for authenticated users.
-		add_action( 'wp_ajax_alm_submit_loan_request', array( $this, 'ajax_submit_loan_request' ) );
-		add_action( 'wp_ajax_alm_reject_loan_request', array( $this, 'ajax_reject_loan_request' ) );
-		add_action( 'wp_ajax_alm_approve_loan_request', array( $this, 'ajax_approve_loan_request' ) );
-		add_action( 'wp_ajax_alm_direct_assign_asset', array( $this, 'ajax_direct_assign_asset' ) );
-		add_action( 'wp_ajax_alm_change_asset_state', array( $this, 'ajax_change_asset_state' ) );
-		add_action( 'wp_ajax_alm_restore_asset_state', array( $this, 'ajax_restore_asset_state' ) );
+		add_action( 'wp_ajax_almgr_submit_loan_request', array( $this, 'ajax_submit_loan_request' ) );
+		add_action( 'wp_ajax_almgr_reject_loan_request', array( $this, 'ajax_reject_loan_request' ) );
+		add_action( 'wp_ajax_almgr_approve_loan_request', array( $this, 'ajax_approve_loan_request' ) );
+		add_action( 'wp_ajax_almgr_direct_assign_asset', array( $this, 'ajax_direct_assign_asset' ) );
+		add_action( 'wp_ajax_almgr_change_asset_state', array( $this, 'ajax_change_asset_state' ) );
+		add_action( 'wp_ajax_almgr_restore_asset_state', array( $this, 'ajax_restore_asset_state' ) );
 	}
 
 	/**
@@ -89,7 +89,7 @@ class ALM_Loan_Manager {
 	 */
 	public function ajax_submit_loan_request() {
 		// Check user capabilities.
-		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_VIEW_ASSET ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'You do not have permission to request loans.', 'asset-lending-manager' ),
@@ -97,7 +97,7 @@ class ALM_Loan_Manager {
 			);
 		}
 		// Verify nonce.
-		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+		check_ajax_referer( 'almgr_loan_request_nonce', 'nonce' );
 		// Check whether loan requests are enabled by the admin.
 		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
 			wp_send_json_error(
@@ -138,10 +138,18 @@ class ALM_Loan_Manager {
 		}
 		// Verify asset exists.
 		$asset = get_post( $asset_id );
-		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Asset not found.', 'asset-lending-manager' ),
+				)
+			);
+		}
+		// Loan requests are allowed only for publicly available assets.
+		if ( 'publish' !== $asset->post_status ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'This asset is not available for loan.', 'asset-lending-manager' ),
 				)
 			);
 		}
@@ -206,7 +214,7 @@ class ALM_Loan_Manager {
 			);
 		}
 		// Log the request.
-		ALM_Logger::info(
+		ALMGR_Logger::info(
 			'Loan request created',
 			array(
 				'request_id'   => $request_id,
@@ -215,8 +223,8 @@ class ALM_Loan_Manager {
 				'owner_id'     => $owner_id,
 			)
 		);
-		// Fire loan request submitted action so ALM_Notification_Manager can send emails.
-		do_action( 'alm_loan_request_submitted', $requester_id, $owner_id, $asset_id, $message );
+		// Fire loan request submitted action so ALMGR_Notification_Manager can send emails.
+		do_action( 'almgr_loan_request_submitted', $requester_id, $owner_id, $asset_id, $message );
 		wp_send_json_success(
 			array(
 				'message'    => __( 'Loan request sent successfully!', 'asset-lending-manager' ),
@@ -232,7 +240,7 @@ class ALM_Loan_Manager {
 	 */
 	public function ajax_reject_loan_request() {
 		// Fail-fast capability check.
-		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_VIEW_ASSET ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'You do not have permission to reject loan requests.', 'asset-lending-manager' ),
@@ -240,7 +248,7 @@ class ALM_Loan_Manager {
 			);
 		}
 		// Verify nonce.
-		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+		check_ajax_referer( 'almgr_loan_request_nonce', 'nonce' );
 		// Check whether loan requests are enabled by the admin.
 		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
 			wp_send_json_error(
@@ -296,10 +304,10 @@ class ALM_Loan_Manager {
 
 		// Get loan request from database.
 		global $wpdb;
-		$table_name       = $wpdb->prefix . 'alm_loan_requests';
+		$table_name       = $wpdb->prefix . 'almgr_loan_requests';
 			$loan_request = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT * FROM %i WHERE id = %d",
+					'SELECT * FROM %i WHERE id = %d',
 					$table_name,
 					$request_id
 				)
@@ -346,7 +354,7 @@ class ALM_Loan_Manager {
 		}
 
 		// Log the rejection.
-		ALM_Logger::info(
+		ALMGR_Logger::info(
 			'Loan request rejected',
 			array(
 				'request_id'   => $request_id,
@@ -356,8 +364,8 @@ class ALM_Loan_Manager {
 			)
 		);
 
-		// Fire loan request rejected action so ALM_Notification_Manager can send emails.
-		do_action( 'alm_loan_request_rejected', $loan_request, $rejection_message );
+		// Fire loan request rejected action so ALMGR_Notification_Manager can send emails.
+		do_action( 'almgr_loan_request_rejected', $loan_request, $rejection_message );
 
 		wp_send_json_success(
 			array(
@@ -374,6 +382,11 @@ class ALM_Loan_Manager {
 	 * @return bool True if user can reject.
 	 */
 	private function can_user_reject_request( $loan_request, $user_id ) {
+		// Operators and administrators can always reject pending requests.
+		if ( user_can( $user_id, ALMGR_EDIT_ASSET ) ) {
+			return true;
+		}
+
 		// Only the current owner of the asset can reject requests for it.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;
@@ -410,14 +423,14 @@ class ALM_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
-			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 			// Re-read and lock the target request row inside the transaction.
 			$locked_request = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT * FROM %i
+					'SELECT * FROM %i
 					WHERE id = %d
-					FOR UPDATE",
+					FOR UPDATE',
 					$table_name,
 					$loan_request->id
 				)
@@ -460,7 +473,7 @@ class ALM_Loan_Manager {
 			// Commit transaction.
 			$wpdb->query( 'COMMIT' );
 
-			ALM_Logger::debug(
+			ALMGR_Logger::debug(
 				'Loan request rejected successfully',
 				array(
 					'request_id' => (int) $locked_request->id,
@@ -474,7 +487,7 @@ class ALM_Loan_Manager {
 			// Rollback transaction on error.
 			$wpdb->query( 'ROLLBACK' );
 
-			ALM_Logger::error(
+			ALMGR_Logger::error(
 				'Failed to reject loan request',
 				array(
 					'request_id' => isset( $loan_request->id ) ? (int) $loan_request->id : 0,
@@ -501,7 +514,7 @@ class ALM_Loan_Manager {
 	 */
 	private function log_history_entry( $loan_request_id, $asset_id, $requester_id, $owner_id, $status, $message, $changed_by ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests_history';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests_history';
 
 		$result = $wpdb->insert(
 			$table_name,
@@ -519,7 +532,7 @@ class ALM_Loan_Manager {
 		);
 
 		if ( false === $result ) {
-			ALM_Logger::error(
+			ALMGR_Logger::error(
 				'Failed to insert history entry',
 				array(
 					'loan_request_id' => $loan_request_id,
@@ -539,7 +552,7 @@ class ALM_Loan_Manager {
 	 */
 	public function ajax_approve_loan_request() {
 		// Fail-fast capability check.
-		if ( ! current_user_can( ALM_VIEW_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_VIEW_ASSET ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'You do not have permission to approve loan requests.', 'asset-lending-manager' ),
@@ -547,7 +560,7 @@ class ALM_Loan_Manager {
 			);
 		}
 		// Verify nonce.
-		check_ajax_referer( 'alm_loan_request_nonce', 'nonce' );
+		check_ajax_referer( 'almgr_loan_request_nonce', 'nonce' );
 		// Check whether loan requests are enabled by the admin.
 		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
 			wp_send_json_error(
@@ -580,10 +593,10 @@ class ALM_Loan_Manager {
 
 		// Get loan request from database.
 		global $wpdb;
-		$table_name       = $wpdb->prefix . 'alm_loan_requests';
+		$table_name       = $wpdb->prefix . 'almgr_loan_requests';
 			$loan_request = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT * FROM %i WHERE id = %d",
+					'SELECT * FROM %i WHERE id = %d',
 					$table_name,
 					$request_id
 				)
@@ -630,7 +643,7 @@ class ALM_Loan_Manager {
 		}
 
 		// Log the approval.
-		ALM_Logger::info(
+		ALMGR_Logger::info(
 			'Loan request approved',
 			array(
 				'request_id'   => $request_id,
@@ -640,8 +653,8 @@ class ALM_Loan_Manager {
 			)
 		);
 
-		// Fire loan request approved action so ALM_Notification_Manager can send emails.
-		do_action( 'alm_loan_request_approved', $loan_request );
+		// Fire loan request approved action so ALMGR_Notification_Manager can send emails.
+		do_action( 'almgr_loan_request_approved', $loan_request );
 
 		wp_send_json_success(
 			array(
@@ -665,7 +678,7 @@ class ALM_Loan_Manager {
 		// Start transaction.
 		$wpdb->query( 'START TRANSACTION' );
 		try {
-			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 			// Re-check for an existing pending request inside the transaction with a row-level
 			// lock (FOR UPDATE) to prevent duplicates under concurrent submissions.
@@ -700,7 +713,7 @@ class ALM_Loan_Manager {
 			// Commit transaction.
 			$wpdb->query( 'COMMIT' );
 
-			ALM_Logger::debug(
+			ALMGR_Logger::debug(
 				'Loan request created successfully',
 				array(
 					'request_id' => $request_id,
@@ -712,7 +725,7 @@ class ALM_Loan_Manager {
 			// Rollback transaction on error.
 			$wpdb->query( 'ROLLBACK' );
 
-			ALM_Logger::error(
+			ALMGR_Logger::error(
 				'Failed to create loan request',
 				array(
 					'asset_id' => $asset_id,
@@ -732,7 +745,7 @@ class ALM_Loan_Manager {
 	 * @return int Owner user ID or 0 if none.
 	 */
 	public function get_current_owner( $asset_id ) {
-		$owner_id = get_post_meta( $asset_id, '_alm_current_owner', true );
+		$owner_id = get_post_meta( $asset_id, '_almgr_current_owner', true );
 		return $owner_id ? (int) $owner_id : 0;
 	}
 
@@ -745,13 +758,13 @@ class ALM_Loan_Manager {
 	 */
 	public function has_pending_request( $asset_id, $user_id ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM %i 
-				WHERE asset_id = %d 
-				AND requester_id = %d 
+				"SELECT COUNT(*) FROM %i
+				WHERE asset_id = %d
+				AND requester_id = %d
 				AND status = 'pending'",
 				$table_name,
 				$asset_id,
@@ -769,7 +782,7 @@ class ALM_Loan_Manager {
 	 */
 	private function has_any_pending_request( $user_id ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
@@ -790,14 +803,13 @@ class ALM_Loan_Manager {
 	private function count_active_loans_for_user( $user_id ) {
 		$query = new WP_Query(
 			array(
-				'post_type'      => ALM_ASSET_CPT_SLUG,
+				'post_type'      => ALMGR_ASSET_CPT_SLUG,
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- No alternative: active-loan count requires owner meta filter. To be replaced with a counter cache when _alm_parent_kit_ids normalization lands.
 				'meta_query'     => array(
 					array(
-						'key'   => '_alm_current_owner',
+						'key'   => '_almgr_current_owner',
 						'value' => $user_id,
 						'type'  => 'NUMERIC',
 					),
@@ -816,14 +828,14 @@ class ALM_Loan_Manager {
 	 */
 	public function get_asset_requests( $asset_id, $status = 'pending' ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM %i 
-				WHERE asset_id = %d 
-				AND status = %s 
-				ORDER BY request_date DESC",
+				'SELECT * FROM %i
+				WHERE asset_id = %d
+				AND status = %s
+				ORDER BY request_date DESC',
 				$table_name,
 				$asset_id,
 				$status
@@ -840,14 +852,14 @@ class ALM_Loan_Manager {
 	 */
 	public function get_user_requests( $user_id, $status = '' ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		if ( empty( $status ) ) {
 			return $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT * FROM %i 
-					WHERE requester_id = %d 
-					ORDER BY request_date DESC",
+					'SELECT * FROM %i
+					WHERE requester_id = %d
+					ORDER BY request_date DESC',
 					$table_name,
 					$user_id
 				)
@@ -855,10 +867,10 @@ class ALM_Loan_Manager {
 		}
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM %i 
-				WHERE requester_id = %d 
-				AND status = %s 
-				ORDER BY request_date DESC",
+				'SELECT * FROM %i
+				WHERE requester_id = %d
+				AND status = %s
+				ORDER BY request_date DESC',
 				$table_name,
 				$user_id,
 				$status
@@ -878,19 +890,19 @@ class ALM_Loan_Manager {
 	 */
 	public function get_asset_history( $asset_id, $user_id = 0 ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests_history';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests_history';
 
 		// Check if user is operator (can see all).
-		$is_operator = current_user_can( ALM_EDIT_ASSET );
+		$is_operator = current_user_can( ALMGR_EDIT_ASSET );
 
 		if ( $is_operator || $user_id <= 0 ) {
 			// Operators see all entries for this asset.
 				return $wpdb->get_results(
 					$wpdb->prepare(
-						"SELECT * FROM %i 
-						WHERE asset_id = %d 
-						ORDER BY changed_at DESC 
-					LIMIT 10",
+						'SELECT * FROM %i
+						WHERE asset_id = %d
+						ORDER BY changed_at DESC
+					LIMIT 10',
 						$table_name,
 						$asset_id
 					)
@@ -900,15 +912,15 @@ class ALM_Loan_Manager {
 		// Members see only entries where they are involved.
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM %i 
-				WHERE asset_id = %d 
+				'SELECT * FROM %i
+				WHERE asset_id = %d
 				AND (
-					requester_id = %d 
-					OR owner_id = %d 
+					requester_id = %d
+					OR owner_id = %d
 					OR changed_by = %d
 				)
-				ORDER BY changed_at DESC 
-				LIMIT 10",
+				ORDER BY changed_at DESC
+				LIMIT 10',
 				$table_name,
 				$asset_id,
 				$user_id,
@@ -926,6 +938,11 @@ class ALM_Loan_Manager {
 	 * @return bool True if user can approve.
 	 */
 	private function can_user_approve_request( $loan_request, $user_id ) {
+		// Operators and administrators can always approve pending requests.
+		if ( user_can( $user_id, ALMGR_EDIT_ASSET ) ) {
+			return true;
+		}
+
 		// Only the current owner of the asset can approve requests for it.
 		if ( (int) $loan_request->owner_id === $user_id && (int) $loan_request->owner_id > 0 ) {
 			return true;
@@ -1096,15 +1113,15 @@ class ALM_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
-			$table_name = $wpdb->prefix . 'alm_loan_requests';
+			$table_name = $wpdb->prefix . 'almgr_loan_requests';
 			$asset_id   = (int) $loan_request->asset_id;
 
 			// Lock all pending requests for this asset to serialize concurrent approvals.
 				$wpdb->get_results(
 					$wpdb->prepare(
-						"SELECT id FROM %i
+						'SELECT id FROM %i
 						WHERE asset_id = %d
-						FOR UPDATE",
+						FOR UPDATE',
 						$table_name,
 						$asset_id
 					)
@@ -1113,9 +1130,9 @@ class ALM_Loan_Manager {
 			// Re-read and lock the target request row inside the transaction.
 				$loan_request = $wpdb->get_row(
 					$wpdb->prepare(
-						"SELECT * FROM %i
+						'SELECT * FROM %i
 						WHERE id = %d
-						FOR UPDATE",
+						FOR UPDATE',
 						$table_name,
 						$loan_request->id
 					)
@@ -1136,7 +1153,7 @@ class ALM_Loan_Manager {
 
 			// Verify asset exists.
 			$asset = get_post( $asset_id );
-			if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+			if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
 				throw new Exception( __( 'Asset not found.', 'asset-lending-manager' ) );
 			}
 
@@ -1208,7 +1225,7 @@ class ALM_Loan_Manager {
 
 			$this->dispatch_cancellation_notifications( $canceled_notification_events );
 
-			ALM_Logger::info(
+			ALMGR_Logger::info(
 				'Loan request approved successfully',
 				array(
 					'request_id'   => $loan_request->id,
@@ -1228,7 +1245,7 @@ class ALM_Loan_Manager {
 			// Rollback transaction on error.
 			$wpdb->query( 'ROLLBACK' );
 
-			ALM_Logger::error(
+			ALMGR_Logger::error(
 				'Failed to approve loan request',
 				array(
 					'request_id' => $loan_request->id,
@@ -1253,12 +1270,12 @@ class ALM_Loan_Manager {
 	 * @return bool True on success, false on failure.
 	 */
 	private function set_asset_owner( $asset_id, $user_id ) {
-		$result = update_post_meta( $asset_id, '_alm_current_owner', $user_id );
+		$result = update_post_meta( $asset_id, '_almgr_current_owner', $user_id );
 
 		// update_post_meta() returns false both on DB failure and when the stored
 		// value is already equal to $user_id (no-op update). Only treat it as an
 		// error when the value was not actually saved.
-		if ( false === $result && (int) get_post_meta( $asset_id, '_alm_current_owner', true ) !== (int) $user_id ) {
+		if ( false === $result && (int) get_post_meta( $asset_id, '_almgr_current_owner', true ) !== (int) $user_id ) {
 			throw new Exception(
 				sprintf(
 					/* translators: %d: asset post ID */
@@ -1280,7 +1297,7 @@ class ALM_Loan_Manager {
 	 * @return bool True on success, false on failure.
 	 */
 	private function set_asset_state( $asset_id, $state_slug ) {
-		$term = get_term_by( 'slug', $state_slug, ALM_ASSET_STATE_TAXONOMY_SLUG );
+		$term = get_term_by( 'slug', $state_slug, ALMGR_ASSET_STATE_TAXONOMY_SLUG );
 
 		if ( ! $term ) {
 			throw new Exception(
@@ -1292,7 +1309,7 @@ class ALM_Loan_Manager {
 			);
 		}
 
-		$result = wp_set_object_terms( $asset_id, $term->term_id, ALM_ASSET_STATE_TAXONOMY_SLUG );
+		$result = wp_set_object_terms( $asset_id, $term->term_id, ALMGR_ASSET_STATE_TAXONOMY_SLUG );
 
 		if ( is_wp_error( $result ) ) {
 			throw new Exception(
@@ -1315,7 +1332,7 @@ class ALM_Loan_Manager {
 	 * @return string State slug or empty string if not set.
 	 */
 	private function get_asset_state_slug( $asset_id ) {
-		$terms = get_the_terms( $asset_id, ALM_ASSET_STATE_TAXONOMY_SLUG );
+		$terms = get_the_terms( $asset_id, ALMGR_ASSET_STATE_TAXONOMY_SLUG );
 
 		if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
 			return $terms[0]->slug;
@@ -1331,7 +1348,7 @@ class ALM_Loan_Manager {
 	 * @return bool True if asset is a kit, false otherwise.
 	 */
 	private function is_asset_kit( $asset_id ) {
-		return has_term( ALM_ASSET_KIT_SLUG, ALM_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id );
+		return has_term( ALMGR_ASSET_KIT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id );
 	}
 
 	/**
@@ -1341,7 +1358,7 @@ class ALM_Loan_Manager {
 	 * @return array Array of component post IDs.
 	 */
 	private function get_kit_components( $asset_id ) {
-		$components = ALM_ACF_Asset_Adapter::get_custom_field( 'components', $asset_id );
+		$components = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_components', $asset_id );
 
 		if ( ! is_array( $components ) || empty( $components ) ) {
 			return array();
@@ -1372,7 +1389,7 @@ class ALM_Loan_Manager {
 	 */
 	private function cancel_concurrent_requests( $asset_id, $exclude_request_id, $cancel_message, &$canceled_notification_events ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'alm_loan_requests';
+		$table_name = $wpdb->prefix . 'almgr_loan_requests';
 
 		// Get all pending requests for this asset (excluding the approved one).
 		// FOR UPDATE locks the selected rows within the caller's transaction so that a
@@ -1448,7 +1465,7 @@ class ALM_Loan_Manager {
 
 			++$canceled_count;
 
-			ALM_Logger::info(
+			ALMGR_Logger::info(
 				'Request automatically canceled',
 				array(
 					'request_id'   => $request->id,
@@ -1485,7 +1502,7 @@ class ALM_Loan_Manager {
 				continue;
 			}
 
-			do_action( 'alm_loan_request_canceled', $requester_id, $asset_id );
+			do_action( 'almgr_loan_request_canceled', $requester_id, $asset_id );
 		}
 	}
 
@@ -1496,7 +1513,7 @@ class ALM_Loan_Manager {
 	 */
 	public function ajax_direct_assign_asset() {
 		// Operator-only capability check.
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'You do not have permission to assign assets.', 'asset-lending-manager' ),
@@ -1504,7 +1521,7 @@ class ALM_Loan_Manager {
 			);
 		}
 		// Verify nonce.
-		check_ajax_referer( 'alm_direct_assign_nonce', 'nonce' );
+		check_ajax_referer( 'almgr_direct_assign_nonce', 'nonce' );
 
 		// Block if direct assignment is disabled.
 		if ( ! $this->settings->get( 'direct_assign.enabled', true ) ) {
@@ -1547,17 +1564,17 @@ class ALM_Loan_Manager {
 
 		// Verify asset exists.
 		$asset = get_post( $asset_id );
-		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
 			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
 		}
 
-		// Verify assignee exists and has an ALM role.
+		// Verify assignee exists and has an ALMGR role.
 		$assignee = get_userdata( $assignee_id );
 		if ( ! $assignee ) {
 			wp_send_json_error( array( 'message' => __( 'Assignee user not found.', 'asset-lending-manager' ) ) );
 		}
 
-		$allowed_roles  = (array) $this->settings->get( 'direct_assign.allowed_target_roles', array( ALM_MEMBER_ROLE, ALM_OPERATOR_ROLE ) );
+		$allowed_roles  = (array) $this->settings->get( 'direct_assign.allowed_target_roles', array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE ) );
 		$assignee_roles = (array) $assignee->roles;
 		if ( empty( array_intersect( $allowed_roles, $assignee_roles ) ) ) {
 			wp_send_json_error(
@@ -1577,7 +1594,7 @@ class ALM_Loan_Manager {
 		}
 
 		// Log the assignment.
-		ALM_Logger::info(
+		ALMGR_Logger::info(
 			'Asset directly assigned',
 			array(
 				'asset_id'    => $asset_id,
@@ -1586,10 +1603,10 @@ class ALM_Loan_Manager {
 			)
 		);
 
-		// Fire direct assign action so ALM_Notification_Manager can send emails.
+		// Fire direct assign action so ALMGR_Notification_Manager can send emails.
 		// Pass $assignee->ID (int) rather than the WP_User object for consistency with other actions.
 		$previous_owner_id = isset( $result['previous_owner_id'] ) ? (int) $result['previous_owner_id'] : 0;
-		do_action( 'alm_direct_assign', $asset_id, $assignee->ID, $current_user_id, $reason, $previous_owner_id );
+		do_action( 'almgr_direct_assign', $asset_id, $assignee->ID, $current_user_id, $reason, $previous_owner_id );
 
 		wp_send_json_success(
 			array(
@@ -1685,7 +1702,7 @@ class ALM_Loan_Manager {
 
 			$this->dispatch_cancellation_notifications( $canceled_notification_events );
 
-			ALM_Logger::info(
+			ALMGR_Logger::info(
 				'Direct assignment completed successfully',
 				array(
 					'asset_id'    => $asset_id,
@@ -1705,7 +1722,7 @@ class ALM_Loan_Manager {
 			// Rollback transaction on error.
 			$wpdb->query( 'ROLLBACK' );
 
-			ALM_Logger::error(
+			ALMGR_Logger::error(
 				'Failed to complete direct assignment',
 				array(
 					'asset_id' => $asset_id,
@@ -1727,10 +1744,10 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_change_asset_state() {
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to change asset states.', 'asset-lending-manager' ) ) );
 		}
-		check_ajax_referer( 'alm_change_state_nonce', 'nonce' );
+		check_ajax_referer( 'almgr_change_state_nonce', 'nonce' );
 
 		$asset_id     = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
 		$target_state = isset( $_POST['target_state'] ) ? sanitize_key( wp_unslash( $_POST['target_state'] ) ) : '';
@@ -1767,7 +1784,7 @@ class ALM_Loan_Manager {
 		}
 
 		$asset = get_post( $asset_id );
-		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
 			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
 		}
 
@@ -1799,7 +1816,7 @@ class ALM_Loan_Manager {
 	 * When target is 'available' (forced return from on-loan):
 	 * - Kit: set kit + all components to available, clear owners.
 	 * - Component/standalone: set to available, clear owner. Kit membership unchanged.
-	 * - Fires 'alm_asset_force_returned' for borrower notification.
+	 * - Fires 'almgr_asset_force_returned' for borrower notification.
 	 *
 	 * @param int    $asset_id     Asset ID.
 	 * @param string $target_state Target state slug ('maintenance', 'retired', or 'available').
@@ -1891,7 +1908,7 @@ class ALM_Loan_Manager {
 				$parent_kit_ids   = $this->get_parent_kit_ids( $asset_id );
 				if ( ! empty( $parent_kit_ids ) ) {
 					// Persist kit membership so it can be restored later via restore_asset_state().
-					update_post_meta( $asset_id, '_alm_removed_from_kit_ids', $parent_kit_ids );
+					update_post_meta( $asset_id, '_almgr_removed_from_kit_ids', $parent_kit_ids );
 					foreach ( $parent_kit_ids as $kit_id ) {
 						$this->remove_component_from_kit( $asset_id, $kit_id );
 					}
@@ -1909,18 +1926,18 @@ class ALM_Loan_Manager {
 			$wpdb->query( 'COMMIT' );
 
 			// Update ACF location field on all affected assets (outside transaction).
-			if ( '' !== $location && function_exists( 'update_field' ) ) {
+			if ( '' !== $location ) {
 				foreach ( $location_targets as $target_id ) {
-					update_field( 'location', $location, $target_id );
+					ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
 				}
 			}
 
 			// Fire notification hook for forced return after transaction commits.
 			if ( 'available' === $target_state && $previous_owner ) {
-				do_action( 'alm_asset_force_returned', $asset_id, $previous_owner, $actor_id, $notes );
+				do_action( 'almgr_asset_force_returned', $asset_id, $previous_owner, $actor_id, $notes );
 			}
 
-			ALM_Logger::info(
+			ALMGR_Logger::info(
 				'Asset state changed',
 				array(
 					'asset_id'     => $asset_id,
@@ -1938,7 +1955,7 @@ class ALM_Loan_Manager {
 		} catch ( Exception $e ) {
 			$wpdb->query( 'ROLLBACK' );
 
-			ALM_Logger::error(
+			ALMGR_Logger::error(
 				'Failed to change asset state',
 				array(
 					'asset_id' => $asset_id,
@@ -1965,14 +1982,13 @@ class ALM_Loan_Manager {
 	private function get_parent_kit_ids( $component_id ) {
 		$query = new WP_Query(
 			array(
-				'post_type'      => ALM_ASSET_CPT_SLUG,
+				'post_type'      => ALMGR_ASSET_CPT_SLUG,
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Reverse kit lookup via serialized LIKE. Known limitation tracked in ISSUES_TODO.md; will be replaced by _alm_parent_kit_ids normalized meta.
 				'meta_query'     => array(
 					array(
-						'key'     => 'components',
+						'key'     => 'almgr_components',
 						'value'   => '"' . $component_id . '"',
 						'compare' => 'LIKE',
 					),
@@ -1992,10 +2008,6 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	private function remove_component_from_kit( $component_id, $kit_id ) {
-		if ( ! function_exists( 'update_field' ) ) {
-			throw new Exception( esc_html__( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
-		}
-
 		$current_ids = $this->get_kit_components( $kit_id );
 		$updated_ids = array_values(
 			array_filter(
@@ -2006,7 +2018,7 @@ class ALM_Loan_Manager {
 			)
 		);
 
-		update_field( 'components', $updated_ids, $kit_id );
+		ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $updated_ids, $kit_id );
 	}
 
 	/**
@@ -2014,14 +2026,9 @@ class ALM_Loan_Manager {
 	 *
 	 * @param int $component_id Component asset ID to add.
 	 * @param int $kit_id       Kit asset ID.
-	 * @throws Exception When ACF is not available.
 	 * @return void
 	 */
 	private function add_component_to_kit( $component_id, $kit_id ) {
-		if ( ! function_exists( 'update_field' ) ) {
-			throw new Exception( esc_html__( 'ACF is not available. Cannot update kit components.', 'asset-lending-manager' ) );
-		}
-
 		$current_ids = $this->get_kit_components( $kit_id );
 
 		// Avoid duplicates.
@@ -2030,7 +2037,7 @@ class ALM_Loan_Manager {
 		}
 
 		$current_ids[] = (int) $component_id;
-		update_field( 'components', $current_ids, $kit_id );
+		ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $current_ids, $kit_id );
 	}
 
 	/**
@@ -2039,10 +2046,10 @@ class ALM_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_restore_asset_state() {
-		if ( ! current_user_can( ALM_EDIT_ASSET ) ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to restore asset states.', 'asset-lending-manager' ) ) );
 		}
-		check_ajax_referer( 'alm_restore_state_nonce', 'nonce' );
+		check_ajax_referer( 'almgr_restore_state_nonce', 'nonce' );
 
 		$asset_id = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
 		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
@@ -2073,7 +2080,7 @@ class ALM_Loan_Manager {
 		}
 
 		$asset = get_post( $asset_id );
-		if ( ! $asset || ALM_ASSET_CPT_SLUG !== $asset->post_type ) {
+		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
 			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
 		}
 
@@ -2102,10 +2109,10 @@ class ALM_Loan_Manager {
 	 * 4. Write history entry for each component.
 	 *
 	 * Operations for a component/standalone:
-	 * 1. Re-add component to any kit it was removed from (using _alm_removed_from_kit_ids meta).
+	 * 1. Re-add component to any kit it was removed from (using _almgr_removed_from_kit_ids meta).
 	 * 2. Restore state to available, clear owner.
 	 * 3. Write history entry.
-	 * 4. Delete _alm_removed_from_kit_ids meta.
+	 * 4. Delete _almgr_removed_from_kit_ids meta.
 	 *
 	 * @param int    $asset_id Asset ID.
 	 * @param string $notes    Operator notes.
@@ -2139,7 +2146,7 @@ class ALM_Loan_Manager {
 				foreach ( $component_ids as $component_id ) {
 					$this->set_asset_state( $component_id, 'available' );
 					$this->set_asset_owner( $component_id, 0 );
-					delete_post_meta( $component_id, '_alm_removed_from_kit_ids' );
+					delete_post_meta( $component_id, '_almgr_removed_from_kit_ids' );
 
 					$logged = $this->log_history_entry( 0, $component_id, 0, 0, 'to_available', $notes, $actor_id );
 					if ( ! $logged ) {
@@ -2149,7 +2156,7 @@ class ALM_Loan_Manager {
 			} else {
 				// Component or standalone: re-add to previous kit(s) if applicable, then restore state.
 				$location_targets = array( $asset_id );
-				$previous_kit_ids = get_post_meta( $asset_id, '_alm_removed_from_kit_ids', true );
+				$previous_kit_ids = get_post_meta( $asset_id, '_almgr_removed_from_kit_ids', true );
 
 				if ( ! empty( $previous_kit_ids ) && is_array( $previous_kit_ids ) ) {
 					foreach ( $previous_kit_ids as $kit_id ) {
@@ -2165,19 +2172,19 @@ class ALM_Loan_Manager {
 					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
 				}
 
-				delete_post_meta( $asset_id, '_alm_removed_from_kit_ids' );
+				delete_post_meta( $asset_id, '_almgr_removed_from_kit_ids' );
 			}
 
 			$wpdb->query( 'COMMIT' );
 
 			// Update ACF location field on all affected assets (outside transaction).
-			if ( '' !== $location && function_exists( 'update_field' ) ) {
+			if ( '' !== $location ) {
 				foreach ( $location_targets as $target_id ) {
-					update_field( 'location', $location, $target_id );
+					ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
 				}
 			}
 
-			ALM_Logger::info(
+			ALMGR_Logger::info(
 				'Asset state restored to available',
 				array(
 					'asset_id' => $asset_id,
@@ -2194,7 +2201,7 @@ class ALM_Loan_Manager {
 		} catch ( Exception $e ) {
 			$wpdb->query( 'ROLLBACK' );
 
-			ALM_Logger::error(
+			ALMGR_Logger::error(
 				'Failed to restore asset state',
 				array(
 					'asset_id' => $asset_id,

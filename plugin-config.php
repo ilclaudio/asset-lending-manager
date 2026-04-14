@@ -8,77 +8,77 @@
 defined( 'ABSPATH' ) || exit;
 
 // Define constants.
-define( 'ALM_VERSION', '0.1.0' );
-define( 'ALM_PLUGIN_FILE', __FILE__ );
-define( 'ALM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'ALM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'ALM_TEXT_DOMAIN', 'asset-lending-manager' );
+define( 'ALMGR_VERSION', '0.2.1' );
+define( 'ALMGR_PLUGIN_FILE', __FILE__ );
+define( 'ALMGR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'ALMGR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'ALMGR_TEXT_DOMAIN', 'asset-lending-manager' );
 
 // Main menu settings.
-define( 'ALM_SLUG_MAIN_MENU', 'alm' );
+define( 'ALMGR_SLUG_MAIN_MENU', 'almgr' );
 
 // Permissions.
-define( 'ALM_VIEW_ASSETS', 'alm_view_assets' );
-define( 'ALM_VIEW_ASSET', 'alm_view_asset' );
-define( 'ALM_EDIT_ASSET', 'alm_edit_asset' );
+define( 'ALMGR_VIEW_ASSETS', 'almgr_view_assets' );
+define( 'ALMGR_VIEW_ASSET', 'almgr_view_asset' );
+define( 'ALMGR_EDIT_ASSET', 'almgr_edit_asset' );
 
 // Asset CPT.
-define( 'ALM_ASSET_CPT_SLUG', 'alm_asset' );
-define( 'ALM_MAIN_MENU_ICON', 'dashicons-hammer' );
-define( 'ALM_ASSET_ICON', 'dashicons-hammer' );
+define( 'ALMGR_ASSET_CPT_SLUG', 'almgr_asset' );
+define( 'ALMGR_MAIN_MENU_ICON', 'dashicons-hammer' );
+define( 'ALMGR_ASSET_ICON', 'dashicons-hammer' );
 
 // Asset structures.
-define( 'ALM_ASSET_KIT_SLUG', 'kit' );
-define( 'ALM_ASSET_COMPONENT_SLUG', 'component' );
+define( 'ALMGR_ASSET_KIT_SLUG', 'kit' );
+define( 'ALMGR_ASSET_COMPONENT_SLUG', 'component' );
 
 // Taxonomies.
-define( 'ALM_ASSET_STRUCTURE_TAXONOMY_SLUG', 'alm_structure' );
-define( 'ALM_ASSET_TYPE_TAXONOMY_SLUG', 'alm_type' );
-define( 'ALM_ASSET_STATE_TAXONOMY_SLUG', 'alm_state' );
-define( 'ALM_ASSET_LEVEL_TAXONOMY_SLUG', 'alm_level' );
+define( 'ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG', 'almgr_structure' );
+define( 'ALMGR_ASSET_TYPE_TAXONOMY_SLUG', 'almgr_type' );
+define( 'ALMGR_ASSET_STATE_TAXONOMY_SLUG', 'almgr_state' );
+define( 'ALMGR_ASSET_LEVEL_TAXONOMY_SLUG', 'almgr_level' );
 define(
-	'ALM_CUSTOM_TAXONOMIES',
+	'ALMGR_CUSTOM_TAXONOMIES',
 	array(
-		ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
-		ALM_ASSET_TYPE_TAXONOMY_SLUG,
-		ALM_ASSET_STATE_TAXONOMY_SLUG,
-		ALM_ASSET_LEVEL_TAXONOMY_SLUG,
+		ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
+		ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
+		ALMGR_ASSET_STATE_TAXONOMY_SLUG,
+		ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 	)
 );
 
 // Roles and permissions.
-define( 'ALM_MEMBER_ROLE', 'alm_member' );
-define( 'ALM_OPERATOR_ROLE', 'alm_operator' );
+define( 'ALMGR_MEMBER_ROLE', 'almgr_member' );
+define( 'ALMGR_OPERATOR_ROLE', 'almgr_operator' );
 
 // Autocomplete.
-define( 'ALM_AUTOCOMPLETE_MAX_RESULTS', 5 );
-define( 'ALM_AUTOCOMPLETE_DESC_LENGTH', 20 );
+define( 'ALMGR_AUTOCOMPLETE_MAX_RESULTS', 5 );
+define( 'ALMGR_AUTOCOMPLETE_DESC_LENGTH', 20 );
 
 // Asset list.
-define( 'ALM_ASSET_LIST_PER_PAGE', 12 );
+define( 'ALMGR_ASSET_LIST_PER_PAGE', 12 );
 
 // Asset identifier code.
-// ALM_ASSET_CODE_PREFIX is the alphanumeric prefix used to build the human-readable asset code
-// displayed in the frontend detail view (e.g. "ALM-00000045").
-// ALM_ASSET_CODE_FORMAT is the sprintf format: %s = prefix, %08d = ID zero-padded to 8 digits.
-define( 'ALM_ASSET_CODE_PREFIX', 'ALM' );
-define( 'ALM_ASSET_CODE_FORMAT', '%s-%08d' );
+// ALMGR_ASSET_CODE_PREFIX is the alphanumeric prefix used to build the human-readable asset code
+// displayed in the frontend detail view (e.g. "ALMGR-00000045").
+// ALMGR_ASSET_CODE_FORMAT is the sprintf format: %s = prefix, %08d = ID zero-padded to 8 digits.
+define( 'ALMGR_ASSET_CODE_PREFIX', 'ALMGR' );
+define( 'ALMGR_ASSET_CODE_FORMAT', '%s-%08d' );
 
 // Email notifications — sender configuration.
-// Set ALM_EMAIL_FROM_ADDRESS to a non-empty string to override the site admin email.
-// Set ALM_EMAIL_SYSTEM_ADDRESS to receive operator-level copies on loan request submission.
-define( 'ALM_EMAIL_FROM_NAME', '' ); // Falls back to get_bloginfo('name') if empty.
-define( 'ALM_EMAIL_FROM_ADDRESS', '' ); // Falls back to get_bloginfo('admin_email') if empty.
-define( 'ALM_EMAIL_SYSTEM_ADDRESS', '' ); // Operator notification address; disabled if empty.
+// Set ALMGR_EMAIL_FROM_ADDRESS to a non-empty string to override the site admin email.
+// Set ALMGR_EMAIL_SYSTEM_ADDRESS to receive operator-level copies on loan request submission.
+define( 'ALMGR_EMAIL_FROM_NAME', '' ); // Falls back to get_bloginfo('name') if empty.
+define( 'ALMGR_EMAIL_FROM_ADDRESS', '' ); // Falls back to get_bloginfo('admin_email') if empty.
+define( 'ALMGR_EMAIL_SYSTEM_ADDRESS', '' ); // Operator notification address; disabled if empty.
 
 // Email notifications — templates.
 // Runtime placeholders are replaced before sending the email.
 /**
- * Return the default email templates used by ALM notifications.
+ * Return the default email templates used by ALMGR notifications.
  *
  * @return array<string, array<string, string>>
  */
-function alm_get_email_templates() {
+function almgr_get_email_templates() {
 	return array(
 		'subject' => array(
 			'request_to_requester'        => __( '[ALM] Loan request submitted: {ASSET_TITLE}', 'asset-lending-manager' ),
@@ -136,7 +136,7 @@ function alm_get_email_templates() {
  *
  * @return array<string, string>
  */
-function alm_get_loan_status_labels() {
+function almgr_get_loan_status_labels() {
 	return array(
 		'pending'        => __( 'Pending', 'asset-lending-manager' ),
 		'approved'       => __( 'Approved', 'asset-lending-manager' ),

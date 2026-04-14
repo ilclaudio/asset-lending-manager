@@ -6,7 +6,7 @@ Designed for clubs, associations, schools, public bodies, libraries, laboratorie
 
 Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
-The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof. Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
+The plugin follows WordPress coding standards, uses a modular architecture, and is designed to be simple, extensible, and future-proof. Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool usable by any organization.
 
 ---
 
@@ -22,7 +22,12 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; location field required on every state change
 - Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
 - Loan history tracking
-- Role-based permissions (`alm_member`, `alm_operator`)
+- Role-based permissions (`almgr_member`, `almgr_operator`)
+- Read-only JSON REST API (`/almgr/v1/`) for asset list, asset detail, member list, and member assets; authentication via Application Passwords; independent of the WordPress REST API global setting
+- Back-office Tools page (`ALM → Tools`) with Import, Export, and Utilities tabs
+- Users CSV import from the Tools page (admin only) and users CSV export (admin and operator)
+- Assets CSV import from the Tools page (admin and operator) and assets CSV export (admin and operator)
+- Kit import and export: kit components and their ACF fields are included in the asset CSV
 - Translation-ready
 
 ---
@@ -92,15 +97,15 @@ Direct assignment can also reassign an already on-loan asset while keeping state
 
 ## Installation
 
-1. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
-2. Activate the plugin through the **Plugins** menu in WordPress.
-3. Ensure **Advanced Custom Fields (ACF)** is installed and active.
-4. The plugin works out of the box on both classic and block themes — no shortcodes required for normal use. Asset pages are served automatically via the plugin's built-in templates:
+1. Ensure **Advanced Custom Fields (ACF)** is installed and active.
+2. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
+3. Activate the plugin through the **Plugins** menu in WordPress.
+4. The plugin works out of the box on both classic and block themes, with no shortcodes required for normal use. Asset pages are served automatically via the plugin's built-in templates:
    - `/asset/` — asset catalog with search filters
    - `/asset/asset-name/` — single asset detail page
 5. Use the shortcodes only if you need to embed a view inside an existing WordPress page:
-   - `[alm_asset_list]` — embeds the asset catalog into any page or post
-   - `[alm_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
+   - `[almgr_asset_list]` — embeds the asset catalog into any page or post
+   - `[almgr_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
 6. Optionally configure email sender settings in wp-admin under **ALM → Settings**.
 
 Settings UI is available in wp-admin under the ALM menu.
@@ -109,13 +114,18 @@ Settings UI is available in wp-admin under the ALM menu.
 
 Uninstalling the plugin via the WordPress admin panel removes:
 
-- Plugin settings (`alm_settings` option)
-- Loan request history table (`wp_alm_loan_requests_history`)
-- Pending loan requests table (`wp_alm_loan_requests`)
-- Custom roles (`alm_member`, `alm_operator`) and their capabilities
+- Plugin settings (`almgr_settings` option)
+- Loan request history table (`wp_almgr_loan_requests_history`)
+- Pending loan requests table (`wp_almgr_loan_requests`)
+- Custom roles (`almgr_member`, `almgr_operator`) and their capabilities
 
-**Asset posts (`alm_asset`) and their metadata are intentionally preserved.**
-Your inventory data is not deleted on uninstall, so it can be recovered if the plugin is reinstalled later.
+By default, asset posts (`almgr_asset`) and their metadata are preserved.
+
+If you want to remove **all** plugin data (including asset posts and functional asset meta), add this in `wp-config.php` before uninstalling:
+
+```php
+define( 'ALMGR_REMOVE_ALL_DATA', true );
+```
 
 ---
 

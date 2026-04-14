@@ -1,0 +1,4 @@
+Title;Structure;Type;State;Level;External_Code;Description;Manufacturer;Model;Wp_Status;Kit_Component_Titles
+10mm Eyepiece;component;ocular;available;basic;OC-010;"Plossl 10mm eyepiece; multi-coated optics";SkyWatcher;Super 10;publish;
+UHC Filter 1.25;component;filter;available;intermediate;FI-UHC-125;UHC filter for deep-sky observation;Baader;UHC-S;publish;
+Basic Visual Kit;kit;accessory;available;basic;KIT-VIS-001;Basic kit for visual observing;ALM;Basic Visual Kit;publish;10mm Eyepiece|UHC Filter 1.25

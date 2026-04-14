@@ -2,10 +2,10 @@
 /**
  * Asset Lending Manager - Frontend Manager
  *
- * Handles frontend rendering for ALM assets using shortcodes.
+ * Handles frontend rendering for ALMGR assets using shortcodes.
  *
  * Responsibilities:
- * - Provide fallback templates for alm_asset CPT.
+ * - Provide fallback templates for almgr_asset CPT.
  * - Register shortcodes for asset list and asset view.
  * - Enqueue frontend CSS and JS for asset pages.
  * - Keep rendering logic inside plugin templates.
@@ -18,21 +18,21 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Definition of the public layout of the plugin.
  */
-class ALM_Frontend_Manager {
+class ALMGR_Frontend_Manager {
 
 	/**
 	 * Settings manager instance.
 	 *
-	 * @var ALM_Settings_Manager
+	 * @var ALMGR_Settings_Manager
 	 */
 	private $settings;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param ALM_Settings_Manager $settings Plugin settings instance.
+	 * @param ALMGR_Settings_Manager $settings Plugin settings instance.
 	 */
-	public function __construct( ALM_Settings_Manager $settings ) {
+	public function __construct( ALMGR_Settings_Manager $settings ) {
 		$this->settings = $settings;
 	}
 
@@ -54,30 +54,30 @@ class ALM_Frontend_Manager {
 		// Register template loading filter.
 		add_filter( 'template_include', array( $this, 'load_asset_template' ) );
 		// Register shortcodes.
-		add_shortcode( 'alm_asset_list', array( $this, 'shortcode_asset_list' ) );
-		add_shortcode( 'alm_asset_view', array( $this, 'shortcode_asset_view' ) );
+		add_shortcode( 'almgr_asset_list', array( $this, 'shortcode_asset_list' ) );
+		add_shortcode( 'almgr_asset_view', array( $this, 'shortcode_asset_view' ) );
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
-		// Handle QR scan redirect (?alm_scan=ALM-00000052).
-		add_action( 'template_redirect', array( $this, 'handle_alm_scan_redirect' ) );
+		// Handle QR scan redirect (?almgr_scan=ALMGR-00000052).
+		add_action( 'template_redirect', array( $this, 'handle_almgr_scan_redirect' ) );
 		// Login and logout redirect for operators and members.
 		add_filter( 'login_redirect', array( $this, 'redirect_login_by_role' ), 10, 3 );
 		add_filter( 'logout_redirect', array( $this, 'redirect_logout_by_role' ), 10, 3 );
 	}
 
 	/**
-	 * Load plugin templates for alm_asset archive and single views
+	 * Load plugin templates for almgr_asset archive and single views
 	 * if the active theme does not provide them.
 	 *
 	 * @param string $template The path to the template WordPress intends to use.
 	 * @return string
 	 */
 	public function load_asset_template( $template ) {
-		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) ) {
-			return $this->locate_template( 'archive-alm-asset.php', $template );
+		if ( is_post_type_archive( ALMGR_ASSET_CPT_SLUG ) ) {
+			return $this->locate_template( 'archive-almgr-asset.php', $template );
 		}
-		if ( is_singular( ALM_ASSET_CPT_SLUG ) ) {
-			return $this->locate_template( 'single-alm-asset.php', $template );
+		if ( is_singular( ALMGR_ASSET_CPT_SLUG ) ) {
+			return $this->locate_template( 'single-almgr-asset.php', $template );
 		}
 		return $template;
 	}
@@ -97,8 +97,8 @@ class ALM_Frontend_Manager {
 		// Explicit role check.
 		$roles = (array) $user->roles;
 		if (
-			in_array( ALM_MEMBER_ROLE, $roles, true ) ||
-			in_array( ALM_OPERATOR_ROLE, $roles, true )
+			in_array( ALMGR_MEMBER_ROLE, $roles, true ) ||
+			in_array( ALMGR_OPERATOR_ROLE, $roles, true )
 		) {
 			$login_page_id = (int) $this->settings->get( 'frontend.login_redirect_page_id', 0 );
 			if ( $login_page_id > 0 ) {
@@ -134,8 +134,8 @@ class ALM_Frontend_Manager {
 		// Explicit role check.
 		$roles = (array) $user->roles;
 		if (
-			in_array( ALM_MEMBER_ROLE, $roles, true ) ||
-			in_array( ALM_OPERATOR_ROLE, $roles, true )
+			in_array( ALMGR_MEMBER_ROLE, $roles, true ) ||
+			in_array( ALMGR_OPERATOR_ROLE, $roles, true )
 		) {
 			$logout_page_id = (int) $this->settings->get( 'frontend.logout_redirect_page_id', 0 );
 			if ( $logout_page_id > 0 ) {
@@ -161,7 +161,7 @@ class ALM_Frontend_Manager {
 		$theme_template = locate_template( $template_name );
 		// 2) Allow override via filter (can replace or confirm the template path).
 		$template = apply_filters(
-			'alm_locate_template',
+			'almgr_locate_template',
 			$theme_template,
 			$template_name,
 			$default_template
@@ -175,7 +175,7 @@ class ALM_Frontend_Manager {
 			return $theme_template;
 		}
 		// 5) Fallback to the plugin template.
-		$plugin_template = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/' . ltrim( $template_name, '/\\' );
+		$plugin_template = trailingslashit( ALMGR_PLUGIN_DIR ) . 'templates/' . ltrim( $template_name, '/\\' );
 		if ( file_exists( $plugin_template ) ) {
 			return $plugin_template;
 		}
@@ -201,48 +201,48 @@ class ALM_Frontend_Manager {
 		}
 		// Enqueue CSS.
 		wp_enqueue_style(
-			'alm-frontend-assets',
-			ALM_PLUGIN_URL . 'assets/css/frontend-assets.css',
+			'almgr-frontend-assets',
+			ALMGR_PLUGIN_URL . 'assets/css/frontend-assets.css',
 			array(),
-			ALM_VERSION,
+			ALMGR_VERSION,
 			'all'
 		);
 		wp_enqueue_style(
-			'alm-requests-table',
-			ALM_PLUGIN_URL . 'assets/css/asset-requests-table.css',
+			'almgr-requests-table',
+			ALMGR_PLUGIN_URL . 'assets/css/asset-requests-table.css',
 			array(),
-			ALM_VERSION
+			ALMGR_VERSION
 		);
 		wp_enqueue_style(
-			'alm-history-table',
-			ALM_PLUGIN_URL . 'assets/css/asset-history-table.css',
+			'almgr-history-table',
+			ALMGR_PLUGIN_URL . 'assets/css/asset-history-table.css',
 			array(),
-			ALM_VERSION
+			ALMGR_VERSION
 		);
 		// Enqueue JS.
 			wp_enqueue_script(
-				'alm-frontend-assets',
-				ALM_PLUGIN_URL . 'assets/js/frontend-assets.js',
+				'almgr-frontend-assets',
+				ALMGR_PLUGIN_URL . 'assets/js/frontend-assets.js',
 				array( 'wp-i18n' ),
-				ALM_VERSION,
+				ALMGR_VERSION,
 				true
 			);
 			wp_set_script_translations(
-				'alm-frontend-assets',
-				ALM_TEXT_DOMAIN,
-				ALM_PLUGIN_DIR . 'languages'
+				'almgr-frontend-assets',
+				ALMGR_TEXT_DOMAIN,
+				ALMGR_PLUGIN_DIR . 'languages'
 			);
 		// Pass data from PHP to JavaScript (useful for AJAX).
 		wp_localize_script(
-			'alm-frontend-assets',
-			'almFrontend',
+			'almgr-frontend-assets',
+			'almgrFrontend',
 			array(
 				'ajaxUrl'                     => admin_url( 'admin-ajax.php' ),
-				'nonce'                       => wp_create_nonce( 'alm_frontend_nonce' ),
-				'loanRequestNonce'            => wp_create_nonce( 'alm_loan_request_nonce' ),
-				'directAssignNonce'           => wp_create_nonce( 'alm_direct_assign_nonce' ),
-				'changeStateNonce'            => wp_create_nonce( 'alm_change_state_nonce' ),
-				'restoreStateNonce'           => wp_create_nonce( 'alm_restore_state_nonce' ),
+				'nonce'                       => wp_create_nonce( 'almgr_frontend_nonce' ),
+				'loanRequestNonce'            => wp_create_nonce( 'almgr_loan_request_nonce' ),
+				'directAssignNonce'           => wp_create_nonce( 'almgr_direct_assign_nonce' ),
+				'changeStateNonce'            => wp_create_nonce( 'almgr_change_state_nonce' ),
+				'restoreStateNonce'           => wp_create_nonce( 'almgr_restore_state_nonce' ),
 				'qrScanEnabled'               => (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true ),
 				'requestMessageMaxLength'     => (int) $this->settings->get( 'loans.request_message_max_length', 500 ),
 				'rejectionMessageMaxLength'   => (int) $this->settings->get( 'loans.rejection_message_max_length', 500 ),
@@ -254,8 +254,8 @@ class ALM_Frontend_Manager {
 		// Enqueue QR code generator library only on asset detail pages.
 		if ( $this->is_asset_view_page() ) {
 			wp_enqueue_script(
-				'alm-qrcode-generator',
-				ALM_PLUGIN_URL . 'assets/js/vendor/qrcode-generator.js',
+				'almgr-qrcode-generator',
+				ALMGR_PLUGIN_URL . 'assets/js/vendor/qrcode-generator.js',
 				array(),
 				'1.4.4',
 				true
@@ -265,32 +265,32 @@ class ALM_Frontend_Manager {
 		// Enqueue jsQR library only on asset list pages (used by the QR scanner button).
 		if ( $this->is_asset_list_page() ) {
 			wp_enqueue_script(
-				'alm-jsqr',
-				ALM_PLUGIN_URL . 'assets/js/vendor/jsqr.min.js',
+				'almgr-jsqr',
+				ALMGR_PLUGIN_URL . 'assets/js/vendor/jsqr.min.js',
 				array(),
 				'1.4.0',
 				true
 			);
 		}
 
-		// Enqueue user autocomplete assets (used by the direct assignment form for operators).
-			wp_enqueue_script(
-				'alm-user-autocomplete',
-				ALM_PLUGIN_URL . 'assets/js/alm-user-autocomplete.js',
-				array( 'wp-i18n' ),
-				ALM_VERSION,
-				true
-			);
+			// Enqueue user autocomplete assets (used by the direct assignment form for operators).
+				wp_enqueue_script(
+					'almgr-user-autocomplete',
+					ALMGR_PLUGIN_URL . 'assets/js/almgr-user-autocomplete.js',
+					array( 'wp-i18n' ),
+					ALMGR_VERSION,
+					true
+				);
 			wp_set_script_translations(
-				'alm-user-autocomplete',
-				ALM_TEXT_DOMAIN,
-				ALM_PLUGIN_DIR . 'languages'
+				'almgr-user-autocomplete',
+				ALMGR_TEXT_DOMAIN,
+				ALMGR_PLUGIN_DIR . 'languages'
 			);
 		wp_localize_script(
-			'alm-user-autocomplete',
-			'almUserAutocomplete',
+			'almgr-user-autocomplete',
+			'almgrUserAutocomplete',
 			array(
-				'restUrl'   => esc_url( rest_url( 'alm/v1/users/autocomplete' ) ),
+				'restUrl'   => esc_url( rest_url( 'almgr/v1/users/autocomplete' ) ),
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
 				'minChars'  => (int) $this->settings->get( 'autocomplete.min_chars', 3 ),
 			)
@@ -304,13 +304,13 @@ class ALM_Frontend_Manager {
 	 */
 	private function is_asset_page() {
 		// Archive or single asset page.
-		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) || is_singular( ALM_ASSET_CPT_SLUG ) ) {
+		if ( is_post_type_archive( ALMGR_ASSET_CPT_SLUG ) || is_singular( ALMGR_ASSET_CPT_SLUG ) ) {
 			return true;
 		}
 
 		// Page with asset shortcodes.
 		global $post;
-		if ( $post && ( has_shortcode( $post->post_content, 'alm_asset_list' ) || has_shortcode( $post->post_content, 'alm_asset_view' ) ) ) {
+		if ( $post && ( has_shortcode( $post->post_content, 'almgr_asset_list' ) || has_shortcode( $post->post_content, 'almgr_asset_view' ) ) ) {
 			return true;
 		}
 
@@ -324,12 +324,10 @@ class ALM_Frontend_Manager {
 	 * @return string
 	 */
 	private function get_sanitized_query_text( $key ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only frontend filter/query parsing.
 		if ( ! isset( $_GET[ $key ] ) ) {
 			return '';
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only frontend filter/query parsing.
 		return sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
 	}
 
@@ -368,7 +366,7 @@ class ALM_Frontend_Manager {
 	/**
 	 * Shortcode handler for asset list.
 	 *
-	 * Usage: [alm_asset_list]
+	 * Usage: [almgr_asset_list]
 	 *
 	 * @param array $attributes Shortcode attributes.
 	 * @return string HTML output.
@@ -377,10 +375,10 @@ class ALM_Frontend_Manager {
 		// Parse shortcode attributes (for future extensions like filters).
 		$attributes = shortcode_atts(
 			array(
-				'per_page' => (int) $this->settings->get( 'frontend.asset_list_per_page', ALM_ASSET_LIST_PER_PAGE ),
+				'per_page' => (int) $this->settings->get( 'frontend.asset_list_per_page', ALMGR_ASSET_LIST_PER_PAGE ),
 			),
 			$attributes,
-			'alm_asset_list'
+			'almgr_asset_list'
 		);
 		// Read and sanitize search parameter.
 		$search_term = $this->get_sanitized_query_text( 's' );
@@ -395,8 +393,8 @@ class ALM_Frontend_Manager {
 	 * Shortcode handler for single asset view.
 	 *
 	 * Usage:
-	 * - [alm_asset_view slug="binocolo"]
-	 * - [alm_asset_view] (uses query string ?asset=binocolo or current post)
+	 * - [almgr_asset_view slug="binocolo"]
+	 * - [almgr_asset_view] (uses query string ?asset=binocolo or current post)
 	 *
 	 * @param array $attributes Shortcode attributes.
 	 * @return string HTML output.
@@ -408,14 +406,14 @@ class ALM_Frontend_Manager {
 				'slug' => '',
 			),
 			$attributes,
-			'alm_asset_view'
+			'almgr_asset_view'
 		);
 
 		// Determine asset ID.
 		$asset_id = $this->get_asset_id_from_context( $attributes['slug'] );
 
 		if ( ! $asset_id ) {
-			return '<p class="alm-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
+			return '<p class="almgr-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
 		}
 
 		// Start output buffering.
@@ -441,7 +439,7 @@ class ALM_Frontend_Manager {
 	private function get_asset_id_from_context( $slug ) {
 		// Priority 1: Slug from shortcode attribute.
 		if ( ! empty( $slug ) ) {
-			$asset = get_page_by_path( $slug, OBJECT, ALM_ASSET_CPT_SLUG );
+			$asset = get_page_by_path( $slug, OBJECT, ALMGR_ASSET_CPT_SLUG );
 			if ( $asset ) {
 				return $asset->ID;
 			}
@@ -449,13 +447,13 @@ class ALM_Frontend_Manager {
 		// Priority 2: Slug from query string.
 		$query_slug = $this->get_sanitized_query_slug( 'asset' );
 		if ( '' !== $query_slug ) {
-			$asset = get_page_by_path( $query_slug, OBJECT, ALM_ASSET_CPT_SLUG );
+			$asset = get_page_by_path( $query_slug, OBJECT, ALMGR_ASSET_CPT_SLUG );
 			if ( $asset ) {
 				return $asset->ID;
 			}
 		}
 		// Priority 3: Current post ID (if in single asset context).
-		if ( is_singular( ALM_ASSET_CPT_SLUG ) ) {
+		if ( is_singular( ALMGR_ASSET_CPT_SLUG ) ) {
 			return get_the_ID();
 		}
 
@@ -474,16 +472,16 @@ class ALM_Frontend_Manager {
 		$filter_type      = '';
 		$filter_state     = '';
 		$filter_level     = '';
-		$filter_structure = $this->get_sanitized_query_slug( 'alm_structure' );
-		$filter_type      = $this->get_sanitized_query_slug( 'alm_type' );
-		$filter_state     = $this->get_sanitized_query_slug( 'alm_state' );
-		$filter_level     = $this->get_sanitized_query_slug( 'alm_level' );
+		$filter_structure = $this->get_sanitized_query_slug( 'almgr_structure' );
+		$filter_type      = $this->get_sanitized_query_slug( 'almgr_type' );
+		$filter_state     = $this->get_sanitized_query_slug( 'almgr_state' );
+		$filter_level     = $this->get_sanitized_query_slug( 'almgr_level' );
 		// Read owner filter (operator: by user ID; member: "my assets" checkbox).
 		$filter_owner      = 0;
 		$filter_owner_name = '';
 		$filter_my_assets  = false;
-		if ( current_user_can( ALM_EDIT_ASSET ) ) {
-			$filter_owner = $this->get_sanitized_query_absint( 'alm_owner' );
+		if ( current_user_can( ALMGR_EDIT_ASSET ) ) {
+			$filter_owner = $this->get_sanitized_query_absint( 'almgr_owner' );
 			if ( $filter_owner > 0 ) {
 				$owner_data = get_userdata( $filter_owner );
 				if ( $owner_data ) {
@@ -493,18 +491,18 @@ class ALM_Frontend_Manager {
 				}
 			}
 		} elseif ( is_user_logged_in() ) {
-			if ( '1' === $this->get_sanitized_query_text( 'alm_my_assets' ) ) {
+			if ( '1' === $this->get_sanitized_query_text( 'almgr_my_assets' ) ) {
 				$filter_my_assets = true;
 				$filter_owner     = get_current_user_id();
 			}
 		}
 		// Pagination.
 		$per_page     = max( 1, (int) $attributes['per_page'] );
-		$current_page = max( 1, $this->get_sanitized_query_absint( 'alm_paged' ) );
+		$current_page = max( 1, $this->get_sanitized_query_absint( 'almgr_paged' ) );
 
 		// Build query args.
 		$query_args = array(
-			'post_type'      => ALM_ASSET_CPT_SLUG,
+			'post_type'      => ALMGR_ASSET_CPT_SLUG,
 			'post_status'    => 'publish',
 			'posts_per_page' => $per_page,
 			'paged'          => $current_page,
@@ -519,43 +517,41 @@ class ALM_Frontend_Manager {
 		);
 		if ( ! empty( $filter_structure ) ) {
 			$tax_query[] = array(
-				'taxonomy' => ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+				'taxonomy' => ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
 				'field'    => 'slug',
 				'terms'    => $filter_structure,
 			);
 		}
 		if ( ! empty( $filter_type ) ) {
 			$tax_query[] = array(
-				'taxonomy' => ALM_ASSET_TYPE_TAXONOMY_SLUG,
+				'taxonomy' => ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
 				'field'    => 'slug',
 				'terms'    => $filter_type,
 			);
 		}
 		if ( ! empty( $filter_state ) ) {
 			$tax_query[] = array(
-				'taxonomy' => ALM_ASSET_STATE_TAXONOMY_SLUG,
+				'taxonomy' => ALMGR_ASSET_STATE_TAXONOMY_SLUG,
 				'field'    => 'slug',
 				'terms'    => $filter_state,
 			);
 		}
 		if ( ! empty( $filter_level ) ) {
 			$tax_query[] = array(
-				'taxonomy' => ALM_ASSET_LEVEL_TAXONOMY_SLUG,
+				'taxonomy' => ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 				'field'    => 'slug',
 				'terms'    => $filter_level,
 			);
 		}
 		// Add tax_query to query args if we have filters.
 		if ( count( $tax_query ) > 1 ) {
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required dynamic taxonomy filters for list UI.
 			$query_args['tax_query'] = $tax_query;
 		}
 		// Add meta_query to filter by owner if set.
 		if ( $filter_owner > 0 ) {
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required owner filter based on current assignment meta.
 			$query_args['meta_query'] = array(
 				array(
-					'key'     => '_alm_current_owner',
+					'key'     => '_almgr_current_owner',
 					'value'   => $filter_owner,
 					'compare' => '=',
 					'type'    => 'NUMERIC',
@@ -576,7 +572,7 @@ class ALM_Frontend_Manager {
 			// and bulk-load user records so get_userdata() inside the loop is a cache hit.
 			$owner_ids = array_filter(
 				array_map(
-					static fn( $p ) => (int) get_post_meta( $p->ID, '_alm_current_owner', true ),
+					static fn( $p ) => (int) get_post_meta( $p->ID, '_almgr_current_owner', true ),
 					$query->posts
 				)
 			);
@@ -585,35 +581,33 @@ class ALM_Frontend_Manager {
 			}
 
 			foreach ( $query->posts as $post ) {
-				$wrapper = ALM_Asset_Manager::get_asset_wrapper( $post->ID );
+				$wrapper = ALMGR_Asset_Manager::get_asset_wrapper( $post->ID );
 				if ( $wrapper ) {
 					$assets[] = $wrapper;
 				}
 			}
 		}
 		wp_reset_postdata();
-		$alm_current_search       = $search_term;
-		$alm_default_filters_open = (bool) $this->settings->get( 'frontend.default_filters_open', false );
-		$alm_qr_scan_enabled      = (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true );
-		include ALM_PLUGIN_DIR . 'templates/shortcodes/asset-list.php';
+		$almgr_current_search       = $search_term;
+		$almgr_default_filters_open = (bool) $this->settings->get( 'frontend.default_filters_open', false );
+		$almgr_qr_scan_enabled      = (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true );
+		include ALMGR_PLUGIN_DIR . 'templates/shortcodes/asset-list.php';
 	}
 
 	/**
-	 * Handle the ?alm_scan=CODE redirect.
+	 * Handle the ?almgr_scan=CODE redirect.
 	 *
-	 * Reads the alm_scan query parameter, resolves the asset post ID from the
+	 * Reads the almgr_scan query parameter, resolves the asset post ID from the
 	 * code, and redirects to the asset permalink. Redirects to home on failure.
 	 *
 	 * @return void
 	 */
-	public function handle_alm_scan_redirect() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
-		if ( ! isset( $_GET['alm_scan'] ) ) {
+	public function handle_almgr_scan_redirect() {
+		if ( ! isset( $_GET['almgr_scan'] ) ) {
 			return;
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only QR scan redirect, no state change.
-		$code    = sanitize_text_field( wp_unslash( $_GET['alm_scan'] ) );
-		$post_id = ALM_Asset_Manager::get_asset_id_from_code( $code );
+		$code    = sanitize_text_field( wp_unslash( $_GET['almgr_scan'] ) );
+		$post_id = ALMGR_Asset_Manager::get_asset_id_from_code( $code );
 		if ( $post_id > 0 ) {
 			wp_safe_redirect( get_permalink( $post_id ) );
 			exit;
@@ -627,11 +621,11 @@ class ALM_Frontend_Manager {
 	 * @return bool
 	 */
 	private function is_asset_list_page() {
-		if ( is_post_type_archive( ALM_ASSET_CPT_SLUG ) ) {
+		if ( is_post_type_archive( ALMGR_ASSET_CPT_SLUG ) ) {
 			return true;
 		}
 		global $post;
-		if ( $post && has_shortcode( $post->post_content, 'alm_asset_list' ) ) {
+		if ( $post && has_shortcode( $post->post_content, 'almgr_asset_list' ) ) {
 			return true;
 		}
 		return false;
@@ -643,11 +637,11 @@ class ALM_Frontend_Manager {
 	 * @return bool
 	 */
 	private function is_asset_view_page() {
-		if ( is_singular( ALM_ASSET_CPT_SLUG ) ) {
+		if ( is_singular( ALMGR_ASSET_CPT_SLUG ) ) {
 			return true;
 		}
 		global $post;
-		if ( $post && has_shortcode( $post->post_content, 'alm_asset_view' ) ) {
+		if ( $post && has_shortcode( $post->post_content, 'almgr_asset_view' ) ) {
 			return true;
 		}
 		return false;
@@ -661,15 +655,15 @@ class ALM_Frontend_Manager {
 	 */
 	private function render_asset_view_template( $asset_id ) {
 		// Get asset wrapper.
-		$asset = ALM_Asset_Manager::get_asset_wrapper( $asset_id );
+		$asset = ALMGR_Asset_Manager::get_asset_wrapper( $asset_id );
 
 		if ( ! $asset ) {
-			echo '<p class="alm-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
+			echo '<p class="almgr-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';
 			return;
 		}
 
 		// Include template.
-		$template_path = trailingslashit( ALM_PLUGIN_DIR ) . 'templates/shortcodes/asset-view.php';
+		$template_path = trailingslashit( ALMGR_PLUGIN_DIR ) . 'templates/shortcodes/asset-view.php';
 		if ( file_exists( $template_path ) ) {
 			include $template_path;
 		}

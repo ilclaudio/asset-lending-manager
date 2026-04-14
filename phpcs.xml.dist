@@ -35,8 +35,8 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="alm_"/>
-				<element value="ALM_"/>
+				<element value="almgr_"/>
+				<element value="ALMGR_"/>
 			</property>
 		</properties>
 	</rule>
@@ -46,19 +46,19 @@
 
 	<!-- Loan manager uses direct DB queries for transactional integrity; caching would be incorrect. -->
 	<rule ref="WordPress.DB.DirectDatabaseQuery.DirectQuery">
-		<exclude-pattern>*/includes/class-alm-loan-manager.php</exclude-pattern>
+		<exclude-pattern>*/includes/class-almgr-loan-manager.php</exclude-pattern>
 	</rule>
 	<rule ref="WordPress.DB.DirectDatabaseQuery.NoCaching">
-		<exclude-pattern>*/includes/class-alm-loan-manager.php</exclude-pattern>
+		<exclude-pattern>*/includes/class-almgr-loan-manager.php</exclude-pattern>
 	</rule>
 	<rule ref="WordPress.DB.SlowDBQuery.slow_db_query_meta_query">
-		<exclude-pattern>*/includes/class-alm-loan-manager.php</exclude-pattern>
+		<exclude-pattern>*/includes/class-almgr-loan-manager.php</exclude-pattern>
 	</rule>
 
 	<!-- Template files included inside a method scope: local variables are not global. -->
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
-		<exclude-pattern>*/admin/alm-settings-page.php</exclude-pattern>
-		<exclude-pattern>*/admin/alm-tools-page.php</exclude-pattern>
+		<exclude-pattern>*/admin/almgr-settings-page.php</exclude-pattern>
+		<exclude-pattern>*/admin/almgr-tools-page.php</exclude-pattern>
 		<exclude-pattern>*/admin/plugin-main-page.php</exclude-pattern>
 		<exclude-pattern>*/templates/*</exclude-pattern>
 	</rule>

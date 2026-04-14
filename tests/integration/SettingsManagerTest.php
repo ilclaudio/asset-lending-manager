@@ -1,16 +1,19 @@
 <?php
 /**
- * Integration tests for ALM_Settings_Manager.
+ * Integration tests for ALMGR_Settings_Manager.
  *
  * @package AssetLendingManager
  */
 
-class ALM_Settings_Manager_Test extends WP_UnitTestCase {
+/**
+ * Test class for ALMGR_Settings_Manager.
+ */
+class ALMGR_Settings_Manager_Test extends WP_UnitTestCase {
 
 	/**
 	 * Settings manager instance.
 	 *
-	 * @var ALM_Settings_Manager
+	 * @var ALMGR_Settings_Manager
 	 */
 	protected $settings;
 
@@ -20,9 +23,9 @@ class ALM_Settings_Manager_Test extends WP_UnitTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->settings = new ALM_Settings_Manager();
+		$this->settings = new ALMGR_Settings_Manager();
 
-		// Reset settings before each test to start clean
+		// Reset settings before each test to start clean.
 		$this->settings->reset();
 	}
 
@@ -30,8 +33,8 @@ class ALM_Settings_Manager_Test extends WP_UnitTestCase {
 	 * Teardown after each test.
 	 */
 	public function tearDown(): void {
-		// Clean up options from database
-		delete_option( 'alm_settings' );
+		// Clean up options from database.
+		delete_option( 'almgr_settings' );
 
 		parent::tearDown();
 	}
@@ -99,8 +102,8 @@ class ALM_Settings_Manager_Test extends WP_UnitTestCase {
 	public function test_settings_persist_to_database() {
 		$this->settings->set( 'email.from_name', 'Test Name' );
 
-		// Create new instance to verify persistence
-		$new_settings = new ALM_Settings_Manager();
+		// Create new instance to verify persistence.
+		$new_settings = new ALMGR_Settings_Manager();
 		$result       = $new_settings->get( 'email.from_name' );
 
 		$this->assertSame( 'Test Name', $result );

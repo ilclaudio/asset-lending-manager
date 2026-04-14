@@ -4,7 +4,7 @@
  * @package AssetLendingManager
  */
 
-.alm-asset-view .alm-history-table {
+.almgr-asset-view .almgr-history-table {
 	width: 100%;
 	font-size: 1em;
 	border-collapse: separate;
@@ -16,11 +16,11 @@
 	overflow: hidden;
 }
 
-.alm-asset-view .alm-history-table thead {
+.almgr-asset-view .almgr-history-table thead {
 	background: #f5f7fa;
 }
 
-.alm-asset-view .alm-history-table th {
+.almgr-asset-view .almgr-history-table th {
 	padding: 0.65rem 0.9rem;
 	text-align: left;
 	font-weight: 600;
@@ -31,60 +31,60 @@
 	border-bottom: 1px solid #d9e1e6;
 }
 
-.alm-asset-view .alm-history-table td {
+.almgr-asset-view .almgr-history-table td {
 	padding: 0.75rem 0.9rem;
 	vertical-align: top;
 	border: 0;
 	border-bottom: 1px solid #e8edf1;
 }
 
-.alm-asset-view .alm-history-table th + th {
+.almgr-asset-view .almgr-history-table th + th {
 	border-left: 1px solid #e8edf2;
 }
 
-.alm-asset-view .alm-history-table td + td {
+.almgr-asset-view .almgr-history-table td + td {
 	border-left: 1px solid #f1f4f7;
 }
 
-.alm-asset-view .alm-history-table thead th:nth-child(1),
-.alm-asset-view .alm-history-table thead th:nth-child(2) {
+.almgr-asset-view .almgr-history-table thead th:nth-child(1),
+.almgr-asset-view .almgr-history-table thead th:nth-child(2) {
 	width: 16%;
 }
 
-.alm-asset-view .alm-history-table thead th:nth-child(3),
-.alm-asset-view .alm-history-table thead th:nth-child(4) {
+.almgr-asset-view .almgr-history-table thead th:nth-child(3),
+.almgr-asset-view .almgr-history-table thead th:nth-child(4) {
 	width: 14%;
 }
 
-.alm-asset-view .alm-history-table thead th:nth-child(5) {
+.almgr-asset-view .almgr-history-table thead th:nth-child(5) {
 	width: 40%;
 }
 
-.alm-asset-view .alm-history-table tbody tr:nth-child(even) {
+.almgr-asset-view .almgr-history-table tbody tr:nth-child(even) {
 	background: #fbfcfd;
 }
 
-.alm-asset-view .alm-history-table tbody tr:last-child td {
+.almgr-asset-view .almgr-history-table tbody tr:last-child td {
 	border-bottom: 0;
 }
 
-.alm-history-requester,
-.alm-history-changed-by {
+.almgr-history-requester,
+.almgr-history-changed-by {
 	font-weight: 600;
 	color: #12263a;
 }
 
-.alm-history-request-date {
+.almgr-history-request-date {
 	white-space: nowrap;
 	color: #4f6376;
 	font-size: 1em;
 }
 
-.alm-history-status {
+.almgr-history-status {
 	min-width: 8.5rem;
 }
 
-.alm-status-badge {
+.almgr-status-badge {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -97,7 +97,7 @@
 	line-height: 1.2;
 }
 
-.alm-status-badge::before {
+.almgr-status-badge::before {
 	content: '';
 	display: inline-block;
 	width: 0.45rem;
@@ -108,51 +108,51 @@
 	opacity: 0.85;
 }
 
-.alm-status-badge.alm-status--pending {
-	background-color: var(--alm-status-pending-bg);
-	color: var(--alm-status-pending-text);
+.almgr-status-badge.almgr-status--pending {
+	background-color: var(--almgr-status-pending-bg);
+	color: var(--almgr-status-pending-text);
 }
 
-.alm-status-badge.alm-status--approved {
-	background-color: var(--alm-status-approved-bg);
-	color: var(--alm-status-approved-text);
+.almgr-status-badge.almgr-status--approved {
+	background-color: var(--almgr-status-approved-bg);
+	color: var(--almgr-status-approved-text);
 }
 
-.alm-status-badge.alm-status--rejected {
-	background-color: var(--alm-status-rejected-bg);
-	color: var(--alm-status-rejected-text);
+.almgr-status-badge.almgr-status--rejected {
+	background-color: var(--almgr-status-rejected-bg);
+	color: var(--almgr-status-rejected-text);
 }
 
-.alm-status-badge.alm-status--canceled {
-	background-color: var(--alm-status-canceled-bg);
-	color: var(--alm-status-canceled-text);
+.almgr-status-badge.almgr-status--canceled {
+	background-color: var(--almgr-status-canceled-bg);
+	color: var(--almgr-status-canceled-text);
 }
 
-.alm-status-badge.alm-status--direct_assign {
-	background-color: var(--alm-status-direct-assign-bg);
-	color: var(--alm-status-direct-assign-text);
+.almgr-status-badge.almgr-status--direct_assign {
+	background-color: var(--almgr-status-direct-assign-bg);
+	color: var(--almgr-status-direct-assign-text);
 }
 
-.alm-status-badge.alm-status--to_maintenance {
-	background-color: var(--alm-status-to-maintenance-bg);
-	color: var(--alm-status-to-maintenance-text);
+.almgr-status-badge.almgr-status--to_maintenance {
+	background-color: var(--almgr-status-to-maintenance-bg);
+	color: var(--almgr-status-to-maintenance-text);
 }
 
-.alm-status-badge.alm-status--to_retired {
-	background-color: var(--alm-status-to-retired-bg);
-	color: var(--alm-status-to-retired-text);
+.almgr-status-badge.almgr-status--to_retired {
+	background-color: var(--almgr-status-to-retired-bg);
+	color: var(--almgr-status-to-retired-text);
 }
 
-.alm-status-badge.alm-status--to_available {
-	background-color: var(--alm-status-to-available-bg);
-	color: var(--alm-status-to-available-text);
+.almgr-status-badge.almgr-status--to_available {
+	background-color: var(--almgr-status-to-available-bg);
+	color: var(--almgr-status-to-available-text);
 }
 
-.alm-history-message {
+.almgr-history-message {
 	max-width: 36rem;
 }
 
-.alm-message-toggle {
+.almgr-message-toggle {
 	cursor: pointer;
 	font-size: 1em;
 	font-weight: 600;
@@ -162,37 +162,37 @@
 	gap: 0.3rem;
 }
 
-.alm-message-toggle::-webkit-details-marker {
+.almgr-message-toggle::-webkit-details-marker {
 	display: none;
 }
 
-.alm-message-toggle::before {
+.almgr-message-toggle::before {
 	content: '+';
 	font-size: 0.95rem;
 	line-height: 1;
 }
 
-.alm-message-details[open] .alm-message-toggle::before {
+.almgr-message-details[open] .almgr-message-toggle::before {
 	content: '-';
 }
 
-.alm-message-toggle-open {
+.almgr-message-toggle-open {
 	display: inline;
 }
 
-.alm-message-toggle-close {
+.almgr-message-toggle-close {
 	display: none;
 }
 
-.alm-message-details[open] .alm-message-toggle-open {
+.almgr-message-details[open] .almgr-message-toggle-open {
 	display: none;
 }
 
-.alm-message-details[open] .alm-message-toggle-close {
+.almgr-message-details[open] .almgr-message-toggle-close {
 	display: inline;
 }
 
-.alm-message-full {
+.almgr-message-full {
 	margin-top: 0.5rem;
 	padding: 0.6rem 0.7rem;
 	background: #f5f9ff;
@@ -204,7 +204,7 @@
 	word-break: break-word;
 }
 
-.alm-history-limit-notice {
+.almgr-history-limit-notice {
 	display: block;
 	padding: 0.8rem 1rem;
 	background: #e9f3ff;
@@ -214,42 +214,42 @@
 	color: #1f3347;
 }
 
-.alm-history-limit-notice strong {
+.almgr-history-limit-notice strong {
 	color: #0050a3;
 }
 
-.alm-history-empty {
+.almgr-history-empty {
 	text-align: center;
 	padding: 2rem 1rem;
 	color: #5b6f82;
 }
 
 @media (max-width: 900px) {
-	.alm-asset-view .alm-history-table th,
-	.alm-asset-view .alm-history-table td {
+	.almgr-asset-view .almgr-history-table th,
+	.almgr-asset-view .almgr-history-table td {
 		padding: 0.75rem 0.8rem;
 	}
 }
 
 @media (max-width: 768px) {
-	.alm-asset-view .alm-history-table thead {
+	.almgr-asset-view .almgr-history-table thead {
 		display: none;
 	}
 
-	.alm-asset-view .alm-history-table,
-	.alm-asset-view .alm-history-table tbody,
-	.alm-asset-view .alm-history-table tr,
-	.alm-asset-view .alm-history-table td {
+	.almgr-asset-view .almgr-history-table,
+	.almgr-asset-view .almgr-history-table tbody,
+	.almgr-asset-view .almgr-history-table tr,
+	.almgr-asset-view .almgr-history-table td {
 		display: block;
 		width: 100%;
 	}
 
-	.alm-asset-view .alm-history-table {
+	.almgr-asset-view .almgr-history-table {
 		border: 0;
 		background: transparent;
 	}
 
-	.alm-asset-view .alm-history-table tr {
+	.almgr-asset-view .almgr-history-table tr {
 		margin-bottom: 0.85rem;
 		font-size: 1em;
 		background: #fff;
@@ -258,7 +258,7 @@
 		overflow: hidden;
 	}
 
-	.alm-asset-view .alm-history-table td {
+	.almgr-asset-view .almgr-history-table td {
 		position: relative;
 		padding: 0.8rem 0.8rem 0.8rem 8.5rem;
 		border-bottom: 1px solid #edf2f6;
@@ -266,15 +266,15 @@
 		min-height: 2.8rem;
 	}
 
-	.alm-asset-view .alm-history-table td + td {
+	.almgr-asset-view .almgr-history-table td + td {
 		border-left: 0;
 	}
 
-	.alm-asset-view .alm-history-table td:last-child {
+	.almgr-asset-view .almgr-history-table td:last-child {
 		border-bottom: 0;
 	}
 
-	.alm-asset-view .alm-history-table td::before {
+	.almgr-asset-view .almgr-history-table td::before {
 		content: attr(data-label);
 		position: absolute;
 		left: 0.8rem;
@@ -287,8 +287,8 @@
 		text-transform: uppercase;
 	}
 
-	.alm-history-status,
-	.alm-history-request-date {
+	.almgr-history-status,
+	.almgr-history-request-date {
 		white-space: normal;
 	}
 }

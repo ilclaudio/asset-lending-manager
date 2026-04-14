@@ -1,5 +1,5 @@
 /**
-	* Frontend styles for ALM assets
+	* Frontend styles for ALMGR assets
 	*
 	* Loaded only on asset archive, single, and pages with asset shortcodes.
 	*
@@ -7,41 +7,41 @@
 	*/
 
 	/* ========================================================================
-	DESIGN TOKENS — Semantic color variables shared across all ALM stylesheets.
-	Define colors here once; use var(--alm-...) everywhere else.
+	DESIGN TOKENS — Semantic color variables shared across all ALMGR stylesheets.
+	Define colors here once; use var(--almgr-...) everywhere else.
 	======================================================================== */
 
 	:root {
-		/* Asset state colors (alm_state taxonomy).
+		/* Asset state colors (almgr_state taxonomy).
 		 * All combinations verified WCAG AA (contrast ≥ 4.5:1 for normal text).
 		 * Use https://webaim.org/resources/contrastchecker/ to verify before changing. */
-		--alm-state-available-bg:         #d4edda;  /* contrast vs #155724: ~7.2:1 */
-		--alm-state-available-text:       #155724;
-		--alm-state-on-loan-bg:           #1e7e34;  /* contrast vs #fff: ~5.1:1 */
-		--alm-state-on-loan-text:         #ffffff;
-		--alm-state-maintenance-bg:       #fff3cd;  /* contrast vs #7c5600: ~5.8:1 */
-		--alm-state-maintenance-text:     #7c5600;
-		--alm-state-retired-bg:           #5a6268;  /* chosen over #6c757d: passes WCAG AA at 4.6:1, the lighter shade fails at 3.9:1 */
-		--alm-state-retired-text:         #ffffff;
+		--almgr-state-available-bg:         #d4edda;  /* contrast vs #155724: ~7.2:1 */
+		--almgr-state-available-text:       #155724;
+		--almgr-state-on-loan-bg:           #1e7e34;  /* contrast vs #fff: ~5.1:1 */
+		--almgr-state-on-loan-text:         #ffffff;
+		--almgr-state-maintenance-bg:       #fff3cd;  /* contrast vs #7c5600: ~5.8:1 */
+		--almgr-state-maintenance-text:     #7c5600;
+		--almgr-state-retired-bg:           #5a6268;  /* chosen over #6c757d: passes WCAG AA at 4.6:1, the lighter shade fails at 3.9:1 */
+		--almgr-state-retired-text:         #ffffff;
 
 		/* Loan history status colors.
 		 * Light tinted backgrounds with dark text — all WCAG AA compliant. */
-		--alm-status-pending-bg:          #e8e8e8;  /* contrast vs #3c3c3c: ~7.0:1 */
-		--alm-status-pending-text:        #3c3c3c;
-		--alm-status-approved-bg:         #d6f1df;  /* contrast vs #155724: ~6.8:1 */
-		--alm-status-approved-text:       #155724;
-		--alm-status-rejected-bg:         #f9dce0;  /* contrast vs #721c24: ~6.1:1 */
-		--alm-status-rejected-text:       #721c24;
-		--alm-status-canceled-bg:         #fff1ce;  /* contrast vs #7c5600: ~5.8:1 */
-		--alm-status-canceled-text:       #7c5600;
-		--alm-status-direct-assign-bg:    #d6e6ff;  /* contrast vs #084298: ~7.5:1 */
-		--alm-status-direct-assign-text:  #084298;
-		--alm-status-to-maintenance-bg:   #fff3cd;  /* same amber as maintenance state */
-		--alm-status-to-maintenance-text: #7c5600;
-		--alm-status-to-retired-bg:       #dee2e6;  /* contrast vs #343a40: ~6.5:1 */
-		--alm-status-to-retired-text:     #343a40;
-		--alm-status-to-available-bg:     #d6f1df;  /* same green as approved — restoration is positive */
-		--alm-status-to-available-text:   #155724;
+		--almgr-status-pending-bg:          #e8e8e8;  /* contrast vs #3c3c3c: ~7.0:1 */
+		--almgr-status-pending-text:        #3c3c3c;
+		--almgr-status-approved-bg:         #d6f1df;  /* contrast vs #155724: ~6.8:1 */
+		--almgr-status-approved-text:       #155724;
+		--almgr-status-rejected-bg:         #f9dce0;  /* contrast vs #721c24: ~6.1:1 */
+		--almgr-status-rejected-text:       #721c24;
+		--almgr-status-canceled-bg:         #fff1ce;  /* contrast vs #7c5600: ~5.8:1 */
+		--almgr-status-canceled-text:       #7c5600;
+		--almgr-status-direct-assign-bg:    #d6e6ff;  /* contrast vs #084298: ~7.5:1 */
+		--almgr-status-direct-assign-text:  #084298;
+		--almgr-status-to-maintenance-bg:   #fff3cd;  /* same amber as maintenance state */
+		--almgr-status-to-maintenance-text: #7c5600;
+		--almgr-status-to-retired-bg:       #dee2e6;  /* contrast vs #343a40: ~6.5:1 */
+		--almgr-status-to-retired-text:     #343a40;
+		--almgr-status-to-available-bg:     #d6f1df;  /* same green as approved — restoration is positive */
+		--almgr-status-to-available-text:   #155724;
 	}
 
 	/* ========================================================================
@@ -49,27 +49,27 @@
 		======================================================================== */
 
 	/* Container */
-	.alm-container {
+	.almgr-container {
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 20px;
 	}
 
 	/* Archive header */
-	.alm-archive-header {
+	.almgr-archive-header {
 		margin-bottom: 30px;
 		border-bottom: 2px solid #0073aa;
 		padding-bottom: 15px;
 	}
 
-	.alm-archive-title {
+	.almgr-archive-title {
 		margin: 0;
 		color: #23282d;
 		font-size: 2em;
 	}
 
 	/* Asset title (used in both list and view) */
-	.alm-asset-title {
+	.almgr-asset-title {
 		font-size: 1.2em;
 		margin: 0;
 		color: #23282d;
@@ -78,7 +78,7 @@
 	}
 
 	/* Asset thumbnail - base styles */
-	.alm-asset-thumbnail {
+	.almgr-asset-thumbnail {
 		flex-shrink: 0;
 		width: 100px;
 		height: 100px;
@@ -90,7 +90,7 @@
 		justify-content: center;
 	}
 
-	.alm-asset-thumbnail img {
+	.almgr-asset-thumbnail img {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
@@ -98,14 +98,14 @@
 		transition: transform 0.3s ease;
 	}
 
-	.alm-asset-default-thumbnail {
+	.almgr-asset-default-thumbnail {
 		opacity: 0.6;
 		object-fit: contain;
 		padding: 10px;
 	}
 
 	/* Character counter for request form */
-	.alm-char-count {
+	.almgr-char-count {
 		margin-top: 6px;
 		font-size: 13px;
 		color: #6c757d;
@@ -113,7 +113,7 @@
 	}
 
 	/* Asset taxonomies - base styles */
-	.alm-asset-taxonomies {
+	.almgr-asset-taxonomies {
 		margin-top: 8px;
 		font-size: 0.85em;
 		display: flex;
@@ -121,24 +121,24 @@
 		gap: 10px;
 	}
 
-	.alm-asset-taxonomy {
+	.almgr-asset-taxonomy {
 		margin: 0;
 		padding: 0;
 		white-space: nowrap;
 	}
 
-	.alm-tax-label {
+	.almgr-tax-label {
 		font-weight: 600;
 		color: #555;
 		margin-right: 5px;
 	}
 
-	.alm-tax-value {
+	.almgr-tax-value {
 		color: #0073aa;
 	}
 
-	/* Asset state badges (alm_state) */
-	.alm-availability {
+	/* Asset state badges (almgr_state) */
+	.almgr-availability {
 		display: inline-block;
 		padding: 4px 10px;
 		border-radius: 14px;
@@ -149,31 +149,31 @@
 	}
 
 	/* available → green */
-	.alm-state-available {
-		background: var(--alm-state-available-bg);
-		color: var(--alm-state-available-text);
+	.almgr-state-available {
+		background: var(--almgr-state-available-bg);
+		color: var(--almgr-state-available-text);
 	}
 
 	/* on-loan → dark green */
-	.alm-state-on-loan {
-		background: var(--alm-state-on-loan-bg);
-		color: var(--alm-state-on-loan-text);
+	.almgr-state-on-loan {
+		background: var(--almgr-state-on-loan-bg);
+		color: var(--almgr-state-on-loan-text);
 	}
 
 	/* maintenance → amber (temporary/warning, not danger) */
-	.alm-state-maintenance {
-		background: var(--alm-state-maintenance-bg);
-		color: var(--alm-state-maintenance-text);
+	.almgr-state-maintenance {
+		background: var(--almgr-state-maintenance-bg);
+		color: var(--almgr-state-maintenance-text);
 	}
 
 	/* retired → dark gray (WCAG AA contrast ≥ 4.5:1) */
-	.alm-state-retired {
-		background: var(--alm-state-retired-bg);
-		color: var(--alm-state-retired-text);
+	.almgr-state-retired {
+		background: var(--almgr-state-retired-bg);
+		color: var(--almgr-state-retired-text);
 	}
 
 	/* No results message */
-	.alm-no-results {
+	.almgr-no-results {
 		text-align: center;
 		padding: 40px 20px;
 		color: #666;
@@ -181,7 +181,7 @@
 	}
 
 	/* Error message */
-	.alm-error {
+	.almgr-error {
 		background: #ffebee;
 		border-left: 4px solid #c62828;
 		padding: 15px;
@@ -190,31 +190,31 @@
 	}
 
 	/* Shared button palette for asset list and asset view */
-	#alm_asset_search_form,
-	.alm-asset-view {
-		--alm-btn-primary-bg: #0073aa;
-		--alm-btn-primary-hover-bg: #006a9b;
-		--alm-btn-primary-border: #243447;
-		--alm-btn-primary-focus: rgba(0, 89, 179, 0.22);
-		--alm-btn-secondary-bg: #f2f5f7;
-		--alm-btn-secondary-hover-bg: #e6ecf1;
-		--alm-btn-secondary-border: #c7d3dd;
-		--alm-btn-secondary-text: #243447;
-		--alm-btn-success-bg: #2e7d32;
-		--alm-btn-success-hover-bg: #1b5e20;
-		--alm-btn-success-border: #1b5e20;
-		--alm-btn-warning-bg: #e65100;
-		--alm-btn-warning-hover-bg: #bf360c;
-		--alm-btn-warning-border: #bf360c;
-		--alm-btn-danger-bg: #c62828;
-		--alm-btn-danger-hover-bg: #b71c1c;
-		--alm-btn-danger-border: #b71c1c;
+	#almgr_asset_search_form,
+	.almgr-asset-view {
+		--almgr-btn-primary-bg: #0073aa;
+		--almgr-btn-primary-hover-bg: #006a9b;
+		--almgr-btn-primary-border: #243447;
+		--almgr-btn-primary-focus: rgba(0, 89, 179, 0.22);
+		--almgr-btn-secondary-bg: #f2f5f7;
+		--almgr-btn-secondary-hover-bg: #e6ecf1;
+		--almgr-btn-secondary-border: #c7d3dd;
+		--almgr-btn-secondary-text: #243447;
+		--almgr-btn-success-bg: #2e7d32;
+		--almgr-btn-success-hover-bg: #1b5e20;
+		--almgr-btn-success-border: #1b5e20;
+		--almgr-btn-warning-bg: #e65100;
+		--almgr-btn-warning-hover-bg: #bf360c;
+		--almgr-btn-warning-border: #bf360c;
+		--almgr-btn-danger-bg: #c62828;
+		--almgr-btn-danger-hover-bg: #b71c1c;
+		--almgr-btn-danger-border: #b71c1c;
 	}
 
 	/* Search form - used in asset list */
-	.alm-search-submit-btn,
-	#alm_asset_search_form .alm-form-actions button[type="submit"],
-	.alm-asset-view .alm-button {
+	.almgr-search-submit-btn,
+	#almgr_asset_search_form .almgr-form-actions button[type="submit"],
+	.almgr-asset-view .almgr-button {
 		padding: 10px 16px;
 		font-size: 0.95rem;
 		font-weight: 600;
@@ -228,182 +228,182 @@
 		transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 	}
 
-	.alm-search-submit-btn,
-	#alm_asset_search_form .alm-form-actions button[type="submit"] {
+	.almgr-search-submit-btn,
+	#almgr_asset_search_form .almgr-form-actions button[type="submit"] {
 		width: 100%;
 		margin-top: 8px;
 	}
 
-	.alm-search-submit-btn,
-	#alm_asset_search_form .alm-form-actions button[type="submit"],
-	.alm-asset-view .alm-button,
-	.alm-asset-view .alm-button--primary {
-		background: var(--alm-btn-primary-bg);
+	.almgr-search-submit-btn,
+	#almgr_asset_search_form .almgr-form-actions button[type="submit"],
+	.almgr-asset-view .almgr-button,
+	.almgr-asset-view .almgr-button--primary {
+		background: var(--almgr-btn-primary-bg);
 		color: #fff;
 		border: 1px solid #2f4254;
 	}
 
-	.alm-search-submit-btn:hover,
-	#alm_asset_search_form .alm-form-actions button[type="submit"]:hover,
-	.alm-asset-view .alm-button:hover,
-	.alm-asset-view .alm-button--primary:hover {
-		background: var(--alm-btn-primary-hover-bg);
-		border-color: var(--alm-btn-primary-border);
+	.almgr-search-submit-btn:hover,
+	#almgr_asset_search_form .almgr-form-actions button[type="submit"]:hover,
+	.almgr-asset-view .almgr-button:hover,
+	.almgr-asset-view .almgr-button--primary:hover {
+		background: var(--almgr-btn-primary-hover-bg);
+		border-color: var(--almgr-btn-primary-border);
 	}
 
-	.alm-search-submit-btn:focus-visible,
-	#alm_asset_search_form .alm-form-actions button[type="submit"]:focus-visible,
-	.alm-asset-view .alm-button:focus-visible,
-	.alm-asset-view .alm-button--primary:focus-visible {
-		outline: 2px solid var(--alm-btn-primary-focus);
+	.almgr-search-submit-btn:focus-visible,
+	#almgr_asset_search_form .almgr-form-actions button[type="submit"]:focus-visible,
+	.almgr-asset-view .almgr-button:focus-visible,
+	.almgr-asset-view .almgr-button--primary:focus-visible {
+		outline: 2px solid var(--almgr-btn-primary-focus);
 		outline-offset: 1px;
 	}
 
-	.alm-asset-view .alm-button--small {
+	.almgr-asset-view .almgr-button--small {
 		padding: 0.4rem 0.72rem;
 		font-size: 1em;
 		border-radius: 6px;
 	}
 
-	.alm-asset-view .alm-button--approve {
-		background: var(--alm-btn-success-bg);
-		border-color: var(--alm-btn-success-border);
+	.almgr-asset-view .almgr-button--approve {
+		background: var(--almgr-btn-success-bg);
+		border-color: var(--almgr-btn-success-border);
 		color: #fff;
 	}
 
-	.alm-asset-view .alm-button--approve:hover {
-		background: var(--alm-btn-success-hover-bg);
-		border-color: var(--alm-btn-primary-border);
+	.almgr-asset-view .almgr-button--approve:hover {
+		background: var(--almgr-btn-success-hover-bg);
+		border-color: var(--almgr-btn-primary-border);
 	}
 
-	.alm-asset-view .alm-button--reject {
-		background: var(--alm-btn-danger-bg);
-		border-color: var(--alm-btn-danger-border);
+	.almgr-asset-view .almgr-button--reject {
+		background: var(--almgr-btn-danger-bg);
+		border-color: var(--almgr-btn-danger-border);
 		color: #fff;
 	}
 
-	.alm-asset-view .alm-button--reject:hover {
-		background: var(--alm-btn-danger-hover-bg);
-		border-color: var(--alm-btn-danger-border);
+	.almgr-asset-view .almgr-button--reject:hover {
+		background: var(--almgr-btn-danger-hover-bg);
+		border-color: var(--almgr-btn-danger-border);
 	}
 
-	.alm-asset-view .alm-button--warning {
-		background: var(--alm-btn-warning-bg);
-		border-color: var(--alm-btn-warning-border);
+	.almgr-asset-view .almgr-button--warning {
+		background: var(--almgr-btn-warning-bg);
+		border-color: var(--almgr-btn-warning-border);
 		color: #fff;
 	}
 
-	.alm-asset-view .alm-button--warning:hover {
-		background: var(--alm-btn-warning-hover-bg);
-		border-color: var(--alm-btn-warning-border);
+	.almgr-asset-view .almgr-button--warning:hover {
+		background: var(--almgr-btn-warning-hover-bg);
+		border-color: var(--almgr-btn-warning-border);
 	}
 
-	.alm-asset-view .alm-button--danger {
-		background: var(--alm-btn-danger-bg);
-		border-color: var(--alm-btn-danger-border);
+	.almgr-asset-view .almgr-button--danger {
+		background: var(--almgr-btn-danger-bg);
+		border-color: var(--almgr-btn-danger-border);
 		color: #fff;
 	}
 
-	.alm-asset-view .alm-button--danger:hover {
-		background: var(--alm-btn-danger-hover-bg);
-		border-color: var(--alm-btn-danger-border);
+	.almgr-asset-view .almgr-button--danger:hover {
+		background: var(--almgr-btn-danger-hover-bg);
+		border-color: var(--almgr-btn-danger-border);
 	}
 
 	/* Force asset-view button colors even if theme button styles override defaults. */
-	.alm-asset-view button.alm-button,
-	.alm-asset-view .alm-button.alm-button--primary {
-		background: var(--alm-btn-primary-bg) !important;
+	.almgr-asset-view button.almgr-button,
+	.almgr-asset-view .almgr-button.almgr-button--primary {
+		background: var(--almgr-btn-primary-bg) !important;
 		border: 1px solid #2f4254 !important;
 		color: #fff !important;
 	}
 
-	.alm-asset-view button.alm-button:hover,
-	.alm-asset-view .alm-button.alm-button--primary:hover {
-		background: var(--alm-btn-primary-hover-bg) !important;
-		border: 1px solid var(--alm-btn-primary-border) !important;
+	.almgr-asset-view button.almgr-button:hover,
+	.almgr-asset-view .almgr-button.almgr-button--primary:hover {
+		background: var(--almgr-btn-primary-hover-bg) !important;
+		border: 1px solid var(--almgr-btn-primary-border) !important;
 	}
 
-	.alm-asset-view .alm-button.alm-button--approve {
-		background: var(--alm-btn-success-bg) !important;
-		border-color: var(--alm-btn-success-border) !important;
+	.almgr-asset-view .almgr-button.almgr-button--approve {
+		background: var(--almgr-btn-success-bg) !important;
+		border-color: var(--almgr-btn-success-border) !important;
 		color: #fff !important;
 	}
 
-	.alm-asset-view .alm-button.alm-button--approve:hover {
-		background: var(--alm-btn-success-hover-bg) !important;
-		border-color: var(--alm-btn-success-border) !important;
+	.almgr-asset-view .almgr-button.almgr-button--approve:hover {
+		background: var(--almgr-btn-success-hover-bg) !important;
+		border-color: var(--almgr-btn-success-border) !important;
 	}
 
-	.alm-asset-view .alm-button.alm-button--reject {
-		background: var(--alm-btn-danger-bg) !important;
-		border-color: var(--alm-btn-danger-border) !important;
+	.almgr-asset-view .almgr-button.almgr-button--reject {
+		background: var(--almgr-btn-danger-bg) !important;
+		border-color: var(--almgr-btn-danger-border) !important;
 		color: #fff !important;
 	}
 
-	.alm-asset-view .alm-button.alm-button--reject:hover {
-		background: var(--alm-btn-danger-hover-bg) !important;
-		border-color: var(--alm-btn-danger-border) !important;
+	.almgr-asset-view .almgr-button.almgr-button--reject:hover {
+		background: var(--almgr-btn-danger-hover-bg) !important;
+		border-color: var(--almgr-btn-danger-border) !important;
 	}
 
-	.alm-asset-view .alm-button.alm-button--warning {
-		background: var(--alm-btn-warning-bg) !important;
-		border-color: var(--alm-btn-warning-border) !important;
+	.almgr-asset-view .almgr-button.almgr-button--warning {
+		background: var(--almgr-btn-warning-bg) !important;
+		border-color: var(--almgr-btn-warning-border) !important;
 		color: #fff !important;
 	}
 
-	.alm-asset-view .alm-button.alm-button--warning:hover {
-		background: var(--alm-btn-warning-hover-bg) !important;
-		border-color: var(--alm-btn-warning-border) !important;
+	.almgr-asset-view .almgr-button.almgr-button--warning:hover {
+		background: var(--almgr-btn-warning-hover-bg) !important;
+		border-color: var(--almgr-btn-warning-border) !important;
 	}
 
-	.alm-asset-view .alm-button.alm-button--danger {
-		background: var(--alm-btn-danger-bg) !important;
-		border-color: var(--alm-btn-danger-border) !important;
+	.almgr-asset-view .almgr-button.almgr-button--danger {
+		background: var(--almgr-btn-danger-bg) !important;
+		border-color: var(--almgr-btn-danger-border) !important;
 		color: #fff !important;
 	}
 
-	.alm-asset-view .alm-button.alm-button--danger:hover {
-		background: var(--alm-btn-danger-hover-bg) !important;
-		border-color: var(--alm-btn-danger-border) !important;
+	.almgr-asset-view .almgr-button.almgr-button--danger:hover {
+		background: var(--almgr-btn-danger-hover-bg) !important;
+		border-color: var(--almgr-btn-danger-border) !important;
 	}
 
-	.alm-asset-view .alm-button:disabled {
+	.almgr-asset-view .almgr-button:disabled {
 		opacity: 0.65;
 		cursor: not-allowed;
 	}
 
-	#alm_asset_search_form {
+	#almgr_asset_search_form {
 		position: relative;
 		width: 100%;
 		margin-bottom: 1em;
 	}
 
-	.alm-asset-search-form {
+	.almgr-asset-search-form {
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
 	}
 
 	/* Force filters to appear below search row */
-	.alm-filters-collapsible {
+	.almgr-filters-collapsible {
 		width: 100%;
 	}
 
 	/* Search row: input + Scan QR button on the same line */
-	.alm-search-row {
+	.almgr-search-row {
 		display: flex;
 		align-items: stretch;
 		gap: 8px;
 	}
 
 	/* wrapper per input + icona + dropdown */
-	.alm-search-input-wrap {
+	.almgr-search-input-wrap {
 		position: relative;
 		flex: 1;
 		min-width: 0;
 	}
 
-	.alm-asset-search-form input[name="s"] {
+	.almgr-asset-search-form input[name="s"] {
 		width: 100%;
 		padding: 8px 8px 8px 34px; /* spazio per lente/spinner */
 		font-size: 1em;
@@ -415,21 +415,21 @@
 		transition: border-color 0.2s ease, box-shadow 0.2s ease;
 	}
 
-	.alm-asset-search-form input[name="s"]:focus {
+	.almgr-asset-search-form input[name="s"]:focus {
 		border-color: #0059b3;
 		outline: 2px solid rgba(0, 89, 179, 0.22);
 		outline-offset: 1px;
 		box-shadow: none;
 	}
 
-	.alm-asset-search-form button {
+	.almgr-asset-search-form button {
 		padding: 8px 16px;
 		font-size: 1em;
 		cursor: pointer;
 	}
 
 	/* Lens + loading spinner */
-	#alm_asset_search_form .alm-search-icon {
+	#almgr_asset_search_form .almgr-search-icon {
 		position: absolute;
 		left: 10px;
 		top: 50%;
@@ -445,7 +445,7 @@
 		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
 	}
 
-	#alm_asset_search_form.alm-autocomplete-loading .alm-search-icon {
+	#almgr_asset_search_form.almgr-autocomplete-loading .almgr-search-icon {
 		background-image: none;
 		border: 2px solid #666;
 		border-top-color: transparent;
@@ -459,26 +459,26 @@
 	}
 
 	/* Utility classes */
-	.alm-link {
+	.almgr-link {
 		color: #0073aa;
 		text-decoration: none;
 	}
 
-	.alm-link:hover {
+	.almgr-link:hover {
 		text-decoration: underline;
 	}
 
-	.alm-muted {
+	.almgr-muted {
 		color: #666;
 		margin: 8px 0 0 0;
 	}
 
 	/* ========================================================================
-		NOTICE COMPONENT — alm-notice, used in asset detail view.
+		NOTICE COMPONENT — almgr-notice, used in asset detail view.
 		All color combinations verified WCAG AA (contrast ≥ 4.5:1).
 		======================================================================== */
 
-	.alm-notice {
+	.almgr-notice {
 		padding: 12px 16px;
 		border-left: 4px solid;
 		border-radius: 4px;
@@ -488,26 +488,26 @@
 	}
 
 	/* Info — blue tint: #084298 on #d6e6ff → contrast ~7.5:1 */
-	.alm-notice--info {
+	.almgr-notice--info {
 		background: #d6e6ff;
 		border-color: #084298;
 		color: #084298;
 	}
 
-	.alm-notice--info .alm-link {
+	.almgr-notice--info .almgr-link {
 		color: #05347e;
 		font-weight: 600;
 	}
 
 	/* Warning — amber tint: #7c5600 on #fff3cd → contrast ~5.8:1 */
-	.alm-notice--warning {
+	.almgr-notice--warning {
 		background: #fff3cd;
 		border-color: #e6a817;
 		color: #7c5600;
 	}
 
 	/* Kit footer strip — shown below each component card that belongs to a kit */
-	.alm-card-kit-footer {
+	.almgr-card-kit-footer {
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
@@ -519,26 +519,26 @@
 	}
 
 	/* "Kit:" label */
-	.alm-card-kit-label {
+	.almgr-card-kit-label {
 		color: #5b3ea6;
 		font-weight: 600;
 		flex-shrink: 0;
 	}
 
 	/* Clickable kit name — #5b3ea6 on #fff → contrast ~5.8:1 (WCAG AA) */
-	.alm-card-kit-link {
+	.almgr-card-kit-link {
 		color: #5b3ea6;
 		text-decoration: underline;
 		font-style: italic;
 	}
 
-	.alm-card-kit-link:hover,
-	.alm-card-kit-link:focus {
+	.almgr-card-kit-link:hover,
+	.almgr-card-kit-link:focus {
 		color: #3e2875;
 		text-decoration: none;
 	}
 
-	.alm-card-kit-link:focus-visible {
+	.almgr-card-kit-link:focus-visible {
 		outline: 2px solid #5b3ea6;
 		outline-offset: 2px;
 		border-radius: 2px;
@@ -549,11 +549,11 @@
 		======================================================================== */
 
 	/* Single asset detail container */
-	.alm-asset-single {
+	.almgr-asset-single {
 		max-width: 900px;
 	}
 
-	.alm-asset-detail {
+	.almgr-asset-detail {
 		background: #fff;
 		border: 1px solid #ddd;
 		border-radius: 8px;
@@ -561,23 +561,23 @@
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
 
-	.alm-asset-header {
+	.almgr-asset-header {
 		margin-bottom: 25px;
 		border-bottom: 2px solid #0073aa;
 		padding-bottom: 20px;
 	}
 
-	.alm-asset-detail .alm-asset-title {
+	.almgr-asset-detail .almgr-asset-title {
 		font-size: 2em;
 		margin: 0 0 20px 0;
 	}
 
-	.alm-asset-detail .alm-asset-thumbnail {
+	.almgr-asset-detail .almgr-asset-thumbnail {
 		max-width: 400px;
 		margin: 0 auto;
 	}
 
-	.alm-asset-detail .alm-asset-taxonomies {
+	.almgr-asset-detail .almgr-asset-taxonomies {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 15px;
@@ -587,27 +587,27 @@
 		border-radius: 4px;
 	}
 
-	.alm-asset-detail .alm-asset-taxonomy {
+	.almgr-asset-detail .almgr-asset-taxonomy {
 		flex: 1 1 auto;
 		min-width: 200px;
 	}
 
-	.alm-asset-content {
+	.almgr-asset-content {
 		margin-top: 25px;
 		line-height: 1.6;
 		color: #444;
 	}
 
-	.alm-asset-content p {
+	.almgr-asset-content p {
 		margin-bottom: 15px;
 	}
 
 	/* Asset view (shortcode) layout */
-	.alm-asset-view__title {
+	.almgr-asset-view__title {
 		margin-bottom: 18px;
 	}
 
-	.alm-asset-view__hero {
+	.almgr-asset-view__hero {
 		display: flex;
 		gap: 20px;
 		align-items: flex-start;
@@ -615,12 +615,12 @@
 		margin-bottom: 20px;
 	}
 
-	.alm-asset-view__media {
+	.almgr-asset-view__media {
 		flex: 1 1 420px;
 		min-width: 280px;
 	}
 
-	.alm-asset-view__taxbox {
+	.almgr-asset-view__taxbox {
 		flex: 0 0 320px;
 		max-width: 380px;
 		background: #f9f9f9;
@@ -629,19 +629,19 @@
 		padding: 16px;
 	}
 
-	.alm-asset-section-title {
+	.almgr-asset-section-title {
 		margin: 0 0 12px 0;
 		font-size: 1.1em;
 	}
 
-	.alm-asset-thumbnail--large {
+	.almgr-asset-thumbnail--large {
 		width: 100%;
 		height: auto;
 		max-width: none;
 		margin: 0;
 	}
 
-	.alm-asset-thumbnail--large img {
+	.almgr-asset-thumbnail--large img {
 		width: 100%;
 		height: auto;
 		max-height: 520px;
@@ -650,12 +650,12 @@
 		display: block;
 	}
 
-	.alm-asset-taxonomies--boxed {
+	.almgr-asset-taxonomies--boxed {
 		flex-direction: column;
 		gap: 0;
 	}
 
-	.alm-asset-tax-row {
+	.almgr-asset-tax-row {
 		display: flex;
 		align-items: baseline;
 		gap: 8px;
@@ -663,21 +663,21 @@
 		border-bottom: 1px solid #eee;
 	}
 
-	.alm-asset-tax-row:last-child {
+	.almgr-asset-tax-row:last-child {
 		border-bottom: none;
 	}
 
-	.alm-asset-tax-row .alm-tax-label {
+	.almgr-asset-tax-row .almgr-tax-label {
 		flex: 0 0 90px;
 	}
 
-	.alm-asset-tax-row .alm-tax-value {
+	.almgr-asset-tax-row .almgr-tax-value {
 		flex: 1;
 		color: #0073aa;
 	}
 
 	/* Collapsible sections (details/summary) */
-	.alm-asset-view .alm-collapsible {
+	.almgr-asset-view .almgr-collapsible {
 		margin-top: 18px;
 		border: 1px solid #e6e6e6;
 		border-radius: 8px;
@@ -685,7 +685,7 @@
 		overflow: hidden;
 	}
 
-	.alm-asset-view .alm-collapsible__summary {
+	.almgr-asset-view .almgr-collapsible__summary {
 		cursor: pointer;
 		padding: 14px 16px;
 		display: flex;
@@ -698,46 +698,46 @@
 		line-height: 1.3;
 	}
 
-	.alm-asset-view .alm-collapsible__summary::-webkit-details-marker {
+	.almgr-asset-view .almgr-collapsible__summary::-webkit-details-marker {
 		display: none;
 	}
 
-	.alm-asset-view .alm-collapsible[open] .alm-collapsible__summary {
+	.almgr-asset-view .almgr-collapsible[open] .almgr-collapsible__summary {
 		border-bottom: 1px solid #e6e6e6;
 	}
 
-	.alm-asset-view .alm-collapsible__title {
+	.almgr-asset-view .almgr-collapsible__title {
 		font-size: 1.2rem;
 	}
 
-	.alm-asset-view .alm-collapsible__body {
+	.almgr-asset-view .almgr-collapsible__body {
 		padding: 14px 16px;
 		font-size: 0.92rem;
 		line-height: 1.45;
 	}
 
-	.alm-asset-view .alm-collapsible__hint {
+	.almgr-asset-view .almgr-collapsible__hint {
 		font-weight: 400;
 		font-size: 0.8em;
 		color: #666;
 	}
 
-	.alm-asset-view .alm-asset-acf-label {
+	.almgr-asset-view .almgr-asset-acf-label {
 		font-size: 1em;
 	}
 
-	.alm-asset-view .alm-asset-acf-value {
+	.almgr-asset-view .almgr-asset-acf-value {
 		font-size: 0.92rem;
 		line-height: 1.45;
 	}
 
-	.alm-asset-view .alm-loan-form label {
+	.almgr-asset-view .almgr-loan-form label {
 		font-size: 1em;
 		font-weight: 600;
 	}
 
-	.alm-asset-view .alm-loan-form textarea,
-	.alm-asset-view .alm-loan-form input[type="text"] {
+	.almgr-asset-view .almgr-loan-form textarea,
+	.almgr-asset-view .almgr-loan-form input[type="text"] {
 		font-size: 0.92rem;
 		line-height: 1.4;
 		border: 1px solid #c7d3dd;
@@ -746,23 +746,23 @@
 		box-sizing: border-box;
 	}
 
-	.alm-asset-view__direct-assign .alm-form-field + .alm-form-field {
+	.almgr-asset-view__direct-assign .almgr-form-field + .almgr-form-field {
 		margin-top: 0.6rem;
 	}
 
-	.alm-asset-view .alm-char-count {
+	.almgr-asset-view .almgr-char-count {
 		font-size: 1em;
 	}
 
-	.alm-asset-view .alm-muted {
+	.almgr-asset-view .almgr-muted {
 		font-size: 1em;
 	}
 
-	.alm-asset-acf-list {
+	.almgr-asset-acf-list {
 		margin: 0;
 	}
 
-	.alm-asset-acf-row {
+	.almgr-asset-acf-row {
 		display: grid;
 		grid-template-columns: 200px 1fr;
 		gap: 12px;
@@ -770,27 +770,27 @@
 		border-bottom: 1px solid #eee;
 	}
 
-	.alm-asset-acf-row:last-child {
+	.almgr-asset-acf-row:last-child {
 		border-bottom: none;
 	}
 
-	.alm-asset-acf-label {
+	.almgr-asset-acf-label {
 		font-weight: 700;
 		margin: 0;
 	}
 
-	.alm-asset-acf-value {
+	.almgr-asset-acf-value {
 		margin: 0;
 		color: #333;
 	}
 
-	.alm-asset-components {
+	.almgr-asset-components {
 		margin: 0;
 		padding-left: 18px;
 	}
 
 	/* Quick meta (Manufacturer/Model) in taxbox */
-	.alm-asset-quick-meta {
+	.almgr-asset-quick-meta {
 		padding: 10px 12px;
 		background: #fff;
 		border: 1px solid #e6e6e6;
@@ -800,14 +800,14 @@
 		gap: 8px;
 	}
 
-	.alm-asset-quick-row {
+	.almgr-asset-quick-row {
 		display: flex;
 		flex-direction: column;
 		gap: 2px;
 	}
 
 	/* Badge state inside the taxbox */
-	.alm-asset-view__taxbox .alm-availability {
+	.almgr-asset-view__taxbox .almgr-availability {
 		margin-left: 8px;
 		vertical-align: middle;
 	}
@@ -817,7 +817,7 @@
 		======================================================================== */
 
 	/* Asset list container */
-	.alm-asset-list {
+	.almgr-asset-list {
 		display: flex;
 		flex-direction: column;
 		gap: 15px;
@@ -825,7 +825,7 @@
 	}
 
 	/* Asset card — column layout: main link on top, optional kit footer below */
-	.alm-asset-card {
+	.almgr-asset-card {
 		background: #fff;
 		border: 1px solid #ddd;
 		border-radius: 8px;
@@ -836,12 +836,12 @@
 		flex-direction: column;
 	}
 
-	.alm-asset-card:hover {
+	.almgr-asset-card:hover {
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 		transform: translateX(4px);
 	}
 
-	.alm-asset-link {
+	.almgr-asset-link {
 		text-decoration: none;
 		color: inherit;
 		display: flex;
@@ -851,16 +851,16 @@
 		min-width: 0;
 	}
 
-	.alm-asset-link:hover .alm-asset-title {
+	.almgr-asset-link:hover .almgr-asset-title {
 		color: #0073aa;
 	}
 
-	.alm-asset-card:hover .alm-asset-thumbnail img {
+	.almgr-asset-card:hover .almgr-asset-thumbnail img {
 		transform: scale(1.1);
 	}
 
 	/* Asset content area - right side */
-	.alm-asset-content-wrapper {
+	.almgr-asset-content-wrapper {
 		flex: 1;
 		min-width: 0;
 		display: flex;
@@ -869,19 +869,19 @@
 	}
 
 	/* Title row: asset title + state badge side by side */
-	.alm-card-title-row {
+	.almgr-card-title-row {
 		display: flex;
 		align-items: center;
 		gap: 8px;
 		flex-wrap: wrap;
 	}
 
-	.alm-card-title-row .alm-asset-title {
+	.almgr-card-title-row .almgr-asset-title {
 		flex: 1 1 auto;
 		min-width: 0;
 	}
 
-	.alm-card-title-row .alm-availability {
+	.almgr-card-title-row .almgr-availability {
 		flex-shrink: 0;
 	}
 
@@ -891,12 +891,12 @@
 
 	/* Tablet e schermi medi (768px - 1024px) */
 	@media (max-width: 1024px) {
-		.alm-asset-taxonomies {
+		.almgr-asset-taxonomies {
 			gap: 8px;
 			font-size: 0.8em;
 		}
 
-		.alm-asset-taxonomy {
+		.almgr-asset-taxonomy {
 			min-width: 45%;
 		}
 	}
@@ -904,174 +904,174 @@
 	/* Smartphone e schermi piccoli (fino a 768px) */
 	@media (max-width: 768px) {
 		/* Common styles responsive */
-		.alm-container {
+		.almgr-container {
 			padding: 15px;
 		}
 
 		/* Asset list responsive */
-		.alm-asset-card {
+		.almgr-asset-card {
 			flex-direction: column;
 			align-items: center;
 			padding: 15px;
 		}
 
-		.alm-asset-link {
+		.almgr-asset-link {
 			flex-direction: column;
 			align-items: center;
 			text-align: center;
 			width: 100%;
 		}
 
-		.alm-asset-thumbnail {
+		.almgr-asset-thumbnail {
 			width: 150px;
 			height: 150px;
 			margin-bottom: 12px;
 		}
 
-		.alm-asset-content-wrapper {
+		.almgr-asset-content-wrapper {
 			align-items: center;
 			width: 100%;
 		}
 
-		.alm-asset-title {
+		.almgr-asset-title {
 			font-size: 1.1em;
 			text-align: center;
 		}
 
 		/* Title row centered on mobile, badge wraps below long titles */
-		.alm-card-title-row {
+		.almgr-card-title-row {
 			justify-content: center;
 		}
 
 		/* Taxonomies: una colonna su mobile */
-		.alm-asset-taxonomies {
+		.almgr-asset-taxonomies {
 			flex-direction: column;
 			gap: 8px;
 			width: 100%;
 			justify-content: flex-start;
 		}
 
-		.alm-asset-taxonomy {
+		.almgr-asset-taxonomy {
 			width: 100%;
 			text-align: left;
 			padding: 6px 0;
 			border-bottom: 1px solid #f0f0f0;
 		}
 
-		.alm-asset-taxonomy:last-child {
+		.almgr-asset-taxonomy:last-child {
 			border-bottom: none;
 		}
 
 		/* Search form responsive */
-		.alm-search-input-wrap {
+		.almgr-search-input-wrap {
 			width: 100%;
 		}
 
-		.alm-asset-search-form button {
+		.almgr-asset-search-form button {
 			width: 100%;
 			padding: 10px 16px;
 		}
 
 		/* Asset view responsive */
-		.alm-asset-detail {
+		.almgr-asset-detail {
 			padding: 20px;
 		}
 
-		.alm-asset-detail .alm-asset-title {
+		.almgr-asset-detail .almgr-asset-title {
 			font-size: 1.5em;
 		}
 
-		.alm-asset-detail .alm-asset-taxonomies {
+		.almgr-asset-detail .almgr-asset-taxonomies {
 			flex-direction: column;
 			gap: 10px;
 		}
 
-		.alm-asset-detail .alm-asset-taxonomy {
+		.almgr-asset-detail .almgr-asset-taxonomy {
 			min-width: 100%;
 		}
 
-		.alm-asset-view__taxbox {
+		.almgr-asset-view__taxbox {
 			flex: 1 1 100%;
 			max-width: none;
 		}
 
-		.alm-asset-view .alm-collapsible__summary,
-		.alm-asset-view .alm-collapsible__title {
+		.almgr-asset-view .almgr-collapsible__summary,
+		.almgr-asset-view .almgr-collapsible__title {
 			font-size: 1.1rem;
 		}
 
-		.alm-asset-acf-row {
+		.almgr-asset-acf-row {
 			grid-template-columns: 1fr;
 		}
 	}
 
 	/* Schermi molto piccoli (fino a 480px) */
 	@media (max-width: 480px) {
-		.alm-container {
+		.almgr-container {
 			padding: 10px;
 		}
 
-		.alm-asset-card {
+		.almgr-asset-card {
 			padding: 12px;
 			gap: 10px;
 		}
 
-		.alm-asset-thumbnail {
+		.almgr-asset-thumbnail {
 			width: 120px;
 			height: 120px;
 		}
 
-		.alm-asset-title {
+		.almgr-asset-title {
 			font-size: 1em;
 		}
 
-		.alm-asset-taxonomies {
+		.almgr-asset-taxonomies {
 			font-size: 0.85em;
 			gap: 6px;
 		}
 
-		.alm-tax-label {
+		.almgr-tax-label {
 			display: block;
 			margin-bottom: 2px;
 		}
 
-		.alm-archive-title {
+		.almgr-archive-title {
 			font-size: 1.5em;
 		}
 	}
 
 	/* Landscape mode per smartphone */
 	@media (max-width: 768px) and (orientation: landscape) {
-		.alm-asset-card {
+		.almgr-asset-card {
 			flex-direction: column;
 		}
 
-		.alm-asset-link {
+		.almgr-asset-link {
 			flex-direction: row;
 			text-align: left;
 		}
 
-		.alm-asset-thumbnail {
+		.almgr-asset-thumbnail {
 			width: 100px;
 			height: 100px;
 			margin-bottom: 0;
 			margin-right: 15px;
 		}
 
-		.alm-asset-content-wrapper {
+		.almgr-asset-content-wrapper {
 			align-items: flex-start;
 		}
 
-		.alm-asset-title {
+		.almgr-asset-title {
 			text-align: left;
 		}
 
-		.alm-asset-taxonomies {
+		.almgr-asset-taxonomies {
 			flex-direction: row;
 			flex-wrap: wrap;
 		}
 
-		.alm-asset-taxonomy {
+		.almgr-asset-taxonomy {
 			width: auto;
 			min-width: 45%;
 			border-bottom: none;
@@ -1079,7 +1079,7 @@
 	}
 
 	/* Collapsible filters container */
-	.alm-filters-collapsible {
+	.almgr-filters-collapsible {
 		margin-top: 12px;
 		border: 1px solid #ddd;
 		border-radius: 4px;
@@ -1087,7 +1087,7 @@
 	}
 
 	/* Toggle button (summary) */
-	.alm-filters-toggle {
+	.almgr-filters-toggle {
 		cursor: pointer;
 		padding: 10px 15px;
 		display: flex;
@@ -1099,27 +1099,27 @@
 		list-style: none;
 	}
 
-	.alm-filters-toggle::-webkit-details-marker {
+	.almgr-filters-toggle::-webkit-details-marker {
 		display: none;
 	}
 
-	.alm-filters-toggle::after {
+	.almgr-filters-toggle::after {
 		content: '▼';
 		font-size: 0.8em;
 		transition: transform 0.3s ease;
 		color: #666;
 	}
 
-	.alm-filters-collapsible[open] .alm-filters-toggle::after {
+	.almgr-filters-collapsible[open] .almgr-filters-toggle::after {
 		transform: rotate(180deg);
 	}
 
-	.alm-filters-toggle:hover {
+	.almgr-filters-toggle:hover {
 		background: #f0f0f0;
 	}
 
 	/* Active filters badge */
-	.alm-active-filters-badge {
+	.almgr-active-filters-badge {
 		display: inline-block;
 		background: #0073aa;
 		color: #fff;
@@ -1131,39 +1131,39 @@
 	}
 
 	/* Filters content */
-	.alm-filters-content {
+	.almgr-filters-content {
 		padding: 15px;
 		background: #fff;
 		border-top: 1px solid #ddd;
 	}
 
 	/* Grid layout for filters (2x2) */
-	.alm-filters-grid {
+	.almgr-filters-grid {
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
 	}
 
-	.alm-filter-row {
+	.almgr-filter-row {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 12px;
 	}
 
 	/* Individual filter field */
-	.alm-filter-field {
+	.almgr-filter-field {
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
 	}
 
-	.alm-filter-field label {
+	.almgr-filter-field label {
 		font-weight: 600;
 		font-size: 0.9em;
 		color: #555;
 	}
 
-	.alm-filter-field select {
+	.almgr-filter-field select {
 		padding: 6px 8px;
 		border: 1px solid #c7d3dd;
 		border-radius: 4px;
@@ -1172,47 +1172,47 @@
 		cursor: pointer;
 	}
 
-	#alm_asset_search_form .alm-filter-field input[type="text"] {
+	#almgr_asset_search_form .almgr-filter-field input[type="text"] {
 		border: 1px solid #c7d3dd;
 	}
 
-	.alm-filter-field select:focus {
+	.almgr-filter-field select:focus {
 		outline: none;
 		border-color: #0073aa;
 		box-shadow: 0 0 0 1px #0073aa;
 	}
 
 	/* Form actions row (Reset Filters + Search button side by side). */
-	.alm-form-actions {
+	.almgr-form-actions {
 		display: flex;
 		gap: 12px;
 	}
 
-	.alm-form-actions .alm-reset-filters,
-	.alm-form-actions button {
+	.almgr-form-actions .almgr-reset-filters,
+	.almgr-form-actions button {
 		flex: 1;
 	}
 
-	#alm_asset_search_form .alm-form-actions .alm-reset-filters,
-	#alm_asset_search_form .alm-form-actions button[type="submit"] {
+	#almgr_asset_search_form .almgr-form-actions .almgr-reset-filters,
+	#almgr_asset_search_form .almgr-form-actions button[type="submit"] {
 		min-height: 44px;
 		border-radius: 8px;
 	}
 
-	#alm_asset_search_form .alm-form-actions button[type="submit"] {
+	#almgr_asset_search_form .almgr-form-actions button[type="submit"] {
 		margin-top: 0;
 		box-sizing: border-box;
 	}
 
-	.alm-reset-filters {
+	.almgr-reset-filters {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: 10px 16px;
-		background: var(--alm-btn-secondary-bg);
-		color: var(--alm-btn-secondary-text);
+		background: var(--almgr-btn-secondary-bg);
+		color: var(--almgr-btn-secondary-text);
 		text-decoration: none;
-		border: 1px solid var(--alm-btn-secondary-border);
+		border: 1px solid var(--almgr-btn-secondary-border);
 		border-radius: 8px;
 		font-size: 0.95rem;
 		font-weight: 600;
@@ -1221,14 +1221,14 @@
 		box-sizing: border-box;
 	}
 
-	.alm-reset-filters:hover {
-		background: var(--alm-btn-secondary-hover-bg);
-		border-color: var(--alm-btn-secondary-border);
-		color: var(--alm-btn-secondary-text);
+	.almgr-reset-filters:hover {
+		background: var(--almgr-btn-secondary-hover-bg);
+		border-color: var(--almgr-btn-secondary-border);
+		color: var(--almgr-btn-secondary-text);
 	}
 
-	.alm-reset-filters:focus-visible {
-		outline: 2px solid var(--alm-btn-primary-focus);
+	.almgr-reset-filters:focus-visible {
+		outline: 2px solid var(--almgr-btn-primary-focus);
 		outline-offset: 1px;
 	}
 
@@ -1236,7 +1236,7 @@
 		PAGINATION
 		======================================================================== */
 
-	.alm-pagination {
+	.almgr-pagination {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
@@ -1244,7 +1244,7 @@
 		margin-top: 24px;
 	}
 
-	.alm-pagination .page-numbers {
+	.almgr-pagination .page-numbers {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -1260,12 +1260,12 @@
 		transition: background 0.2s ease, border-color 0.2s ease;
 	}
 
-	.alm-pagination .page-numbers:hover {
+	.almgr-pagination .page-numbers:hover {
 		background: #f0f0f0;
 		border-color: #0073aa;
 	}
 
-	.alm-pagination .page-numbers.current {
+	.almgr-pagination .page-numbers.current {
 		background: #0073aa;
 		border-color: #0073aa;
 		color: #fff;
@@ -1273,7 +1273,7 @@
 		cursor: default;
 	}
 
-	.alm-pagination .page-numbers.dots {
+	.almgr-pagination .page-numbers.dots {
 		border-color: transparent;
 		background: transparent;
 		color: #555;
@@ -1286,16 +1286,16 @@
 
 	/* Tablet and medium screens */
 	@media (max-width: 768px) {
-		.alm-filter-row {
+		.almgr-filter-row {
 			grid-template-columns: 1fr;
 			gap: 10px;
 		}
 
-		.alm-filters-content {
+		.almgr-filters-content {
 			padding: 12px;
 		}
 
-		.alm-form-actions {
+		.almgr-form-actions {
 			flex-direction: column;
 		}
 	}
@@ -1303,31 +1303,31 @@
 	/* Small screens */
 	@media (max-width: 768px) {
 		/* Scan QR button: stacks below the search input */
-		.alm-search-row {
+		.almgr-search-row {
 			display: block;
 		}
 
-		.alm-qr-scan-btn {
+		.almgr-qr-scan-btn {
 			display: block;
 			width: 100%;
 			margin-top: 8px;
 		}
 
-		.alm-filters-toggle {
+		.almgr-filters-toggle {
 			padding: 8px 12px;
 			font-size: 0.9em;
 		}
 
-		.alm-active-filters-badge {
+		.almgr-active-filters-badge {
 			font-size: 0.75em;
 			padding: 2px 6px;
 		}
 
-		.alm-filter-field label {
+		.almgr-filter-field label {
 			font-size: 0.85em;
 		}
 
-		.alm-filter-field select {
+		.almgr-filter-field select {
 			font-size: 0.9em;
 		}
 	}
@@ -1351,32 +1351,32 @@
 
 	/* Respect user preference for reduced motion. */
 	@media (prefers-reduced-motion: reduce) {
-		.alm-asset-title,
-		.alm-search-submit-btn,
-		#alm_asset_search_form .alm-form-actions button[type="submit"],
-		.alm-asset-view .alm-button,
-		.alm-reset-filters,
-		.alm-filters-toggle::after {
+		.almgr-asset-title,
+		.almgr-search-submit-btn,
+		#almgr_asset_search_form .almgr-form-actions button[type="submit"],
+		.almgr-asset-view .almgr-button,
+		.almgr-reset-filters,
+		.almgr-filters-toggle::after {
 			transition: none;
 		}
 
-		.alm-asset-card {
+		.almgr-asset-card {
 			transition: none;
 		}
 
-		.alm-asset-card:hover {
+		.almgr-asset-card:hover {
 			transform: none;
 		}
 
-		.alm-asset-thumbnail img {
+		.almgr-asset-thumbnail img {
 			transition: none;
 		}
 
-		.alm-asset-card:hover .alm-asset-thumbnail img {
+		.almgr-asset-card:hover .almgr-asset-thumbnail img {
 			transform: none;
 		}
 
-		#alm_asset_search_form.alm-autocomplete-loading .alm-search-icon {
+		#almgr_asset_search_form.almgr-autocomplete-loading .almgr-search-icon {
 			animation: none;
 		}
 	}
@@ -1386,24 +1386,24 @@
 	========================================================= */
 
 /* QR canvas inside the additional fields collapsible */
-.alm-qr-canvas {
+.almgr-qr-canvas {
 	width: 120px;
 	height: 120px;
 }
 
-.alm-qr-canvas svg {
+.almgr-qr-canvas svg {
 	width: 100%;
 	height: 100%;
 	display: block;
 }
 
-.alm-qr-canvas--small {
+.almgr-qr-canvas--small {
 	width: 80px;
 	height: 80px;
 }
 
 /* QR + print button side by side */
-.alm-qr-inline {
+.almgr-qr-inline {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
@@ -1411,7 +1411,7 @@
 }
 
 /* Print label card — hidden in normal view, shown only when printing */
-.alm-qr-print-card {
+.almgr-qr-print-card {
 	display: none;
 }
 
@@ -1421,11 +1421,11 @@
 
 @media print {
 
-	body > *:not(.alm-qr-print-card) {
+	body > *:not(.almgr-qr-print-card) {
 		display: none !important;
 	}
 
-	.alm-qr-print-card {
+	.almgr-qr-print-card {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -1438,17 +1438,17 @@
 		page-break-inside: avoid;
 	}
 
-	.alm-qr-print-card__qr {
+	.almgr-qr-print-card__qr {
 		width: 20mm;
 		height: 20mm;
 	}
 
-	.alm-qr-print-card__qr svg {
+	.almgr-qr-print-card__qr svg {
 		width: 100%;
 		height: 100%;
 	}
 
-	.alm-qr-print-card__title {
+	.almgr-qr-print-card__title {
 		margin: 1mm 0 0;
 		font-size: 6pt;
 		text-align: center;
@@ -1458,7 +1458,7 @@
 		max-width: 46mm;
 	}
 
-	.alm-qr-print-card__code {
+	.almgr-qr-print-card__code {
 		margin: 0;
 		font-size: 5pt;
 		font-family: monospace;
@@ -1471,13 +1471,13 @@
 	========================================================================== */
 
 /* Scan QR button in the search row */
-.alm-qr-scan-btn {
+.almgr-qr-scan-btn {
 	flex: 0 0 auto;
 	white-space: nowrap;
 }
 
 /* Full-screen scanner overlay */
-.alm-qr-scanner-overlay {
+.almgr-qr-scanner-overlay {
 	position: fixed;
 	inset: 0;
 	background: rgba(0, 0, 0, 0.88);
@@ -1488,7 +1488,7 @@
 	padding: 16px;
 }
 
-.alm-qr-scanner-overlay__inner {
+.almgr-qr-scanner-overlay__inner {
 	position: relative;
 	width: 100%;
 	max-width: 480px;
@@ -1498,24 +1498,24 @@
 	gap: 12px;
 }
 
-.alm-qr-scanner-overlay__video {
+.almgr-qr-scanner-overlay__video {
 	width: 100%;
 	border-radius: 8px;
 	display: block;
 	background: #000;
 }
 
-.alm-qr-scanner-overlay__status {
+.almgr-qr-scanner-overlay__status {
 	margin: 0;
 	color: #fff;
 	font-size: 0.95rem;
 	text-align: center;
 }
 
-.alm-qr-scanner-overlay__status--error {
+.almgr-qr-scanner-overlay__status--error {
 	color: #ff6b6b;
 }
 
-.alm-qr-scanner-overlay__close {
+.almgr-qr-scanner-overlay__close {
 	align-self: flex-end;
 }

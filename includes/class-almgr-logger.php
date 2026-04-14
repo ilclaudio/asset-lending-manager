@@ -11,9 +11,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class ALM_Logger
+ * Class ALMGR_Logger
  */
-class ALM_Logger {
+class ALMGR_Logger {
 
 	/**
 	 * Logging levels.
@@ -58,12 +58,12 @@ class ALM_Logger {
 
 	/**
 	 * Configure logger from plugin settings.
-	 * Call once after ALM_Settings_Manager is initialised.
+	 * Call once after ALMGR_Settings_Manager is initialised.
 	 *
-	 * @param ALM_Settings_Manager $settings Settings manager instance.
+	 * @param ALMGR_Settings_Manager $settings Settings manager instance.
 	 * @return void
 	 */
-	public static function configure( ALM_Settings_Manager $settings ) {
+	public static function configure( ALMGR_Settings_Manager $settings ) {
 		self::$enabled       = (bool) $settings->get( 'logging.enabled', true );
 		$level_map           = array(
 			'debug'   => self::DEBUG,
@@ -103,7 +103,7 @@ class ALM_Logger {
 		if ( ! empty( $context ) ) {
 			$entry .= ' ' . wp_json_encode( self::maybe_mask_context( $context ) );
 		}
-		error_log( $entry ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- intentional logging utility.
+		error_log( $entry );
 	}
 
 	/**

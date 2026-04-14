@@ -1,5 +1,5 @@
 /**
- * User autocomplete widget for ALM.
+ * User autocomplete widget for ALMGR.
  *
  * Provides a reusable, accessible autocomplete widget for user search inputs.
  * Used by the direct assignment form (operator-only) and the owner filter in the asset list.
@@ -21,7 +21,7 @@
 	 * @param {string} config.hiddenId   ID of the hidden input that stores the selected user ID.
 	 * @param {string} config.dropdownId ID of the dropdown container element.
 	 */
-	window.almInitUserAutocomplete = function(config) {
+	window.almgrInitUserAutocomplete = function(config) {
 		var input    = document.getElementById(config.inputId);
 		var hiddenId = document.getElementById(config.hiddenId);
 
@@ -30,7 +30,7 @@
 		}
 
 		var wrapEl        = input.parentNode;
-		var minChars      = window.almUserAutocomplete.minChars || 3;
+		var minChars      = window.almgrUserAutocomplete.minChars || 3;
 		var debounceTimer = null;
 		var activeIndex   = -1;
 
@@ -39,7 +39,7 @@
 		if (!dropdown) {
 			dropdown = document.createElement('div');
 			dropdown.id        = config.dropdownId;
-			dropdown.className = 'alm-autocomplete-dropdown';
+			dropdown.className = 'almgr-autocomplete-dropdown';
 			dropdown.setAttribute('role', 'listbox');
 			dropdown.setAttribute('aria-label', __( 'User suggestions', 'asset-lending-manager' ));
 			input.parentNode.appendChild(dropdown);
@@ -68,7 +68,7 @@
 
 			users.forEach(function(user) {
 				var item = document.createElement('div');
-				item.className = 'alm-autocomplete-item';
+				item.className = 'almgr-autocomplete-item';
 				item.setAttribute('role', 'option');
 				item.setAttribute('aria-selected', 'false');
 				item.setAttribute('data-id', user.id);
@@ -76,14 +76,14 @@
 				item.tabIndex = -1;
 
 				var nameEl = document.createElement('div');
-				nameEl.className = 'alm-autocomplete-title';
+				nameEl.className = 'almgr-autocomplete-title';
 
 				var nameStrong = document.createElement('strong');
 				nameStrong.textContent = user.display_name;
 				nameEl.appendChild(nameStrong);
 
 				var roleEl = document.createElement('div');
-				roleEl.className   = 'alm-autocomplete-meta';
+				roleEl.className   = 'almgr-autocomplete-meta';
 				roleEl.textContent = user.role;
 
 				item.appendChild(nameEl);
@@ -135,9 +135,9 @@
 		 * Remove active highlight from all items.
 		 */
 		function clearActiveItem() {
-			var items = dropdown.querySelectorAll('.alm-autocomplete-item');
+			var items = dropdown.querySelectorAll('.almgr-autocomplete-item');
 			items.forEach(function(item) {
-				item.classList.remove('alm-autocomplete-item--active');
+				item.classList.remove('almgr-autocomplete-item--active');
 				item.setAttribute('aria-selected', 'false');
 			});
 		}
@@ -148,14 +148,14 @@
 		 * @param {number} index Item index.
 		 */
 		function setActiveItem(index) {
-			var items = dropdown.querySelectorAll('.alm-autocomplete-item');
+			var items = dropdown.querySelectorAll('.almgr-autocomplete-item');
 			clearActiveItem();
 			if (index < 0 || index >= items.length) {
 				activeIndex = -1;
 				return;
 			}
 			activeIndex = index;
-			items[index].classList.add('alm-autocomplete-item--active');
+			items[index].classList.add('almgr-autocomplete-item--active');
 			items[index].setAttribute('aria-selected', 'true');
 			items[index].scrollIntoView({ block: 'nearest' });
 			input.setAttribute('aria-activedescendant', items[index].id || '');
@@ -167,17 +167,17 @@
 		 * @param {string} term Search term.
 		 */
 		function fetchUsers(term) {
-			wrapEl.classList.add('alm-autocomplete-loading');
+			wrapEl.classList.add('almgr-autocomplete-loading');
 
 			var params = new URLSearchParams();
 			params.append('term', term);
-			params.append('nonce', window.almUserAutocomplete.restNonce);
+			params.append('nonce', window.almgrUserAutocomplete.restNonce);
 
-			fetch(window.almUserAutocomplete.restUrl, {
+			fetch(window.almgrUserAutocomplete.restUrl, {
 				method:  'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-					'X-WP-Nonce':   window.almUserAutocomplete.restNonce,
+					'X-WP-Nonce':   window.almgrUserAutocomplete.restNonce,
 				},
 				body:        params.toString(),
 				credentials: 'same-origin',
@@ -192,7 +192,7 @@
 				hideDropdown();
 			})
 			.finally(function() {
-				wrapEl.classList.remove('alm-autocomplete-loading');
+				wrapEl.classList.remove('almgr-autocomplete-loading');
 			});
 		}
 
@@ -216,7 +216,7 @@
 
 		// Keyboard navigation.
 		input.addEventListener('keydown', function(e) {
-			var items  = dropdown.querySelectorAll('.alm-autocomplete-item');
+			var items  = dropdown.querySelectorAll('.almgr-autocomplete-item');
 			var isOpen = dropdown.style.display === 'block';
 
 			if (e.key === 'ArrowDown') {
@@ -258,22 +258,22 @@
 
 	document.addEventListener('DOMContentLoaded', function() {
 		// Bail early if localized data is missing (non-operator pages).
-		if (typeof window.almUserAutocomplete === 'undefined') {
+		if (typeof window.almgrUserAutocomplete === 'undefined') {
 			return;
 		}
 
 		// Initialize the direct assignment form widget (asset detail page).
-		window.almInitUserAutocomplete({
-			inputId:    'alm-direct-assign-user-input',
-			hiddenId:   'alm-direct-assign-user-id',
-			dropdownId: 'alm-user-autocomplete-dropdown',
+		window.almgrInitUserAutocomplete({
+			inputId:    'almgr-direct-assign-user-input',
+			hiddenId:   'almgr-direct-assign-user-id',
+			dropdownId: 'almgr-user-autocomplete-dropdown',
 		});
 
 		// Initialize the owner filter widget (asset list page).
-		window.almInitUserAutocomplete({
-			inputId:    'alm-owner-filter-input',
-			hiddenId:   'alm-owner-filter-id',
-			dropdownId: 'alm-owner-filter-dropdown',
+		window.almgrInitUserAutocomplete({
+			inputId:    'almgr-owner-filter-input',
+			hiddenId:   'almgr-owner-filter-id',
+			dropdownId: 'almgr-owner-filter-dropdown',
 		});
 	});
 }());

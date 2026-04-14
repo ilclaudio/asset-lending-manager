@@ -6,7 +6,7 @@
             {
                 "key": "field_694a656243fca",
                 "label": "Manufacturer",
-                "name": "manufacturer",
+                "name": "almgr_manufacturer",
                 "aria-label": "",
                 "type": "text",
                 "instructions": "",
@@ -27,7 +27,7 @@
             {
                 "key": "field_694a65e643fcb",
                 "label": "Model",
-                "name": "model",
+                "name": "almgr_model",
                 "aria-label": "",
                 "type": "text",
                 "instructions": "",
@@ -48,7 +48,7 @@
             {
                 "key": "field_694a65fa43fcc",
                 "label": "Purchase date",
-                "name": "data_acquisto",
+                "name": "almgr_data_acquisto",
                 "aria-label": "",
                 "type": "date_picker",
                 "instructions": "",
@@ -68,7 +68,7 @@
             {
                 "key": "field_694a665243fcd",
                 "label": "Cost",
-                "name": "cost",
+                "name": "almgr_cost",
                 "aria-label": "",
                 "type": "number",
                 "instructions": "",
@@ -91,7 +91,7 @@
             {
                 "key": "field_694a668743fce",
                 "label": "Dimensions",
-                "name": "dimensions",
+                "name": "almgr_dimensions",
                 "aria-label": "",
                 "type": "text",
                 "instructions": "",
@@ -112,7 +112,7 @@
             {
                 "key": "field_694a66a443fcf",
                 "label": "Weight",
-                "name": "weight",
+                "name": "almgr_weight",
                 "aria-label": "",
                 "type": "text",
                 "instructions": "",
@@ -133,7 +133,7 @@
             {
                 "key": "field_694a66be43fd0",
                 "label": "Location",
-                "name": "location",
+                "name": "almgr_location",
                 "aria-label": "",
                 "type": "text",
                 "instructions": "",
@@ -154,7 +154,7 @@
             {
                 "key": "field_694a66df43fd1",
                 "label": "Components",
-                "name": "components",
+                "name": "almgr_components",
                 "aria-label": "",
                 "type": "post_object",
                 "instructions": "",
@@ -166,7 +166,7 @@
                     "id": ""
                 },
                 "post_type": [
-                    "alm_asset"
+                    "almgr_asset"
                 ],
                 "post_status": "",
                 "taxonomy": "",
@@ -181,7 +181,7 @@
             {
                 "key": "field_694a672043fd2",
                 "label": "User manual",
-                "name": "user_manual",
+                "name": "almgr_user_manual",
                 "aria-label": "",
                 "type": "file",
                 "instructions": "",
@@ -202,7 +202,7 @@
             {
                 "key": "field_694a675043fd3",
                 "label": "Technical data sheet",
-                "name": "technical_data_sheet",
+                "name": "almgr_technical_data_sheet",
                 "aria-label": "",
                 "type": "file",
                 "instructions": "",
@@ -223,7 +223,7 @@
             {
                 "key": "field_694a677143fd4",
                 "label": "Serial number",
-                "name": "serial_number",
+                "name": "almgr_serial_number",
                 "aria-label": "",
                 "type": "text",
                 "instructions": "",
@@ -244,7 +244,7 @@
             {
                 "key": "field_694a677b43fd5",
                 "label": "External code",
-                "name": "external_code",
+                "name": "almgr_external_code",
                 "aria-label": "",
                 "type": "text",
                 "instructions": "",
@@ -265,7 +265,7 @@
             {
                 "key": "field_694a679543fd6",
                 "label": "Notes",
-                "name": "notes",
+                "name": "almgr_notes",
                 "aria-label": "",
                 "type": "textarea",
                 "instructions": "",
@@ -289,7 +289,7 @@
                 {
                     "param": "post_type",
                     "operator": "==",
-                    "value": "alm_asset"
+                    "value": "almgr_asset"
                 }
             ]
         ],

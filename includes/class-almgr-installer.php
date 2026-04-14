@@ -1,6 +1,6 @@
 <?php
 /**
- * ALM Setup Manager.
+ * ALMGR Setup Manager.
  *
  * Handles initial setup tasks for the Asset Lending Manager plugin.
  * Ensures that required default taxonomy terms exist.
@@ -14,9 +14,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class ALM_Installer
+ * Class ALMGR_Installer
  */
-class ALM_Installer {
+class ALMGR_Installer {
 
 	/**
 	 * Plugin activation hook.
@@ -56,8 +56,7 @@ class ALM_Installer {
 	public static function create_loan_requests_table() {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
-		$table_name      = $wpdb->prefix . 'alm_loan_requests';
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
+		$table_name      = $wpdb->prefix . 'almgr_loan_requests';
 		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
 		$sql          = "CREATE TABLE $table_name (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -81,15 +80,14 @@ class ALM_Installer {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 		// Verify table was created or updated.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
 			if ( $table_exists ) {
-				ALM_Logger::info( 'Table alm_loan_requests schema verified/updated successfully.' );
+				ALMGR_Logger::info( 'Table almgr_loan_requests schema verified/updated successfully.' );
 			} else {
-				ALM_Logger::info( 'Table alm_loan_requests created successfully.' );
+				ALMGR_Logger::info( 'Table almgr_loan_requests created successfully.' );
 			}
 		} else {
-			ALM_Logger::error( 'Failed to create table alm_loan_requests' );
+			ALMGR_Logger::error( 'Failed to create table almgr_loan_requests' );
 		}
 	}
 
@@ -102,21 +100,20 @@ class ALM_Installer {
 	public static function drop_tables() {
 		global $wpdb;
 		$tables = array(
-			$wpdb->prefix . 'alm_loan_requests_history',
-			$wpdb->prefix . 'alm_loan_requests',
+			$wpdb->prefix . 'almgr_loan_requests_history',
+			$wpdb->prefix . 'almgr_loan_requests',
 		);
 		foreach ( $tables as $table ) {
 			if ( ! self::is_safe_table_identifier( $table ) ) {
-				ALM_Logger::warning(
+				ALMGR_Logger::warning(
 					'Skipping table drop due to invalid identifier.',
 					array( 'table' => $table )
 				);
 				continue;
 			}
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table identifier is internal and validated by is_safe_table_identifier().
-			$wpdb->query( "DROP TABLE IF EXISTS `$table`" );
-			ALM_Logger::info( "Dropped table $table" );
+			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table ) );
+			ALMGR_Logger::info( "Dropped table $table" );
 		}
 	}
 
@@ -142,10 +139,9 @@ class ALM_Installer {
 	public static function create_loan_requests_history_table() {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'alm_loan_requests_history';
+		$table_name      = $wpdb->prefix . 'almgr_loan_requests_history';
 		$charset_collate = $wpdb->get_charset_collate();
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
 
 		$sql = "CREATE TABLE $table_name (
@@ -172,22 +168,21 @@ class ALM_Installer {
 		dbDelta( $sql );
 
 		// Verify creation or schema update.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema verification query.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
 			if ( $table_exists ) {
-				ALM_Logger::info( 'Table alm_loan_requests_history schema verified/updated successfully.' );
+				ALMGR_Logger::info( 'Table almgr_loan_requests_history schema verified/updated successfully.' );
 			} else {
-				ALM_Logger::info( 'Table alm_loan_requests_history created successfully.' );
+				ALMGR_Logger::info( 'Table almgr_loan_requests_history created successfully.' );
 			}
 		} else {
-			ALM_Logger::error( 'Failed to create table alm_loan_requests_history.' );
+			ALMGR_Logger::error( 'Failed to create table almgr_loan_requests_history.' );
 		}
 	}
 
 	/**
 	 * Public entry point.
 	 *
-	 * Ensures that all default taxonomy terms required by ALM
+	 * Ensures that all default taxonomy terms required by ALMGR
 	 * are present in the system.
 	 *
 	 * This method can be safely called:
@@ -201,14 +196,14 @@ class ALM_Installer {
 
 		// Asset structure.
 		self::add_default_terms(
-			ALM_ASSET_STRUCTURE_TAXONOMY_SLUG,
+			ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
 			array(
 				array(
-					'slug'  => ALM_ASSET_COMPONENT_SLUG,
+					'slug'  => ALMGR_ASSET_COMPONENT_SLUG,
 					'label' => __( 'Component', 'asset-lending-manager' ),
 				),
 				array(
-					'slug'  => ALM_ASSET_KIT_SLUG,
+					'slug'  => ALMGR_ASSET_KIT_SLUG,
 					'label' => __( 'Kit', 'asset-lending-manager' ),
 				),
 			)
@@ -216,7 +211,7 @@ class ALM_Installer {
 
 		// Asset types.
 		self::add_default_terms(
-			ALM_ASSET_TYPE_TAXONOMY_SLUG,
+			ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
 			array(
 				array(
 					'slug'  => 'telescope',
@@ -271,7 +266,7 @@ class ALM_Installer {
 
 		// Asset state.
 		self::add_default_terms(
-			ALM_ASSET_STATE_TAXONOMY_SLUG,
+			ALMGR_ASSET_STATE_TAXONOMY_SLUG,
 			array(
 				array(
 					'slug'  => 'on-loan',
@@ -294,7 +289,7 @@ class ALM_Installer {
 
 		// Asset level.
 		self::add_default_terms(
-			ALM_ASSET_LEVEL_TAXONOMY_SLUG,
+			ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 			array(
 				array(
 					'slug'  => 'basic',
