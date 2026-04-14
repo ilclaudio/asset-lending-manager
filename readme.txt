@@ -64,10 +64,10 @@ The plugin registers the ACF field group automatically — no manual configurati
 
 
 == Installation ==
-1. In your WordPress admin, go to Plugins > Add New > Upload Plugin.
-2. Upload the plugin ZIP file and click Install Now, then Activate.
-3. Install and activate the **Advanced Custom Fields** (ACF) plugin — the free version is sufficient and available at https://wordpress.org/plugins/advanced-custom-fields/
+1. Install and activate the **Advanced Custom Fields** (ACF) plugin — the free version is sufficient and available at https://wordpress.org/plugins/advanced-custom-fields/
    The plugin registers the ACF field group automatically — no manual ACF configuration is needed.
+2. In your WordPress admin, go to Plugins > Add New > Upload Plugin.
+3. Upload the plugin ZIP file and click Install Now, then Activate.
 4. The plugin works out of the box on both classic and block themes, with no shortcodes required for normal use. Asset pages are served automatically:
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page

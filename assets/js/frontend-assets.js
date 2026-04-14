@@ -64,33 +64,65 @@
 					e.preventDefault();
 
 					var imgSrc = imgEl.getAttribute('src');
-					var imgAlt = imgEl.getAttribute('alt');
+					var imgAlt = imgEl.getAttribute('alt') || __( 'Asset image', 'asset-lending-manager' );
 
 					// Create lightbox overlay.
 					var lightbox = document.createElement('div');
 					lightbox.className = 'almgr-lightbox';
+					lightbox.setAttribute('role', 'dialog');
+					lightbox.setAttribute('aria-modal', 'true');
+					lightbox.setAttribute('aria-label', imgAlt);
+
+					var closeBtn = document.createElement('button');
+					closeBtn.className = 'almgr-lightbox__close';
+					closeBtn.type = 'button';
+					closeBtn.setAttribute('aria-label', __( 'Close image', 'asset-lending-manager' ));
+					closeBtn.innerHTML = '&times;';
 
 					var img = document.createElement('img');
 					img.setAttribute('src', imgSrc || '');
-					img.setAttribute('alt', imgAlt || '');
+					img.setAttribute('alt', imgAlt);
 
+					lightbox.appendChild(closeBtn);
 					lightbox.appendChild(img);
 					document.body.appendChild(lightbox);
 
-					// Show lightbox.
+					// Show lightbox and move focus to close button.
 					setTimeout(function() {
 						lightbox.classList.add('active');
+						closeBtn.focus();
 					}, 10);
 
-					// Close on click.
-					lightbox.addEventListener('click', function() {
+					// Close lightbox and restore focus to the thumbnail.
+					function closeLightbox() {
 						lightbox.classList.remove('active');
 						setTimeout(function() {
 							if (lightbox && lightbox.parentNode) {
 								lightbox.parentNode.removeChild(lightbox);
 							}
 						}, 300);
+						imgEl.focus();
+					}
+
+					closeBtn.addEventListener('click', closeLightbox);
+
+					// Close on click outside the image.
+					lightbox.addEventListener('click', function(e) {
+						if (e.target === lightbox) {
+							closeLightbox();
+						}
 					});
+
+					// Close on Escape key.
+					function onLightboxKeyDown(e) {
+						if (e.key === 'Escape') {
+							closeLightbox();
+							document.removeEventListener('keydown', onLightboxKeyDown);
+						}
+					}
+					document.addEventListener('keydown', onLightboxKeyDown);
+
+					ALMGR_Frontend.trapFocus(lightbox);
 				});
 			});
 		},
@@ -188,15 +220,11 @@
 			var charCount = document.getElementById('almgr-request-char-count');
 
 			if (messageField && charCount) {
+				var requestCharMaxLen = parseInt(almgrFrontend.requestMessageMaxLength, 10) || 500;
 				messageField.addEventListener('input', function() {
 					var length = messageField.value.length;
-					charCount.textContent = length + ' / ' + (parseInt(almgrFrontend.directAssignReasonMaxLength, 10) || 500);
-
-					if (length >= 500) {
-						charCount.style.color = '#dc3545';
-					} else {
-						charCount.style.color = '#6c757d';
-					}
+					charCount.textContent = length + ' / ' + requestCharMaxLen;
+					charCount.style.color = length >= requestCharMaxLen ? '#dc3545' : '#6c757d';
 				});
 			}
 
@@ -269,7 +297,6 @@
 					} else {
 						var errorMsg = data.data && data.data.message ? data.data.message : __( 'Request failed. Please try again.', 'asset-lending-manager' );
 						ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
-						console.error('*** Loan request failed:', errorMsg);
 
 						// Re-enable submit button only on error
 						submitBtn.disabled = false;
@@ -278,7 +305,6 @@
 				})
 				.catch(function(error) {
 					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-					console.error('*** AJAX error:', error);
 
 					// Re-enable submit button only on error
 					submitBtn.disabled = false;
@@ -306,10 +332,11 @@
 			var charCount   = document.getElementById('almgr-direct-assign-char-count');
 
 			if (reasonField && charCount) {
+				var directAssignCharMaxLen = parseInt(almgrFrontend.directAssignReasonMaxLength, 10) || 500;
 				reasonField.addEventListener('input', function() {
 					var length = reasonField.value.length;
-					charCount.textContent = length + ' / 500';
-					charCount.style.color = length >= 500 ? '#dc3545' : '#6c757d';
+					charCount.textContent = length + ' / ' + directAssignCharMaxLen;
+					charCount.style.color = length >= directAssignCharMaxLen ? '#dc3545' : '#6c757d';
 				});
 			}
 
@@ -386,7 +413,6 @@
 				})
 				.catch(function(error) {
 					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-					console.error('*** Direct assign AJAX error:', error);
 					submitBtn.disabled    = false;
 					submitBtn.textContent = originalBtnText;
 				});
@@ -475,7 +501,6 @@
 					})
 					.catch(function(error) {
 						ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-						console.error('*** Change state AJAX error:', error);
 						submitBtns.forEach(function(btn, i) {
 							btn.disabled    = false;
 							btn.textContent = originalTexts[i];
@@ -557,7 +582,6 @@
 					})
 					.catch(function(error) {
 						ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-						console.error('*** Restore state AJAX error:', error);
 						if (submitBtn) {
 							submitBtn.disabled    = false;
 							submitBtn.textContent = originalBtnText;
@@ -607,7 +631,6 @@
 			var assetId = btn.getAttribute('data-asset-id');
 
 			if (!requestId || !assetId) {
-				console.error('Missing request ID or asset ID');
 				return;
 			}
 
@@ -618,7 +641,8 @@
 				function() {
 					// On confirm
 					ALMGR_Frontend.submitApprovalRequest(btn, requestId, assetId);
-				}
+				},
+				btn
 			);
 		},
 
@@ -629,10 +653,13 @@
 		 * @param {string} message Modal message
 		 * @param {Function} onConfirm Callback on confirm
 		 */
-		showConfirmModal: function(title, message, onConfirm) {
+		showConfirmModal: function(title, message, onConfirm, triggerEl) {
 			// Create modal overlay
 			var overlay = document.createElement('div');
 			overlay.className = 'almgr-modal-overlay almgr-confirm-modal';
+			overlay.setAttribute('role', 'dialog');
+			overlay.setAttribute('aria-modal', 'true');
+			overlay.setAttribute('aria-labelledby', 'almgr-confirm-modal-title');
 
 			// Create modal content
 			var content = document.createElement('div');
@@ -641,7 +668,11 @@
 			// Modal header
 			var header = document.createElement('div');
 			header.className = 'almgr-modal-header';
-			header.innerHTML = '<h2>' + this.escapeHtml(title) + '</h2>';
+
+			var titleEl = document.createElement('h2');
+			titleEl.id = 'almgr-confirm-modal-title';
+			titleEl.textContent = title;
+			header.appendChild(titleEl);
 
 			// Modal body
 			var body = document.createElement('div');
@@ -672,12 +703,14 @@
 			overlay.appendChild(content);
 			document.body.appendChild(overlay);
 
-			// Show modal with animation
+			// Show modal, move focus to cancel button, trap focus.
 			setTimeout(function() {
 				overlay.classList.add('active');
+				cancelBtn.focus();
 			}, 10);
+			ALMGR_Frontend.trapFocus(overlay);
 
-			// Handle cancel
+			// Handle cancel and close.
 			var closeModal = function() {
 				overlay.classList.remove('active');
 				setTimeout(function() {
@@ -685,9 +718,22 @@
 						overlay.parentNode.removeChild(overlay);
 					}
 				}, 300);
+				// Restore focus to the element that opened the modal.
+				if (triggerEl) {
+					triggerEl.focus();
+				}
 			};
 
 			cancelBtn.addEventListener('click', closeModal);
+
+			// Close on Escape key.
+			var escHandler = function(e) {
+				if (e.key === 'Escape') {
+					closeModal();
+					document.removeEventListener('keydown', escHandler);
+				}
+			};
+			document.addEventListener('keydown', escHandler);
 
 			// Close on overlay click (outside modal)
 			overlay.addEventListener('click', function(e) {
@@ -764,7 +810,6 @@
 				} else {
 					var errorMsg = data.data && data.data.message ? data.data.message : __( 'Approval failed. Please try again.', 'asset-lending-manager' );
 					alert(errorMsg);
-					console.error('*** Approval failed:', errorMsg);
 
 					// Re-enable buttons on error
 					btn.disabled = false;
@@ -780,7 +825,6 @@
 			})
 			.catch(function(error) {
 				alert( __( 'Approval request failed. Please try again.', 'asset-lending-manager' ) );
-				console.error('*** AJAX error:', error);
 
 				// Re-enable buttons on error
 				btn.disabled = false;
@@ -972,8 +1016,9 @@
 				return;
 			}
 
-			if (message.length > 255) {
-				this.showResponse(responseDiv, 'error', __( 'Rejection reason must not exceed 255 characters.', 'asset-lending-manager' ));
+			var rejSubmitMaxLen = parseInt(almgrFrontend.rejectionMessageMaxLength, 10) || 255;
+			if (message.length > rejSubmitMaxLen) {
+				this.showResponse(responseDiv, 'error', sprintf(__( 'Rejection reason must not exceed %d characters.', 'asset-lending-manager' ), rejSubmitMaxLen));
 				return;
 			}
 
@@ -1018,7 +1063,6 @@
 				} else {
 					var errorMsg = data.data && data.data.message ? data.data.message : __( 'Failed to reject request. Please try again.', 'asset-lending-manager' );
 					ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
-					console.error('*** Rejection failed:', errorMsg);
 
 					// Re-enable submit button
 					submitBtn.disabled = false;
@@ -1027,7 +1071,6 @@
 			})
 			.catch(function(error) {
 				ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
-				console.error('*** AJAX error:', error);
 
 				// Re-enable submit button
 				submitBtn.disabled = false;
@@ -1252,6 +1295,9 @@
 				var stopped    = false;
 
 				overlay.className  = 'almgr-qr-scanner-overlay';
+				overlay.setAttribute('role', 'dialog');
+				overlay.setAttribute('aria-modal', 'true');
+				overlay.setAttribute('aria-label', __( 'QR code scanner', 'asset-lending-manager' ));
 				inner.className    = 'almgr-qr-scanner-overlay__inner';
 				video.className    = 'almgr-qr-scanner-overlay__video';
 				statusEl.className = 'almgr-qr-scanner-overlay__status';
@@ -1273,7 +1319,11 @@
 				overlay.appendChild(inner);
 				document.body.appendChild(overlay);
 
-				// Stop camera and remove overlay.
+				// Move focus to close button and trap focus inside overlay.
+				closeBtn.focus();
+				ALMGR_Frontend.trapFocus(overlay);
+
+				// Stop camera, remove overlay and restore focus to the scan button.
 				function stopScanner() {
 					if (stopped) {
 						return;
@@ -1290,6 +1340,7 @@
 					if (overlay.parentNode) {
 						overlay.parentNode.removeChild(overlay);
 					}
+					btn.focus();
 				}
 
 				closeBtn.addEventListener('click', stopScanner);
@@ -1507,6 +1558,28 @@
 			max-width: 90%;
 			max-height: 90%;
 			box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+		}
+		.almgr-lightbox__close {
+			position: absolute;
+			top: 16px;
+			right: 16px;
+			background: rgba(0, 0, 0, 0.6);
+			color: #fff;
+			border: none;
+			border-radius: 50%;
+			width: 36px;
+			height: 36px;
+			font-size: 20px;
+			line-height: 1;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.almgr-lightbox__close:hover,
+		.almgr-lightbox__close:focus {
+			background: rgba(255, 255, 255, 0.2);
+			outline: 2px solid #fff;
 		}
 
 		/* Modal overlay */

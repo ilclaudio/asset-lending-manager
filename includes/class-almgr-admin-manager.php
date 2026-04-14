@@ -143,7 +143,7 @@ class ALMGR_Admin_Manager {
 			return true;
 		}
 		// ALMGR custom admin pages (main menu, tools, etc).
-		if ( strpos( $hook, 'alm' ) !== false ) {
+		if ( strpos( $hook, 'almgr' ) !== false ) {
 			return true;
 		}
 		// ALMGR taxonomies pages.

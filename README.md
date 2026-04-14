@@ -97,9 +97,9 @@ Direct assignment can also reassign an already on-loan asset while keeping state
 
 ## Installation
 
-1. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
-2. Activate the plugin through the **Plugins** menu in WordPress.
-3. Ensure **Advanced Custom Fields (ACF)** is installed and active.
+1. Ensure **Advanced Custom Fields (ACF)** is installed and active.
+2. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
+3. Activate the plugin through the **Plugins** menu in WordPress.
 4. The plugin works out of the box on both classic and block themes, with no shortcodes required for normal use. Asset pages are served automatically via the plugin's built-in templates:
    - `/asset/` — asset catalog with search filters
    - `/asset/asset-name/` — single asset detail page
