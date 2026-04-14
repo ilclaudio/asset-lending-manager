@@ -18,17 +18,17 @@ Fallback attuali: nome sito (`get_bloginfo('name')`) e admin email (`get_bloginf
 
 | # | Evento | Attore | Destinatari | Template oggetto | Condizioni speciali |
 |---|---|---|---|---|---|
-| 1 | Richiesta di prestito inviata | Membro | Richiedente | `request_to_requester` | Sempre |
-| 1 | Richiesta di prestito inviata | Membro | Proprietario corrente | `request_to_owner` | Solo se asset già assegnato |
-| 1 | Richiesta di prestito inviata | Membro | Sistema | `request_to_owner` | Solo se `email.system_email` configurato |
-| 1 | Richiesta di prestito inviata | Membro | Tutti gli operatori (`almgr_operator`) | `request_to_owner` | Solo se policy operatori = `always`, oppure `no_owner` con asset senza proprietario |
-| 2 | Richiesta approvata | Proprietario corrente | Richiedente | `approved` | Sempre |
-| 3 | Richiesta rifiutata | Proprietario corrente | Richiedente | `rejected` | Sempre |
+| 1 | Richiesta di prestito inviata | Utente autenticato con permesso richiesta (tipicamente socio) | Richiedente | `request_to_requester` | Sempre |
+| 1 | Richiesta di prestito inviata | Utente autenticato con permesso richiesta (tipicamente socio) | Proprietario corrente | `request_to_owner` | Solo se asset già assegnato |
+| 1 | Richiesta di prestito inviata | Utente autenticato con permesso richiesta (tipicamente socio) | Sistema | `request_to_owner` | Solo se `email.system_email` configurato |
+| 1 | Richiesta di prestito inviata | Utente autenticato con permesso richiesta (tipicamente socio) | Tutti gli operatori (`almgr_operator`) | `request_to_owner` | Solo se policy operatori = `always`, oppure `no_owner` con asset senza proprietario |
+| 2 | Richiesta approvata | Proprietario corrente, operatore o amministratore | Richiedente | `approved` | Sempre |
+| 3 | Richiesta rifiutata | Proprietario corrente, operatore o amministratore | Richiedente | `rejected` | Sempre |
 | 4 | Richiesta annullata automaticamente | Sistema | Richiedente (della richiesta cancellata) | `canceled` | Una email per ogni richiesta concorrente annullata |
-| 5 | Assegnamento diretto | Operatore | Nuovo proprietario | `direct_assign` | Sempre |
-| 5 | Assegnamento diretto | Operatore | Vecchio proprietario | `direct_assign_to_prev_owner` | Solo se esisteva un proprietario precedente diverso dal nuovo |
-| 5 | Assegnamento diretto | Operatore | Sistema | `direct_assign_to_prev_owner` | Solo se `email.system_email` configurato |
-| 6 | Restituzione forzata (on-loan → available) | Operatore | Socio che aveva il prestito | `force_return` | Sempre (se notifiche abilitate) |
+| 5 | Assegnamento diretto | Operatore o amministratore | Nuovo proprietario | `direct_assign` | Sempre |
+| 5 | Assegnamento diretto | Operatore o amministratore | Vecchio proprietario | `direct_assign_to_prev_owner` | Solo se esisteva un proprietario precedente diverso dal nuovo |
+| 5 | Assegnamento diretto | Operatore o amministratore | Sistema | `direct_assign_to_prev_owner` | Solo se `email.system_email` configurato |
+| 6 | Restituzione forzata (on-loan → available) | Operatore o amministratore | Utente che aveva il prestito | `force_return` | Solo se `notifications.enabled=true` e `notifications.loan_request=true` |
 
 ---
 
@@ -62,8 +62,8 @@ proprietario, `system_email` o operatori, viene inviata una sola email a quell'i
 | `{ACTOR_NAME}` | direct_assign, direct_assign_to_prev_owner | Nome dell'operatore che ha eseguito l'assegnamento |
 | `{REASON}` | direct_assign, direct_assign_to_prev_owner | Motivo dell'assegnamento diretto |
 | `{PREV_OWNER_NAME}` | direct_assign_to_prev_owner | Nome del precedente proprietario |
-| `{BORROWER_NAME}` | force_return | Nome del socio che aveva il prestito |
-| `{ACTOR_NAME}` | force_return | Nome dell'operatore che ha eseguito la restituzione forzata |
+| `{BORROWER_NAME}` | force_return | Nome dell'utente che aveva il prestito |
+| `{ACTOR_NAME}` | force_return | Nome dell'utente (operatore/amministratore) che ha eseguito la restituzione forzata |
 | `{NOTES}` | force_return | Note opzionali dell'operatore (— se assenti) |
 
 ---
@@ -84,7 +84,8 @@ Settings runtime in `almgr_settings`:
 | `notifications.loan_request_operator_mode` | Policy destinatari operatori su richiesta prestito: `never`, `no_owner`, `always` |
 
 Nota: nel flusso corrente `ALMGR_Notification_Manager` usa i settings runtime; le costanti `ALMGR_EMAIL_*` in `plugin-config.php` non vengono lette direttamente dal codice di invio.
+Nota: la notifica `force_return` usa attualmente il toggle `notifications.loan_request` (oltre al master `notifications.enabled`).
 
 ---
 
-*Ultimo aggiornamento: 2026-04-08*
+*Ultimo aggiornamento: 2026-04-14*

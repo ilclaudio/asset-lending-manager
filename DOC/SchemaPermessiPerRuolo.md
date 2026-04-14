@@ -23,8 +23,8 @@ Questo documento riassume le operazioni disponibili per ciascun ruolo nel plugin
 | Inserire/modificare risorse | No | No | Si | Si |
 | Gestire tassonomie/stati/livelli | No | No | Si | Si |
 | Richiedere prestito | No | Si | Si | Si |
-| Approvare/rifiutare richiesta | No | Si (solo se proprietario corrente) | Si (solo se proprietario corrente) | Si (solo se proprietario corrente) |
-| Vedere richieste di prestito asset | No | Si (solo se proprietario corrente) | Si (solo se proprietario corrente, con azioni approva/rifiuta) | Si (solo se proprietario corrente, con azioni approva/rifiuta) |
+| Approvare/rifiutare richiesta | No | Si (solo se proprietario corrente) | Si | Si |
+| Vedere richieste di prestito asset | No | Si (solo se proprietario corrente) | Si (con azioni approva/rifiuta) | Si (con azioni approva/rifiuta) |
 | Assegnamento diretto | No | No | Si | Si |
 | Cambiare stato asset (→ maintenance / → retired) da frontend | No | No | Si | Si |
 | Restituire forzatamente asset (→ available da on-loan) da frontend | No | No | Si | Si |
@@ -35,9 +35,9 @@ Questo documento riassume le operazioni disponibili per ciascun ruolo nel plugin
 
 ## Relazioni sintetiche (role -> azioni)
 
-- Operatore -> Inserimento e modifica risorse; gestione tassonomie; richiesta prestito; gestione richieste prestito (approva/rifiuta solo se proprietario corrente); assegnamento diretto; cambio stato asset (→ maintenance / → retired) da frontend con location obbligatoria; restituzione forzata (→ available da on-loan) con location obbligatoria e notifica al socio; ripristino asset a disponibile (da maintenance/retired) da frontend con location obbligatoria.
+- Operatore -> Inserimento e modifica risorse; gestione tassonomie; richiesta prestito; gestione richieste prestito (approva/rifiuta consentito); assegnamento diretto; cambio stato asset (→ maintenance / → retired) da frontend con location obbligatoria; restituzione forzata (→ available da on-loan) con location obbligatoria e notifica al socio; ripristino asset a disponibile (da maintenance/retired) da frontend con location obbligatoria.
 - Socio -> Richiesta prestito; approvazione/rifiuto solo se proprietario corrente.
-- Amministratore -> Stesso perimetro operativo dell'operatore, inclusa la restrizione approva/rifiuta (solo se proprietario corrente). Privilegi WordPress generali aggiuntivi.
+- Amministratore -> Stesso perimetro operativo dell'operatore, inclusa approvazione/rifiuto richieste anche senza essere proprietario corrente. Privilegi WordPress generali aggiuntivi.
 
 ---
 
@@ -59,8 +59,8 @@ SOCIO (almgr_member)
 OPERATORE / AMMINISTRATORE
   [Inserisce o modifica risorsa]
     -> [Gestisce tassonomie]
-    -> [Visualizza richieste prestito (solo se proprietario corrente)]
-    -> [Approva o rifiuta richiesta (solo se proprietario corrente)]
+    -> [Visualizza richieste prestito]
+    -> [Approva o rifiuta richiesta]
     -> [Assegnamento diretto (asset non retired/maintenance)]
     -> [Cambia stato: → maintenance / → retired] + location obbligatoria
          `-> [Ripristina a disponibile da maintenance/retired] + location obbligatoria
@@ -79,10 +79,10 @@ COLLEGAMENTI TRA SWIMLANE
 
 ## Note importanti
 
-- Le azioni di approvazione/rifiuto sono consentite a qualsiasi ruolo (socio, operatore, amministratore) solo se l'utente è il proprietario corrente dell'asset. Nessun ruolo ha un bypass su questa regola.
+- Le azioni di approvazione/rifiuto sono consentite al socio solo se l'utente è il proprietario corrente dell'asset. Operatore e amministratore (capability `almgr_edit_asset`) possono approvare/rifiutare anche quando non sono proprietari correnti.
 - L'assegnamento diretto e' consentito solo a chi ha capability `almgr_edit_asset` (operatore/amministratore).
 - Nella UI corrente, lo storico prestiti e' mostrato solo a operatore/amministratore.
 
 ---
 
-*Ultimo aggiornamento: 2026-04-07 (rev 4)*
+*Ultimo aggiornamento: 2026-04-14 (rev 5)*
