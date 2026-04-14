@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Define constants.
-define( 'ALMGR_VERSION', '0.2.1' );
+define( 'ALMGR_VERSION', '0.2.2' );
 define( 'ALMGR_PLUGIN_FILE', __FILE__ );
 define( 'ALMGR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ALMGR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

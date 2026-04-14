@@ -10,7 +10,14 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 
-## [0.2.1] - 2026-04-08
+## [0.2.2] - 2026-04-30
+### Added
+### Changed
+### Fixed
+### Security
+
+
+## [0.2.1] - 2026-04-14
 ### Added
 - Back-office Tools page (ALM -> Tools) with Import, Export, and Utilities tabs.
 - Users CSV import from Tools (admin only).
@@ -27,7 +34,6 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - An operator can approve/reject requests for resources without a current owner.
 ### Security
 - Security fixes and hardening from code audit.
-
 
 ## [0.1.1] - 2026-04-01
 ### Added
