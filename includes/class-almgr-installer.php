@@ -112,7 +112,7 @@ class ALMGR_Installer {
 				continue;
 			}
 
-			$wpdb->query( "DROP TABLE IF EXISTS `$table`" );
+			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table ) );
 			ALMGR_Logger::info( "Dropped table $table" );
 		}
 	}
