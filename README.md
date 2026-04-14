@@ -25,8 +25,9 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Role-based permissions (`almgr_member`, `almgr_operator`)
 - Read-only JSON REST API (`/almgr/v1/`) for asset list, asset detail, member list, and member assets; authentication via Application Passwords; independent of the WordPress REST API global setting
 - Back-office Tools page (`ALM → Tools`) with Import, Export, and Utilities tabs
-- Users CSV import from the Tools page
-- Users CSV export from the Tools page
+- Users CSV import from the Tools page (admin only) and users CSV export (admin and operator)
+- Assets CSV import from the Tools page (admin and operator) and assets CSV export (admin and operator)
+- Kit import and export: kit components and their ACF fields are included in the asset CSV
 - Translation-ready
 
 ---
@@ -99,7 +100,7 @@ Direct assignment can also reassign an already on-loan asset while keeping state
 1. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Ensure **Advanced Custom Fields (ACF)** is installed and active.
-4. The plugin works out of the box on both classic and block themes — no shortcodes required for normal use. Asset pages are served automatically via the plugin's built-in templates:
+4. The plugin works out of the box on both classic and block themes, with no shortcodes required for normal use. Asset pages are served automatically via the plugin's built-in templates:
    - `/asset/` — asset catalog with search filters
    - `/asset/asset-name/` — single asset detail page
 5. Use the shortcodes only if you need to embed a view inside an existing WordPress page:

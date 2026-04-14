@@ -68,7 +68,7 @@ The plugin registers the ACF field group automatically — no manual configurati
 2. Upload the plugin ZIP file and click Install Now, then Activate.
 3. Install and activate the **Advanced Custom Fields** (ACF) plugin — the free version is sufficient and available at https://wordpress.org/plugins/advanced-custom-fields/
    The plugin registers the ACF field group automatically — no manual ACF configuration is needed.
-4. The plugin works out of the box on both classic and block themes — no shortcodes required for normal use. Asset pages are served automatically:
+4. The plugin works out of the box on both classic and block themes, with no shortcodes required for normal use. Asset pages are served automatically:
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page
 5. Optionally, use the shortcodes to embed a view inside an existing WordPress page:
@@ -115,7 +115,7 @@ Basic setup only requires installing the plugin and activating ACF — no shortc
 For full release notes see `CHANGELOG.md`.
 
 = 0.2.1 =
-* Changed: internal refactoring — all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
+* Changed: internal refactoring, all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
 * Changed: all ACF custom field storage keys now use the `almgr_` prefix for WordPress.org namespace compliance.
 * Added: back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs.
 * Added: users CSV import (admin only) and users CSV export (admin and operator) in Tools.
@@ -148,8 +148,8 @@ For full release notes see `CHANGELOG.md`.
 
 This plugin bundles the following third-party JavaScript libraries:
 
-* **qrcode-generator** by Kazuhiko Arase (http://www.d-project.com/) — MIT License
-* **jsQR** by cozmo (https://github.com/cozmo/jsQR) — Apache License 2.0
+* **qrcode-generator** by Kazuhiko Arase (http://www.d-project.com/), MIT License
+* **jsQR** by cozmo (https://github.com/cozmo/jsQR), Apache License 2.0
 
 Both licenses are compatible with GPLv2 or later. License files are included in `assets/js/vendor/`.
 

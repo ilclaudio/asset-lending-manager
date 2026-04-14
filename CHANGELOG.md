@@ -17,9 +17,12 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Users CSV export from Tools (admin and operator).
 - Assets CSV import from Tools (admin and operator).
 - Assets CSV export from Tools (admin and operator).
+- Kit import and export: kit components and their ACF fields are included in the asset CSV.
 - Notification policy setting to control if/when all operators are notified for a new loan request (`never`, `no_owner`, `always`).
+- `ALMGR_REMOVE_ALL_DATA` constant: define as `true` in `wp-config.php` before uninstalling to remove all plugin data including assets.
 ### Changed
 - Massive refactoring: changed all plugin identifiers from `alm_` to `almgr_`.
+- All ACF custom field storage keys now use the `almgr_` prefix for WordPress.org namespace compliance.
 ### Fixed
 - An operator can approve/reject requests for resources without a current owner.
 ### Security
@@ -54,7 +57,7 @@ First public release.
 - Translation-ready: English and Italian included, `.pot` file provided.
 - Frontend shortcodes: `[almgr_asset_list]`, `[almgr_asset_view]`.
 - An operator cannot approve the lending request sent to a member.
-- Changing the state from on loan to available, in maintenance or dismissed you ha to specify a location and a note.
+- Changing the state from on loan to available, in maintenance or dismissed requires specifying a location and a note.
 ### Fixed
 - All message max length limits (loan request, rejection, state-change notes) are now read from settings and passed to frontend, eliminating frontend/backend divergence.
 - Kit loan approval and direct assignment now write individual history entries for each affected component.
