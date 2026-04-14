@@ -10,16 +10,16 @@ Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Free plugin to manage shared physical assets and loan workflows for associations, schools, libraries, and any organization.
+Open-source plugin to manage shared physical assets and loan workflows for associations, schools, libraries, and any organization.
 
 == Description ==
-Asset Lending Manager is a free, open-source WordPress plugin that helps any organization manage shared physical assets and internal lending workflows.
+Asset Lending Manager is an open-source WordPress plugin that helps any organization manage shared physical assets and internal lending workflows.
 
 Designed for clubs, associations, schools, public bodies, libraries, laboratories, makerspaces, and any group that loans equipment or materials to its members.
 
 Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history.
 
-Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool freely usable by any organization.
+Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool usable by any organization.
 
 **Requires the Advanced Custom Fields (ACF) plugin** (free version) to store and manage asset details.
 
