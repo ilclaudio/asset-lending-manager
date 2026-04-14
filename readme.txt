@@ -64,14 +64,16 @@ The plugin registers the ACF field group automatically — no manual configurati
 
 
 == Installation ==
-1. Install and activate the **Advanced Custom Fields** (ACF) plugin — the free version is sufficient and available at https://wordpress.org/plugins/advanced-custom-fields/
-   The plugin registers the ACF field group automatically — no manual ACF configuration is needed.
-2. In your WordPress admin, go to Plugins > Add New > Upload Plugin.
-3. Upload the plugin ZIP file and click Install Now, then Activate.
-4. The plugin works out of the box on both classic and block themes, with no shortcodes required for normal use. Asset pages are served automatically:
+1. Install and activate the **Advanced Custom Fields** (ACF) plugin (free version is enough): https://wordpress.org/plugins/advanced-custom-fields/
+   The plugin registers its ACF field group automatically. No manual ACF setup is required.
+2. In WordPress admin, go to Plugins > Add New > Upload Plugin.
+3. Upload the plugin ZIP file, click Install Now, then Activate.
+4. The plugin works out of the box on both classic and block themes. No shortcode is required for standard usage.
+   Asset pages are available automatically:
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page
-5. Optionally, use the shortcodes to embed a view inside an existing WordPress page:
+5. If `/asset/` returns 404, go to Settings > Permalinks and click Save Changes once.
+6. Use shortcodes only when you want to embed views in an existing page:
    * `[almgr_asset_list]` — embeds the asset catalog into any page or post
    * `[almgr_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
 
