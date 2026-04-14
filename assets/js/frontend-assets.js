@@ -1566,10 +1566,11 @@
 			background: rgba(0, 0, 0, 0.6);
 			color: #fff;
 			border: none;
-			border-radius: 50%;
-			width: 36px;
-			height: 36px;
-			font-size: 20px;
+			border-radius: 4px;
+			width: 32px;
+			height: 32px;
+			padding: 0;
+			font-size: 24px;
 			line-height: 1;
 			cursor: pointer;
 			display: flex;
@@ -1580,6 +1581,7 @@
 		.almgr-lightbox__close:focus {
 			background: rgba(255, 255, 255, 0.2);
 			outline: 2px solid #fff;
+			outline-offset: 2px;
 		}
 
 		/* Modal overlay */
