@@ -25,6 +25,15 @@ require_once 'class-almgr-capabilities.php';
 class ALMGR_Role_Manager {
 
 	/**
+	 * Stored role/capability schema version.
+	 *
+	 * Bump when role capabilities need to be re-applied on existing installs.
+	 *
+	 * @var string
+	 */
+	private const ROLE_CAPABILITIES_VERSION = '20260425_media_permissions';
+
+	/**
 	 * Register WordPress hooks.
 	 *
 	 * Called by the Plugin Manager during bootstrap.
@@ -32,7 +41,8 @@ class ALMGR_Role_Manager {
 	 * @return void
 	 */
 	public function register() {
-		// No runtime hooks needed for now.
+		add_action( 'init', array( $this, 'maybe_update_role_capabilities' ), 20 );
+		add_filter( 'map_meta_cap', array( $this, 'map_image_attachment_capabilities' ), 10, 4 );
 	}
 
 	/**
@@ -46,6 +56,7 @@ class ALMGR_Role_Manager {
 	public function activate() {
 		$this->add_roles();
 		$this->add_capabilities();
+		update_option( 'almgr_role_capabilities_version', self::ROLE_CAPABILITIES_VERSION, false );
 	}
 
 	/**
@@ -107,6 +118,9 @@ class ALMGR_Role_Manager {
 			foreach ( ALMGR_Capabilities::get_all_asset_caps() as $cap ) {
 				$almgr_operator->add_cap( $cap );
 			}
+			foreach ( $this->get_operator_media_caps() as $cap ) {
+				$almgr_operator->add_cap( $cap );
+			}
 		}
 		// Member: read-only access to assets.
 		$almgr_member = get_role( ALMGR_MEMBER_ROLE );
@@ -114,6 +128,81 @@ class ALMGR_Role_Manager {
 			$almgr_member->add_cap( ALMGR_VIEW_ASSETS );
 			$almgr_member->add_cap( ALMGR_VIEW_ASSET );
 		}
+	}
+
+	/**
+	 * Re-apply role capabilities once after a capability schema change.
+	 *
+	 * Activation hooks do not run on plugin code updates, so this keeps existing
+	 * installs aligned without writing role options on every request.
+	 *
+	 * @return void
+	 */
+	public function maybe_update_role_capabilities() {
+		$current_version = (string) get_option( 'almgr_role_capabilities_version', '' );
+		if ( self::ROLE_CAPABILITIES_VERSION === $current_version ) {
+			return;
+		}
+
+		$this->add_roles();
+		$this->add_capabilities();
+		update_option( 'almgr_role_capabilities_version', self::ROLE_CAPABILITIES_VERSION, false );
+	}
+
+	/**
+	 * Return WordPress media capabilities granted to operators.
+	 *
+	 * @return string[]
+	 */
+	private function get_operator_media_caps() {
+		return array(
+			'upload_files',
+		);
+	}
+
+	/**
+	 * Allow ALMGR operators to edit image attachment metadata.
+	 *
+	 * This enables title and alternative text edits in the Media Library and
+	 * featured-image modal without granting generic post/page editing caps.
+	 *
+	 * @param string[] $caps    Primitive capabilities required by WordPress.
+	 * @param string   $cap     Requested meta capability.
+	 * @param int      $user_id User ID.
+	 * @param mixed[]  $args    Additional arguments, usually containing post ID.
+	 * @return string[]
+	 */
+	public function map_image_attachment_capabilities( $caps, $cap, $user_id, $args ) {
+		if ( ! in_array( $cap, array( 'edit_post', 'edit_post_meta' ), true ) ) {
+			return $caps;
+		}
+
+		if ( 'edit_post_meta' === $cap ) {
+			$meta_key = isset( $args[1] ) ? (string) $args[1] : '';
+			if ( '_wp_attachment_image_alt' !== $meta_key ) {
+				return $caps;
+			}
+		}
+
+		$attachment_id = isset( $args[0] ) ? absint( $args[0] ) : 0;
+		if ( $attachment_id <= 0 ) {
+			return $caps;
+		}
+
+		$attachment = get_post( $attachment_id );
+		if ( ! $attachment || 'attachment' !== $attachment->post_type ) {
+			return $caps;
+		}
+
+		if ( ! wp_attachment_is_image( $attachment ) ) {
+			return $caps;
+		}
+
+		if ( ! user_can( $user_id, ALMGR_EDIT_ASSET ) ) {
+			return $caps;
+		}
+
+		return array( ALMGR_EDIT_ASSET );
 	}
 
 	/**

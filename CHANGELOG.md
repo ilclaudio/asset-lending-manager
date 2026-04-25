@@ -14,6 +14,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ### Added
 ### Changed
 ### Fixed
+- Operators can upload/insert images and edit image title/alternative text from the Media Library and featured-image flow.
 ### Security
 
 
