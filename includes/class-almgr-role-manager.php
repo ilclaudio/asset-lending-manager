@@ -25,15 +25,6 @@ require_once 'class-almgr-capabilities.php';
 class ALMGR_Role_Manager {
 
 	/**
-	 * Stored role/capability schema version.
-	 *
-	 * Bump when role capabilities need to be re-applied on existing installs.
-	 *
-	 * @var string
-	 */
-	private const ROLE_CAPABILITIES_VERSION = '20260425_media_permissions';
-
-	/**
 	 * Register WordPress hooks.
 	 *
 	 * Called by the Plugin Manager during bootstrap.
@@ -41,7 +32,6 @@ class ALMGR_Role_Manager {
 	 * @return void
 	 */
 	public function register() {
-		add_action( 'init', array( $this, 'maybe_update_role_capabilities' ), 20 );
 		add_filter( 'map_meta_cap', array( $this, 'map_image_attachment_capabilities' ), 10, 4 );
 	}
 
@@ -56,7 +46,6 @@ class ALMGR_Role_Manager {
 	public function activate() {
 		$this->add_roles();
 		$this->add_capabilities();
-		update_option( 'almgr_role_capabilities_version', self::ROLE_CAPABILITIES_VERSION, false );
 	}
 
 	/**
@@ -128,25 +117,6 @@ class ALMGR_Role_Manager {
 			$almgr_member->add_cap( ALMGR_VIEW_ASSETS );
 			$almgr_member->add_cap( ALMGR_VIEW_ASSET );
 		}
-	}
-
-	/**
-	 * Re-apply role capabilities once after a capability schema change.
-	 *
-	 * Activation hooks do not run on plugin code updates, so this keeps existing
-	 * installs aligned without writing role options on every request.
-	 *
-	 * @return void
-	 */
-	public function maybe_update_role_capabilities() {
-		$current_version = (string) get_option( 'almgr_role_capabilities_version', '' );
-		if ( self::ROLE_CAPABILITIES_VERSION === $current_version ) {
-			return;
-		}
-
-		$this->add_roles();
-		$this->add_capabilities();
-		update_option( 'almgr_role_capabilities_version', self::ROLE_CAPABILITIES_VERSION, false );
 	}
 
 	/**
