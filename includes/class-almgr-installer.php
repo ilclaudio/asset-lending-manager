@@ -57,8 +57,8 @@ class ALMGR_Installer {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
 		$table_name      = $wpdb->prefix . 'almgr_loan_requests';
-		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
-		$sql          = "CREATE TABLE $table_name (
+		$table_exists    = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema existence check; SHOW TABLES has no WP abstraction and must reflect real-time state.
+		$sql             = "CREATE TABLE $table_name (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			asset_id bigint(20) unsigned NOT NULL,
 			requester_id bigint(20) unsigned NOT NULL,
@@ -80,7 +80,7 @@ class ALMGR_Installer {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 		// Verify table was created or updated.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema existence check; SHOW TABLES has no WP abstraction and must reflect real-time state.
 			if ( $table_exists ) {
 				ALMGR_Logger::info( 'Table almgr_loan_requests schema verified/updated successfully.' );
 			} else {
@@ -112,7 +112,7 @@ class ALMGR_Installer {
 				continue;
 			}
 
-			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table ) );
+			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange -- Plugin uninstall schema cleanup; DROP TABLE has no WP abstraction; table name validated by is_safe_table_identifier().
 			ALMGR_Logger::info( "Dropped table $table" );
 		}
 	}
@@ -142,7 +142,7 @@ class ALMGR_Installer {
 		$table_name      = $wpdb->prefix . 'almgr_loan_requests_history';
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
+		$table_exists = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema existence check; SHOW TABLES has no WP abstraction and must reflect real-time state.
 
 		$sql = "CREATE TABLE $table_name (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -168,7 +168,7 @@ class ALMGR_Installer {
 		dbDelta( $sql );
 
 		// Verify creation or schema update.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema existence check; SHOW TABLES has no WP abstraction and must reflect real-time state.
 			if ( $table_exists ) {
 				ALMGR_Logger::info( 'Table almgr_loan_requests_history schema verified/updated successfully.' );
 			} else {
