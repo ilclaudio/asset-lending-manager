@@ -104,17 +104,18 @@ class ALMGR_Asset_Manager {
 		);
 
 		$args = array(
-			'labels'          => $labels,
-			'public'          => true,
-			'show_ui'         => true,
-			'show_in_menu'    => false,
-			'show_in_rest'    => true,
-			'menu_icon'       => ALMGR_ASSET_ICON,
-			'supports'        => array( 'title', 'editor', 'thumbnail' ),
-			'capability_type' => ALMGR_ASSET_CPT_SLUG,
-			'map_meta_cap'    => true,
-			'has_archive'     => true,
-			'rewrite'         => array( 'slug' => 'asset' ),
+			'labels'            => $labels,
+			'public'            => true,
+			'show_ui'           => true,
+			'show_in_menu'      => false,
+			'show_in_admin_bar' => true,
+			'show_in_rest'      => true,
+			'menu_icon'         => ALMGR_ASSET_ICON,
+			'supports'          => array( 'title', 'editor', 'thumbnail' ),
+			'capability_type'   => ALMGR_ASSET_CPT_SLUG,
+			'map_meta_cap'      => true,
+			'has_archive'       => true,
+			'rewrite'           => array( 'slug' => 'asset' ),
 		);
 
 		register_post_type( ALMGR_ASSET_CPT_SLUG, $args );

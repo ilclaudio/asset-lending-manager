@@ -658,7 +658,9 @@ class ALMGR_Tools_Manager {
 		}
 
 		$file_name = isset( $_FILES['almgr_users_csv_file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['almgr_users_csv_file']['name'] ) ) : '';
-		$tmp_name  = isset( $_FILES['almgr_users_csv_file']['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES['almgr_users_csv_file']['tmp_name'] ) ) : '';
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- tmp_name is a PHP-generated upload path; text sanitization/wp_unslash can corrupt valid paths. It is validated with is_uploaded_file() before use.
+		$tmp_name = isset( $_FILES['almgr_users_csv_file']['tmp_name'] ) ? (string) $_FILES['almgr_users_csv_file']['tmp_name'] : '';
+		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$file_size = isset( $_FILES['almgr_users_csv_file']['size'] ) ? absint( wp_unslash( $_FILES['almgr_users_csv_file']['size'] ) ) : 0;
 
 		if ( '' === $file_name || '' === $tmp_name ) {
@@ -1315,7 +1317,9 @@ class ALMGR_Tools_Manager {
 		}
 
 		$file_name = isset( $_FILES['almgr_assets_csv_file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['almgr_assets_csv_file']['name'] ) ) : '';
-		$tmp_name  = isset( $_FILES['almgr_assets_csv_file']['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES['almgr_assets_csv_file']['tmp_name'] ) ) : '';
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- tmp_name is a PHP-generated upload path; text sanitization/wp_unslash can corrupt valid paths. It is validated with is_uploaded_file() before use.
+		$tmp_name = isset( $_FILES['almgr_assets_csv_file']['tmp_name'] ) ? (string) $_FILES['almgr_assets_csv_file']['tmp_name'] : '';
+		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$file_size = isset( $_FILES['almgr_assets_csv_file']['size'] ) ? absint( wp_unslash( $_FILES['almgr_assets_csv_file']['size'] ) ) : 0;
 
 		if ( '' === $file_name || '' === $tmp_name ) {
