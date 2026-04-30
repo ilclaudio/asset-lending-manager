@@ -968,10 +968,10 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 								<?php checked( $almgr_settings->get( 'rest_api.enabled', true ) ); ?>
 								<?php disabled( ! $almgr_is_admin ); ?>
 							>
-							<?php esc_html_e( 'Enable the ALM JSON API endpoints under /almgr/v1/.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Enable the ALM JSON API endpoints under /wp-json/almgr/v1/.', 'asset-lending-manager' ); ?>
 						</label>
 						<p class="description">
-							<?php esc_html_e( 'When disabled, all /almgr/v1/ routes return a 503 response. The API works independently of the WordPress REST API global setting.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'When disabled, all /wp-json/almgr/v1/ routes return a 503 response.', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
@@ -1020,22 +1020,22 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				</thead>
 				<tbody>
 					<tr>
-						<td><code>GET /almgr/v1/assets</code></td>
+						<td><code>GET /wp-json/almgr/v1/assets</code></td>
 						<td><?php esc_html_e( 'Paginated asset list. Supports ?state, ?type, ?structure, ?search, ?owner, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_view_assets</code></td>
 					</tr>
 					<tr>
-						<td><code>GET /almgr/v1/assets/{id}</code></td>
+						<td><code>GET /wp-json/almgr/v1/assets/{id}</code></td>
 						<td><?php esc_html_e( 'Single asset detail with ACF fields. Operators additionally see cost, purchase date, notes, and loan history.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_view_asset</code></td>
 					</tr>
 					<tr>
-						<td><code>GET /almgr/v1/members</code></td>
+						<td><code>GET /wp-json/almgr/v1/members</code></td>
 						<td><?php esc_html_e( 'Paginated list of ALM members and operators. Supports ?search, ?role, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_edit_asset</code></td>
 					</tr>
 					<tr>
-						<td><code>GET /almgr/v1/members/{id}/assets</code></td>
+						<td><code>GET /wp-json/almgr/v1/members/{id}/assets</code></td>
 						<td><?php esc_html_e( 'Assets currently held by a specific member (on-loan). Returns id, code, title, structure, type, external_code, location, thumbnail_url, permalink.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_edit_asset</code></td>
 					</tr>
@@ -1047,12 +1047,12 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				printf(
 					/* translators: %s: example base URL */
 					esc_html__( 'Base URL: %s', 'asset-lending-manager' ),
-					'<code>' . esc_url( home_url( '/almgr/v1/' ) ) . '</code>'
+					'<code>' . esc_url( get_rest_url( null, 'almgr/v1/' ) ) . '</code>'
 				);
 				?>
 			</p>
 			<p class="description">
-				<?php esc_html_e( 'After enabling the API for the first time, visit Settings → Permalinks and click Save to flush rewrite rules.', 'asset-lending-manager' ); ?>
+				<?php esc_html_e( 'The API uses the native WordPress REST API infrastructure. Authentication is handled by WordPress core (cookie session, REST nonce, Application Passwords).', 'asset-lending-manager' ); ?>
 			</p>
 
 			<?php if ( $almgr_is_admin ) : ?>
