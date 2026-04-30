@@ -433,10 +433,10 @@ class ALMGR_Plugin_Manager {
 		if ( 'direct_assign' === $active_tab ) {
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['direct_assign.enabled']              = isset( $_POST['almgr_direct_assign_enabled'] );
-				$valid_roles                                   = array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE );
-				$posted_roles                                  = filter_input( INPUT_POST, 'almgr_direct_assign_roles', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-				$raw_roles                                     = is_array( $posted_roles ) ? array_map( 'sanitize_key', $posted_roles ) : array();
+				$changes['direct_assign.enabled'] = isset( $_POST['almgr_direct_assign_enabled'] );
+				$valid_roles                      = array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE );
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified earlier in handle_settings_save().
+				$raw_roles                                     = isset( $_POST['almgr_direct_assign_roles'] ) && is_array( $_POST['almgr_direct_assign_roles'] ) ? array_map( 'sanitize_key', wp_unslash( $_POST['almgr_direct_assign_roles'] ) ) : array();
 				$changes['direct_assign.allowed_target_roles'] = array_values(
 					array_intersect( $raw_roles, $valid_roles )
 				);
