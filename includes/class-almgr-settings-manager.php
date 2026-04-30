@@ -169,17 +169,17 @@ class ALMGR_Settings_Manager {
 	 *
 	 * Example: email.from_address
 	 *
-	 * @param string $key     Setting key using dot notation.
-	 * @param mixed  $default Default value returned if the setting is not found.
-	 * @return mixed Setting value or default.
+	 * @param string $key      Setting key using dot notation.
+	 * @param mixed  $fallback Value returned if the setting is not found.
+	 * @return mixed Setting value or fallback.
 	 */
-	public function get( $key, $default = null ) {
+	public function get( $key, $fallback = null ) {
 		$settings = $this->get_all();
 		$keys     = explode( '.', $key );
 
 		foreach ( $keys as $segment ) {
 			if ( ! is_array( $settings ) || ! array_key_exists( $segment, $settings ) ) {
-				return $default;
+				return $fallback;
 			}
 			$settings = $settings[ $segment ];
 		}

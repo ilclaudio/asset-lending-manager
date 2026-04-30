@@ -658,7 +658,7 @@ class ALMGR_Tools_Manager {
 		}
 
 		$file_name = isset( $_FILES['almgr_users_csv_file']['name'] ) ? sanitize_file_name( wp_unslash( $_FILES['almgr_users_csv_file']['name'] ) ) : '';
-		$tmp_name  = isset( $_FILES['almgr_users_csv_file']['tmp_name'] ) ? (string) $_FILES['almgr_users_csv_file']['tmp_name'] : '';
+		$tmp_name  = isset( $_FILES['almgr_users_csv_file']['tmp_name'] ) ? sanitize_text_field( wp_unslash( $_FILES['almgr_users_csv_file']['tmp_name'] ) ) : '';
 		$file_size = isset( $_FILES['almgr_users_csv_file']['size'] ) ? absint( wp_unslash( $_FILES['almgr_users_csv_file']['size'] ) ) : 0;
 
 		if ( '' === $file_name || '' === $tmp_name ) {
