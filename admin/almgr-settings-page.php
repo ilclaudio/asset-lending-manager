@@ -16,9 +16,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$almgr_active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'email';
-$almgr_saved      = isset( $_GET['saved'] ) && '1' === sanitize_key( wp_unslash( $_GET['saved'] ) );
-// phpcs:enable WordPress.Security.NonceVerification.Recommended
+$almgr_active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'email'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin tab navigation; no state change occurs.
+$almgr_saved      = isset( $_GET['saved'] ) && '1' === sanitize_key( wp_unslash( $_GET['saved'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only status flag set by redirect after save; no state change occurs.
 
 $almgr_settings = new ALMGR_Settings_Manager();
 $almgr_is_admin = current_user_can( 'manage_options' );
