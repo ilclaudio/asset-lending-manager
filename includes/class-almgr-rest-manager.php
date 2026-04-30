@@ -365,12 +365,12 @@ class ALMGR_REST_Manager {
 			}
 		}
 		if ( ! empty( $tax_query ) ) {
-			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			$args['tax_query'] = $tax_query;
 		}
 
 		$owner = (int) $request->get_param( 'owner' );
 		if ( $owner > 0 ) {
-			$args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			$args['meta_query'] = array(
 				array(
 					'key'   => '_almgr_current_owner',
 					'value' => $owner,
@@ -509,7 +509,7 @@ class ALMGR_REST_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				'meta_query'     => array(
 					array(
 						'key'   => '_almgr_current_owner',
 						'value' => $member_id,
@@ -788,7 +788,7 @@ class ALMGR_REST_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				'meta_query'     => array(
 					array(
 						'key'   => '_almgr_current_owner',
 						'value' => $user_id,

@@ -233,7 +233,7 @@ class ALMGR_Asset_Manager {
 		$wrapper->id        = $asset->ID;
 		$wrapper->title     = get_the_title( $asset );
 		$wrapper->permalink = get_permalink( $asset );
-		$wrapper->content = apply_filters( 'the_content', $asset->post_content );
+		$wrapper->content   = get_the_content( null, false, $asset );
 		// Manage the asset image.
 		$thumbnail_size = 'thumbnail';
 		if ( has_post_thumbnail( $asset ) ) {
@@ -371,7 +371,7 @@ class ALMGR_Asset_Manager {
 		// Fields restricted to logged-in users only (financial data, personal locations, internal notes).
 		$members_only_fields = array( 'almgr_cost', 'almgr_data_acquisto', 'almgr_serial_number', 'almgr_notes', 'almgr_location' );
 
-		$field_objects     = ALMGR_ACF_Asset_Adapter::get_custom_fields( $asset_id );
+		$field_objects = ALMGR_ACF_Asset_Adapter::get_custom_fields( $asset_id );
 		// Build an array with the fields ordered based on $order.
 		if ( ! empty( $field_objects ) ) {
 			foreach ( $order as $field_name ) {

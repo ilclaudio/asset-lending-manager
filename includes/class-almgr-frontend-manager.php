@@ -324,10 +324,12 @@ class ALMGR_Frontend_Manager {
 	 * @return string
 	 */
 	private function get_sanitized_query_text( $key ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only URL-based filter parameter; no state change occurs.
 		if ( ! isset( $_GET[ $key ] ) ) {
 			return '';
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only URL-based filter parameter; no state change occurs.
 		return sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
 	}
 
@@ -545,11 +547,11 @@ class ALMGR_Frontend_Manager {
 		}
 		// Add tax_query to query args if we have filters.
 		if ( count( $tax_query ) > 1 ) {
-			$query_args['tax_query'] = $tax_query;
+			$query_args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Taxonomy filter required for frontend asset list; no alternative without a precomputed index.
 		}
 		// Add meta_query to filter by owner if set.
 		if ( $filter_owner > 0 ) {
-			$query_args['meta_query'] = array(
+			$query_args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Owner filter on _almgr_current_owner meta; no alternative without a denormalized table.
 				array(
 					'key'     => '_almgr_current_owner',
 					'value'   => $filter_owner,
@@ -603,9 +605,11 @@ class ALMGR_Frontend_Manager {
 	 * @return void
 	 */
 	public function handle_almgr_scan_redirect() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- QR code URL is printed on physical labels; nonce cannot be embedded in a static QR code.
 		if ( ! isset( $_GET['almgr_scan'] ) ) {
 			return;
 		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- QR code URL is printed on physical labels; nonce cannot be embedded in a static QR code.
 		$code    = sanitize_text_field( wp_unslash( $_GET['almgr_scan'] ) );
 		$post_id = ALMGR_Asset_Manager::get_asset_id_from_code( $code );
 		if ( $post_id > 0 ) {
