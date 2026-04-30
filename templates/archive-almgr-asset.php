@@ -26,7 +26,7 @@ if ( $almgr_is_block_theme ) {
 	<?php wp_body_open(); ?>
 	<?php
 	if ( function_exists( 'do_blocks' ) ) {
-		echo do_blocks( '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->' );
+		echo wp_kses_post( do_blocks( '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->' ) );
 	}
 	?>
 	<div class="almgr-container almgr-asset-archive">
@@ -42,7 +42,7 @@ if ( $almgr_is_block_theme ) {
 	</div>
 	<?php
 	if ( function_exists( 'do_blocks' ) ) {
-		echo do_blocks( '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->' );
+		echo wp_kses_post( do_blocks( '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->' ) );
 	}
 	?>
 	<?php wp_footer(); ?>
