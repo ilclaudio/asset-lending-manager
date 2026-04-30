@@ -365,16 +365,16 @@ class ALMGR_REST_Manager {
 			}
 		}
 		if ( ! empty( $tax_query ) ) {
-			$args['tax_query'] = $tax_query;
+			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- REST asset listing intentionally supports taxonomy filters and is paginated.
 		}
 
-		$owner = (int) $request->get_param( 'owner' );
+			$owner = (int) $request->get_param( 'owner' );
 		if ( $owner > 0 ) {
-			$args['meta_query'] = array(
+			$args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Current-owner filtering is a documented REST feature and is paginated.
 				array(
 					'key'   => '_almgr_current_owner',
 					'value' => $owner,
-				),
+			),
 			);
 		}
 
@@ -509,11 +509,11 @@ class ALMGR_REST_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				'meta_query'     => array(
+				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Member asset listing is scoped to one owner and returns IDs only.
 					array(
 						'key'   => '_almgr_current_owner',
 						'value' => $member_id,
-					),
+				),
 				),
 			)
 		);
@@ -788,11 +788,11 @@ class ALMGR_REST_Manager {
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-				'meta_query'     => array(
+				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Active loan counts are scoped to one owner and use IDs only.
 					array(
 						'key'   => '_almgr_current_owner',
 						'value' => $user_id,
-					),
+				),
 				),
 			)
 		);

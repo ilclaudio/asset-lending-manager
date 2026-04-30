@@ -303,12 +303,12 @@ class ALMGR_Asset_Manager {
 					'post_status'    => 'publish',
 					'posts_per_page' => -1,
 					'fields'         => 'ids',
-					'meta_query'     => array(
+					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- ACF stores kit component relationships in post meta; this lookup is limited to asset IDs.
 						array(
-							'key'     => 'almgr_components',
-							'value'   => '"' . $asset_id . '"',
-							'compare' => 'LIKE',
-						),
+							'key'   => 'almgr_components',
+							'value' => '"' . $asset_id . '"',
+						'compare'   => 'LIKE',
+					),
 					),
 				)
 			);
@@ -402,12 +402,12 @@ class ALMGR_Asset_Manager {
 					'post_type'      => ALMGR_ASSET_CPT_SLUG,
 					'post_status'    => 'publish',
 					'posts_per_page' => 1,
-					'meta_query'     => array(
+					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- ACF stores kit component relationships in post meta; this lookup returns only the first parent kit ID.
 						array(
-							'key'     => 'almgr_components',
-							'value'   => '"' . $asset_id . '"',
-							'compare' => 'LIKE',
-						),
+							'key'   => 'almgr_components',
+							'value' => '"' . $asset_id . '"',
+						'compare'   => 'LIKE',
+					),
 					),
 				);
 				$kit_result = new WP_Query( $args );
