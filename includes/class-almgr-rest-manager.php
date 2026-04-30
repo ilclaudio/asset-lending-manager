@@ -462,9 +462,13 @@ class ALMGR_REST_Manager {
 		$total       = (int) $user_query->get_total();
 		$total_pages = $per_page > 0 ? (int) ceil( $total / $per_page ) : 1;
 
+		$users       = $user_query->get_results();
+		$user_ids    = wp_list_pluck( $users, 'ID' );
+		$loan_counts = $this->batch_active_loan_counts( $user_ids );
+
 		$items = array();
-		foreach ( $user_query->get_results() as $user ) {
-			$items[] = $this->prepare_member( $user );
+		foreach ( $users as $user ) {
+			$items[] = $this->prepare_member( $user, $loan_counts );
 		}
 
 		$response = new WP_REST_Response(
@@ -647,10 +651,12 @@ class ALMGR_REST_Manager {
 	/**
 	 * Build the JSON-safe array representation of an ALMGR user.
 	 *
-	 * @param WP_User $user WordPress user object.
+	 * @param WP_User $user        WordPress user object.
+	 * @param array   $loan_counts Optional pre-fetched map of user_id => active loan count.
+	 *                             When provided, avoids an extra per-user query.
 	 * @return array
 	 */
-	private function prepare_member( WP_User $user ) {
+	private function prepare_member( WP_User $user, array $loan_counts = array() ) {
 		$role_map    = array(
 			ALMGR_MEMBER_ROLE   => 'member',
 			ALMGR_OPERATOR_ROLE => 'operator',
@@ -662,12 +668,14 @@ class ALMGR_REST_Manager {
 			}
 		}
 
+		$active_loans = isset( $loan_counts[ $user->ID ] ) ? (int) $loan_counts[ $user->ID ] : $this->count_active_loans( $user->ID );
+
 		return array(
 			'id'                 => $user->ID,
 			'display_name'       => $user->display_name,
 			'email'              => $user->user_email,
 			'almgr_roles'        => $almgr_roles,
-			'active_loans_count' => $this->count_active_loans( $user->ID ),
+			'active_loans_count' => $active_loans,
 		);
 	}
 
@@ -721,6 +729,50 @@ class ALMGR_REST_Manager {
 	 */
 	private function clamp_per_page( $value ) {
 		return min( self::MAX_PER_PAGE, max( 1, (int) $value ) );
+	}
+
+	/**
+	 * Return a map of active-loan counts for multiple users in a single query.
+	 *
+	 * Replaces N individual count_active_loans() calls with one grouped $wpdb query,
+	 * eliminating the N+1 pattern in get_members().
+	 *
+	 * @param int[] $user_ids Array of WordPress user IDs.
+	 * @return array<int,int> Map of user_id => active loan count. Missing users have count 0.
+	 */
+	private function batch_active_loan_counts( array $user_ids ) {
+		if ( empty( $user_ids ) ) {
+			return array();
+		}
+
+		global $wpdb;
+
+		$safe_ids  = implode( ',', array_map( 'absint', $user_ids ) );
+		$asset_cpt = ALMGR_ASSET_CPT_SLUG;
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT pm.meta_value AS owner_id, COUNT(*) AS loan_count
+				FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE pm.meta_key = %s
+				  AND pm.meta_value IN ( {$safe_ids} )
+				  AND p.post_status = %s
+				  AND p.post_type = %s
+				GROUP BY pm.meta_value",
+				'_almgr_current_owner',
+				'publish',
+				$asset_cpt
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		$counts = array();
+		foreach ( $rows as $row ) {
+			$counts[ (int) $row->owner_id ] = (int) $row->loan_count;
+		}
+
+		return $counts;
 	}
 
 	/**
