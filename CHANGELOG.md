@@ -38,7 +38,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## [0.1.1] - 2026-04-01
 ### Added
-- Added a module to manage a REST API with these endpoints: `GET /almgr/v1/assets`, `GET /almgr/v1/assets/{id}`, `GET /almgr/v1/members` and `GET /almgr/v1/members/{id}/assets/`.
+- Added a module to manage a REST API with these endpoints: `GET /wp-json/almgr/v1/assets`, `GET /wp-json/almgr/v1/assets/{id}`, `GET /wp-json/almgr/v1/members` and `GET /wp-json/almgr/v1/members/{id}/assets/`.
 - Added the REST API settings tab (admin-only): toggle to enable/disable all routes, endpoint reference table, and authentication guide.
 ### Fixed
 ### Changed

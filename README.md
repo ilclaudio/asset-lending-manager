@@ -23,7 +23,7 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
 - Loan history tracking
 - Role-based permissions (`almgr_member`, `almgr_operator`)
-- Read-only JSON REST API (`/almgr/v1/`) for asset list, asset detail, member list, and member assets; authentication via Application Passwords; independent of the WordPress REST API global setting
+- Read-only JSON REST API (`/wp-json/almgr/v1/`) for asset list, asset detail, member list, and member assets; authentication via WordPress core (cookie session, REST nonce, Application Passwords)
 - Back-office Tools page (`ALM → Tools`) with Import, Export, and Utilities tabs
 - Users CSV import from the Tools page (admin only) and users CSV export (admin and operator)
 - Assets CSV import from the Tools page (admin and operator) and assets CSV export (admin and operator)

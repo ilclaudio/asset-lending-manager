@@ -36,7 +36,7 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Asset state management from the frontend: operators can set assets to maintenance or retired, or force-return on-loan assets directly to available; a location is required on every state change
 * Full loan history for each asset
 * Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)
-* Read-only JSON REST API at `/almgr/v1/` for asset list, asset detail, member list, and member assets; authentication via Application Passwords; works independently of the WordPress REST API global setting
+* Read-only JSON REST API at `/wp-json/almgr/v1/` for asset list, asset detail, member list, and member assets; authentication via WordPress core (cookie session, REST nonce, Application Passwords)
 * Back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs
 * Users CSV import from the Tools page (admin only)
 * Users CSV export from the Tools page (admin and operator)
@@ -129,7 +129,7 @@ For full release notes see `CHANGELOG.md`.
 * Security: fixes and hardening from code audit.
 
 = 0.1.1 =
-* Added: read-only JSON REST API at `/almgr/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress Application Passwords. Independent of the global WP REST API toggle.
+* Added: read-only JSON REST API at `/wp-json/almgr/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress core (cookie session, REST nonce, Application Passwords).
 * Added: REST API settings tab in wp-admin (admin only) with enable/disable toggle, endpoint reference, and authentication guide.
 * Security: added resource-status checks on all AJAX endpoints.
 
