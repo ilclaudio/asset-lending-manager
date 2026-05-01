@@ -12,6 +12,10 @@ $almgr_users_import_report       = array();
 $almgr_show_assets_import_report = isset( $_GET['almgr_assets_import_report'] ) ? sanitize_key( wp_unslash( $_GET['almgr_assets_import_report'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only flag to display transient-based import report; no state change occurs.
 $almgr_assets_import_report      = array();
 
+if ( ! in_array( $almgr_status, array( '', 'success', 'error' ), true ) ) {
+	$almgr_status = '';
+}
+
 if ( '1' === $almgr_show_users_import_report && current_user_can( 'manage_options' ) ) {
 	$almgr_users_import_report_key = 'almgr_users_import_report_' . get_current_user_id();
 	$almgr_users_import_report_raw = get_transient( $almgr_users_import_report_key );

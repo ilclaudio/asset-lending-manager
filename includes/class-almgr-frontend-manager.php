@@ -21,6 +21,13 @@ defined( 'ABSPATH' ) || exit;
 class ALMGR_Frontend_Manager {
 
 	/**
+	 * Maximum length accepted for frontend search query text.
+	 *
+	 * @var int
+	 */
+	const SEARCH_QUERY_MAX_LENGTH = 200;
+
+	/**
 	 * Settings manager instance.
 	 *
 	 * @var ALMGR_Settings_Manager
@@ -350,6 +357,28 @@ class ALMGR_Frontend_Manager {
 	}
 
 	/**
+	 * Get a sanitized and taxonomy-validated slug from query string.
+	 *
+	 * @param string $key      Query-string key.
+	 * @param string $taxonomy Taxonomy slug used to validate the term.
+	 * @return string
+	 */
+	private function get_validated_query_term_slug( $key, $taxonomy ) {
+		$term_slug = $this->get_sanitized_query_slug( $key );
+
+		if ( '' === $term_slug ) {
+			return '';
+		}
+
+		$term = term_exists( $term_slug, $taxonomy );
+		if ( 0 === $term || null === $term || is_wp_error( $term ) ) {
+			return '';
+		}
+
+		return $term_slug;
+	}
+
+	/**
 	 * Get a positive integer from query string for read-only frontend filters.
 	 *
 	 * @param string $key Query-string key.
@@ -384,6 +413,9 @@ class ALMGR_Frontend_Manager {
 		);
 		// Read and sanitize search parameter.
 		$search_term = $this->get_sanitized_query_text( 's' );
+		if ( mb_strlen( $search_term ) > self::SEARCH_QUERY_MAX_LENGTH ) {
+			$search_term = mb_substr( $search_term, 0, self::SEARCH_QUERY_MAX_LENGTH );
+		}
 		// Start output buffering.
 		ob_start();
 		// Render the asset list template.
@@ -474,7 +506,7 @@ class ALMGR_Frontend_Manager {
 		$filter_type      = '';
 		$filter_state     = '';
 		$filter_level     = '';
-		$filter_structure = $this->get_sanitized_query_slug( 'almgr_structure' );
+		$filter_structure = $this->get_validated_query_term_slug( 'almgr_structure', ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
 		$filter_type      = $this->get_sanitized_query_slug( 'almgr_type' );
 		$filter_state     = $this->get_sanitized_query_slug( 'almgr_state' );
 		$filter_level     = $this->get_sanitized_query_slug( 'almgr_level' );
