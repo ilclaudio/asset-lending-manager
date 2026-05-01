@@ -487,9 +487,23 @@ class ALMGR_Plugin_Manager {
 			$changes['frontend.default_filters_open'] = isset( $_POST['almgr_frontend_default_filters_open'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['frontend.assets_page_id']          = max( 0, absint( wp_unslash( $_POST['almgr_frontend_assets_page_id'] ?? 0 ) ) );
-				$changes['frontend.login_redirect_page_id']  = max( 0, absint( wp_unslash( $_POST['almgr_frontend_login_redirect_page_id'] ?? 0 ) ) );
-				$changes['frontend.logout_redirect_page_id'] = max( 0, absint( wp_unslash( $_POST['almgr_frontend_logout_redirect_page_id'] ?? 0 ) ) );
+				$assets_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_assets_page_id'] ?? 0 ) ) );
+				if ( $assets_page_id > 0 && ! get_post( $assets_page_id ) ) {
+					$assets_page_id = (int) $this->modules['settings']->get( 'frontend.assets_page_id', 0 );
+				}
+				$changes['frontend.assets_page_id'] = $assets_page_id;
+
+				$login_redirect_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_login_redirect_page_id'] ?? 0 ) ) );
+				if ( $login_redirect_page_id > 0 && ! get_post( $login_redirect_page_id ) ) {
+					$login_redirect_page_id = (int) $this->modules['settings']->get( 'frontend.login_redirect_page_id', 0 );
+				}
+				$changes['frontend.login_redirect_page_id'] = $login_redirect_page_id;
+
+				$logout_redirect_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_logout_redirect_page_id'] ?? 0 ) ) );
+				if ( $logout_redirect_page_id > 0 && ! get_post( $logout_redirect_page_id ) ) {
+					$logout_redirect_page_id = (int) $this->modules['settings']->get( 'frontend.logout_redirect_page_id', 0 );
+				}
+				$changes['frontend.logout_redirect_page_id'] = $logout_redirect_page_id;
 			}
 		}
 
