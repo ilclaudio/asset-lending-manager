@@ -441,6 +441,16 @@ class ALMGR_Asset_Manager {
 	 * @return string Human-readable asset code.
 	 */
 	public static function get_asset_code( $asset_id ) {
+		$prefix = self::get_asset_code_prefix();
+		return sprintf( ALMGR_ASSET_CODE_FORMAT, $prefix, (int) $asset_id );
+	}
+
+	/**
+	 * Return the configured asset code prefix.
+	 *
+	 * @return string
+	 */
+	private static function get_asset_code_prefix() {
 		$prefix   = ALMGR_ASSET_CODE_PREFIX;
 		$instance = ALMGR_Plugin_Manager::get_instance();
 		if ( $instance ) {
@@ -449,25 +459,34 @@ class ALMGR_Asset_Manager {
 				$prefix = (string) $settings->get( 'asset.code_prefix', ALMGR_ASSET_CODE_PREFIX );
 			}
 		}
-		return sprintf( ALMGR_ASSET_CODE_FORMAT, $prefix, (int) $asset_id );
+
+		return $prefix;
 	}
 
 	/**
 	 * Return the WordPress post ID from a human-readable asset code.
 	 *
-	 * Reverse of get_asset_code(). Extracts the numeric part after the last
-	 * hyphen, validates the post exists and is a published almgr_asset.
+	 * Reverse of get_asset_code(). Accepts only the configured prefix followed
+	 * by a hyphen and a numeric post ID, then validates the post exists and is
+	 * a published almgr_asset.
+	 *
+	 * The numeric part may be zero-padded (current format) or plain digits
+	 * (legacy compatibility for already printed QR codes).
 	 *
 	 * @param string $code Human-readable asset code (e.g. "ALMGR-00000052").
 	 * @return int Post ID on success, 0 on failure.
 	 */
 	public static function get_asset_id_from_code( $code ) {
-		$code = sanitize_text_field( $code );
-		$pos  = strrpos( $code, '-' );
-		if ( false === $pos ) {
+		$code   = sanitize_text_field( $code );
+		$prefix = self::get_asset_code_prefix();
+		$match  = array();
+		$regex  = '/^' . preg_quote( $prefix, '/' ) . '-(0*[1-9]\d{0,7})$/';
+
+		if ( 1 !== preg_match( $regex, $code, $match ) ) {
 			return 0;
 		}
-		$post_id = absint( substr( $code, $pos + 1 ) );
+
+		$post_id = absint( $match[1] );
 		if ( $post_id <= 0 ) {
 			return 0;
 		}

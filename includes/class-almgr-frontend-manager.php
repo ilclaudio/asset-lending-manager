@@ -28,6 +28,13 @@ class ALMGR_Frontend_Manager {
 	const SEARCH_QUERY_MAX_LENGTH = 200;
 
 	/**
+	 * Maximum length accepted for QR scan query text.
+	 *
+	 * @var int
+	 */
+	const SCAN_QUERY_MAX_LENGTH = 200;
+
+	/**
 	 * Settings manager instance.
 	 *
 	 * @var ALMGR_Settings_Manager
@@ -643,6 +650,7 @@ class ALMGR_Frontend_Manager {
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- QR code URL is printed on physical labels; nonce cannot be embedded in a static QR code.
 		$code    = sanitize_text_field( wp_unslash( $_GET['almgr_scan'] ) );
+		$code    = substr( $code, 0, self::SCAN_QUERY_MAX_LENGTH );
 		$post_id = ALMGR_Asset_Manager::get_asset_id_from_code( $code );
 		if ( $post_id > 0 ) {
 			wp_safe_redirect( get_permalink( $post_id ) );
