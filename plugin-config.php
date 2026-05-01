@@ -57,6 +57,9 @@ define( 'ALMGR_AUTOCOMPLETE_DESC_LENGTH', 20 );
 // Asset list.
 define( 'ALMGR_ASSET_LIST_PER_PAGE', 12 );
 
+// QR print label.
+define( 'ALMGR_QR_LABEL_TITLE_MAX_LENGTH', 30 );
+
 // Asset identifier code.
 // ALMGR_ASSET_CODE_PREFIX is the alphanumeric prefix used to build the human-readable asset code
 // displayed in the frontend detail view (e.g. "ALMGR-00000045").

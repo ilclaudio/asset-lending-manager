@@ -1243,8 +1243,10 @@
 
 			const printTitle = document.createElement('p');
 			printTitle.className = 'almgr-qr-print-card__title';
-			const titleEl = document.querySelector('.almgr-asset-title');
-			printTitle.textContent = titleEl ? titleEl.textContent.trim() : '';
+			const titleEl  = document.querySelector('.almgr-asset-title');
+			const maxLen   = (typeof almgrFrontend !== 'undefined' && almgrFrontend.qrLabelTitleMaxLength) ? parseInt(almgrFrontend.qrLabelTitleMaxLength, 10) : 30;
+			const rawTitle = titleEl ? titleEl.textContent.trim() : '';
+			printTitle.textContent = rawTitle.length > maxLen ? rawTitle.slice(0, maxLen) + '…' : rawTitle;
 
 			const printCode = document.createElement('p');
 			printCode.className = 'almgr-qr-print-card__code';

@@ -258,6 +258,7 @@ class ALMGR_Frontend_Manager {
 				'changeStateNonce'            => wp_create_nonce( 'almgr_change_state_nonce' ),
 				'restoreStateNonce'           => wp_create_nonce( 'almgr_restore_state_nonce' ),
 				'qrScanEnabled'               => (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true ),
+				'qrLabelTitleMaxLength'       => ALMGR_QR_LABEL_TITLE_MAX_LENGTH,
 				'requestMessageMaxLength'     => (int) $this->settings->get( 'loans.request_message_max_length', 500 ),
 				'rejectionMessageMaxLength'   => (int) $this->settings->get( 'loans.rejection_message_max_length', 500 ),
 				'directAssignReasonMaxLength' => (int) $this->settings->get( 'loans.direct_assign_reason_max_length', 500 ),
