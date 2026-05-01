@@ -413,8 +413,14 @@ class ALMGR_Plugin_Manager {
 			// [A]-only fields.
 			if ( $is_admin ) {
 				$changes['email.from_name']       = sanitize_text_field( wp_unslash( $_POST['almgr_email_from_name'] ?? '' ) );
-				$changes['email.from_address']    = sanitize_email( wp_unslash( $_POST['almgr_email_from_address'] ?? '' ) );
-				$changes['email.system_email']    = sanitize_email( wp_unslash( $_POST['almgr_email_system_email'] ?? '' ) );
+				$from_address                     = sanitize_email( wp_unslash( $_POST['almgr_email_from_address'] ?? '' ) );
+				$changes['email.from_address']    = '' === $from_address || is_email( $from_address )
+					? $from_address
+					: (string) $this->modules['settings']->get( 'email.from_address', '' );
+				$system_email                     = sanitize_email( wp_unslash( $_POST['almgr_email_system_email'] ?? '' ) );
+				$changes['email.system_email']    = '' === $system_email || is_email( $system_email )
+					? $system_email
+					: (string) $this->modules['settings']->get( 'email.system_email', '' );
 				$changes['notifications.enabled'] = isset( $_POST['almgr_notifications_enabled'] );
 
 				$operator_mode         = isset( $_POST['almgr_notifications_loan_request_operator_mode'] )
@@ -464,7 +470,14 @@ class ALMGR_Plugin_Manager {
 			$changes['workflow.cancel_component_requests_when_kit_assigned'] = isset( $_POST['almgr_workflow_cancel_component_requests'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$changes['workflow.automatic_operations_actor_user_id'] = max( 1, absint( wp_unslash( $_POST['almgr_workflow_actor_user_id'] ?? 1 ) ) );
+				$actor_user_id = max( 1, absint( wp_unslash( $_POST['almgr_workflow_actor_user_id'] ?? 1 ) ) );
+				if ( ! get_userdata( $actor_user_id ) ) {
+					$actor_user_id = (int) $this->modules['settings']->get( 'workflow.automatic_operations_actor_user_id', get_current_user_id() );
+				}
+				if ( ! get_userdata( $actor_user_id ) ) {
+					$actor_user_id = get_current_user_id();
+				}
+				$changes['workflow.automatic_operations_actor_user_id'] = $actor_user_id;
 			}
 		}
 
