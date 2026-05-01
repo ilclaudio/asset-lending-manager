@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $almgr_is_block_theme = function_exists( 'wp_is_block_theme' ) && wp_is_block_theme();
 
+$almgr_allowed_html = almgr_get_allowed_html();
+
 if ( $almgr_is_block_theme ) {
 	?>
 <!doctype html>
@@ -37,7 +39,7 @@ if ( $almgr_is_block_theme ) {
 			</h1>
 		</header>
 
-		<?php echo do_shortcode( '[almgr_asset_list]' ); ?>
+		<?php echo wp_kses( do_shortcode( '[almgr_asset_list]' ), $almgr_allowed_html ); ?>
 
 	</div>
 	<?php
@@ -63,7 +65,7 @@ get_header();
 		</h1>
 	</header>
 
-	<?php echo do_shortcode( '[almgr_asset_list]' ); ?>
+	<?php echo wp_kses( do_shortcode( '[almgr_asset_list]' ), $almgr_allowed_html ); ?>
 
 </div>
 

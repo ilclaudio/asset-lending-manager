@@ -148,3 +148,169 @@ function almgr_get_loan_status_labels() {
 		'to_available'   => __( 'Restored to available', 'asset-lending-manager' ),
 	);
 }
+
+/**
+ * Return the wp_kses() allowlist for plugin shortcode output.
+ *
+ * Covers all HTML tags and attributes produced by [almgr_asset_list] and
+ * [almgr_asset_view]: forms, filter controls, tables, semantic elements,
+ * data-* attributes used by frontend JS, and img tags from thumbnails.
+ *
+ * @return array<string, array<string, bool>>
+ */
+function almgr_get_allowed_html() {
+	return array(
+		// Semantic wrappers.
+		'article'  => array(
+			'class'         => true,
+			'data-asset-id' => true,
+		),
+		'section'  => array(
+			'class'      => true,
+			'aria-label' => true,
+		),
+		'aside'    => array(
+			'class'      => true,
+			'aria-label' => true,
+		),
+		'header'   => array( 'class' => true ),
+		// Headings.
+		'h1'       => array( 'class' => true ),
+		'h2'       => array( 'class' => true ),
+		// Navigation and lists.
+		'nav'      => array(
+			'class'      => true,
+			'aria-label' => true,
+		),
+		'ul'       => array( 'class' => true ),
+		'li'       => array( 'class' => true ),
+		// Description list.
+		'dl'       => array( 'class' => true ),
+		'dt'       => array( 'class' => true ),
+		'dd'       => array( 'class' => true ),
+		// Tables.
+		'table'    => array( 'class' => true ),
+		'caption'  => array( 'class' => true ),
+		'thead'    => array( 'role' => true ),
+		'tbody'    => array( 'role' => true ),
+		'tr'       => array(
+			'class'           => true,
+			'role'            => true,
+			'data-request-id' => true,
+		),
+		'th'       => array(
+			'scope' => true,
+			'role'  => true,
+			'class' => true,
+		),
+		'td'       => array(
+			'class'      => true,
+			'role'       => true,
+			'data-label' => true,
+		),
+		// Generic containers.
+		'div'      => array(
+			'id'              => true,
+			'class'           => true,
+			'role'            => true,
+			'aria-live'       => true,
+			'aria-label'      => true,
+			'data-scan-url'   => true,
+			'data-asset-code' => true,
+			'style'           => true,
+		),
+		'span'     => array(
+			'class'       => true,
+			'role'        => true,
+			'aria-hidden' => true,
+			'aria-level'  => true,
+		),
+		'p'        => array( 'class' => true ),
+		'strong'   => array(),
+		// Links and media.
+		'a'        => array(
+			'href'   => true,
+			'class'  => true,
+			'target' => true,
+			'rel'    => true,
+		),
+		'img'      => array(
+			'src'           => true,
+			'alt'           => true,
+			'class'         => true,
+			'width'         => true,
+			'height'        => true,
+			'loading'       => true,
+			'decoding'      => true,
+			'fetchpriority' => true,
+			'srcset'        => true,
+			'sizes'         => true,
+		),
+		// Collapsible sections.
+		'details'  => array(
+			'id'    => true,
+			'class' => true,
+			'open'  => true,
+		),
+		'summary'  => array( 'class' => true ),
+		// Forms.
+		'form'     => array(
+			'id'     => true,
+			'class'  => true,
+			'method' => true,
+		),
+		'label'    => array(
+			'for'   => true,
+			'class' => true,
+		),
+		'input'    => array(
+			'type'              => true,
+			'id'                => true,
+			'name'              => true,
+			'value'             => true,
+			'placeholder'       => true,
+			'autocomplete'      => true,
+			'class'             => true,
+			'aria-label'        => true,
+			'aria-autocomplete' => true,
+			'aria-expanded'     => true,
+			'aria-controls'     => true,
+			'aria-describedby'  => true,
+			'aria-required'     => true,
+			'maxlength'         => true,
+			'required'          => true,
+			'checked'           => true,
+			'style'             => true,
+		),
+		'select'   => array(
+			'id'    => true,
+			'name'  => true,
+			'class' => true,
+		),
+		'option'   => array(
+			'value'    => true,
+			'selected' => true,
+		),
+		'textarea' => array(
+			'id'               => true,
+			'name'             => true,
+			'rows'             => true,
+			'maxlength'        => true,
+			'placeholder'      => true,
+			'class'            => true,
+			'aria-describedby' => true,
+			'aria-required'    => true,
+			'required'         => true,
+		),
+		'button'   => array(
+			'type'              => true,
+			'class'             => true,
+			'aria-label'        => true,
+			'data-action'       => true,
+			'data-request-id'   => true,
+			'data-asset-id'     => true,
+			'data-target-state' => true,
+			'style'             => true,
+		),
+	);
+}
