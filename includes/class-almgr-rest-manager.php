@@ -268,16 +268,25 @@ class ALMGR_REST_Manager {
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
+				'validate_callback' => function( $value ) {
+					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_STATE_TAXONOMY_SLUG );
+				},
 			),
 			'type'      => array(
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
+				'validate_callback' => function( $value ) {
+					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
+				},
 			),
 			'structure' => array(
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
+				'validate_callback' => function( $value ) {
+					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
+				},
 			),
 			'owner'     => array(
 				'type'              => 'integer',
