@@ -507,9 +507,9 @@ class ALMGR_Frontend_Manager {
 		$filter_state     = '';
 		$filter_level     = '';
 		$filter_structure = $this->get_validated_query_term_slug( 'almgr_structure', ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
-		$filter_type      = $this->get_sanitized_query_slug( 'almgr_type' );
-		$filter_state     = $this->get_sanitized_query_slug( 'almgr_state' );
-		$filter_level     = $this->get_sanitized_query_slug( 'almgr_level' );
+		$filter_type      = $this->get_validated_query_term_slug( 'almgr_type', ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
+		$filter_state     = $this->get_validated_query_term_slug( 'almgr_state', ALMGR_ASSET_STATE_TAXONOMY_SLUG );
+		$filter_level     = $this->get_validated_query_term_slug( 'almgr_level', ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
 		// Read owner filter (operator: by user ID; member: "my assets" checkbox).
 		$filter_owner      = 0;
 		$filter_owner_name = '';

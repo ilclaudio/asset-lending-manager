@@ -390,9 +390,24 @@ class ALMGR_Plugin_Manager {
 
 		check_admin_referer( 'almgr_save_settings', 'almgr_settings_nonce' );
 
-		$is_admin   = current_user_can( 'manage_options' );
-		$active_tab = isset( $_POST['almgr_active_tab'] ) ? sanitize_key( wp_unslash( $_POST['almgr_active_tab'] ) ) : 'email';
-		$changes    = array();
+		$is_admin            = current_user_can( 'manage_options' );
+		$active_tab          = isset( $_POST['almgr_active_tab'] ) ? sanitize_key( wp_unslash( $_POST['almgr_active_tab'] ) ) : 'email';
+		$allowed_active_tabs = array(
+			'email',
+			'templates',
+			'loans',
+			'direct_assign',
+			'workflow',
+			'frontend',
+			'autocomplete',
+			'logging',
+			'asset',
+			'rest_api',
+		);
+		if ( ! in_array( $active_tab, $allowed_active_tabs, true ) ) {
+			$active_tab = 'email';
+		}
+		$changes = array();
 
 		if ( 'email' === $active_tab ) {
 			// [A]-only fields.
