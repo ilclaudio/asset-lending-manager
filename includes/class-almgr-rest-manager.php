@@ -260,7 +260,7 @@ class ALMGR_REST_Manager {
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function( $value ) {
+				'validate_callback' => function ( $value ) {
 					return is_string( $value ) && mb_strlen( $value ) <= 200;
 				},
 			),
@@ -268,7 +268,7 @@ class ALMGR_REST_Manager {
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function( $value ) {
+				'validate_callback' => function ( $value ) {
 					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_STATE_TAXONOMY_SLUG );
 				},
 			),
@@ -276,7 +276,7 @@ class ALMGR_REST_Manager {
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function( $value ) {
+				'validate_callback' => function ( $value ) {
 					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
 				},
 			),
@@ -284,7 +284,7 @@ class ALMGR_REST_Manager {
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function( $value ) {
+				'validate_callback' => function ( $value ) {
 					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
 				},
 			),
@@ -321,7 +321,7 @@ class ALMGR_REST_Manager {
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function( $value ) {
+				'validate_callback' => function ( $value ) {
 					return is_string( $value ) && mb_strlen( $value ) <= 200;
 				},
 			),
