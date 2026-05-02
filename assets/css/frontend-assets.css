@@ -594,6 +594,7 @@
 
 	.almgr-asset-content {
 		margin-top: 25px;
+		padding: 0 12px;
 		line-height: 1.6;
 		color: #444;
 	}

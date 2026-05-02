@@ -102,11 +102,10 @@ $almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 					/* translators: %s: link to Frontend settings tab */
 					esc_html__( 'In %s, set "Asset archive page" to the first page and "Asset detail page" to the second. This ensures all asset links in the catalog point to the correct detail page.', 'asset-lending-manager' ),
 					'<a href="' . esc_url( admin_url( 'admin.php?page=almgr-settings&tab=frontend' ) ) . '">' . esc_html__( 'Settings &rarr; Frontend', 'asset-lending-manager' ) . '</a>'
-					);
-					?>
+				);
+				?>
 			</li>
 		</ol>
-		<p><?php esc_html_e( 'Optionally configure email sender settings in wp-admin under ALM → Settings.', 'asset-lending-manager' ); ?></p>
 
 		<h3><?php esc_html_e( 'Shortcode reference', 'asset-lending-manager' ); ?></h3>
 		<table class="widefat striped almgr-about__shortcodes">

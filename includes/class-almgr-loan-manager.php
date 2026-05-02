@@ -107,7 +107,7 @@ class ALMGR_Loan_Manager {
 			);
 		}
 		// Get and validate input.
-		$asset_id = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$asset_id = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 		$message  = isset( $_POST['message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['message'] ) ) : '';
 		// Validate message length.
 		if ( empty( $message ) ) {
@@ -259,8 +259,8 @@ class ALMGR_Loan_Manager {
 		}
 
 		// Get and validate input.
-		$request_id        = isset( $_POST['request_id'] ) ? absint( $_POST['request_id'] ) : 0;
-		$asset_id          = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$request_id        = isset( $_POST['request_id'] ) ? absint( wp_unslash( $_POST['request_id'] ) ) : 0;
+		$asset_id          = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 		$rejection_message = isset( $_POST['rejection_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['rejection_message'] ) ) : '';
 
 		// Validate inputs.
@@ -571,8 +571,8 @@ class ALMGR_Loan_Manager {
 		}
 
 		// Get and validate input.
-		$request_id = isset( $_POST['request_id'] ) ? absint( $_POST['request_id'] ) : 0;
-		$asset_id   = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$request_id = isset( $_POST['request_id'] ) ? absint( wp_unslash( $_POST['request_id'] ) ) : 0;
+		$asset_id   = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 
 		// Validate inputs.
 		if ( $request_id <= 0 ) {
@@ -1533,8 +1533,8 @@ class ALMGR_Loan_Manager {
 		}
 
 		// Get and validate input.
-		$asset_id    = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
-		$assignee_id = isset( $_POST['assignee_id'] ) ? absint( $_POST['assignee_id'] ) : 0;
+		$asset_id    = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
+		$assignee_id = isset( $_POST['assignee_id'] ) ? absint( wp_unslash( $_POST['assignee_id'] ) ) : 0;
 		$reason      = isset( $_POST['reason'] ) ? sanitize_textarea_field( wp_unslash( $_POST['reason'] ) ) : '';
 
 		if ( $asset_id <= 0 ) {
@@ -1749,7 +1749,7 @@ class ALMGR_Loan_Manager {
 		}
 		check_ajax_referer( 'almgr_change_state_nonce', 'nonce' );
 
-		$asset_id     = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$asset_id     = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 		$target_state = isset( $_POST['target_state'] ) ? sanitize_key( wp_unslash( $_POST['target_state'] ) ) : '';
 		$notes        = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
 		$location     = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
@@ -2051,7 +2051,7 @@ class ALMGR_Loan_Manager {
 		}
 		check_ajax_referer( 'almgr_restore_state_nonce', 'nonce' );
 
-		$asset_id = isset( $_POST['asset_id'] ) ? absint( $_POST['asset_id'] ) : 0;
+		$asset_id = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
 		$location = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
 

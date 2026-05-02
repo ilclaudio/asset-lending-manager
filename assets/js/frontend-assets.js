@@ -261,15 +261,16 @@
 				submitBtn.textContent = __( 'Sending...', 'asset-lending-manager' );
 				responseDiv.style.display = 'none';
 
-				// Prepare form data
-				var formData = new FormData(form);
-				formData.append('action', 'almgr_submit_loan_request');
-				formData.append('asset_id', assetId);
-				formData.append('message', messageField.value.trim());
+					// Prepare form data
+					var formData = new FormData(form);
+					formData.append('action', 'almgr_submit_loan_request');
+					formData.append('asset_id', assetId);
+					formData.append('message', messageField.value.trim());
 
-				// Fallback: keep compatibility when nonce field is not present in DOM.
-				if (!formData.get('nonce')) {
-					if (typeof window.almgrFrontend !== 'undefined' && window.almgrFrontend.loanRequestNonce) {
+					var nonceField = form.querySelector('input[name="almgr_loan_request_nonce_field"]');
+					if (nonceField && nonceField.value) {
+						formData.append('nonce', nonceField.value);
+					} else if (typeof window.almgrFrontend !== 'undefined' && window.almgrFrontend.loanRequestNonce) {
 						formData.append('nonce', window.almgrFrontend.loanRequestNonce);
 					} else {
 						ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
@@ -277,7 +278,6 @@
 						submitBtn.textContent = originalBtnText;
 						return;
 					}
-				}
 
 				// Send AJAX request
 				fetch(window.almgrFrontend.ajaxUrl, {
@@ -456,7 +456,8 @@
 					return;
 				}
 
-				if (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.changeStateNonce) {
+				var changeStateNonceField = form.querySelector('input[name="almgr_change_state_nonce_field"]');
+				if ((!changeStateNonceField || !changeStateNonceField.value) && (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.changeStateNonce)) {
 					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
 					return;
 				}
@@ -478,7 +479,7 @@
 
 				var formData = new FormData();
 				formData.append('action',       'almgr_change_asset_state');
-				formData.append('nonce',        window.almgrFrontend.changeStateNonce);
+				formData.append('nonce',        changeStateNonceField && changeStateNonceField.value ? changeStateNonceField.value : window.almgrFrontend.changeStateNonce);
 				formData.append('asset_id',     assetId);
 				formData.append('target_state', targetState);
 				formData.append('location',     locationField ? locationField.value.trim() : '');
@@ -538,7 +539,8 @@
 				var responseDiv = document.getElementById('almgr-restore-state-response');
 				var submitBtn   = form.querySelector('button[type="submit"]');
 
-				if (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.restoreStateNonce) {
+				var restoreStateNonceField = form.querySelector('input[name="almgr_restore_state_nonce_field"]');
+				if ((!restoreStateNonceField || !restoreStateNonceField.value) && (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.restoreStateNonce)) {
 					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
 					return;
 				}
@@ -560,7 +562,7 @@
 
 				var formData = new FormData();
 				formData.append('action',    'almgr_restore_asset_state');
-				formData.append('nonce',     window.almgrFrontend.restoreStateNonce);
+				formData.append('nonce',     restoreStateNonceField && restoreStateNonceField.value ? restoreStateNonceField.value : window.almgrFrontend.restoreStateNonce);
 				formData.append('asset_id',  assetId);
 				formData.append('location',  locationField ? locationField.value.trim() : '');
 				formData.append('notes',     notesField ? notesField.value.trim() : '');

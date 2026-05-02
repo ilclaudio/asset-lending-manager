@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-05-02 16:18+0000\n"
+"PO-Revision-Date: 2026-05-02 16:26+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -717,7 +717,7 @@ msgstr ""
 msgid "Describe the reason for this state change..."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1044 admin/plugin-main-page.php:116
+#: admin/almgr-settings-page.php:1044 admin/plugin-main-page.php:115
 msgid "Description"
 msgstr ""
 
@@ -799,13 +799,13 @@ msgstr ""
 msgid "Email templates can only be modified by administrators."
 msgstr ""
 
-#: admin/plugin-main-page.php:126
+#: admin/plugin-main-page.php:125
 msgid ""
 "Embeds the detail view for a single asset. On classic themes this is only "
 "needed for custom layouts; on block themes it is required."
 msgstr ""
 
-#: admin/plugin-main-page.php:122
+#: admin/plugin-main-page.php:121
 msgid ""
 "Embeds the full asset catalog with search filters into any page or post."
 msgstr ""
@@ -1794,11 +1794,6 @@ msgid ""
 "without current owner). Leave empty to disable."
 msgstr ""
 
-#: admin/plugin-main-page.php:109
-msgid ""
-"Optionally configure email sender settings in wp-admin under ALM → Settings."
-msgstr ""
-
 #: admin/almgr-tools-page.php:44
 msgid "Overview"
 msgstr ""
@@ -2298,11 +2293,11 @@ msgstr ""
 msgid "Settings sections"
 msgstr ""
 
-#: admin/plugin-main-page.php:115
+#: admin/plugin-main-page.php:114
 msgid "Shortcode"
 msgstr ""
 
-#: admin/plugin-main-page.php:111
+#: admin/plugin-main-page.php:110
 msgid "Shortcode reference"
 msgstr ""
 

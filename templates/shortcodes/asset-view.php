@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+global $post;
+
 $almgr_current_user_id = get_current_user_id();
 $almgr_asset_id        = isset( $asset->id ) ? (int) $asset->id : 0;
 if ( $almgr_asset_id <= 0 ) {
@@ -29,10 +31,26 @@ $almgr_change_state_notes_max   = (int) $almgr_settings->get( 'loans.change_stat
 $almgr_asset_location           = (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $almgr_asset_id );
 $almgr_owner_id                 = $almgr_loan_manager->get_current_owner( $almgr_asset_id );
 $almgr_asset_title              = isset( $asset->title ) ? (string) $asset->title : '';
-$almgr_asset_content            = isset( $asset->content ) ? (string) $asset->content : '';
+$almgr_asset_content            = '';
 $almgr_owner_name               = '';
 $almgr_is_current_owner         = is_user_logged_in() && $almgr_owner_id > 0 && ( $almgr_current_user_id === (int) $almgr_owner_id );
 $almgr_is_operator              = is_user_logged_in() && current_user_can( ALMGR_EDIT_ASSET );
+
+$almgr_asset_post = get_post( $almgr_asset_id );
+if ( $almgr_asset_post instanceof WP_Post && ALMGR_ASSET_CPT_SLUG === $almgr_asset_post->post_type ) {
+	$almgr_original_post = $post instanceof WP_Post ? $post : null;
+	$post                = $almgr_asset_post;
+	setup_postdata( $post );
+	$almgr_asset_content = (string) apply_filters( 'the_content', $almgr_asset_post->post_content );
+
+	if ( $almgr_original_post instanceof WP_Post ) {
+		$post = $almgr_original_post;
+		setup_postdata( $post );
+	} else {
+		wp_reset_postdata();
+	}
+}
+
 if ( $almgr_owner_id > 0 ) {
 	$almgr_owner_data = get_userdata( $almgr_owner_id );
 	$almgr_owner_name = $almgr_owner_data ? $almgr_owner_data->display_name : '';
@@ -317,8 +335,8 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 							</p>
 
 						<?php else : ?>
-							<form id="almgr-loan-request-form" class="almgr-loan-form">
-								<?php wp_nonce_field( 'almgr_loan_request_nonce', 'nonce' ); ?>
+								<form id="almgr-loan-request-form" class="almgr-loan-form">
+									<?php wp_nonce_field( 'almgr_loan_request_nonce', 'almgr_loan_request_nonce_field' ); ?>
 								<div class="almgr-form-field">
 									<label for="almgr-request-message">
 										<?php esc_html_e( 'Message for the current owner:', 'asset-lending-manager' ); ?>
@@ -594,8 +612,8 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 								?>
 							</p>
 						<?php endif; ?>
-						<form id="almgr-change-state-form" class="almgr-loan-form" method="post">
-							<?php wp_nonce_field( 'almgr_change_state_nonce', 'nonce' ); ?>
+							<form id="almgr-change-state-form" class="almgr-loan-form" method="post">
+								<?php wp_nonce_field( 'almgr_change_state_nonce', 'almgr_change_state_nonce_field' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>" />
 							<div class="almgr-form-field">
 								<label for="almgr-change-state-location">
@@ -653,8 +671,8 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 							);
 							?>
 						</p>
-						<form id="almgr-restore-state-form" class="almgr-loan-form" method="post">
-							<?php wp_nonce_field( 'almgr_restore_state_nonce', 'nonce' ); ?>
+							<form id="almgr-restore-state-form" class="almgr-loan-form" method="post">
+								<?php wp_nonce_field( 'almgr_restore_state_nonce', 'almgr_restore_state_nonce_field' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>" />
 							<div class="almgr-form-field">
 								<label for="almgr-restore-state-location">

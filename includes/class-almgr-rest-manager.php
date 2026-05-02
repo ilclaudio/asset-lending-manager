@@ -383,13 +383,13 @@ class ALMGR_REST_Manager {
 			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- REST asset listing intentionally supports taxonomy filters and is paginated.
 		}
 
-			$owner = (int) $request->get_param( 'owner' );
-		if ( $owner > 0 ) {
+		$owner = (int) $request->get_param( 'owner' );
+		if ( $owner > 0 && get_userdata( $owner ) ) {
 			$args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Current-owner filtering is a documented REST feature and is paginated.
 				array(
 					'key'   => '_almgr_current_owner',
 					'value' => $owner,
-			),
+				),
 			);
 		}
 
