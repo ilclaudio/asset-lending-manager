@@ -9,14 +9,21 @@ This project uses [Semantic Versioning](http://semver.org/).
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
+## [0.2.3] - 2026-05-10
+### Changed
+### Fixed
+### Security
+### Added
 
-## [0.2.2] - 2026-04-30
+
+## [0.2.2] - 2026-05-02
 ### Fixed
 - Operators can upload/insert images and edit image title/alternative text from the Media Library and featured-image flow.
 ### Security
 - Migrated REST API from custom rewrite rules and manual Basic Auth to native WordPress REST API routes; removed `wp_authenticate()` call.
 - Escaped `do_blocks()` output with `wp_kses_post()` in fallback templates.
-
+# Changed
+- Maintenance release for WordPress.org submission follow-up.
 
 ## [0.2.1] - 2026-04-14
 ### Added
