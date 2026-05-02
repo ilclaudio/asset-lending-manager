@@ -68,14 +68,17 @@ The plugin registers the ACF field group automatically — no manual configurati
    The plugin registers its ACF field group automatically. No manual ACF setup is required.
 2. In WordPress admin, go to Plugins > Add New > Upload Plugin.
 3. Upload the plugin ZIP file, click Install Now, then Activate.
-4. The plugin works out of the box on both classic and block themes. No shortcode is required for standard usage.
-   Asset pages are available automatically:
+**Classic themes:**
+4. Asset pages are served automatically — no shortcodes required:
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page
 5. If `/asset/` returns 404, go to Settings > Permalinks and click Save Changes once.
-6. Use shortcodes only when you want to embed views in an existing page:
-   * `[almgr_asset_list]` — embeds the asset catalog into any page or post
-   * `[almgr_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
+
+**Block themes:**
+4. Block themes do not support automatic PHP template overrides. Create two pages manually:
+   * Add `[almgr_asset_list]` to a page — this is your asset catalog.
+   * Add `[almgr_asset_view]` to a second page — this is your asset detail view.
+5. In **ALM > Settings > Frontend**, set "Asset archive page" and "Asset detail page" to the pages you just created. This ensures all asset links point to the correct detail page.
 
 
 == Frequently Asked Questions ==
@@ -109,7 +112,7 @@ An asset is a single physical item (for example, a telescope, a book, or a camer
 Yes. Multiple members can submit requests for the same asset simultaneously. By default, when a request is approved or the asset is directly assigned, all other pending requests for that asset are automatically canceled (this behavior is configurable), and requesters are notified by email when notifications are enabled.
 
 = Do I need a developer to set up this plugin? =
-Basic setup only requires installing the plugin and activating ACF — no shortcodes or coding needed for standard use. Asset pages are served automatically by the plugin on both classic and block themes. Some advanced customization such as theme template overrides or user role adjustments may benefit from developer support.
+On classic themes, basic setup only requires installing the plugin and activating ACF — asset pages are served automatically with no shortcodes needed. On block themes, two pages with shortcodes must be created manually and configured in the plugin settings. Some advanced customization such as user role adjustments may benefit from developer support.
 
 
 == Changelog ==

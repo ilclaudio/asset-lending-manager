@@ -16,20 +16,20 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$almgr_active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'email'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin tab navigation; no state change occurs.
+$almgr_active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'frontend'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin tab navigation; no state change occurs.
 $almgr_saved      = isset( $_GET['saved'] ) && '1' === sanitize_key( wp_unslash( $_GET['saved'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only status flag set by redirect after save; no state change occurs.
 
 $almgr_settings = new ALMGR_Settings_Manager();
 $almgr_is_admin = current_user_can( 'manage_options' );
 
 $almgr_tabs = array(
+	'frontend'      => __( 'Frontend', 'asset-lending-manager' ),
+	'autocomplete'  => __( 'Search Settings', 'asset-lending-manager' ),
 	'email'         => __( 'Notifications', 'asset-lending-manager' ),
 	'templates'     => __( 'Email Templates', 'asset-lending-manager' ),
 	'loans'         => __( 'Loan Rules', 'asset-lending-manager' ),
 	'direct_assign' => __( 'Direct Assignment', 'asset-lending-manager' ),
 	'workflow'      => __( 'Workflow', 'asset-lending-manager' ),
-	'frontend'      => __( 'Frontend', 'asset-lending-manager' ),
-	'autocomplete'  => __( 'Search Settings', 'asset-lending-manager' ),
 	'logging'       => __( 'Logging', 'asset-lending-manager' ),
 	'asset'         => __( 'Advanced Settings', 'asset-lending-manager' ),
 	'rest_api'      => __( 'REST API', 'asset-lending-manager' ),
@@ -37,7 +37,7 @@ $almgr_tabs = array(
 
 // Validate active tab.
 if ( ! array_key_exists( $almgr_active_tab, $almgr_tabs ) ) {
-	$almgr_active_tab = 'email';
+	$almgr_active_tab = 'frontend';
 }
 
 // Email type labels for the templates tab.
@@ -607,6 +607,34 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						?>
 						<p class="description">
 							<?php esc_html_e( 'Page that contains the asset list. Used as the login redirect target for members with no specific destination.', 'asset-lending-manager' ); ?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="almgr_frontend_asset_view_page_id">
+							<?php esc_html_e( 'Asset detail page', 'asset-lending-manager' ); ?>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						</label>
+					</th>
+					<td>
+						<?php
+						wp_dropdown_pages(
+							array(
+								'name'              => 'almgr_frontend_asset_view_page_id',
+								'id'                => 'almgr_frontend_asset_view_page_id',
+								'selected'          => (int) $almgr_settings->get( 'frontend.asset_view_page_id' ),
+								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
+								'option_none_value' => '0',
+								'disabled'          => absint( ! $almgr_is_admin ),
+							)
+						);
+						?>
+						<p class="description">
+							<?php esc_html_e( 'Page containing the [almgr_asset_view] shortcode. When set, all asset detail links (in the list, in kit cards, and in QR code redirects) point to this page passing the asset slug as a ?asset= parameter, so the shortcode can display the correct asset.', 'asset-lending-manager' ); ?>
+						</p>
+						<p class="description">
+							<?php esc_html_e( 'Required for block themes, where automatic template override for /asset/slug/ is not available. Leave empty on classic themes to use the standard CPT permalink.', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>

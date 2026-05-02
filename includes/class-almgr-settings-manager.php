@@ -93,6 +93,7 @@ class ALMGR_Settings_Manager {
 			),
 			'frontend'      => array(
 				'assets_page_id'          => 0,
+				'asset_view_page_id'      => 0,
 				'login_redirect_page_id'  => 0,
 				'logout_redirect_page_id' => 0,
 				'asset_list_per_page'     => ALMGR_ASSET_LIST_PER_PAGE,

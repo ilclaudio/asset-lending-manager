@@ -100,13 +100,17 @@ Direct assignment can also reassign an already on-loan asset while keeping state
 1. Ensure **Advanced Custom Fields (ACF)** is installed and active.
 2. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
 3. Activate the plugin through the **Plugins** menu in WordPress.
-4. The plugin works out of the box on both classic and block themes, with no shortcodes required for normal use. Asset pages are served automatically via the plugin's built-in templates:
-   - `/asset/` — asset catalog with search filters
-   - `/asset/asset-name/` — single asset detail page
-5. Use the shortcodes only if you need to embed a view inside an existing WordPress page:
-   - `[almgr_asset_list]` — embeds the asset catalog into any page or post
-   - `[almgr_asset_view]` — embeds the single asset detail view (not needed on standard asset permalinks)
-6. Optionally configure email sender settings in wp-admin under **ALM → Settings**.
+
+**Classic themes** — asset pages are served automatically, no shortcodes required:
+- `/asset/` — asset catalog with search filters
+- `/asset/asset-name/` — single asset detail page
+
+**Block themes** — automatic PHP template overrides are not supported. Set up manually:
+4. Create a page with `[almgr_asset_list]` — your asset catalog.
+5. Create a second page with `[almgr_asset_view]` — your asset detail view.
+6. In **ALM → Settings → Frontend**, set "Asset archive page" and "Asset detail page" to the pages you just created. This ensures all asset links in the catalog point to the correct detail page.
+
+7. Optionally configure email sender settings in wp-admin under **ALM → Settings**.
 
 Settings UI is available in wp-admin under the ALM menu.
 

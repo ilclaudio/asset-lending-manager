@@ -493,6 +493,12 @@ class ALMGR_Plugin_Manager {
 				}
 				$changes['frontend.assets_page_id'] = $assets_page_id;
 
+				$asset_view_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_asset_view_page_id'] ?? 0 ) ) );
+				if ( $asset_view_page_id > 0 && ! get_post( $asset_view_page_id ) ) {
+					$asset_view_page_id = (int) $this->modules['settings']->get( 'frontend.asset_view_page_id', 0 );
+				}
+				$changes['frontend.asset_view_page_id'] = $asset_view_page_id;
+
 				$login_redirect_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_login_redirect_page_id'] ?? 0 ) ) );
 				if ( $login_redirect_page_id > 0 && ! get_post( $login_redirect_page_id ) ) {
 					$login_redirect_page_id = (int) $this->modules['settings']->get( 'frontend.login_redirect_page_id', 0 );

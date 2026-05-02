@@ -474,6 +474,30 @@ class ALMGR_Frontend_Manager {
 	}
 
 	/**
+	 * Build the frontend URL for a single asset detail page.
+	 *
+	 * When frontend.asset_view_page_id is configured, links point to that page
+	 * with ?asset=slug so [almgr_asset_view] can resolve the asset from the query
+	 * string. Falls back to the standard CPT permalink when the setting is not set.
+	 *
+	 * @param int $post_id Asset post ID.
+	 * @return string Absolute URL.
+	 */
+	private function build_asset_link( $post_id ) {
+		$view_page_id = (int) $this->settings->get( 'frontend.asset_view_page_id', 0 );
+		if ( $view_page_id > 0 ) {
+			$post = get_post( $post_id );
+			if ( $post && ! empty( $post->post_name ) ) {
+				$page_url = get_permalink( $view_page_id );
+				if ( $page_url ) {
+					return add_query_arg( 'asset', rawurlencode( $post->post_name ), $page_url );
+				}
+			}
+		}
+		return (string) get_permalink( $post_id );
+	}
+
+	/**
 	 * Get asset ID from slug, query string, or current post context.
 	 *
 	 * Priority:
@@ -631,6 +655,11 @@ class ALMGR_Frontend_Manager {
 			foreach ( $query->posts as $post ) {
 				$wrapper = ALMGR_Asset_Manager::get_asset_wrapper( $post->ID );
 				if ( $wrapper ) {
+					$wrapper->permalink = $this->build_asset_link( $post->ID );
+					foreach ( $wrapper->parent_kits as &$almgr_kit ) {
+						$almgr_kit['permalink'] = $this->build_asset_link( $almgr_kit['id'] );
+					}
+					unset( $almgr_kit );
 					$assets[] = $wrapper;
 				}
 			}
@@ -660,7 +689,7 @@ class ALMGR_Frontend_Manager {
 		$code    = substr( $code, 0, self::SCAN_QUERY_MAX_LENGTH );
 		$post_id = ALMGR_Asset_Manager::get_asset_id_from_code( $code );
 		if ( $post_id > 0 ) {
-			wp_safe_redirect( get_permalink( $post_id ) );
+			wp_safe_redirect( $this->build_asset_link( $post_id ) );
 			exit;
 		}
 		// Invalid or unresolvable code: do not redirect; let WordPress render the current page normally.
