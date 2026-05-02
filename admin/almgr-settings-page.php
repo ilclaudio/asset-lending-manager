@@ -584,6 +584,9 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 		<?php elseif ( 'frontend' === $almgr_active_tab ) : ?>
 
 			<h2><?php esc_html_e( 'Page Links', 'asset-lending-manager' ); ?></h2>
+			<p>
+				<?php esc_html_e( 'With block themes, using shortcodes is required. With classic themes, you can use either shortcodes or the built-in templates (recommended).', 'asset-lending-manager' ); ?>
+			</p>
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
@@ -606,7 +609,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						);
 						?>
 						<p class="description">
-							<?php esc_html_e( 'Page that contains the asset list. Used as the login redirect target for members with no specific destination.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Page containing the asset list ([almgr_asset_list]). If you are not using shortcodes, select "— Not set —".', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
@@ -631,10 +634,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						);
 						?>
 						<p class="description">
-							<?php esc_html_e( 'Page containing the [almgr_asset_view] shortcode. When set, all asset detail links (in the list, in kit cards, and in QR code redirects) point to this page passing the asset slug as a ?asset= parameter, so the shortcode can display the correct asset.', 'asset-lending-manager' ); ?>
-						</p>
-						<p class="description">
-							<?php esc_html_e( 'Required for block themes, where automatic template override for /asset/slug/ is not available. Leave empty on classic themes to use the standard CPT permalink.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Page containing the asset detail view ([almgr_asset_view]). If you are not using shortcodes, select "— Not set —".', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
