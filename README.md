@@ -101,16 +101,19 @@ Direct assignment can also reassign an already on-loan asset while keeping state
 2. Upload the `asset-lending-manager` folder to the `/wp-content/plugins/` directory.
 3. Activate the plugin through the **Plugins** menu in WordPress.
 
-**Classic themes** — asset pages are served automatically, no shortcodes required:
-- `/asset/` — asset catalog with search filters
-- `/asset/asset-name/` — single asset detail page
+**Classic themes:**
+4. Asset pages are served automatically — no shortcodes required:
+   - `/asset/` — asset catalog with search filters
+   - `/asset/asset-name/` — single asset detail page
+5. If `/asset/` returns 404, go to **Settings → Permalinks** and click **Save Changes** once.
 
-**Block themes** — automatic PHP template overrides are not supported. Set up manually:
-4. Create a page with `[almgr_asset_list]` — your asset catalog.
-5. Create a second page with `[almgr_asset_view]` — your asset detail view.
-6. In **ALM → Settings → Frontend**, set "Asset archive page" and "Asset detail page" to the pages you just created. This ensures all asset links in the catalog point to the correct detail page.
+**Block themes:**
+4. Block themes do not support automatic PHP template overrides. Create two pages manually:
+   - Add `[almgr_asset_list]` to a page — this is your asset catalog.
+   - Add `[almgr_asset_view]` to a second page — this is your asset detail view.
+5. In **ALM → Settings → Frontend**, set "Asset archive page" and "Asset detail page" to the pages you just created. This ensures all asset links point to the correct detail page.
 
-7. Optionally configure email sender settings in wp-admin under **ALM → Settings**.
+6. Optionally configure email sender settings in wp-admin under **ALM → Settings**.
 
 Settings UI is available in wp-admin under the ALM menu.
 

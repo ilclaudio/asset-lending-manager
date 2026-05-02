@@ -79,6 +79,7 @@ The plugin registers the ACF field group automatically — no manual configurati
    * Add `[almgr_asset_list]` to a page — this is your asset catalog.
    * Add `[almgr_asset_view]` to a second page — this is your asset detail view.
 5. In **ALM > Settings > Frontend**, set "Asset archive page" and "Asset detail page" to the pages you just created. This ensures all asset links point to the correct detail page.
+6. Optionally configure email sender settings in wp-admin under **ALM > Settings**.
 
 
 == Frequently Asked Questions ==

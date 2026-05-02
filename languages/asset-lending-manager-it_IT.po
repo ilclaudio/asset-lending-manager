@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-05-02 16:02+0000\n"
+"PO-Revision-Date: 2026-05-02 16:18+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -761,7 +761,7 @@ msgstr "Descrivi il motivo del ripristino di questa risorsa..."
 msgid "Describe the reason for this state change..."
 msgstr "Descrivi il motivo di questo cambio di stato..."
 
-#: admin/almgr-settings-page.php:1044 admin/plugin-main-page.php:115
+#: admin/almgr-settings-page.php:1044 admin/plugin-main-page.php:116
 msgid "Description"
 msgstr "Descrizione"
 
@@ -843,7 +843,7 @@ msgstr "Template e-mail"
 msgid "Email templates can only be modified by administrators."
 msgstr "I Template e-mail possono essere modificati solo dagli amministratori."
 
-#: admin/plugin-main-page.php:125
+#: admin/plugin-main-page.php:126
 msgid ""
 "Embeds the detail view for a single asset. On classic themes this is only "
 "needed for custom layouts; on block themes it is required."
@@ -852,7 +852,7 @@ msgstr ""
 "necessario solo per i layout personalizzati; nei temi a blocchi è "
 "obbligatorio."
 
-#: admin/plugin-main-page.php:121
+#: admin/plugin-main-page.php:122
 msgid ""
 "Embeds the full asset catalog with search filters into any page or post."
 msgstr ""
@@ -1967,6 +1967,13 @@ msgstr ""
 "Destinatario aggiuntivo opzionale per ogni invio di richiesta di prestito "
 "(con o senza proprietario corrente). Lascia vuoto per disabilitare."
 
+#: admin/plugin-main-page.php:109
+msgid ""
+"Optionally configure email sender settings in wp-admin under ALM → Settings."
+msgstr ""
+"Facoltativamente, è possibile configurare le impostazioni del mittente email "
+"in wp-admin, nella sezione ALM → Impostazioni."
+
 #: admin/almgr-tools-page.php:44
 msgid "Overview"
 msgstr "Panoramica"
@@ -2495,11 +2502,11 @@ msgstr "Impostazioni salvate."
 msgid "Settings sections"
 msgstr "Sezioni delle impostazioni"
 
-#: admin/plugin-main-page.php:114
+#: admin/plugin-main-page.php:115
 msgid "Shortcode"
 msgstr "Codice breve"
 
-#: admin/plugin-main-page.php:110
+#: admin/plugin-main-page.php:111
 msgid "Shortcode reference"
 msgstr "Riferimento shortcode"
 
