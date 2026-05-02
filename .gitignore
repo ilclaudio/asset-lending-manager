@@ -51,8 +51,11 @@ Thumbs.db
 .codex
 DEV
 AGENTS
+SETUP
 AGENTS.md
+AGENTS.MD
 CLAUDE.md
+CLAUDE.MD
 tmp-alm-php-path-test.out
 tmp-alm-php-path-test.php
 tmp/

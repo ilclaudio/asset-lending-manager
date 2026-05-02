@@ -12,8 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-global $post;
-
 $almgr_current_user_id = get_current_user_id();
 $almgr_asset_id        = isset( $asset->id ) ? (int) $asset->id : 0;
 if ( $almgr_asset_id <= 0 ) {
@@ -38,17 +36,7 @@ $almgr_is_operator              = is_user_logged_in() && current_user_can( ALMGR
 
 $almgr_asset_post = get_post( $almgr_asset_id );
 if ( $almgr_asset_post instanceof WP_Post && ALMGR_ASSET_CPT_SLUG === $almgr_asset_post->post_type ) {
-	$almgr_original_post = $post instanceof WP_Post ? $post : null;
-	$post                = $almgr_asset_post;
-	setup_postdata( $post );
-	$almgr_asset_content = (string) apply_filters( 'the_content', $almgr_asset_post->post_content );
-
-	if ( $almgr_original_post instanceof WP_Post ) {
-		$post = $almgr_original_post;
-		setup_postdata( $post );
-	} else {
-		wp_reset_postdata();
-	}
+	$almgr_asset_content = (string) apply_filters( 'the_content', $almgr_asset_post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Applies the core content rendering pipeline to asset descriptions.
 }
 
 if ( $almgr_owner_id > 0 ) {

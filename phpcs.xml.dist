@@ -6,7 +6,11 @@
 	<arg name="parallel" value="8"/>
 	<arg name="extensions" value="php,css,scss"/>
 
-	<file>.</file>
+	<file>asset-lending-manager.php</file>
+	<file>includes</file>
+	<file>admin</file>
+	<file>templates</file>
+	<file>assets</file>
 
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
