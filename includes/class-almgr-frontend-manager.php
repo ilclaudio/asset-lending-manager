@@ -234,18 +234,18 @@ class ALMGR_Frontend_Manager {
 			ALMGR_VERSION
 		);
 		// Enqueue JS.
-			wp_enqueue_script(
-				'almgr-frontend-assets',
-				ALMGR_PLUGIN_URL . 'assets/js/frontend-assets.js',
-				array( 'wp-i18n' ),
-				ALMGR_VERSION,
-				true
-			);
-			wp_set_script_translations(
-				'almgr-frontend-assets',
-				ALMGR_TEXT_DOMAIN,
-				ALMGR_PLUGIN_DIR . 'languages'
-			);
+		wp_enqueue_script(
+			'almgr-frontend-assets',
+			ALMGR_PLUGIN_URL . 'assets/js/frontend-assets.js',
+			array( 'wp-i18n' ),
+			ALMGR_VERSION,
+			true
+		);
+		wp_set_script_translations(
+			'almgr-frontend-assets',
+			ALMGR_TEXT_DOMAIN,
+			ALMGR_PLUGIN_DIR . 'languages'
+		);
 		// Pass data from PHP to JavaScript (useful for AJAX).
 		wp_localize_script(
 			'almgr-frontend-assets',
@@ -288,19 +288,19 @@ class ALMGR_Frontend_Manager {
 			);
 		}
 
-			// Enqueue user autocomplete assets (used by the direct assignment form for operators).
-				wp_enqueue_script(
-					'almgr-user-autocomplete',
-					ALMGR_PLUGIN_URL . 'assets/js/almgr-user-autocomplete.js',
-					array( 'wp-i18n' ),
-					ALMGR_VERSION,
-					true
-				);
-			wp_set_script_translations(
-				'almgr-user-autocomplete',
-				ALMGR_TEXT_DOMAIN,
-				ALMGR_PLUGIN_DIR . 'languages'
-			);
+		// Enqueue user autocomplete assets (used by the direct assignment form for operators).
+		wp_enqueue_script(
+			'almgr-user-autocomplete',
+			ALMGR_PLUGIN_URL . 'assets/js/almgr-user-autocomplete.js',
+			array( 'wp-i18n' ),
+			ALMGR_VERSION,
+			true
+		);
+		wp_set_script_translations(
+			'almgr-user-autocomplete',
+			ALMGR_TEXT_DOMAIN,
+			ALMGR_PLUGIN_DIR . 'languages'
+		);
 		wp_localize_script(
 			'almgr-user-autocomplete',
 			'almgrUserAutocomplete',
