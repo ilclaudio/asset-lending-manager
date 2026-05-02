@@ -1,8 +1,9 @@
 <?php
 /**
- * Single template for ALMGR Asset
+ * Single template for ALMGR Asset (classic themes only).
  *
- * This template uses the [almgr_asset_view] shortcode.
+ * Block themes do not use this template: they rely on the [almgr_asset_view]
+ * shortcode placed on a dedicated page instead.
  *
  * @package AssetLendingManager
  */
@@ -11,42 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$almgr_is_block_theme = function_exists( 'wp_is_block_theme' ) && wp_is_block_theme();
-
 $almgr_allowed_html = almgr_get_allowed_html();
-
-if ( $almgr_is_block_theme ) {
-	?>
-<!doctype html>
-<html <?php language_attributes(); ?>>
-<head>
-	<meta charset="<?php bloginfo( 'charset' ); ?>">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<?php wp_head(); ?>
-</head>
-<body <?php body_class(); ?>>
-	<?php wp_body_open(); ?>
-	<?php
-	if ( function_exists( 'do_blocks' ) ) {
-		echo wp_kses_post( do_blocks( '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->' ) );
-	}
-	?>
-	<div class="almgr-container almgr-asset-single">
-
-		<?php echo wp_kses( do_shortcode( '[almgr_asset_view]' ), $almgr_allowed_html ); ?>
-
-	</div>
-	<?php
-	if ( function_exists( 'do_blocks' ) ) {
-		echo wp_kses_post( do_blocks( '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->' ) );
-	}
-	?>
-	<?php wp_footer(); ?>
-</body>
-</html>
-	<?php
-	return;
-}
 
 get_header();
 ?>

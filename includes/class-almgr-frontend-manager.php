@@ -87,6 +87,12 @@ class ALMGR_Frontend_Manager {
 	 * @return string
 	 */
 	public function load_asset_template( $template ) {
+		// Block themes render the full page via their own template pipeline; injecting
+		// a custom PHP template breaks header/footer styling. Users should place the
+		// [almgr_asset_list] / [almgr_asset_view] shortcode on a dedicated page instead.
+		if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
+			return $template;
+		}
 		if ( is_post_type_archive( ALMGR_ASSET_CPT_SLUG ) ) {
 			return $this->locate_template( 'archive-almgr-asset.php', $template );
 		}
