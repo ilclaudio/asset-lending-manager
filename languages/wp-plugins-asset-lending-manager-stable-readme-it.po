@@ -1,0 +1,479 @@
+# Translation of Plugins - Asset Lending Manager - Stable Readme (latest release) in Italian
+# This file is distributed under the same license as the Plugins - Asset Lending Manager - Stable Readme (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2026-05-14 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Codex\n"
+"Language: it\n"
+"Project-Id-Version: Plugins - Asset Lending Manager - Stable Readme (latest release)\n"
+
+#. Short description.
+#, gp-priority: high
+msgid "Open-source plugin to manage shared physical assets and loan workflows for associations, schools, libraries, and any organization."
+msgstr "Plugin open source per gestire risorse fisiche condivise e flussi di prestito per associazioni, scuole, biblioteche e organizzazioni."
+
+#. Plugin name.
+#, gp-priority: high
+msgid "Asset Lending Manager"
+msgstr "Asset Lending Manager"
+
+#. Found in faq paragraph.
+msgid "On classic themes, basic setup only requires installing the plugin and activating ACF — asset pages are served automatically with no shortcodes needed. On block themes, two pages with shortcodes must be created manually and configured in the plugin settings. Some advanced customization such as user role adjustments may benefit from developer support."
+msgstr "Con i temi classici, la configurazione di base richiede solo l'installazione del plugin e l'attivazione di ACF: le pagine delle risorse vengono servite automaticamente, senza shortcode. Con i temi a blocchi, occorre creare manualmente due pagine con shortcode e configurarle nelle impostazioni del plugin. Alcune personalizzazioni avanzate, come modifiche ai ruoli utente, possono beneficiare del supporto di uno sviluppatore."
+
+#. Found in faq paragraph.
+msgid "Yes. Multiple members can submit requests for the same asset simultaneously. By default, when a request is approved or the asset is directly assigned, all other pending requests for that asset are automatically canceled (this behavior is configurable), and requesters are notified by email when notifications are enabled."
+msgstr "Sì. Più membri possono inviare richieste per la stessa risorsa nello stesso momento. Per impostazione predefinita, quando una richiesta viene approvata o la risorsa viene assegnata direttamente, tutte le altre richieste in sospeso per quella risorsa vengono annullate automaticamente (comportamento configurabile) e i richiedenti ricevono una notifica email se le notifiche sono abilitate."
+
+#. Found in faq paragraph.
+msgid "An asset is a single physical item (for example, a telescope, a book, or a camera). A kit is a collection of items that are lent together as a group (for example, a telescope with its eyepieces and carrying case). Managing kits allows you to track all components under a single loan request."
+msgstr "Una risorsa è un singolo oggetto fisico (per esempio un telescopio, un libro o una fotocamera). Un kit è una raccolta di elementi prestati insieme come gruppo (per esempio un telescopio con oculari e custodia). La gestione dei kit consente di tracciare tutti i componenti sotto un'unica richiesta di prestito."
+
+#. Found in faq paragraph.
+msgid ""
+"Uninstalling the plugin removes the plugin settings, the loan request history, the pending loan requests, and the custom user roles.\n"
+"By default, your asset inventory (posts and their data) is preserved.\n"
+"If you want to remove all plugin data, define <code>ALMGR_REMOVE_ALL_DATA</code> as <code>true</code> in <code>wp-config.php</code> before uninstalling."
+msgstr ""
+"La disinstallazione del plugin rimuove le impostazioni del plugin, la cronologia delle richieste di prestito, le richieste di prestito in sospeso e i ruoli utente personalizzati.\n"
+"Per impostazione predefinita, l'inventario delle risorse (post e relativi dati) viene mantenuto.\n"
+"Se vuoi rimuovere tutti i dati del plugin, definisci <code>ALMGR_REMOVE_ALL_DATA</code> come <code>true</code> in <code>wp-config.php</code> prima della disinstallazione."
+
+#. Found in faq paragraph.
+msgid "Yes. English and Italian are included out of the box. Other languages can be added using standard WordPress translation tools."
+msgstr "Sì. Inglese e italiano sono inclusi. Altre lingue possono essere aggiunte tramite gli strumenti standard di traduzione di WordPress."
+
+#. Found in faq paragraph.
+msgid "Yes. Under the <strong>ALM</strong> menu in wp-admin you can configure the email sender, loan rules (maximum active loans per member, message length limits), and other workflow options."
+msgstr "Sì. Nel menu <strong>ALM</strong> di wp-admin puoi configurare il mittente email, le regole dei prestiti (numero massimo di prestiti attivi per membro, limiti di lunghezza dei messaggi) e altre opzioni del flusso di lavoro."
+
+#. Found in faq paragraph.
+msgid "No. Asset delivery and handover are handled offline. The plugin tracks requests and assignments only."
+msgstr "No. Consegna e passaggio materiale delle risorse avvengono offline. Il plugin tiene traccia solo delle richieste e delle assegnazioni."
+
+#. Found in faq paragraph.
+msgid "Yes. ACF (free version) is required to store and retrieve custom asset fields. The plugin will display an admin notice if ACF is not active."
+msgstr "Sì. ACF (versione gratuita) è necessario per salvare e recuperare i campi personalizzati delle risorse. Se ACF non è attivo, il plugin mostra un avviso nell'area di amministrazione."
+
+#. Found in faq paragraph.
+msgid ""
+"Any organization that manages a shared pool of physical objects: associations, schools, public bodies, libraries, laboratories, makerspaces, sports clubs, and more.\n"
+"The plugin was originally created for an association of amateur astronomers but is designed to be generic and suitable for any context."
+msgstr ""
+"A qualsiasi organizzazione che gestisce un insieme condiviso di oggetti fisici: associazioni, scuole, enti pubblici, biblioteche, laboratori, makerspace, società sportive e molto altro.\n"
+"Il plugin è nato per un'associazione di astrofili, ma è progettato per essere generico e adatto a qualsiasi contesto."
+
+#. Found in faq header.
+msgid "Do I need a developer to set up this plugin?"
+msgstr "Serve uno sviluppatore per configurare questo plugin?"
+
+#. Found in faq header.
+msgid "Can multiple members request the same asset at the same time?"
+msgstr "Più membri possono richiedere la stessa risorsa contemporaneamente?"
+
+#. Found in faq header.
+msgid "What is the difference between an asset and a kit?"
+msgstr "Qual è la differenza tra una risorsa e un kit?"
+
+#. Found in faq header.
+msgid "What data is removed when the plugin is uninstalled?"
+msgstr "Quali dati vengono rimossi quando il plugin viene disinstallato?"
+
+#. Found in faq header.
+msgid "Is the plugin translation-ready?"
+msgstr "Il plugin è pronto per la traduzione?"
+
+#. Found in faq header.
+msgid "Is there a settings page in wp-admin?"
+msgstr "Esiste una pagina impostazioni in wp-admin?"
+
+#. Found in faq header.
+msgid "Does this plugin manage physical delivery of assets?"
+msgstr "Il plugin gestisce la consegna fisica delle risorse?"
+
+#. Found in faq header.
+msgid "Does this plugin require Advanced Custom Fields?"
+msgstr "Questo plugin richiede Advanced Custom Fields?"
+
+#. Found in faq header.
+msgid "Who is this plugin for?"
+msgstr "A chi è destinato questo plugin?"
+
+#. Found in installation paragraph.
+msgid ""
+"<strong>Block themes:</strong>\n"
+"4. Block themes do not support automatic PHP template overrides. Create two pages manually:\n"
+"   * Add <code>[almgr_asset_list]</code> to a page — this is your asset catalog.\n"
+"   * Add <code>[almgr_asset_view]</code> to a second page — this is your asset detail view.\n"
+"5. In <strong>ALM &gt; Settings &gt; Frontend</strong>, set \"Asset archive page\" and \"Asset detail page\" to the pages you just created. This ensures all asset links point to the correct detail page.\n"
+"6. Optionally configure email sender settings in wp-admin under <strong>ALM &gt; Settings</strong>."
+msgstr ""
+"<strong>Temi a blocchi:</strong>\n"
+"4. I temi a blocchi non supportano gli override automatici dei template PHP. Crea manualmente due pagine:\n"
+"   * Aggiungi <code>[almgr_asset_list]</code> a una pagina: sarà il catalogo delle risorse.\n"
+"   * Aggiungi <code>[almgr_asset_view]</code> a una seconda pagina: sarà la vista di dettaglio della risorsa.\n"
+"5. In <strong>ALM &gt; Impostazioni &gt; Frontend</strong>, imposta \"Pagina archivio risorse\" e \"Pagina dettaglio risorsa\" sulle pagine appena create. In questo modo tutti i link alle risorse punteranno alla pagina di dettaglio corretta.\n"
+"6. Facoltativamente, configura le impostazioni del mittente email in wp-admin da <strong>ALM &gt; Impostazioni</strong>."
+
+#. Found in installation list item.
+msgid "If <code>/asset/</code> returns 404, go to Settings &gt; Permalinks and click Save Changes once."
+msgstr "Se <code>/asset/</code> restituisce errore 404, vai in Impostazioni &gt; Permalink e fai clic una volta su Salva modifiche."
+
+#. Found in installation list item.
+msgid "<code>/asset/asset-name/</code> — single asset detail page"
+msgstr "<code>/asset/nome-risorsa/</code> — pagina di dettaglio della singola risorsa"
+
+#. Found in installation list item.
+msgid "<code>/asset/</code> — asset catalog with search and filters"
+msgstr "<code>/asset/</code> — catalogo risorse con ricerca e filtri"
+
+#. Found in installation list item.
+msgid "Asset pages are served automatically — no shortcodes required:"
+msgstr "Le pagine delle risorse vengono servite automaticamente, senza shortcode:"
+
+#. Found in installation list item.
+msgid ""
+"Upload the plugin ZIP file, click Install Now, then Activate.\n"
+"<strong>Classic themes:</strong>"
+msgstr ""
+"Carica il file ZIP del plugin, fai clic su Installa ora, quindi su Attiva.\n"
+"<strong>Temi classici:</strong>"
+
+#. Found in installation list item.
+msgid "In WordPress admin, go to Plugins &gt; Add New &gt; Upload Plugin."
+msgstr "Nell'amministrazione di WordPress vai in Plugin &gt; Aggiungi nuovo &gt; Carica plugin."
+
+#. Found in installation list item.
+msgid ""
+"Install and activate the <strong>Advanced Custom Fields</strong> (ACF) plugin (free version is enough): https://wordpress.org/plugins/advanced-custom-fields/\n"
+"The plugin registers its ACF field group automatically. No manual ACF setup is required."
+msgstr ""
+"Installa e attiva il plugin <strong>Advanced Custom Fields</strong> (ACF); la versione gratuita è sufficiente: https://wordpress.org/plugins/advanced-custom-fields/\n"
+"Il plugin registra automaticamente il proprio gruppo di campi ACF. Non è richiesta alcuna configurazione manuale di ACF."
+
+#. Found in description paragraph.
+msgid "Both licenses are compatible with GPLv2 or later. License files are included in <code>assets/js/vendor/</code>."
+msgstr "Entrambe le licenze sono compatibili con GPLv2 o successiva. I file di licenza sono inclusi in <code>assets/js/vendor/</code>."
+
+#. Found in description paragraph.
+msgid "This plugin bundles the following third-party JavaScript libraries:"
+msgstr "Questo plugin include le seguenti librerie JavaScript di terze parti:"
+
+#. Found in description paragraph.
+msgid ""
+"ACF is used to store and retrieve all custom asset fields (manufacturer, model, location, serial number, etc.).\n"
+"The plugin registers the ACF field group automatically — no manual configuration of ACF fields is needed."
+msgstr ""
+"ACF viene usato per salvare e recuperare tutti i campi personalizzati delle risorse (produttore, modello, posizione, numero di serie, ecc.).\n"
+"Il plugin registra automaticamente il gruppo di campi ACF: non è necessaria alcuna configurazione manuale dei campi ACF."
+
+#. Found in description paragraph.
+msgid ""
+"This plugin requires the <strong>Advanced Custom Fields</strong> plugin (free version is sufficient).\n"
+"You can install it for free from the WordPress plugin directory: https://wordpress.org/plugins/advanced-custom-fields/"
+msgstr ""
+"Questo plugin richiede <strong>Advanced Custom Fields</strong> (è sufficiente la versione gratuita).\n"
+"Puoi installarlo gratuitamente dalla directory dei plugin WordPress: https://wordpress.org/plugins/advanced-custom-fields/"
+
+#. Found in description paragraph.
+msgid "<strong>Requires the Advanced Custom Fields (ACF) plugin</strong> (free version) to store and manage asset details."
+msgstr "<strong>Richiede il plugin Advanced Custom Fields (ACF)</strong>, nella versione gratuita, per salvare e gestire i dettagli delle risorse."
+
+#. Found in description paragraph.
+msgid "Born within an association of amateur astronomers to manage telescopes and equipment, it is published as a general-purpose tool usable by any organization."
+msgstr "Nato all'interno di un'associazione di astrofili per gestire telescopi e attrezzature, è pubblicato come strumento generico utilizzabile da qualsiasi organizzazione."
+
+#. Found in description paragraph.
+msgid "Members can browse available assets and submit loan requests, while operators and administrators can manage assignments and loan history."
+msgstr "I membri possono consultare le risorse disponibili e inviare richieste di prestito, mentre operatori e amministratori possono gestire assegnazioni e cronologia dei prestiti."
+
+#. Found in description paragraph.
+msgid "Designed for clubs, associations, schools, public bodies, libraries, laboratories, makerspaces, and any group that loans equipment or materials to its members."
+msgstr "È pensato per club, associazioni, scuole, enti pubblici, biblioteche, laboratori, makerspace e per qualunque gruppo che presta attrezzature o materiali ai propri membri."
+
+#. Found in description paragraph.
+msgid "Asset Lending Manager is an open-source WordPress plugin that helps any organization manage shared physical assets and internal lending workflows."
+msgstr "Asset Lending Manager è un plugin WordPress open source che aiuta una organizzazione a gestire risorse fisiche condivise e flussi interni di prestito."
+
+#. Found in description list item.
+msgid "<strong>jsQR</strong> by cozmo (https://github.com/cozmo/jsQR), Apache License 2.0"
+msgstr "<strong>jsQR</strong> di cozmo (https://github.com/cozmo/jsQR), licenza Apache License 2.0"
+
+#. Found in description list item.
+msgid "<strong>qrcode-generator</strong> by Kazuhiko Arase (http://www.d-project.com/), MIT License"
+msgstr "<strong>qrcode-generator</strong> di Kazuhiko Arase (http://www.d-project.com/), licenza MIT"
+
+#. Found in description list item.
+msgid "All decisions and assignments are recorded in loan history."
+msgstr "Tutte le decisioni e le assegnazioni vengono registrate nella cronologia dei prestiti."
+
+#. Found in description list item.
+msgid "Operators and admins can also directly assign any asset that is not retired or under maintenance, without a prior request (when direct assignment is enabled)."
+msgstr "Operatori e amministratori possono anche assegnare direttamente qualsiasi risorsa che non sia ritirata o in manutenzione, senza una richiesta precedente (quando l'assegnazione diretta è abilitata)."
+
+#. Found in description list item.
+msgid "On approval, the asset is marked as on loan and the new borrower is recorded."
+msgstr "In caso di approvazione, la risorsa viene contrassegnata come in prestito e viene registrato il nuovo assegnatario."
+
+#. Found in description list item.
+msgid "The current owner can approve or reject the request."
+msgstr "Il proprietario corrente può approvare o rifiutare la richiesta."
+
+#. Found in description list item.
+msgid "Notification emails are sent to the requester and, when applicable, to the current owner."
+msgstr "Le email di notifica vengono inviate al richiedente e, quando applicabile, al proprietario corrente."
+
+#. Found in description list item.
+msgid "A loan request is submitted for a selected asset."
+msgstr "Viene inviata una richiesta di prestito per una risorsa selezionata."
+
+#. Found in description list item.
+msgid "A member browses the available assets."
+msgstr "Un membro consulta le risorse disponibili."
+
+#. Found in description list item.
+msgid "Translation-ready"
+msgstr "Pronto per la traduzione"
+
+#. Found in description list item.
+msgid "Assets CSV export from the Tools page (admin and operator)"
+msgstr "Esportazione CSV risorse dalla pagina Strumenti (amministratori e operatori)"
+
+#. Found in description list item.
+msgid "Assets CSV import from the Tools page (admin and operator)"
+msgstr "Importazione CSV risorse dalla pagina Strumenti (amministratori e operatori)"
+
+#. Found in description list item.
+msgid "Users CSV export from the Tools page (admin and operator)"
+msgstr "Esportazione CSV utenti dalla pagina Strumenti (amministratori e operatori)"
+
+#. Found in description list item.
+msgid "Users CSV import from the Tools page (admin only)"
+msgstr "Importazione CSV utenti dalla pagina Strumenti (solo amministratori)"
+
+#. Found in description list item.
+msgid "Back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs"
+msgstr "Pagina Strumenti nel back-office (ALM → Strumenti) con schede Importa, Esporta e Utilità"
+
+#. Found in description list item.
+msgid "Read-only JSON REST API at <code>/wp-json/almgr/v1/</code> for asset list, asset detail, member list, and member assets; authentication via WordPress core (cookie session, REST nonce, Application Passwords)"
+msgstr "API REST JSON in sola lettura su <code>/wp-json/almgr/v1/</code> per elenco risorse, dettaglio risorsa, elenco membri e risorse dei membri; autenticazione tramite WordPress core (sessione cookie, nonce REST, password applicative)"
+
+#. Found in description list item.
+msgid "Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)"
+msgstr "Due ruoli utente inclusi: Membro (può consultare le risorse e richiedere prestiti) e Operatore (può gestire assegnazioni, stati e cronologia)"
+
+#. Found in description list item.
+msgid "Full loan history for each asset"
+msgstr "Cronologia completa dei prestiti per ogni risorsa"
+
+#. Found in description list item.
+msgid "Asset state management from the frontend: operators can set assets to maintenance or retired, or force-return on-loan assets directly to available; a location is required on every state change"
+msgstr "Gestione dello stato delle risorse dal frontend: gli operatori possono impostare le risorse in manutenzione o ritirate, oppure riportare direttamente a disponibile una risorsa in prestito; a ogni cambio di stato è richiesta una posizione"
+
+#. Found in description list item.
+msgid "Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled"
+msgstr "Notifiche email per tutti gli eventi del flusso di prestito (richiesta, approvazione, rifiuto, annullamento, assegnazione diretta, rientro forzato), quando le notifiche sono abilitate"
+
+#. Found in description list item.
+msgid "By default, when an asset is assigned, all other pending requests for it are automatically canceled (configurable)"
+msgstr "Per impostazione predefinita, quando una risorsa viene assegnata, tutte le altre richieste in sospeso per la stessa risorsa vengono annullate automaticamente (configurabile)"
+
+#. Found in description list item.
+msgid "Direct assignment by operators and admins (when enabled; a reason is always required)"
+msgstr "Assegnazione diretta da parte di operatori e amministratori (quando abilitata; il motivo è sempre obbligatorio)"
+
+#. Found in description list item.
+msgid "Loan request workflow: members submit requests, the current asset owner approves or rejects"
+msgstr "Flusso di richiesta prestito: i membri inviano richieste, il proprietario corrente della risorsa le approva o le rifiuta"
+
+#. Found in description list item.
+msgid "QR scanner from the asset list (camera-based quick lookup)"
+msgstr "Scanner QR dall'elenco risorse per la ricerca rapida tramite fotocamera"
+
+#. Found in description list item.
+msgid "QR code generation and printable label from the asset detail page"
+msgstr "Generazione di codici QR ed etichette stampabili dalla pagina di dettaglio della risorsa"
+
+#. Found in description list item.
+msgid "Public browsing page with search and taxonomy filters"
+msgstr "Pagina pubblica di consultazione con ricerca e filtri per tassonomia"
+
+#. Found in description list item.
+msgid "Asset and kit management (a kit is a group of items lent together as a set)"
+msgstr "Gestione di risorse e kit (un kit è un gruppo di elementi prestati insieme come insieme unico)"
+
+#. Found in description header.
+msgid "Credits"
+msgstr "Crediti"
+
+#. Found in description header.
+msgid "Loan Workflow"
+msgstr "Flusso di prestito"
+
+#. Found in description header.
+msgid "Requirements"
+msgstr "Requisiti"
+
+#. Found in description header.
+msgid "Features"
+msgstr "Funzionalità"
+
+#. Screenshot description.
+msgid "Plugin settings in wp-admin."
+msgstr "Impostazioni del plugin in wp-admin."
+
+#. Screenshot description.
+msgid "Frontend advanced search and filter interface."
+msgstr "Interfaccia frontend di ricerca avanzata e filtri."
+
+#. Screenshot description.
+msgid "Back-office direct assignment form for operators and administrators."
+msgstr "Modulo di assegnazione diretta nel back-office per operatori e amministratori."
+
+#. Screenshot description.
+msgid "Frontend asset detail page with loan workflow actions, history, and QR code label generation."
+msgstr "Pagina frontend di dettaglio della risorsa con azioni del flusso di prestito, cronologia e generazione dell'etichetta con codice QR."
+
+#. Screenshot description.
+msgid "Frontend asset list with search, taxonomy filters, and QR scanner access."
+msgstr "Elenco frontend delle risorse con ricerca, filtri per tassonomia e accesso allo scanner QR."
+
+#. Found in changelog paragraph.
+#, gp-priority: low
+msgid "For full release notes see <code>CHANGELOG.md</code>."
+msgstr "Per le note di rilascio complete consulta <code>CHANGELOG.md</code>."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Settings page in wp-admin."
+msgstr "Pagina impostazioni in wp-admin."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Translation-ready with English and Italian included."
+msgstr "Pronto per la traduzione, con inglese e italiano inclusi."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Location field required on every state change; propagated to kit components."
+msgstr "Campo posizione obbligatorio a ogni cambio di stato; propagato ai componenti del kit."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Asset state management (available, on-loan, maintenance, retired) with kit propagation; operators can force-return on-loan assets to available from the frontend, closing the active loan and notifying the borrower."
+msgstr "Gestione dello stato delle risorse (disponibile, in prestito, in manutenzione, ritirata) con propagazione sui kit; gli operatori possono riportare forzatamente a disponibile una risorsa in prestito dal frontend, chiudendo il prestito attivo e notificando il beneficiario."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Frontend asset browsing with filters, QR code generation, and QR scanner."
+msgstr "Consultazione frontend delle risorse con filtri, generazione di codici QR e scanner QR."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Loan history tracking, including per-component entries for kit operations."
+msgstr "Tracciamento della cronologia dei prestiti, incluse voci per singolo componente nelle operazioni sui kit."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Email notifications for all loan workflow events."
+msgstr "Notifiche email per tutti gli eventi del flusso di prestito."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Role-based access control (almgr_member, almgr_operator)."
+msgstr "Controllo accessi basato su ruoli (almgr_member, almgr_operator)."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Asset and kit management with full loan workflow (request, approve, reject, direct assign)."
+msgstr "Gestione di risorse e kit con flusso completo di prestito (richiesta, approvazione, rifiuto, assegnazione diretta)."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "First public release."
+msgstr "Primo rilascio pubblico."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Security: added resource-status checks on all AJAX endpoints."
+msgstr "Sicurezza: aggiunti controlli sullo stato della risorsa a tutti gli endpoint AJAX."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Added: REST API settings tab in wp-admin (admin only) with enable/disable toggle, endpoint reference, and authentication guide."
+msgstr "Aggiunto: scheda impostazioni API REST in wp-admin (solo amministratori) con toggle di abilitazione/disabilitazione, riferimento degli endpoint e guida all'autenticazione."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Added: read-only JSON REST API at <code>/wp-json/almgr/v1/</code> (asset list, asset detail, member list, member assets). Authentication via WordPress core (cookie session, REST nonce, Application Passwords)."
+msgstr "Aggiunto: API REST JSON in sola lettura su <code>/wp-json/almgr/v1/</code> (elenco risorse, dettaglio risorsa, elenco membri, risorse dei membri). Autenticazione tramite WordPress core (sessione cookie, nonce REST, password applicative)."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Security: fixes and hardening from code audit."
+msgstr "Sicurezza: correzioni e rafforzamenti derivanti da audit del codice."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Fixed: operators can approve/reject requests for assets without a current owner."
+msgstr "Corretto: gli operatori possono approvare/rifiutare richieste per risorse senza proprietario corrente."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Added: <code>ALMGR_REMOVE_ALL_DATA</code> constant — define as <code>true</code> in <code>wp-config.php</code> before uninstalling to remove all plugin data including assets."
+msgstr "Aggiunto: costante <code>ALMGR_REMOVE_ALL_DATA</code>; definiscila come <code>true</code> in <code>wp-config.php</code> prima della disinstallazione per rimuovere tutti i dati del plugin, incluse le risorse."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Added: notification policy setting to control if/when all operators are notified for a new loan request (<code>never</code>, <code>no owner</code>, <code>always</code>)."
+msgstr "Aggiunto: impostazione della policy di notifica per controllare se/quando tutti gli operatori vengono notificati per una nuova richiesta di prestito (<code>never</code>, <code>no owner</code>, <code>always</code>)."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Added: kit import and export — kit components and their ACF fields are included in the asset CSV."
+msgstr "Aggiunto: importazione ed esportazione dei kit: i componenti del kit e i relativi campi ACF sono inclusi nel CSV delle risorse."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Added: assets CSV import (admin and operator) and assets CSV export (admin and operator) in Tools."
+msgstr "Aggiunto: importazione CSV risorse (amministratori e operatori) ed esportazione CSV risorse (amministratori e operatori) negli Strumenti."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Added: users CSV import (admin only) and users CSV export (admin and operator) in Tools."
+msgstr "Aggiunto: importazione CSV utenti (solo amministratori) ed esportazione CSV utenti (amministratori e operatori) negli Strumenti."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Added: back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs."
+msgstr "Aggiunto: pagina Strumenti nel back-office (ALM → Strumenti) con schede Importa, Esporta e Utilità."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Changed: all ACF custom field storage keys now use the <code>almgr_</code> prefix for WordPress.org namespace compliance."
+msgstr "Modificato: tutte le chiavi di salvataggio dei campi personalizzati ACF ora usano il prefisso <code>almgr_</code> per conformità al namespace richiesto da WordPress.org."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Changed: internal refactoring, all plugin identifiers migrated from the <code>alm_</code> prefix to <code>almgr_</code> for namespace safety."
+msgstr "Modificato: refactoring interno; tutti gli identificatori del plugin sono stati migrati dal prefisso <code>alm_</code> al prefisso <code>almgr_</code> per maggiore sicurezza di namespace."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Fixed: operators can upload and manage images from the Media Library."
+msgstr "Corretto: gli operatori possono caricare e gestire immagini dalla Libreria Media."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Security: escaped <code>do_blocks()</code> output with <code>wp_kses_post()</code> in fallback templates."
+msgstr "Sicurezza: escape dell'output di <code>do_blocks()</code> con <code>wp_kses_post()</code> nei template di fallback."
+
+#. Found in changelog list item.
+#, gp-priority: low
+msgid "Security: migrated REST API to native WordPress REST API routes; removed custom authentication logic (<code>wp_authenticate()</code>)."
+msgstr "Sicurezza: migrazione dell'API REST alle route native della REST API di WordPress; rimossa la logica di autenticazione personalizzata (<code>wp_authenticate()</code>)."
