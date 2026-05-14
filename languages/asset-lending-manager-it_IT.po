@@ -821,11 +821,11 @@ msgstr "dry_run (simulazione)"
 
 #: templates/shortcodes/asset-view.php:670
 msgid "e.g. Room A, shelf 3"
-msgstr "Ad esempio, Stanza A, scaffale 3"
+msgstr "ad esempio, Stanza A, scaffale 3"
 
 #: templates/shortcodes/asset-view.php:611
 msgid "e.g. Room A, shelf 3 or at David's house"
-msgstr "Ad esempio, la stanza A, lo scaffale 3 o a casa di David."
+msgstr "ad esempio, la stanza A, lo scaffale 3 o a casa di David."
 
 #: includes/class-almgr-asset-manager.php:97
 msgid "Edit Asset"
