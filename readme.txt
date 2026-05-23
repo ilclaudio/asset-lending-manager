@@ -129,7 +129,9 @@ On classic themes, basic setup only requires installing the plugin and activatin
 For full release notes see `CHANGELOG.md`.
 
 = 0.2.3 =
-* Fixed: hecked compatibility with WoordPress 7.0.
+* Fixed: Checked compatibility with WordPress 7.0.
+* Fixed: corrected minor typos in release documentation.
+* Fixed: small admin CSS compatibility adjustment.
 
 = 0.2.2 =
 * Security: migrated REST API to native WordPress REST API routes; removed custom authentication logic (`wp_authenticate()`).

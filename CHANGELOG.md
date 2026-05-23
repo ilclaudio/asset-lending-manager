@@ -11,7 +11,9 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## [0.2.3] - 2026-05-23
 ### Fixed
-- Checked compatibility with WoordPress 7.0
+- Checked compatibility with WordPress 7.0.
+- Corrected minor typos in release documentation.
+- Applied a small admin CSS compatibility adjustment.
 
 
 ## [0.2.2] - 2026-05-02
@@ -20,7 +22,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ### Security
 - Migrated REST API from custom rewrite rules and manual Basic Auth to native WordPress REST API routes; removed `wp_authenticate()` call.
 - Escaped `do_blocks()` output with `wp_kses_post()` in fallback templates.
-# Changed
+### Changed
 - Maintenance release for WordPress.org submission follow-up.
 
 ## [0.2.1] - 2026-04-14
