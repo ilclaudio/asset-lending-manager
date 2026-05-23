@@ -9,6 +9,15 @@ This project uses [Semantic Versioning](http://semver.org/).
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
+
+## [0.2.4] - 2026-06-10
+### Added
+### Fixed
+### Security
+### Changed
+
+
+
 ## [0.2.3] - 2026-05-23
 ### Fixed
 - Checked compatibility with WordPress 7.0: No intervention required.
