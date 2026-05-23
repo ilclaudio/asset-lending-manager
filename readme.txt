@@ -4,7 +4,7 @@ Author URI: https://www.claudiobattaglino.it/
 Author: IoClaudio
 Tags: asset management, loans, library, equipment, organization
 Requires at least: 6.2
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 0.2.3
 License: GPLv2 or later
@@ -81,6 +81,14 @@ The plugin registers the ACF field group automatically — no manual configurati
 5. In **ALM > Settings > Frontend**, set "Asset archive page" and "Asset detail page" to the pages you just created. This ensures all asset links point to the correct detail page.
 6. Optionally configure email sender settings in wp-admin under **ALM > Settings**.
 
+== Screenshots ==
+
+1. Frontend asset list with search, taxonomy filters, and QR scanner access.
+2. Frontend asset detail page with loan workflow actions, history, and QR code label generation.
+3. Back-office direct assignment form for operators and administrators.
+4. Frontend advanced search and filter interface.
+5. Plugin settings in wp-admin.
+
 
 == Frequently Asked Questions ==
 
@@ -121,13 +129,12 @@ On classic themes, basic setup only requires installing the plugin and activatin
 For full release notes see `CHANGELOG.md`.
 
 = 0.2.3 =
-
+* Fixed: hecked compatibility with WoordPress 7.0.
 
 = 0.2.2 =
 * Security: migrated REST API to native WordPress REST API routes; removed custom authentication logic (`wp_authenticate()`).
 * Security: escaped `do_blocks()` output with `wp_kses_post()` in fallback templates.
-* Fixed: operators can upload/insert images and edit image title/alternative text from the Media Library and featured-image flow.
-* Changed: maintenance release for WordPress.org submission follow-up.
+* Fixed: operators can upload and manage images from the Media Library.
 
 = 0.2.1 =
 * Changed: internal refactoring, all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
@@ -171,10 +178,8 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 
 == Upgrade Notice ==
 
-= 0.2.3 =
-
 = 0.2.2 =
-Security and fix release. REST API migrated to native WordPress REST API routes and fallback template output escaping was hardened. No database changes; no manual intervention required.
+Security and fix release. REST API migrated to native WordPress REST API routes. No database changes; no manual intervention required.
 
 = 0.2.1 =
 Internal refactoring release. All plugin database tables, options, identifiers, and ACF field storage keys have been renamed from the `alm_` / unprefixed form to the `almgr_` prefix.

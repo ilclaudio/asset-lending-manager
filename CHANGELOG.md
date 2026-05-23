@@ -9,11 +9,9 @@ This project uses [Semantic Versioning](http://semver.org/).
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
-## [0.2.3] - 2026-05-10
-### Changed
+## [0.2.3] - 2026-05-23
 ### Fixed
-### Security
-### Added
+- Checked compatibility with WoordPress 7.0
 
 
 ## [0.2.2] - 2026-05-02
