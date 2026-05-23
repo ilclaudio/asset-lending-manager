@@ -129,7 +129,7 @@ On classic themes, basic setup only requires installing the plugin and activatin
 For full release notes see `CHANGELOG.md`.
 
 = 0.2.3 =
-* Fixed: Checked compatibility with WordPress 7.0.
+* Fixed: Checked compatibility with WordPress 7.0: No intervention required.
 * Fixed: corrected minor typos in release documentation.
 * Fixed: small admin CSS compatibility adjustment.
 

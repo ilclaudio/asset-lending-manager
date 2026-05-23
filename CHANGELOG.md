@@ -11,10 +11,9 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## [0.2.3] - 2026-05-23
 ### Fixed
-- Checked compatibility with WordPress 7.0.
+- Checked compatibility with WordPress 7.0: No intervention required.
 - Corrected minor typos in release documentation.
 - Applied a small admin CSS compatibility adjustment.
-
 
 ## [0.2.2] - 2026-05-02
 ### Fixed
