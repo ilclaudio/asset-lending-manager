@@ -18,9 +18,9 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 6) Mass printing of all QR codes in A4 pages.
 7) Review and correction of README.md and documentation.
 8) Github repository link as project link?
-9) Test massivo di sicurezza.
-10) Inserire una pagina con tutta la storia dei prestiti, paginata e con dei filtri.
-
+9) Massive security testing.
+10) Add a page with all loan history, with pagination and filters.
+11) Add a dashboard and user badge with: resources on loan, loans to be approved, and resources under maintenance (operator).
 
 ## [0.2.4] - 2026-06-10
 ### Added
