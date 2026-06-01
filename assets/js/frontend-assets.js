@@ -402,6 +402,10 @@
 				})
 				.then(function(data) {
 					if (data.success) {
+						var excluded = data.data && data.data.excluded_components;
+						if (excluded && excluded.length) {
+							try { sessionStorage.setItem('almgr_excluded_notice', JSON.stringify(excluded)); } catch (e) {}
+						}
 						var currentUrl = window.location.href.split('?')[0];
 						window.location.href = currentUrl + '?almgr_action=direct_assign&almgr_status=success';
 					} else {
@@ -489,6 +493,10 @@
 					.then(function(response) { return response.json(); })
 					.then(function(data) {
 						if (data.success) {
+							var skipped = data.data && data.data.skipped_components;
+							if (skipped && skipped.length) {
+								try { sessionStorage.setItem('almgr_excluded_notice', JSON.stringify(skipped)); } catch (e) {}
+							}
 							var currentUrl = window.location.href.split('?')[0];
 							window.location.href = currentUrl + '?almgr_action=change_state&almgr_status=success&almgr_state=' + encodeURIComponent(targetState);
 						} else {
@@ -571,6 +579,10 @@
 					.then(function(response) { return response.json(); })
 					.then(function(data) {
 						if (data.success) {
+							var skipped = data.data && data.data.skipped_components;
+							if (skipped && skipped.length) {
+								try { sessionStorage.setItem('almgr_excluded_notice', JSON.stringify(skipped)); } catch (e) {}
+							}
 							var currentUrl = window.location.href.split('?')[0];
 							window.location.href = currentUrl + '?almgr_action=restore_state&almgr_status=success';
 						} else {
@@ -805,7 +817,10 @@
 			})
 			.then(function(data) {
 				if (data.success) {
-
+					var excluded = data.data && data.data.excluded_components;
+					if (excluded && excluded.length) {
+						try { sessionStorage.setItem('almgr_excluded_notice', JSON.stringify(excluded)); } catch (e) {}
+					}
 					// Reload page with success message
 					var currentUrl = window.location.href.split('?')[0];
 					window.location.href = currentUrl + '?almgr_action=approve&almgr_status=success';
@@ -1182,6 +1197,7 @@
 
 			if (message) {
 				this.showGlobalMessage(message, messageType);
+				this.showExcludedNotice();
 
 				// Clean URL (remove query parameters)
 				var cleanUrl = window.location.href.split('?')[0];
@@ -1469,6 +1485,50 @@
 					}, 300);
 				}
 			}, 5000);
+		},
+
+		/**
+		 * Show a warning notice listing kit components excluded from the last transfer.
+		 *
+		 * Reads excluded component data stored in sessionStorage before the page
+		 * redirect and inserts a dismissible notice below the main result message.
+		 * Clears sessionStorage immediately so the notice appears only once.
+		 */
+		showExcludedNotice: function() {
+			var stored;
+			try {
+				stored = sessionStorage.getItem('almgr_excluded_notice');
+				sessionStorage.removeItem('almgr_excluded_notice');
+			} catch (e) {
+				return;
+			}
+			if (!stored) return;
+
+			var excluded;
+			try {
+				excluded = JSON.parse(stored);
+			} catch (e) {
+				return;
+			}
+			if (!Array.isArray(excluded) || !excluded.length) return;
+
+			var items = excluded.map(function(c) {
+				return c.title + ' (' + c.reason_label + ')';
+			});
+
+			var noticeEl = document.createElement('div');
+			noticeEl.className = 'almgr-notice almgr-notice--warning';
+			noticeEl.setAttribute('role', 'status');
+			noticeEl.textContent = __( 'Some kit components were not transferred:', 'asset-lending-manager' ) + ' ' + items.join(', ') + '.';
+
+			// Insert right after the main result message, or at the top of the content area.
+			var anchor = document.querySelector('.almgr-global-message');
+			if (anchor && anchor.parentNode) {
+				anchor.insertAdjacentElement('afterend', noticeEl);
+			} else {
+				var content = document.querySelector('.almgr-asset-detail') || document.querySelector('.entry-content') || document.body;
+				content.insertBefore(noticeEl, content.firstChild);
+			}
 		},
 
 		/**

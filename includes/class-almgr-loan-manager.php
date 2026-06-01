@@ -658,7 +658,8 @@ class ALMGR_Loan_Manager {
 
 		wp_send_json_success(
 			array(
-				'message' => __( 'Loan request approved successfully. The page will reload.', 'asset-lending-manager' ),
+				'message'             => __( 'Loan request approved successfully. The page will reload.', 'asset-lending-manager' ),
+				'excluded_components' => $result['excluded_components'],
 			)
 		);
 	}
@@ -958,30 +959,126 @@ class ALMGR_Loan_Manager {
 	}
 
 	/**
+	 * Build a read-only transfer plan for an asset.
+	 *
+	 * Determines which components of a kit will be included in or excluded from
+	 * an ownership transfer based on their current state and owner. For non-kit
+	 * assets the plan contains only the asset itself with no components.
+	 *
+	 * No data is written. Must be called inside an open database transaction so
+	 * that the state snapshot is consistent with the writes that follow.
+	 *
+	 * @param int $kit_id       Asset ID (kit or standalone asset).
+	 * @param int $new_owner_id User ID of the incoming owner.
+	 * @return array {
+	 *     @type bool   $is_kit              Whether the asset is a kit.
+	 *     @type int    $kit_id              Asset ID passed in.
+	 *     @type int    $kit_previous_owner  Owner before the transfer (0 if none).
+	 *     @type array  $included_components Components that will be transferred.
+	 *                                       Each entry: id, title, state, previous_owner.
+	 *     @type array  $excluded_components Components that will not be transferred.
+	 *                                       Each entry: id, title, state, owner_id, reason_code, reason_label.
+	 *     @type int[]  $transfer_asset_ids  Asset IDs (kit + included) to write owner/state/history on.
+	 *     @type int[]  $location_clear_ids  Asset IDs (kit + included) to clear almgr_location on.
+	 * }
+	 */
+	private function build_kit_transfer_plan( $kit_id, $new_owner_id ) {
+		$kit_previous_owner = $this->get_current_owner( $kit_id );
+		$is_kit             = $this->is_asset_kit( $kit_id );
+
+		$plan = array(
+			'is_kit'              => $is_kit,
+			'kit_id'              => $kit_id,
+			'kit_previous_owner'  => $kit_previous_owner,
+			'included_components' => array(),
+			'excluded_components' => array(),
+			'transfer_asset_ids'  => array( $kit_id ),
+			'location_clear_ids'  => array( $kit_id ),
+		);
+
+		if ( $is_kit ) {
+			$component_ids = $this->get_kit_components( $kit_id );
+
+			foreach ( $component_ids as $component_id ) {
+				$component_state = $this->get_asset_state_slug( $component_id );
+				$component_owner = $this->get_current_owner( $component_id );
+				$component_title = get_the_title( $component_id );
+
+				$reason_code  = '';
+				$reason_label = '';
+				$exclude      = false;
+
+				if ( 'maintenance' === $component_state ) {
+					$exclude      = true;
+					$reason_code  = 'maintenance';
+					$reason_label = __( 'Component is under maintenance.', 'asset-lending-manager' );
+				} elseif ( 'retired' === $component_state ) {
+					$exclude      = true;
+					$reason_code  = 'retired';
+					$reason_label = __( 'Component has been retired.', 'asset-lending-manager' );
+				} elseif ( 'on-loan' === $component_state && $component_owner !== $kit_previous_owner ) {
+					// on-loan to the same owner as the kit counts as included; a different owner blocks the component.
+					$exclude      = true;
+					$reason_code  = 'on_loan_to_other_user';
+					$reason_label = __( 'Component is on loan to another user.', 'asset-lending-manager' );
+				} elseif ( '' === $component_state ) {
+					$exclude      = true;
+					$reason_code  = 'unknown_state';
+					$reason_label = __( 'Component state is unknown.', 'asset-lending-manager' );
+				}
+
+				if ( $exclude ) {
+					$plan['excluded_components'][] = array(
+						'id'           => $component_id,
+						'title'        => $component_title,
+						'state'        => $component_state,
+						'owner_id'     => $component_owner,
+						'reason_code'  => $reason_code,
+						'reason_label' => $reason_label,
+					);
+				} else {
+					$plan['included_components'][]  = array(
+						'id'             => $component_id,
+						'title'          => $component_title,
+						'state'          => $component_state,
+						'previous_owner' => $component_owner,
+					);
+					$plan['transfer_asset_ids'][] = $component_id;
+					$plan['location_clear_ids'][] = $component_id;
+				}
+			}
+		}
+
+		ALMGR_Logger::debug( 'build_kit_transfer_plan', array( 'kit_id' => $kit_id, 'new_owner_id' => $new_owner_id, 'plan' => $plan ) );
+
+		return $plan;
+	}
+
+	/**
 	 * Execute ownership transfer for an asset.
 	 *
 	 * Shared core used by approve_loan_request() and direct_assign_asset().
-	 * Performs in order:
-	 * 1. Assign new owner to the main asset.
-	 * 2. Set state to "on-loan" for the main asset.
-	 * 3. Detect if asset is a kit and load component IDs.
-	 * 4. Optionally check that components are not already on-loan (conflict guard).
-	 * 5. Propagate owner and state to all kit components.
-	 * 6. Cancel concurrent requests for the main asset.
-	 * 7. Cancel concurrent requests for each kit component.
+	 * Builds a read-only transfer plan first, then writes only on included assets:
+	 * 1. Build kit transfer plan (read-only snapshot, no writes).
+	 * 2. Assign new owner to the main asset.
+	 * 3. Set state to "on-loan" for the main asset.
+	 * 4. Propagate owner and state to included kit components only.
+	 * 5. Cancel concurrent requests for the main asset.
+	 * 6. Cancel concurrent requests for included kit components only.
 	 *
-	 * Must be called inside an open database transaction.
+	 * Excluded components (maintenance, retired, on-loan to a different user) are
+	 * not modified. Must be called inside an open database transaction.
 	 *
-	 * @param int    $asset_id                  Asset ID.
-	 * @param int    $new_owner_id              New owner user ID.
-	 * @param int    $exclude_request_id        Request ID to exclude from cancellation (0 = cancel all).
-	 * @param string $cancel_reason             Cancellation message for concurrent requests on the main asset.
-	 * @param bool   $check_component_conflicts Whether to throw if a kit component is already on-loan.
+	 * @param int    $asset_id                     Asset ID.
+	 * @param int    $new_owner_id                 New owner user ID.
+	 * @param int    $exclude_request_id           Request ID to exclude from cancellation (0 = cancel all).
+	 * @param string $cancel_reason                Cancellation message for concurrent requests on the main asset.
 	 * @param array  $canceled_notification_events Collected notification events to dispatch post-commit.
 	 * @throws Exception When any operation fails.
 	 * @return array {
-	 *     @type int[] $component_ids            Component IDs processed (empty if not a kit).
-	 *     @type array $component_previous_owners Map of component_id => previous owner user ID.
+	 *     @type array  $plan                      Full transfer plan from build_kit_transfer_plan().
+	 *     @type int[]  $component_ids             IDs of included components (empty if not a kit or all excluded).
+	 *     @type array  $component_previous_owners Map of included component_id => previous owner user ID.
 	 * }
 	 */
 	private function execute_ownership_transfer(
@@ -989,76 +1086,25 @@ class ALMGR_Loan_Manager {
 		$new_owner_id,
 		$exclude_request_id,
 		$cancel_reason,
-		$check_component_conflicts = true,
 		&$canceled_notification_events = array()
 	) {
-		// Capture the original kit owner before any DB write so the conflict
-		// guard (step 4) can compare against the pre-transfer state.
-		$original_kit_owner = $check_component_conflicts ? $this->get_current_owner( $asset_id ) : 0;
+		// 1. Build transfer plan before any write: determines included/excluded components
+		// from the pre-transfer state. Both callers use the same decision logic.
+		$plan = $this->build_kit_transfer_plan( $asset_id, $new_owner_id );
 
-		// 1. Assign new owner.
+		// 2. Assign new owner to main asset.
 		$this->set_asset_owner( $asset_id, $new_owner_id );
 
-		// 2. Set state to on-loan.
+		// 3. Set state to on-loan for main asset.
 		$this->set_asset_state( $asset_id, 'on-loan' );
 
-		// 3. Detect kit and load components.
-		$is_kit        = $this->is_asset_kit( $asset_id );
-		$component_ids = array();
-
-		if ( $is_kit ) {
-			$component_ids = $this->get_kit_components( $asset_id );
-
-			if ( ! empty( $component_ids ) ) {
-				// 4. Optional conflict guard: block if a component is in a non-transferable state.
-				// Always blocks maintenance/retired components.
-				// For on-loan components, allows hand-off when already assigned to the same kit owner;
-				// blocks if assigned to a different owner.
-				// Uses $original_kit_owner (captured before step 1) to avoid a false mismatch
-				// caused by the kit owner already being updated in the DB at this point.
-				if ( $check_component_conflicts ) {
-					foreach ( $component_ids as $component_id ) {
-						$component_state = $this->get_asset_state_slug( $component_id );
-						$component_title = get_the_title( $component_id );
-
-						if ( 'maintenance' === $component_state || 'retired' === $component_state ) {
-							throw new Exception(
-								sprintf(
-									/* translators: %s: kit component title */
-									esc_html__( 'Component "%s" is in a non-loanable state and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
-									esc_html( (string) $component_title )
-								)
-							);
-						}
-
-						if ( 'on-loan' === $component_state ) {
-							$component_owner = $this->get_current_owner( $component_id );
-							if ( $component_owner !== $original_kit_owner ) {
-								throw new Exception(
-									sprintf(
-										/* translators: %s: kit component title */
-										esc_html__( 'Component "%s" is already on loan and cannot be assigned as part of this kit.', 'asset-lending-manager' ),
-										esc_html( (string) $component_title )
-									)
-								);
-							}
-						}
-					}
-				}
-
-				// 5. Propagate owner and state to all components.
-				// Capture each component's previous owner before overwriting it so callers
-				// can write accurate per-component history entries.
-				$component_previous_owners = array();
-				foreach ( $component_ids as $component_id ) {
-					$component_previous_owners[ $component_id ] = $this->get_current_owner( $component_id );
-					$this->set_asset_owner( $component_id, $new_owner_id );
-					$this->set_asset_state( $component_id, 'on-loan' );
-				}
-			}
+		// 4. Propagate owner and state to included components only.
+		foreach ( $plan['included_components'] as $component ) {
+			$this->set_asset_owner( $component['id'], $new_owner_id );
+			$this->set_asset_state( $component['id'], 'on-loan' );
 		}
 
-		// 6. Cancel concurrent requests for the main asset (if enabled in workflow settings).
+		// 5. Cancel concurrent requests for the main asset (if enabled in workflow settings).
 		if ( (bool) $this->settings->get( 'workflow.cancel_concurrent_requests_on_assign', true ) ) {
 			$this->cancel_concurrent_requests(
 				$asset_id,
@@ -1068,13 +1114,13 @@ class ALMGR_Loan_Manager {
 			);
 		}
 
-		// 7. Cancel concurrent requests for kit components (if enabled in workflow settings).
+		// 6. Cancel concurrent requests for included kit components only (if enabled in workflow settings).
 		$cancel_kit_requests = (bool) $this->settings->get( 'workflow.cancel_component_requests_when_kit_assigned', true );
-		if ( $is_kit && ! empty( $component_ids ) && $cancel_kit_requests ) {
+		if ( $plan['is_kit'] && ! empty( $plan['included_components'] ) && $cancel_kit_requests ) {
 			$kit_title = get_the_title( $asset_id );
-			foreach ( $component_ids as $component_id ) {
+			foreach ( $plan['included_components'] as $component ) {
 				$this->cancel_concurrent_requests(
-					$component_id,
+					$component['id'],
 					0,
 					sprintf(
 						/* translators: %s: kit asset title */
@@ -1087,8 +1133,59 @@ class ALMGR_Loan_Manager {
 		}
 
 		return array(
-			'component_ids'             => $component_ids,
-			'component_previous_owners' => isset( $component_previous_owners ) ? $component_previous_owners : array(),
+			'plan'                      => $plan,
+			'component_ids'             => array_column( $plan['included_components'], 'id' ),
+			'component_previous_owners' => array_column( $plan['included_components'], 'previous_owner', 'id' ),
+		);
+	}
+
+	/**
+	 * Clear almgr_location for a set of assets after they move to on-loan.
+	 *
+	 * Must be called post-commit. Failure cannot be rolled back; a warning
+	 * is logged for each asset whose location could not be cleared.
+	 *
+	 * update_field() returns false both on real failure and when the stored
+	 * value is already empty (no-op update_post_meta). A read-back after a
+	 * false return distinguishes the two cases.
+	 *
+	 * @param int[] $asset_ids Asset IDs whose location should be cleared.
+	 * @return void
+	 */
+	private function clear_assets_location( array $asset_ids ) {
+		foreach ( $asset_ids as $asset_id ) {
+			$cleared = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', '', $asset_id );
+
+			if ( ! $cleared ) {
+				$current = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $asset_id );
+				if ( ! empty( $current ) ) {
+					ALMGR_Logger::warning(
+						'Failed to clear almgr_location after ownership transfer',
+						array( 'asset_id' => $asset_id )
+					);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Build a human-readable summary of excluded components for history messages.
+	 *
+	 * @param array $excluded_components Excluded components from build_kit_transfer_plan().
+	 * @return string Translated summary, or empty string when no components were excluded.
+	 */
+	private function build_excluded_summary( array $excluded_components ) {
+		if ( empty( $excluded_components ) ) {
+			return '';
+		}
+		$items = array();
+		foreach ( $excluded_components as $component ) {
+			$items[] = sprintf( '%s (%s)', $component['title'], $component['reason_label'] );
+		}
+		return sprintf(
+			/* translators: %s: comma-separated list of component names with exclusion reasons */
+			__( 'Excluded components: %s.', 'asset-lending-manager' ),
+			implode( ', ', $items )
 		);
 	}
 
@@ -1165,14 +1262,13 @@ class ALMGR_Loan_Manager {
 				);
 			}
 
-			// 2–6. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
+			// 2–6. Execute ownership transfer (build plan, set owner/state, propagate to included components, cancel requests).
 			$canceled_notification_events = array();
 			$transfer_result              = $this->execute_ownership_transfer(
 				$asset_id,
 				$requester_id,
 				$loan_request->id,
 				__( 'Request automatically canceled: asset approved for another user.', 'asset-lending-manager' ),
-				true,
 				$canceled_notification_events
 			);
 			$component_ids                = $transfer_result['component_ids'];
@@ -1190,13 +1286,19 @@ class ALMGR_Loan_Manager {
 			}
 
 			// 9. Insert record into history table.
+			// Append excluded-components summary to the kit history entry only.
+			$excluded_summary    = $this->build_excluded_summary( $transfer_result['plan']['excluded_components'] );
+			$kit_history_message = $excluded_summary
+				? trim( $loan_request->request_message . ' ' . $excluded_summary )
+				: $loan_request->request_message;
+
 			$history_logged = $this->log_history_entry(
 				$loan_request->id,
 				$asset_id,
 				$requester_id,
 				$previous_owner_id,
 				'approved',
-				$loan_request->request_message,
+				$kit_history_message,
 				$approved_by
 			);
 
@@ -1224,6 +1326,7 @@ class ALMGR_Loan_Manager {
 			$wpdb->query( 'COMMIT' );
 
 			$this->dispatch_cancellation_notifications( $canceled_notification_events );
+			$this->clear_assets_location( $transfer_result['plan']['location_clear_ids'] );
 
 			ALMGR_Logger::info(
 				'Loan request approved successfully',
@@ -1231,14 +1334,16 @@ class ALMGR_Loan_Manager {
 					'request_id'   => $loan_request->id,
 					'asset_id'     => $asset_id,
 					'requester_id' => $requester_id,
-					'is_kit'       => ! empty( $component_ids ),
+					'is_kit'       => $transfer_result['plan']['is_kit'],
 					'components'   => $component_ids,
+					'excluded'     => $transfer_result['plan']['excluded_components'],
 				)
 			);
 
 			return array(
-				'success' => true,
-				'message' => __( 'Loan request approved successfully.', 'asset-lending-manager' ),
+				'success'             => true,
+				'message'             => __( 'Loan request approved successfully.', 'asset-lending-manager' ),
+				'excluded_components' => $transfer_result['plan']['excluded_components'],
 			);
 
 		} catch ( Exception $e ) {
@@ -1610,7 +1715,8 @@ class ALMGR_Loan_Manager {
 
 		wp_send_json_success(
 			array(
-				'message' => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
+				'message'             => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
+				'excluded_components' => $result['excluded_components'],
 			)
 		);
 	}
@@ -1650,30 +1756,33 @@ class ALMGR_Loan_Manager {
 				throw new Exception( __( 'Cannot assign an asset that is in maintenance or retired state.', 'asset-lending-manager' ) );
 			}
 
-			// 2. Record previous owner before overwriting.
-			$previous_owner_id = $this->get_current_owner( $asset_id );
-
-			// 3–7. Execute ownership transfer (set owner, set state, propagate to kit, cancel concurrent requests).
+			// 2–6. Execute ownership transfer (build plan, set owner/state, propagate to included components, cancel requests).
 			$canceled_notification_events = array();
 			$transfer_result              = $this->execute_ownership_transfer(
 				$asset_id,
 				$assignee_id,
 				0,
 				__( 'Request canceled: asset directly assigned by operator.', 'asset-lending-manager' ),
-				false,
 				$canceled_notification_events
 			);
+			$previous_owner_id            = $transfer_result['plan']['kit_previous_owner'];
 			$component_ids                = $transfer_result['component_ids'];
 			$component_prev_owners        = $transfer_result['component_previous_owners'];
 
 			// 8. Log history entry (loan_request_id = 0 for direct assignments).
+			// Append excluded-components summary to the kit history entry only.
+			$excluded_summary    = $this->build_excluded_summary( $transfer_result['plan']['excluded_components'] );
+			$kit_history_message = $excluded_summary
+				? trim( $reason . ' ' . $excluded_summary )
+				: $reason;
+
 			$history_logged = $this->log_history_entry(
 				0,
 				$asset_id,
 				$assignee_id,
 				$previous_owner_id,
 				'direct_assign',
-				$reason,
+				$kit_history_message,
 				$actor_id
 			);
 
@@ -1701,21 +1810,24 @@ class ALMGR_Loan_Manager {
 			$wpdb->query( 'COMMIT' );
 
 			$this->dispatch_cancellation_notifications( $canceled_notification_events );
+			$this->clear_assets_location( $transfer_result['plan']['location_clear_ids'] );
 
 			ALMGR_Logger::info(
 				'Direct assignment completed successfully',
 				array(
 					'asset_id'    => $asset_id,
 					'assignee_id' => $assignee_id,
-					'is_kit'      => ! empty( $component_ids ),
+					'is_kit'      => $transfer_result['plan']['is_kit'],
 					'components'  => $component_ids,
+					'excluded'    => $transfer_result['plan']['excluded_components'],
 				)
 			);
 
 			return array(
-				'success'           => true,
-				'message'           => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
-				'previous_owner_id' => $previous_owner_id,
+				'success'             => true,
+				'message'             => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
+				'previous_owner_id'   => $previous_owner_id,
+				'excluded_components' => $transfer_result['plan']['excluded_components'],
 			);
 
 		} catch ( Exception $e ) {
@@ -1736,6 +1848,124 @@ class ALMGR_Loan_Manager {
 				'message' => $e->getMessage(),
 			);
 		}
+	}
+
+	/**
+	 * Compute which kit components will be affected by a state change before any writes.
+	 *
+	 * Reads current state and owner of each component and classifies it as
+	 * included (follows the kit) or excluded (left untouched) based on the
+	 * target state and current ownership.
+	 *
+	 * Decision table for components:
+	 * - Target = 'available', kit is on-loan: include only components on-loan to the same owner.
+	 * - Target = 'available', kit is in maintenance/retired: include only components in the same
+	 *   state as the kit with owner 0.
+	 * - Target = 'maintenance'/'retired': include available (owner 0) or on-loan to kit owner.
+	 *   Components already in maintenance or retired are always excluded.
+	 *
+	 * For a non-kit asset the plan contains only the asset itself with no components.
+	 *
+	 * @param int    $kit_id       Kit (or standalone asset) ID.
+	 * @param string $target_state Target state slug ('maintenance', 'retired', or 'available').
+	 * @return array {
+	 *     @type bool   $is_kit              True when the asset is a kit.
+	 *     @type int    $kit_id              Asset ID passed in.
+	 *     @type string $kit_current_state   Current state slug of the kit.
+	 *     @type int    $kit_current_owner   Current owner user ID (0 if none).
+	 *     @type array  $included_components Components that will follow the kit transition.
+	 *     @type array  $excluded_components Components that will be skipped, with reason.
+	 *     @type int[]  $affected_asset_ids  Kit + included component IDs (state/owner writes).
+	 *     @type int[]  $location_target_ids Kit + included component IDs (location writes).
+	 * }
+	 */
+	private function build_kit_state_change_plan( $kit_id, $target_state ) {
+		$is_kit    = $this->is_asset_kit( $kit_id );
+		$kit_state = $this->get_asset_state_slug( $kit_id );
+		$kit_owner = $this->get_current_owner( $kit_id );
+
+		$plan = array(
+			'is_kit'              => $is_kit,
+			'kit_id'              => $kit_id,
+			'kit_current_state'   => $kit_state,
+			'kit_current_owner'   => $kit_owner,
+			'included_components' => array(),
+			'excluded_components' => array(),
+			'affected_asset_ids'  => array( $kit_id ),
+			'location_target_ids' => array( $kit_id ),
+		);
+
+		if ( ! $is_kit ) {
+			ALMGR_Logger::debug( 'build_kit_state_change_plan', array( 'kit_id' => $kit_id, 'target_state' => $target_state, 'plan' => $plan ) );
+			return $plan;
+		}
+
+		$component_ids = $this->get_kit_components( $kit_id );
+
+		foreach ( $component_ids as $component_id ) {
+			$component_state = $this->get_asset_state_slug( $component_id );
+			$component_owner = $this->get_current_owner( $component_id );
+			$component_title = get_the_title( $component_id );
+			$exclude         = false;
+			$reason_code     = '';
+			$reason_label    = '';
+
+			if ( 'available' === $target_state ) {
+				if ( 'on-loan' === $kit_state ) {
+					// Forced return: include only components on-loan to the same owner as the kit.
+					if ( 'on-loan' !== $component_state || $component_owner !== $kit_owner ) {
+						$exclude      = true;
+						$reason_code  = 'not_controlled_by_kit';
+						$reason_label = __( 'Component is not controlled by this kit.', 'asset-lending-manager' );
+					}
+				} else {
+					// Restore from maintenance/retired: include only components in the same state with no owner.
+					if ( $component_state !== $kit_state || 0 !== $component_owner ) {
+						$exclude      = true;
+						$reason_code  = 'not_controlled_by_kit';
+						$reason_label = __( 'Component is not controlled by this kit.', 'asset-lending-manager' );
+					}
+				}
+			} elseif ( in_array( $component_state, array( 'maintenance', 'retired' ), true ) ) {
+				// Already in a non-active state; never touched by kit transitions.
+				$exclude      = true;
+				$reason_code  = $component_state;
+				$reason_label = 'maintenance' === $component_state
+					? __( 'Component is under maintenance.', 'asset-lending-manager' )
+					: __( 'Component has been retired.', 'asset-lending-manager' );
+			} elseif (
+				! ( 'available' === $component_state && 0 === $component_owner ) &&
+				! ( 'on-loan' === $component_state && $component_owner === $kit_owner && 0 !== $kit_owner )
+			) {
+				// On-loan to a different user, or available with unexpected owner.
+				$exclude      = true;
+				$reason_code  = 'not_controlled_by_kit';
+				$reason_label = __( 'Component is not controlled by this kit.', 'asset-lending-manager' );
+			}
+
+			if ( $exclude ) {
+				$plan['excluded_components'][] = array(
+					'id'           => $component_id,
+					'title'        => $component_title,
+					'state'        => $component_state,
+					'owner_id'     => $component_owner,
+					'reason_code'  => $reason_code,
+					'reason_label' => $reason_label,
+				);
+			} else {
+				$plan['included_components'][] = array(
+					'id'            => $component_id,
+					'title'         => $component_title,
+					'state'         => $component_state,
+					'current_owner' => $component_owner,
+				);
+				$plan['affected_asset_ids'][]  = $component_id;
+				$plan['location_target_ids'][] = $component_id;
+			}
+		}
+
+		ALMGR_Logger::debug( 'build_kit_state_change_plan', array( 'kit_id' => $kit_id, 'target_state' => $target_state, 'plan' => $plan ) );
+		return $plan;
 	}
 
 	/**
@@ -1803,18 +2033,24 @@ class ALMGR_Loan_Manager {
 			wp_send_json_error( array( 'message' => $result['message'] ) );
 		}
 
-		wp_send_json_success( array( 'message' => $result['message'] ) );
+		wp_send_json_success(
+			array(
+				'message'            => $result['message'],
+				'skipped_components' => $result['skipped_components'],
+			)
+		);
 	}
 
 	/**
 	 * Change asset state to maintenance, retired, or available (force return from on-loan).
 	 *
 	 * When target is 'maintenance' or 'retired':
-	 * - Kit: change state + clear owner, propagate to all components (stay in kit).
-	 * - Component/standalone: remove from parent kit(s), change state + clear owner.
+	 * - Kit: change state + clear owner on included components only; excluded components (already
+	 *   in maintenance/retired, or on-loan to a different user) are left untouched.
+	 * - Component/standalone: maintenance leaves the component in its kit; retired removes it.
 	 *
 	 * When target is 'available' (forced return from on-loan):
-	 * - Kit: set kit + all components to available, clear owners.
+	 * - Kit: set kit + included components to available, clear owners.
 	 * - Component/standalone: set to available, clear owner. Kit membership unchanged.
 	 * - Fires 'almgr_asset_force_returned' for borrower notification.
 	 *
@@ -1824,7 +2060,11 @@ class ALMGR_Loan_Manager {
 	 * @param int    $actor_id     Operator user ID performing the action.
 	 * @param string $location     Physical location of the asset (required, max 255 chars).
 	 * @throws Exception When a database error occurs during the state change.
-	 * @return array ['success' => bool, 'message' => string]
+	 * @return array {
+	 *     @type bool   $success            True on success.
+	 *     @type string $message            User-facing status message.
+	 *     @type array  $skipped_components Components that were not changed, with id/title/reason_label.
+	 * }
 	 */
 	private function change_asset_state( $asset_id, $target_state, $notes, $actor_id, $location = '' ) {
 		global $wpdb;
@@ -1845,10 +2085,10 @@ class ALMGR_Loan_Manager {
 			}
 
 			if ( 'available' === $target_state ) {
-				// Forced return from on-loan: restore state, clear owner. Kit membership unchanged.
 				if ( $is_kit ) {
-					$component_ids    = $this->get_kit_components( $asset_id );
-					$location_targets = array_merge( array( $asset_id ), $component_ids );
+					// Forced return: restore only components controlled by this kit.
+					$plan             = $this->build_kit_state_change_plan( $asset_id, 'available' );
+					$location_targets = $plan['location_target_ids'];
 
 					$this->set_asset_state( $asset_id, 'available' );
 					$this->set_asset_owner( $asset_id, 0 );
@@ -1858,18 +2098,20 @@ class ALMGR_Loan_Manager {
 						throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
 					}
 
-					foreach ( $component_ids as $component_id ) {
-						$component_prev_owner = $this->get_current_owner( $component_id );
-						$this->set_asset_state( $component_id, 'available' );
-						$this->set_asset_owner( $component_id, 0 );
+					foreach ( $plan['included_components'] as $component ) {
+						$this->set_asset_state( $component['id'], 'available' );
+						$this->set_asset_owner( $component['id'], 0 );
 
-						$logged = $this->log_history_entry( 0, $component_id, 0, $component_prev_owner, 'to_available', $notes, $actor_id );
+						$logged = $this->log_history_entry( 0, $component['id'], 0, $component['current_owner'], 'to_available', $notes, $actor_id );
 						if ( ! $logged ) {
 							throw new Exception( __( 'Failed to log history entry for component.', 'asset-lending-manager' ) );
 						}
 					}
+
+					$skipped_components = $plan['excluded_components'];
 				} else {
-					$location_targets = array( $asset_id );
+					$location_targets   = array( $asset_id );
+					$skipped_components = array();
 
 					$this->set_asset_state( $asset_id, 'available' );
 					$this->set_asset_owner( $asset_id, 0 );
@@ -1880,9 +2122,9 @@ class ALMGR_Loan_Manager {
 					}
 				}
 			} elseif ( $is_kit ) {
-				// Kit: change state and clear owner, then propagate to components.
-				$component_ids    = $this->get_kit_components( $asset_id );
-				$location_targets = array_merge( array( $asset_id ), $component_ids );
+				// Kit: change state and clear owner on included components only.
+				$plan             = $this->build_kit_state_change_plan( $asset_id, $target_state );
+				$location_targets = $plan['location_target_ids'];
 
 				$this->set_asset_state( $asset_id, $target_state );
 				$this->set_asset_owner( $asset_id, 0 );
@@ -1892,27 +2134,33 @@ class ALMGR_Loan_Manager {
 					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
 				}
 
-				foreach ( $component_ids as $component_id ) {
-					$component_prev_owner = $this->get_current_owner( $component_id );
-					$this->set_asset_state( $component_id, $target_state );
-					$this->set_asset_owner( $component_id, 0 );
+				foreach ( $plan['included_components'] as $component ) {
+					$this->set_asset_state( $component['id'], $target_state );
+					$this->set_asset_owner( $component['id'], 0 );
 
-					$logged = $this->log_history_entry( 0, $component_id, 0, $component_prev_owner, $history_status, $notes, $actor_id );
+					$logged = $this->log_history_entry( 0, $component['id'], 0, $component['current_owner'], $history_status, $notes, $actor_id );
 					if ( ! $logged ) {
 						throw new Exception( __( 'Failed to log history entry for component.', 'asset-lending-manager' ) );
 					}
 				}
+
+				$skipped_components = $plan['excluded_components'];
 			} else {
-				// Component or standalone: remove from parent kit(s), then change state.
-				$location_targets = array( $asset_id );
-				$parent_kit_ids   = $this->get_parent_kit_ids( $asset_id );
-				if ( ! empty( $parent_kit_ids ) ) {
-					// Persist kit membership so it can be restored later via restore_asset_state().
-					update_post_meta( $asset_id, '_almgr_removed_from_kit_ids', $parent_kit_ids );
-					foreach ( $parent_kit_ids as $kit_id ) {
-						$this->remove_component_from_kit( $asset_id, $kit_id );
+				// Component or standalone.
+				$location_targets   = array( $asset_id );
+				$skipped_components = array();
+
+				if ( 'retired' === $target_state ) {
+					// Retired: remove from parent kit(s) and save kit IDs for possible restore.
+					$parent_kit_ids = $this->get_parent_kit_ids( $asset_id );
+					if ( ! empty( $parent_kit_ids ) ) {
+						update_post_meta( $asset_id, '_almgr_removed_from_kit_ids', $parent_kit_ids );
+						foreach ( $parent_kit_ids as $kit_id ) {
+							$this->remove_component_from_kit( $asset_id, $kit_id );
+						}
 					}
 				}
+				// Maintenance: component stays in kit; no meta written.
 
 				$this->set_asset_state( $asset_id, $target_state );
 				$this->set_asset_owner( $asset_id, 0 );
@@ -1928,7 +2176,16 @@ class ALMGR_Loan_Manager {
 			// Update ACF location field on all affected assets (outside transaction).
 			if ( '' !== $location ) {
 				foreach ( $location_targets as $target_id ) {
-					ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
+					$written = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
+					if ( ! $written ) {
+						$current = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $target_id );
+						if ( $current !== $location ) {
+							ALMGR_Logger::warning(
+								'Failed to set almgr_location after state change',
+								array( 'asset_id' => $target_id, 'location' => $location )
+							);
+						}
+					}
 				}
 			}
 
@@ -1944,12 +2201,14 @@ class ALMGR_Loan_Manager {
 					'target_state' => $target_state,
 					'is_kit'       => $is_kit,
 					'actor_id'     => $actor_id,
+					'skipped'      => $skipped_components,
 				)
 			);
 
 			return array(
-				'success' => true,
-				'message' => __( 'Asset state updated successfully.', 'asset-lending-manager' ),
+				'success'            => true,
+				'message'            => __( 'Asset state updated successfully.', 'asset-lending-manager' ),
+				'skipped_components' => $skipped_components,
 			);
 
 		} catch ( Exception $e ) {
@@ -2004,7 +2263,7 @@ class ALMGR_Loan_Manager {
 	 *
 	 * @param int $component_id Component asset ID to remove.
 	 * @param int $kit_id       Kit asset ID.
-	 * @throws Exception When ACF is not available.
+	 * @throws Exception When the ACF write fails and the component is still present.
 	 * @return void
 	 */
 	private function remove_component_from_kit( $component_id, $kit_id ) {
@@ -2018,7 +2277,22 @@ class ALMGR_Loan_Manager {
 			)
 		);
 
-		ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $updated_ids, $kit_id );
+		$written = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $updated_ids, $kit_id );
+		if ( ! $written ) {
+			// update_field() also returns false when the value was already identical (no-op).
+			// Read back to confirm whether the component is still listed.
+			$after = $this->get_kit_components( $kit_id );
+			if ( in_array( (int) $component_id, $after, true ) ) {
+				throw new Exception(
+					sprintf(
+						/* translators: 1: component post ID, 2: kit post ID */
+						__( 'Failed to remove component %1$d from kit %2$d.', 'asset-lending-manager' ),
+						$component_id,
+						$kit_id
+					)
+				);
+			}
+		}
 	}
 
 	/**
@@ -2026,18 +2300,32 @@ class ALMGR_Loan_Manager {
 	 *
 	 * @param int $component_id Component asset ID to add.
 	 * @param int $kit_id       Kit asset ID.
+	 * @throws Exception When the ACF write fails and the component is still absent.
 	 * @return void
 	 */
 	private function add_component_to_kit( $component_id, $kit_id ) {
 		$current_ids = $this->get_kit_components( $kit_id );
 
-		// Avoid duplicates.
 		if ( in_array( (int) $component_id, $current_ids, true ) ) {
-			return;
+			return; // Already present; no-op is success.
 		}
 
 		$current_ids[] = (int) $component_id;
-		ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $current_ids, $kit_id );
+		$written        = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $current_ids, $kit_id );
+		if ( ! $written ) {
+			// Read back to confirm whether the write actually took effect.
+			$after = $this->get_kit_components( $kit_id );
+			if ( ! in_array( (int) $component_id, $after, true ) ) {
+				throw new Exception(
+					sprintf(
+						/* translators: 1: component post ID, 2: kit post ID */
+						__( 'Failed to add component %1$d to kit %2$d.', 'asset-lending-manager' ),
+						$component_id,
+						$kit_id
+					)
+				);
+			}
+		}
 	}
 
 	/**
@@ -2096,30 +2384,35 @@ class ALMGR_Loan_Manager {
 			wp_send_json_error( array( 'message' => $result['message'] ) );
 		}
 
-		wp_send_json_success( array( 'message' => $result['message'] ) );
+		wp_send_json_success(
+			array(
+				'message'            => $result['message'],
+				'skipped_components' => $result['skipped_components'],
+			)
+		);
 	}
 
 	/**
 	 * Restore an asset to available state.
 	 *
 	 * Operations for a kit:
-	 * 1. Restore kit state to available, clear owner.
-	 * 2. Write history entry for the kit.
-	 * 3. Restore state and clear owner on all components.
-	 * 4. Write history entry for each component.
+	 * - Restore kit and included components (same state, no owner) to available.
+	 * - Components in a different state or assigned to another user are skipped.
 	 *
 	 * Operations for a component/standalone:
-	 * 1. Re-add component to any kit it was removed from (using _almgr_removed_from_kit_ids meta).
-	 * 2. Restore state to available, clear owner.
-	 * 3. Write history entry.
-	 * 4. Delete _almgr_removed_from_kit_ids meta.
+	 * - From maintenance: restore state only; component was never removed from kit.
+	 * - From retired: re-add to previous kit(s) via _almgr_removed_from_kit_ids, then restore.
 	 *
 	 * @param int    $asset_id Asset ID.
 	 * @param string $notes    Operator notes.
 	 * @param int    $actor_id Operator user ID performing the action.
 	 * @param string $location Physical location of the asset (required, max 255 chars).
 	 * @throws Exception When a database error occurs during the state restore.
-	 * @return array ['success' => bool, 'message' => string]
+	 * @return array {
+	 *     @type bool   $success            True on success.
+	 *     @type string $message            User-facing status message.
+	 *     @type array  $skipped_components Components that were not changed, with id/title/reason_label.
+	 * }
 	 */
 	private function restore_asset_state( $asset_id, $notes, $actor_id, $location = '' ) {
 		global $wpdb;
@@ -2131,9 +2424,9 @@ class ALMGR_Loan_Manager {
 			$location_targets = array();
 
 			if ( $is_kit ) {
-				// Kit: restore kit and all components to available.
-				$component_ids    = $this->get_kit_components( $asset_id );
-				$location_targets = array_merge( array( $asset_id ), $component_ids );
+				// Kit: restore included components only (those in the same state as the kit with no owner).
+				$plan             = $this->build_kit_state_change_plan( $asset_id, 'available' );
+				$location_targets = $plan['location_target_ids'];
 
 				$this->set_asset_state( $asset_id, 'available' );
 				$this->set_asset_owner( $asset_id, 0 );
@@ -2143,25 +2436,38 @@ class ALMGR_Loan_Manager {
 					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
 				}
 
-				foreach ( $component_ids as $component_id ) {
-					$this->set_asset_state( $component_id, 'available' );
-					$this->set_asset_owner( $component_id, 0 );
-					delete_post_meta( $component_id, '_almgr_removed_from_kit_ids' );
+				foreach ( $plan['included_components'] as $component ) {
+					$this->set_asset_state( $component['id'], 'available' );
+					$this->set_asset_owner( $component['id'], 0 );
+					// Clean up any stale meta written by pre-refactor code.
+					delete_post_meta( $component['id'], '_almgr_removed_from_kit_ids' );
 
-					$logged = $this->log_history_entry( 0, $component_id, 0, 0, 'to_available', $notes, $actor_id );
+					$logged = $this->log_history_entry( 0, $component['id'], 0, 0, 'to_available', $notes, $actor_id );
 					if ( ! $logged ) {
 						throw new Exception( __( 'Failed to log history entry for component.', 'asset-lending-manager' ) );
 					}
 				}
-			} else {
-				// Component or standalone: re-add to previous kit(s) if applicable, then restore state.
-				$location_targets = array( $asset_id );
-				$previous_kit_ids = get_post_meta( $asset_id, '_almgr_removed_from_kit_ids', true );
 
-				if ( ! empty( $previous_kit_ids ) && is_array( $previous_kit_ids ) ) {
-					foreach ( $previous_kit_ids as $kit_id ) {
-						$this->add_component_to_kit( $asset_id, (int) $kit_id );
+				$skipped_components = $plan['excluded_components'];
+			} else {
+				// Component or standalone.
+				$location_targets   = array( $asset_id );
+				$skipped_components = array();
+				$current_state      = $this->get_asset_state_slug( $asset_id );
+
+				if ( 'maintenance' === $current_state ) {
+					// Component was not removed from kit; just restore state.
+					// Delete any stale meta written by pre-refactor code.
+					delete_post_meta( $asset_id, '_almgr_removed_from_kit_ids' );
+				} else {
+					// Retired: component was removed from kit; re-add to previous kit(s).
+					$previous_kit_ids = get_post_meta( $asset_id, '_almgr_removed_from_kit_ids', true );
+					if ( ! empty( $previous_kit_ids ) && is_array( $previous_kit_ids ) ) {
+						foreach ( $previous_kit_ids as $kit_id ) {
+							$this->add_component_to_kit( $asset_id, (int) $kit_id );
+						}
 					}
+					delete_post_meta( $asset_id, '_almgr_removed_from_kit_ids' );
 				}
 
 				$this->set_asset_state( $asset_id, 'available' );
@@ -2171,8 +2477,6 @@ class ALMGR_Loan_Manager {
 				if ( ! $logged ) {
 					throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
 				}
-
-				delete_post_meta( $asset_id, '_almgr_removed_from_kit_ids' );
 			}
 
 			$wpdb->query( 'COMMIT' );
@@ -2180,7 +2484,16 @@ class ALMGR_Loan_Manager {
 			// Update ACF location field on all affected assets (outside transaction).
 			if ( '' !== $location ) {
 				foreach ( $location_targets as $target_id ) {
-					ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
+					$written = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
+					if ( ! $written ) {
+						$current = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $target_id );
+						if ( $current !== $location ) {
+							ALMGR_Logger::warning(
+								'Failed to set almgr_location after state restore',
+								array( 'asset_id' => $target_id, 'location' => $location )
+							);
+						}
+					}
 				}
 			}
 
@@ -2190,12 +2503,14 @@ class ALMGR_Loan_Manager {
 					'asset_id' => $asset_id,
 					'is_kit'   => $is_kit,
 					'actor_id' => $actor_id,
+					'skipped'  => $skipped_components,
 				)
 			);
 
 			return array(
-				'success' => true,
-				'message' => __( 'Asset restored to available successfully.', 'asset-lending-manager' ),
+				'success'            => true,
+				'message'            => __( 'Asset restored to available successfully.', 'asset-lending-manager' ),
+				'skipped_components' => $skipped_components,
 			);
 
 		} catch ( Exception $e ) {

@@ -9,6 +9,18 @@ This project uses [Semantic Versioning](http://semver.org/).
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
+## DESIDERATA 1.0.0
+1) DEV/TODO/TODO_Kit_Consistency_Action_Plan.md: Refactoring the assignment with bug fixes for the assignment phase.
+2) Introduction of unit tests (DEV/TODO/TODO_Introducing_tests.md).
+3) Introduction of integration tests (DEV/TODO/TODO_Introducing_tests.md).
+4) Introduction of e2e functional tests (DEV/TODO/TODO_Introducing_tests.md).
+5) Introduction of an MCP server.
+6) Mass printing of all QR codes in A4 pages.
+7) Review and correction of README.md and documentation.
+8) Github repository link as project link?
+9) Test massivo di sicurezza.
+10) Inserire una pagina con tutta la storia dei prestiti, paginata e con dei filtri.
+
 
 ## [0.2.4] - 2026-06-10
 ### Added
