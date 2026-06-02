@@ -29,30 +29,33 @@ flowchart TD
   subgraph OPE["Operator / Administrator"]
     O1["Create or edit asset"]
     O2["Manage taxonomies"]
-    O3["View loan requests"]
-    O4["Approve / reject request"]
-    O5["Direct assignment"]
-    O6["Change state\nmaintenance / retired\n+ required location"]
-    O7["Restore to available\nfrom maintenance / retired\n+ required location"]
-    O8["Force return\nfrom on-loan -> available\n+ required location\n(closes loan, notifies borrower)"]
+    O3["View loan requests\n(from asset detail)"]
+    O4["Approve / reject request\n(kit: partial transfer)"]
+    O5["Direct assignment\n(kit: partial transfer)"]
+    O6["Change state\nmaintenance / retired\n+ required location\n(kit: partial propagation)"]
+    O7["Restore to available\nfrom maintenance / retired\n+ required location\n(kit: partial propagation)"]
+    O8["Force return\non-loan -> available\n+ required location\n(kit: partial propagation)"]
     O1 --> O2
-    O2 --> O3
     O3 --> O4
     O3 --> O5
-    O3 --> O6
     O6 --> O7
-    O3 --> O8
   end
 
+  EX[/"Excluded components notice\n(kit operations only)"/]
   H1[("History updated")]
 
   M2 --> O3
   M4 --> H1
   O4 --> H1
+  O4 --> EX
   O5 --> H1
+  O5 --> EX
   O6 --> H1
+  O6 --> EX
   O7 --> H1
+  O7 --> EX
   O8 --> H1
+  O8 --> EX
 ```
 
 ---
@@ -73,12 +76,18 @@ MEMBER (almgr_member)
 OPERATOR / ADMINISTRATOR
   [Create or edit asset]
     -> [Manage taxonomies]
-    -> [View loan requests]
-    -> [Approve or reject request]
-    -> [Direct assignment]
+
+  [View loan requests] (from asset detail page)
+    -> [Approve or reject request]  (kit: partial transfer -> excluded notice)
+    -> [Direct assignment]          (kit: partial transfer -> excluded notice)
+
+  [Asset detail page]
     -> [Change state: maintenance / retired] + required location
-         `-> [Restore to available from maintenance/retired] + required location
+         (kit: partial propagation -> excluded notice)
+         `-> [Restore to available] + required location
+               (kit: partial propagation -> excluded notice)
     -> [Force return: on-loan -> available] + required location
+         (kit: partial propagation -> excluded notice)
          (closes active loan, notifies borrower)
 
 CROSS-LANE LINKS
@@ -91,4 +100,15 @@ CROSS-LANE LINKS
 
 ---
 
-*Last update: 2026-04-14 (rev 1)*
+**Note — partial kit propagation:** kit transfers and kit state changes apply only to eligible components. Components in `maintenance`/`retired` or assigned to another user are excluded. The operator receives a warning notice listing skipped components after each operation. See `DOC/KitBehaviorReference.md` for full details.
+
+---
+
+## See also
+
+- `DOC/RolePermissionsMatrix.md` — tabular permissions reference with ASCII swimlane.
+- `DOC/KitBehaviorReference.md` — full inclusion/exclusion rules for kit operations.
+
+---
+
+*Last update: 2026-06-02 (rev 3)*

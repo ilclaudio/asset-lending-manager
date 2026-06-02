@@ -57,12 +57,18 @@ MEMBER (almgr_member)
 OPERATOR / ADMINISTRATOR
   [Create or edit asset]
     -> [Manage taxonomies]
-    -> [View loan requests]
-    -> [Approve or reject request]
-    -> [Direct assignment (asset not retired/maintenance)]
+
+  [View loan requests] (from asset detail page)
+    -> [Approve or reject request]  (kit: partial transfer -> excluded notice)
+    -> [Direct assignment]          (kit: partial transfer -> excluded notice)
+
+  [Asset detail page]
     -> [Change state: -> maintenance / -> retired] + required location
-         `-> [Restore to available from maintenance/retired] + required location
+         (kit: partial propagation -> excluded notice)
+         `-> [Restore to available] + required location
+               (kit: partial propagation -> excluded notice)
     -> [Force return: on-loan -> available] + required location
+         (kit: partial propagation -> excluded notice)
          (closes active loan, notifies borrower)
 
 CROSS-LANE LINKS
@@ -80,7 +86,16 @@ CROSS-LANE LINKS
 - Approve/reject actions are allowed for members only if they are the current owner of the asset. Operators and administrators (capability `almgr_edit_asset`) can approve/reject even when they are not current owners.
 - Direct assignment is allowed only for users with capability `almgr_edit_asset` (operator/administrator).
 - In the current UI, loan history is shown only to operator/administrator.
+- **Partial kit propagation:** kit loan transfers (approval and direct assignment) and kit state changes (maintenance, retired, force return, restore) apply only to eligible components. Components already in `maintenance` or `retired` state, or assigned to a different user, are excluded and left untouched. After each operation the operator sees a warning notice listing skipped components and the reason for each exclusion.
+- A component moved to `maintenance` independently stays in its parent kit(s). A component moved to `retired` independently is removed from its parent kit(s).
 
 ---
 
-*Last update: 2026-04-14 (rev 1)*
+## See also
+
+- `DOC/KitBehaviorReference.md` — full inclusion/exclusion rules, location behavior, history, and notification semantics for all kit operations.
+- `DOC/RoleActionsSwimlane.md` — Mermaid diagram version of this document.
+
+---
+
+*Last update: 2026-06-02 (rev 3)*

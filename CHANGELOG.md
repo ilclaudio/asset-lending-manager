@@ -8,25 +8,35 @@ This project uses [Semantic Versioning](http://semver.org/).
 
 TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
+## DESIDERATA 2.0.0
+1) Add a dashboard and user badge with: resources on loan, loans to be approved, and resources under maintenance (operator).
 
 ## DESIDERATA 1.0.0
-1) DEV/TODO/TODO_Kit_Consistency_Action_Plan.md: Refactoring the assignment with bug fixes for the assignment phase.
-2) Introduction of unit tests (DEV/TODO/TODO_Introducing_tests.md).
-3) Introduction of integration tests (DEV/TODO/TODO_Introducing_tests.md).
-4) Introduction of e2e functional tests (DEV/TODO/TODO_Introducing_tests.md).
-5) Introduction of an MCP server.
-6) Mass printing of all QR codes in A4 pages.
-7) Review and correction of README.md and documentation.
-8) Github repository link as project link?
-9) Massive security testing.
-10) Add a page with all loan history, with pagination and filters.
-11) Add a dashboard and user badge with: resources on loan, loans to be approved, and resources under maintenance (operator).
+1) Introduction of unit tests (DEV/TODO/TODO_Introducing_tests.md).
+2) Introduction of integration tests (DEV/TODO/TODO_Introducing_tests.md).
+3) Introduction of e2e functional tests (DEV/TODO/TODO_Introducing_tests.md).
+4) Introduction of an MCP server.
+5) Mass printing of all QR codes in A4 pages.
+6) Review and correction of README.md and documentation.
+7) Github repository link as project link?
+8) Massive security testing.
+9) Add a page with all loan history, with pagination and filters.
+
+
+
 
 ## [0.2.4] - 2026-06-10
-### Added
 ### Fixed
-### Security
+- Kit transfer (loan approval and direct assignment) no longer overwrites components assigned to other users or in maintenance/retired state; excluded components are left untouched and reported to the operator with explicit reasons.
+- Kit state changes (maintenance, retired, force-return, restore) no longer affect components outside the kit's control; only components in a compatible state and with the expected owner are modified.
+- Component sent to maintenance no longer removed from parent kit(s); `_almgr_removed_from_kit_ids` is now written only on permanent retirement.
+- Restore from maintenance is now a state-only change; no kit re-attach is performed because the component was never removed.
+- ACF write return values now checked with read-back: failures inside transactions throw and trigger rollback; post-commit failures log a warning.
 ### Changed
+- Kit loan approval and direct assignment use a unified pre-computed transfer plan; the previous `$check_component_conflicts` bypass parameter has been removed.
+- Location field cleared only on kit and included components when an asset moves to on-loan.
+- Location field set only on kit and included components on operator-driven state changes.
+- Excluded and skipped components returned in AJAX response and shown as a warning notice after page redirect.
 
 
 

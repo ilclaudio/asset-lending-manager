@@ -38,10 +38,10 @@ It is split into two parts:
 - `Type`: type taxonomy slug.
 - `State`: state taxonomy slug.
 - `Level`: level taxonomy slug.
-- `External_Code`: asset meta `external_code`.
+- `External_Code`: ACF field `almgr_external_code`.
 - `Description`: asset post content.
-- `Manufacturer`: asset meta `manufacturer`.
-- `Model`: asset meta `model`.
+- `Manufacturer`: ACF field `almgr_manufacturer`.
+- `Model`: ACF field `almgr_model`.
 - `Wp_Status`: always `publish` (because export scope is publish only).
 - `Kit_Component_Titles`: for kits, component titles separated with `|`; for non-kit assets, empty value.
 
@@ -78,7 +78,7 @@ It is split into two parts:
 
 ### 5) Row mapping
 
-- For each asset, the procedure reads taxonomy slugs (`structure`, `type`, `state`, `level`), meta values (`external_code`, `manufacturer`, `model`), `post_title`, `post_content`, and sets `Wp_Status` to `publish`.
+- For each asset, the procedure reads taxonomy slugs (`structure`, `type`, `state`, `level`), ACF fields (`almgr_external_code`, `almgr_manufacturer`, `almgr_model`) via `ALMGR_ACF_Asset_Adapter`, `post_title`, `post_content`, and sets `Wp_Status` to `publish`.
 
 ### 6) Kit component serialization
 

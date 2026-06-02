@@ -128,6 +128,15 @@ On classic themes, basic setup only requires installing the plugin and activatin
 
 For full release notes see `CHANGELOG.md`.
 
+= 0.2.4 =
+* Fixed: kit loan approval and direct assignment no longer overwrite components assigned to other users or in maintenance/retired state; excluded components are left untouched and reported to the operator with explicit reasons.
+* Fixed: kit state changes only affect eligible components; components under maintenance, retired, or assigned to another user are skipped.
+* Fixed: component sent to maintenance no longer removed from parent kit; `_almgr_removed_from_kit_ids` is now written only on permanent retirement.
+* Fixed: restore from maintenance is now a state-only change; no kit re-attach is performed.
+* Fixed: ACF write return values checked with read-back; failures inside transactions trigger rollback; post-commit failures log a warning.
+* Changed: location field cleared only on kit and included components when an asset moves to on-loan.
+* Changed: excluded and skipped kit components returned in the AJAX response and shown as a warning notice after redirect.
+
 = 0.2.3 =
 * Fixed: Checked compatibility with WordPress 7.0: No intervention required.
 * Fixed: corrected minor typos in release documentation.
@@ -179,6 +188,9 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 
 
 == Upgrade Notice ==
+
+= 0.2.4 =
+Fix release for kit operations. Kit loan approval and state changes now propagate only to eligible components; components under maintenance, retired, or assigned to another user are excluded and left unchanged. No database changes; no manual intervention required.
 
 = 0.2.2 =
 Security and fix release. REST API migrated to native WordPress REST API routes. No database changes; no manual intervention required.

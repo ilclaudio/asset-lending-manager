@@ -73,10 +73,16 @@ QR features use bundled JavaScript libraries:
 9. Assets in maintenance or retired state can be restored to available by operators.
 10. All decisions, assignments, and state changes are recorded in loan history.
 
-For detailed role/action and notification schemas, see:
-- `DOC/SchemaPermessiPerRuolo.md`
-- `DOC/SchemaAzioniSwimlane.md`
-- `DOC/SchemaNotificheEmail.md`
+For detailed documentation, see the `DOC/` folder:
+- `DOC/RolePermissionsMatrix.md` — role/operation permission matrix
+- `DOC/RoleActionsSwimlane.md` — loan workflow swimlane diagram
+- `DOC/EmailNotificationsSchema.md` — email event table with placeholders
+- `DOC/KitBehaviorReference.md` — kit transfer and state-change semantics, partial propagation rules
+- `DOC/RestApiReference.md` — REST API endpoints, authentication, parameters, error codes
+- `DOC/AssetsImportCSV_SimpleProcedure.md` — assets CSV import procedure
+- `DOC/AssetsExportCSV_SimpleProcedure.md` — assets CSV export procedure
+- `DOC/UsersImportCSV_SimpleProcedure.md` — users CSV import procedure
+- `DOC/UsersExportCSV_SimpleProcedure.md` — users CSV export procedure
 
 ---
 
@@ -90,7 +96,7 @@ For detailed role/action and notification schemas, see:
 | **retired** | ✅ operator (restore) | ❌ | ❌ | — |
 
 All operator state transitions require a **location** field (mandatory) and accept optional notes.
-Kit state changes propagate to all components.
+Kit state changes propagate only to eligible components; components already in maintenance or retired, or assigned to another user, are excluded and left unchanged. The operator sees a warning notice listing skipped components and the reason for each.
 Direct assignment can also reassign an already on-loan asset while keeping state `on-loan`.
 
 ---
