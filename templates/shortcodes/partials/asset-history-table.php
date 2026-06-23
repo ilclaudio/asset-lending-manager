@@ -37,6 +37,8 @@ if ( ! empty( $almgr_history_user_ids ) ) {
 		}
 	}
 }
+
+$almgr_loan_labels = almgr_get_loan_status_labels();
 ?>
 <table class="almgr-history-table almgr-responsive-table">
 	<caption class="screen-reader-text">
@@ -64,7 +66,6 @@ if ( ! empty( $almgr_history_user_ids ) ) {
 				: __( 'System', 'asset-lending-manager' );
 			$almgr_request_date     = isset( $almgr_entry->changed_at ) ? mysql2date( 'd/m/Y', $almgr_entry->changed_at ) : '-';
 			$almgr_entry_status     = $almgr_entry->status;
-			$almgr_loan_labels      = almgr_get_loan_status_labels();
 			$almgr_status_label     = $almgr_loan_labels[ $almgr_entry_status ] ?? $almgr_entry_status;
 			$almgr_status_class     = 'almgr-status--' . $almgr_entry_status;
 			$almgr_full_message     = sanitize_text_field( (string) $almgr_entry->message );

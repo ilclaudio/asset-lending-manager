@@ -1002,14 +1002,19 @@ class ALMGR_Loan_Manager {
 			);
 		}
 
-		$table_name = $wpdb->prefix . 'almgr_loan_requests_history';
-		$total      = $this->count_asset_history( $asset_id, $user_id );
+		$table_name  = $wpdb->prefix . 'almgr_loan_requests_history';
+		$total       = $this->count_asset_history( $asset_id, $user_id );
 
 		if ( $total <= 0 ) {
 			return array(
 				'items' => array(),
 				'total' => 0,
 			);
+		}
+
+		$total_pages = (int) ceil( $total / $per_page );
+		if ( $page > $total_pages ) {
+			$page = $total_pages;
 		}
 
 		$offset = ( $page - 1 ) * $per_page;

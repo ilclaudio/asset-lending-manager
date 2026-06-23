@@ -19,8 +19,9 @@ defined( 'ABSPATH' ) || exit;
 $almgr_active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'frontend'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin tab navigation; no state change occurs.
 $almgr_saved      = isset( $_GET['saved'] ) && '1' === sanitize_key( wp_unslash( $_GET['saved'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only status flag set by redirect after save; no state change occurs.
 
-$almgr_settings = new ALMGR_Settings_Manager();
-$almgr_is_admin = current_user_can( 'manage_options' );
+$almgr_settings       = new ALMGR_Settings_Manager();
+$almgr_is_admin       = current_user_can( 'manage_options' );
+$almgr_is_block_theme = wp_is_block_theme();
 
 $almgr_tabs = array(
 	'frontend'      => __( 'Frontend', 'asset-lending-manager' ),
@@ -597,19 +598,28 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 					</th>
 					<td>
 						<?php
-						wp_dropdown_pages(
+						$almgr_disable_field = ( ! $almgr_is_admin || ! $almgr_is_block_theme );
+						$almgr_select        = wp_dropdown_pages(
 							array(
-								'name'              => 'almgr_frontend_assets_page_id',
-								'id'                => 'almgr_frontend_assets_page_id',
-								'selected'          => (int) $almgr_settings->get( 'frontend.assets_page_id' ),
-								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
-								'option_none_value' => '0',
-								'disabled'          => absint( ! $almgr_is_admin ),
+								'name'             => 'almgr_frontend_assets_page_id',
+								'id'               => 'almgr_frontend_assets_page_id',
+								'selected'         => (int) $almgr_settings->get( 'frontend.assets_page_id' ),
+								'show_option_none' => esc_html__( '— Not set —', 'asset-lending-manager' ),
+								'option_none_value'=> '0',
+								'echo'             => 0,
 							)
 						);
+						if ( $almgr_disable_field ) {
+							$almgr_select = str_replace( '<select ', '<select disabled ', $almgr_select );
+						}
+						echo $almgr_select; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output from wp_dropdown_pages().
 						?>
 						<p class="description">
-							<?php esc_html_e( 'Page containing the asset list ([almgr_asset_list]). If you are not using shortcodes, select "— Not set —".', 'asset-lending-manager' ); ?>
+							<?php if ( $almgr_is_block_theme ) : ?>
+								<?php esc_html_e( 'Page containing the asset list ([almgr_asset_list]). Required with block themes.', 'asset-lending-manager' ); ?>
+							<?php else : ?>
+								<?php esc_html_e( 'Not needed: your classic theme handles the asset archive via its built-in template.', 'asset-lending-manager' ); ?>
+							<?php endif; ?>
 						</p>
 					</td>
 				</tr>
@@ -622,19 +632,28 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 					</th>
 					<td>
 						<?php
-						wp_dropdown_pages(
+						$almgr_disable_field = ( ! $almgr_is_admin || ! $almgr_is_block_theme );
+						$almgr_select        = wp_dropdown_pages(
 							array(
-								'name'              => 'almgr_frontend_asset_view_page_id',
-								'id'                => 'almgr_frontend_asset_view_page_id',
-								'selected'          => (int) $almgr_settings->get( 'frontend.asset_view_page_id' ),
-								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
-								'option_none_value' => '0',
-								'disabled'          => absint( ! $almgr_is_admin ),
+								'name'             => 'almgr_frontend_asset_view_page_id',
+								'id'               => 'almgr_frontend_asset_view_page_id',
+								'selected'         => (int) $almgr_settings->get( 'frontend.asset_view_page_id' ),
+								'show_option_none' => esc_html__( '— Not set —', 'asset-lending-manager' ),
+								'option_none_value'=> '0',
+								'echo'             => 0,
 							)
 						);
+						if ( $almgr_disable_field ) {
+							$almgr_select = str_replace( '<select ', '<select disabled ', $almgr_select );
+						}
+						echo $almgr_select; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output from wp_dropdown_pages().
 						?>
 						<p class="description">
-							<?php esc_html_e( 'Page containing the asset detail view ([almgr_asset_view]). If you are not using shortcodes, select "— Not set —".', 'asset-lending-manager' ); ?>
+							<?php if ( $almgr_is_block_theme ) : ?>
+								<?php esc_html_e( 'Page containing the asset detail view ([almgr_asset_view]). Required with block themes.', 'asset-lending-manager' ); ?>
+							<?php else : ?>
+								<?php esc_html_e( 'Not needed: your classic theme handles the asset detail view via its built-in template.', 'asset-lending-manager' ); ?>
+							<?php endif; ?>
 						</p>
 					</td>
 				</tr>
@@ -647,16 +666,20 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 					</th>
 					<td>
 						<?php
-						wp_dropdown_pages(
+						$almgr_select = wp_dropdown_pages(
 							array(
-								'name'              => 'almgr_frontend_asset_history_page_id',
-								'id'                => 'almgr_frontend_asset_history_page_id',
-								'selected'          => (int) $almgr_settings->get( 'frontend.asset_history_page_id' ),
-								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
-								'option_none_value' => '0',
-								'disabled'          => absint( ! $almgr_is_admin ),
+								'name'             => 'almgr_frontend_asset_history_page_id',
+								'id'               => 'almgr_frontend_asset_history_page_id',
+								'selected'         => (int) $almgr_settings->get( 'frontend.asset_history_page_id' ),
+								'show_option_none' => esc_html__( '— Not set —', 'asset-lending-manager' ),
+								'option_none_value'=> '0',
+								'echo'             => 0,
 							)
 						);
+						if ( ! $almgr_is_admin ) {
+							$almgr_select = str_replace( '<select ', '<select disabled ', $almgr_select );
+						}
+						echo $almgr_select; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output from wp_dropdown_pages().
 						?>
 						<p class="description">
 							<?php esc_html_e( 'Page containing the full asset history view ([almgr_asset_history]). Leave empty to keep the feature disabled. On classic themes, the plugin automatically applies a full-width layout for this page — no manual template selection needed.', 'asset-lending-manager' ); ?>
@@ -672,16 +695,20 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 					</th>
 					<td>
 						<?php
-						wp_dropdown_pages(
+						$almgr_select = wp_dropdown_pages(
 							array(
-								'name'              => 'almgr_frontend_login_redirect_page_id',
-								'id'                => 'almgr_frontend_login_redirect_page_id',
-								'selected'          => (int) $almgr_settings->get( 'frontend.login_redirect_page_id' ),
-								'show_option_none'  => esc_html__( '— Default (/asset/) —', 'asset-lending-manager' ),
-								'option_none_value' => '0',
-								'disabled'          => absint( ! $almgr_is_admin ),
+								'name'             => 'almgr_frontend_login_redirect_page_id',
+								'id'               => 'almgr_frontend_login_redirect_page_id',
+								'selected'         => (int) $almgr_settings->get( 'frontend.login_redirect_page_id' ),
+								'show_option_none' => esc_html__( '— Default (/asset/) —', 'asset-lending-manager' ),
+								'option_none_value'=> '0',
+								'echo'             => 0,
 							)
 						);
+						if ( ! $almgr_is_admin ) {
+							$almgr_select = str_replace( '<select ', '<select disabled ', $almgr_select );
+						}
+						echo $almgr_select; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output from wp_dropdown_pages().
 						?>
 						<p class="description">
 							<?php esc_html_e( 'Page members are redirected to after login. Leave empty to use the default asset archive URL (/asset/).', 'asset-lending-manager' ); ?>
@@ -697,16 +724,20 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 					</th>
 					<td>
 						<?php
-						wp_dropdown_pages(
+						$almgr_select = wp_dropdown_pages(
 							array(
-								'name'              => 'almgr_frontend_logout_redirect_page_id',
-								'id'                => 'almgr_frontend_logout_redirect_page_id',
-								'selected'          => (int) $almgr_settings->get( 'frontend.logout_redirect_page_id' ),
-								'show_option_none'  => esc_html__( '— Default (home) —', 'asset-lending-manager' ),
-								'option_none_value' => '0',
-								'disabled'          => absint( ! $almgr_is_admin ),
+								'name'             => 'almgr_frontend_logout_redirect_page_id',
+								'id'               => 'almgr_frontend_logout_redirect_page_id',
+								'selected'         => (int) $almgr_settings->get( 'frontend.logout_redirect_page_id' ),
+								'show_option_none' => esc_html__( '— Default (home) —', 'asset-lending-manager' ),
+								'option_none_value'=> '0',
+								'echo'             => 0,
 							)
 						);
+						if ( ! $almgr_is_admin ) {
+							$almgr_select = str_replace( '<select ', '<select disabled ', $almgr_select );
+						}
+						echo $almgr_select; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output from wp_dropdown_pages().
 						?>
 						<p class="description">
 							<?php esc_html_e( 'Page members are redirected to after logout. Leave empty to use the site home page.', 'asset-lending-manager' ); ?>

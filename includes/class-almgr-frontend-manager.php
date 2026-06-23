@@ -530,8 +530,6 @@ class ALMGR_Frontend_Manager {
 				$almgr_total_pages = $almgr_total > 0 ? (int) ceil( $almgr_total / $almgr_per_page ) : 0;
 				if ( $almgr_total_pages > 0 && $almgr_current_page > $almgr_total_pages ) {
 					$almgr_current_page = $almgr_total_pages;
-					$almgr_result       = ALMGR_Plugin_Manager::get_instance()->get_module( 'loan' )->get_asset_history_paginated( $almgr_asset_id, $almgr_per_page, $almgr_current_page, $almgr_caller_id );
-					$almgr_history      = $almgr_result['items'];
 				}
 			} else {
 				$almgr_asset_id = 0;

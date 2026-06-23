@@ -487,17 +487,21 @@ class ALMGR_Plugin_Manager {
 			$changes['frontend.default_filters_open'] = isset( $_POST['almgr_frontend_default_filters_open'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
-				$assets_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_assets_page_id'] ?? 0 ) ) );
-				if ( $assets_page_id > 0 && ! get_post( $assets_page_id ) ) {
-					$assets_page_id = (int) $this->modules['settings']->get( 'frontend.assets_page_id', 0 );
-				}
-				$changes['frontend.assets_page_id'] = $assets_page_id;
+				// Archive and detail page IDs are only configurable with block themes.
+				// In classic themes the fields are disabled — preserve existing values.
+				if ( wp_is_block_theme() ) {
+					$assets_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_assets_page_id'] ?? 0 ) ) );
+					if ( $assets_page_id > 0 && ! get_post( $assets_page_id ) ) {
+						$assets_page_id = (int) $this->modules['settings']->get( 'frontend.assets_page_id', 0 );
+					}
+					$changes['frontend.assets_page_id'] = $assets_page_id;
 
-				$asset_view_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_asset_view_page_id'] ?? 0 ) ) );
-				if ( $asset_view_page_id > 0 && ! get_post( $asset_view_page_id ) ) {
-					$asset_view_page_id = (int) $this->modules['settings']->get( 'frontend.asset_view_page_id', 0 );
+					$asset_view_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_asset_view_page_id'] ?? 0 ) ) );
+					if ( $asset_view_page_id > 0 && ! get_post( $asset_view_page_id ) ) {
+						$asset_view_page_id = (int) $this->modules['settings']->get( 'frontend.asset_view_page_id', 0 );
+					}
+					$changes['frontend.asset_view_page_id'] = $asset_view_page_id;
 				}
-				$changes['frontend.asset_view_page_id'] = $asset_view_page_id;
 
 				$asset_history_page_id = max( 0, absint( wp_unslash( $_POST['almgr_frontend_asset_history_page_id'] ?? 0 ) ) );
 				if ( $asset_history_page_id > 0 && ! get_post( $asset_history_page_id ) ) {
