@@ -601,12 +601,12 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						$almgr_disable_field = ( ! $almgr_is_admin || ! $almgr_is_block_theme );
 						$almgr_select        = wp_dropdown_pages(
 							array(
-								'name'             => 'almgr_frontend_assets_page_id',
-								'id'               => 'almgr_frontend_assets_page_id',
-								'selected'         => (int) $almgr_settings->get( 'frontend.assets_page_id' ),
-								'show_option_none' => esc_html__( '— Not set —', 'asset-lending-manager' ),
-								'option_none_value'=> '0',
-								'echo'             => 0,
+								'name'              => 'almgr_frontend_assets_page_id',
+								'id'                => 'almgr_frontend_assets_page_id',
+								'selected'          => (int) $almgr_settings->get( 'frontend.assets_page_id' ),
+								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
+								'option_none_value' => '0',
+								'echo'              => 0,
 							)
 						);
 						if ( $almgr_disable_field ) {
@@ -635,12 +635,12 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						$almgr_disable_field = ( ! $almgr_is_admin || ! $almgr_is_block_theme );
 						$almgr_select        = wp_dropdown_pages(
 							array(
-								'name'             => 'almgr_frontend_asset_view_page_id',
-								'id'               => 'almgr_frontend_asset_view_page_id',
-								'selected'         => (int) $almgr_settings->get( 'frontend.asset_view_page_id' ),
-								'show_option_none' => esc_html__( '— Not set —', 'asset-lending-manager' ),
-								'option_none_value'=> '0',
-								'echo'             => 0,
+								'name'              => 'almgr_frontend_asset_view_page_id',
+								'id'                => 'almgr_frontend_asset_view_page_id',
+								'selected'          => (int) $almgr_settings->get( 'frontend.asset_view_page_id' ),
+								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
+								'option_none_value' => '0',
+								'echo'              => 0,
 							)
 						);
 						if ( $almgr_disable_field ) {
@@ -668,12 +668,12 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						<?php
 						$almgr_select = wp_dropdown_pages(
 							array(
-								'name'             => 'almgr_frontend_asset_history_page_id',
-								'id'               => 'almgr_frontend_asset_history_page_id',
-								'selected'         => (int) $almgr_settings->get( 'frontend.asset_history_page_id' ),
-								'show_option_none' => esc_html__( '— Not set —', 'asset-lending-manager' ),
-								'option_none_value'=> '0',
-								'echo'             => 0,
+								'name'              => 'almgr_frontend_asset_history_page_id',
+								'id'                => 'almgr_frontend_asset_history_page_id',
+								'selected'          => (int) $almgr_settings->get( 'frontend.asset_history_page_id' ),
+								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
+								'option_none_value' => '0',
+								'echo'              => 0,
 							)
 						);
 						if ( ! $almgr_is_admin ) {
@@ -697,12 +697,12 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						<?php
 						$almgr_select = wp_dropdown_pages(
 							array(
-								'name'             => 'almgr_frontend_login_redirect_page_id',
-								'id'               => 'almgr_frontend_login_redirect_page_id',
-								'selected'         => (int) $almgr_settings->get( 'frontend.login_redirect_page_id' ),
-								'show_option_none' => esc_html__( '— Default (/asset/) —', 'asset-lending-manager' ),
-								'option_none_value'=> '0',
-								'echo'             => 0,
+								'name'              => 'almgr_frontend_login_redirect_page_id',
+								'id'                => 'almgr_frontend_login_redirect_page_id',
+								'selected'          => (int) $almgr_settings->get( 'frontend.login_redirect_page_id' ),
+								'show_option_none'  => esc_html__( '— Default (/asset/) —', 'asset-lending-manager' ),
+								'option_none_value' => '0',
+								'echo'              => 0,
 							)
 						);
 						if ( ! $almgr_is_admin ) {
@@ -726,12 +726,12 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						<?php
 						$almgr_select = wp_dropdown_pages(
 							array(
-								'name'             => 'almgr_frontend_logout_redirect_page_id',
-								'id'               => 'almgr_frontend_logout_redirect_page_id',
-								'selected'         => (int) $almgr_settings->get( 'frontend.logout_redirect_page_id' ),
-								'show_option_none' => esc_html__( '— Default (home) —', 'asset-lending-manager' ),
-								'option_none_value'=> '0',
-								'echo'             => 0,
+								'name'              => 'almgr_frontend_logout_redirect_page_id',
+								'id'                => 'almgr_frontend_logout_redirect_page_id',
+								'selected'          => (int) $almgr_settings->get( 'frontend.logout_redirect_page_id' ),
+								'show_option_none'  => esc_html__( '— Default (home) —', 'asset-lending-manager' ),
+								'option_none_value' => '0',
+								'echo'              => 0,
 							)
 						);
 						if ( ! $almgr_is_admin ) {

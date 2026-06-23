@@ -162,3 +162,19 @@ Run lint:
 composer lint
 composer lint:fix
 ```
+
+### Tests
+
+**Unit tests** run without a WordPress installation and require no environment setup:
+```bash
+composer test:unit
+```
+
+Unit tests are also enforced automatically by the pre-commit hook — a failing suite blocks the commit.
+
+**Integration tests** run against a real WordPress environment and a dedicated test database.
+```bash
+composer test:integration
+```
+
+For environment setup instructions (database, `wordpress-develop` checkout, configuration file) see [`tests/integration/README.md`](tests/integration/README.md).

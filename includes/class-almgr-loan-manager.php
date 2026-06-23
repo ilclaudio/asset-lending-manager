@@ -1002,8 +1002,8 @@ class ALMGR_Loan_Manager {
 			);
 		}
 
-		$table_name  = $wpdb->prefix . 'almgr_loan_requests_history';
-		$total       = $this->count_asset_history( $asset_id, $user_id );
+		$table_name = $wpdb->prefix . 'almgr_loan_requests_history';
+		$total      = $this->count_asset_history( $asset_id, $user_id );
 
 		if ( $total <= 0 ) {
 			return array(
@@ -1165,19 +1165,26 @@ class ALMGR_Loan_Manager {
 						'reason_label' => $reason_label,
 					);
 				} else {
-					$plan['included_components'][]  = array(
+					$plan['included_components'][] = array(
 						'id'             => $component_id,
 						'title'          => $component_title,
 						'state'          => $component_state,
 						'previous_owner' => $component_owner,
 					);
-					$plan['transfer_asset_ids'][] = $component_id;
-					$plan['location_clear_ids'][] = $component_id;
+					$plan['transfer_asset_ids'][]  = $component_id;
+					$plan['location_clear_ids'][]  = $component_id;
 				}
 			}
 		}
 
-		ALMGR_Logger::debug( 'build_kit_transfer_plan', array( 'kit_id' => $kit_id, 'new_owner_id' => $new_owner_id, 'plan' => $plan ) );
+		ALMGR_Logger::debug(
+			'build_kit_transfer_plan',
+			array(
+				'kit_id'       => $kit_id,
+				'new_owner_id' => $new_owner_id,
+				'plan'         => $plan,
+			)
+		);
 
 		return $plan;
 	}
@@ -2024,7 +2031,14 @@ class ALMGR_Loan_Manager {
 		);
 
 		if ( ! $is_kit ) {
-			ALMGR_Logger::debug( 'build_kit_state_change_plan', array( 'kit_id' => $kit_id, 'target_state' => $target_state, 'plan' => $plan ) );
+			ALMGR_Logger::debug(
+				'build_kit_state_change_plan',
+				array(
+					'kit_id'       => $kit_id,
+					'target_state' => $target_state,
+					'plan'         => $plan,
+				)
+			);
 			return $plan;
 		}
 
@@ -2046,13 +2060,11 @@ class ALMGR_Loan_Manager {
 						$reason_code  = 'not_controlled_by_kit';
 						$reason_label = __( 'Component is not controlled by this kit.', 'asset-lending-manager' );
 					}
-				} else {
+				} elseif ( $component_state !== $kit_state || 0 !== $component_owner ) {
 					// Restore from maintenance/retired: include only components in the same state with no owner.
-					if ( $component_state !== $kit_state || 0 !== $component_owner ) {
-						$exclude      = true;
-						$reason_code  = 'not_controlled_by_kit';
-						$reason_label = __( 'Component is not controlled by this kit.', 'asset-lending-manager' );
-					}
+					$exclude      = true;
+					$reason_code  = 'not_controlled_by_kit';
+					$reason_label = __( 'Component is not controlled by this kit.', 'asset-lending-manager' );
 				}
 			} elseif ( in_array( $component_state, array( 'maintenance', 'retired' ), true ) ) {
 				// Already in a non-active state; never touched by kit transitions.
@@ -2092,7 +2104,14 @@ class ALMGR_Loan_Manager {
 			}
 		}
 
-		ALMGR_Logger::debug( 'build_kit_state_change_plan', array( 'kit_id' => $kit_id, 'target_state' => $target_state, 'plan' => $plan ) );
+		ALMGR_Logger::debug(
+			'build_kit_state_change_plan',
+			array(
+				'kit_id'       => $kit_id,
+				'target_state' => $target_state,
+				'plan'         => $plan,
+			)
+		);
 		return $plan;
 	}
 
@@ -2310,7 +2329,10 @@ class ALMGR_Loan_Manager {
 						if ( $current !== $location ) {
 							ALMGR_Logger::warning(
 								'Failed to set almgr_location after state change',
-								array( 'asset_id' => $target_id, 'location' => $location )
+								array(
+									'asset_id' => $target_id,
+									'location' => $location,
+								)
 							);
 						}
 					}
@@ -2411,6 +2433,7 @@ class ALMGR_Loan_Manager {
 			// Read back to confirm whether the component is still listed.
 			$after = $this->get_kit_components( $kit_id );
 			if ( in_array( (int) $component_id, $after, true ) ) {
+				// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 				throw new Exception(
 					sprintf(
 						/* translators: 1: component post ID, 2: kit post ID */
@@ -2419,6 +2442,7 @@ class ALMGR_Loan_Manager {
 						$kit_id
 					)
 				);
+				// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 			}
 		}
 	}
@@ -2439,11 +2463,12 @@ class ALMGR_Loan_Manager {
 		}
 
 		$current_ids[] = (int) $component_id;
-		$written        = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $current_ids, $kit_id );
+		$written       = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_components', $current_ids, $kit_id );
 		if ( ! $written ) {
 			// Read back to confirm whether the write actually took effect.
 			$after = $this->get_kit_components( $kit_id );
 			if ( ! in_array( (int) $component_id, $after, true ) ) {
+				// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 				throw new Exception(
 					sprintf(
 						/* translators: 1: component post ID, 2: kit post ID */
@@ -2452,6 +2477,7 @@ class ALMGR_Loan_Manager {
 						$kit_id
 					)
 				);
+				// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 			}
 		}
 	}
@@ -2618,7 +2644,10 @@ class ALMGR_Loan_Manager {
 						if ( $current !== $location ) {
 							ALMGR_Logger::warning(
 								'Failed to set almgr_location after state restore',
-								array( 'asset_id' => $target_id, 'location' => $location )
+								array(
+									'asset_id' => $target_id,
+									'location' => $location,
+								)
 							);
 						}
 					}
