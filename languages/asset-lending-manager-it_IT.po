@@ -300,15 +300,15 @@ msgstr "Dettaglio della risorsa"
 #: templates/shortcodes/asset-history.php:42
 #: templates/shortcodes/asset-history.php:44
 msgid "Asset history"
-msgstr ""
+msgstr "Cronologia risorsa"
 
 #: admin/almgr-settings-page.php:663
 msgid "Asset history page"
-msgstr ""
+msgstr "Pagina cronologia risorsa"
 
 #: templates/shortcodes/asset-history.php:135
 msgid "Asset history pagination"
-msgstr ""
+msgstr "Paginazione cronologia risorsa"
 
 #: includes/class-almgr-loan-manager.php:328
 #: includes/class-almgr-loan-manager.php:617
@@ -423,7 +423,7 @@ msgstr "Strutture risorsa"
 
 #: templates/shortcodes/asset-history.php:77
 msgid "Asset suggestions"
-msgstr ""
+msgstr "Suggerimenti risorse"
 
 #: templates/shortcodes/asset-view.php:103
 msgid "Asset taxonomies"
@@ -441,7 +441,7 @@ msgstr "Tipi risorsa"
 
 #: templates/shortcodes/asset-history.php:102
 msgid "Asset:"
-msgstr ""
+msgstr "Risorsa:"
 
 #. parent slug.
 #. page title.
@@ -655,22 +655,22 @@ msgstr "Il componente \"%s\" non è valido."
 #: includes/class-almgr-loan-manager.php:1146
 #: includes/class-almgr-loan-manager.php:2063
 msgid "Component has been retired."
-msgstr ""
+msgstr "Il componente è stato ritirato."
 
 #: includes/class-almgr-loan-manager.php:2047
 #: includes/class-almgr-loan-manager.php:2054
 #: includes/class-almgr-loan-manager.php:2071
 msgid "Component is not controlled by this kit."
-msgstr ""
+msgstr "Il componente non è gestito da questo kit."
 
 #: includes/class-almgr-loan-manager.php:1151
 msgid "Component is on loan to another user."
-msgstr ""
+msgstr "Il componente è in prestito a un altro utente."
 
 #: includes/class-almgr-loan-manager.php:1142
 #: includes/class-almgr-loan-manager.php:2062
 msgid "Component is under maintenance."
-msgstr ""
+msgstr "Il componente è in manutenzione."
 
 #. %s: missing kit component title from CSV.
 #: includes/class-almgr-tools-manager.php:1680
@@ -680,7 +680,7 @@ msgstr "Componente non trovato: \"%s\"."
 
 #: includes/class-almgr-loan-manager.php:1155
 msgid "Component state is unknown."
-msgstr ""
+msgstr "Lo stato del componente è sconosciuto."
 
 #: includes/class-almgr-acf-asset-adapter.php:34
 #: includes/class-almgr-asset-manager.php:370
@@ -738,6 +738,9 @@ msgid ""
 "becomes the full history page used by the \"View full history\" link for "
 "operators."
 msgstr ""
+"Crea una terza pagina e aggiungi lo shortcode [almgr_asset_history]. Questa "
+"diventerà la pagina della cronologia completa usata dal link \"Vedi "
+"cronologia completa\" per gli operatori."
 
 #: admin/almgr-tools-page.php:192 admin/almgr-tools-page.php:400
 msgid "create_only"
@@ -899,6 +902,10 @@ msgid ""
 "Assign the page in Settings → Frontend; on classic themes the plugin applies "
 "a full-width layout automatically."
 msgstr ""
+"Incorpora la pagina della cronologia completa dei prestiti per una risorsa "
+"selezionata. Solo per operatori. Assegna la pagina in Impostazioni → "
+"Frontend; nei temi classici il plugin applica automaticamente un layout a "
+"larghezza intera."
 
 #: admin/almgr-settings-page.php:911
 msgid "Enable ALM logging"
@@ -951,7 +958,7 @@ msgstr "Errori"
 #: includes/class-almgr-loan-manager.php:1315
 #, php-format
 msgid "Excluded components: %s."
-msgstr ""
+msgstr "Componenti esclusi: %s."
 
 #: admin/almgr-tools-page.php:205 admin/almgr-tools-page.php:411
 msgid "execute (write changes)"
@@ -1012,7 +1019,7 @@ msgstr "Codice esterno"
 #: includes/class-almgr-loan-manager.php:2450
 #, php-format
 msgid "Failed to add component %1$d to kit %2$d."
-msgstr ""
+msgstr "Impossibile aggiungere il componente %1$d al kit %2$d."
 
 #: assets/js/frontend-assets.js:1179
 msgid "Failed to approve loan request. Please try again."
@@ -1083,7 +1090,7 @@ msgstr "Impossibile rifiutare la richiesta. Riprova."
 #: includes/class-almgr-loan-manager.php:2417
 #, php-format
 msgid "Failed to remove component %1$d from kit %2$d."
-msgstr ""
+msgstr "Impossibile rimuovere il componente %1$d dal kit %2$d."
 
 #: assets/js/frontend-assets.js:1195
 msgid "Failed to restore asset. Please try again."
@@ -1402,6 +1409,10 @@ msgid ""
 "to the second, and \"Asset history page\" to the third. This ensures all "
 "frontend asset and history links point to the correct pages."
 msgstr ""
+"In %s, imposta \"Pagina archivio risorse\" sulla prima pagina, \"Dettaglio "
+"della risorsa\" sulla seconda e \"Pagina cronologia risorsa\" sulla terza. "
+"In questo modo tutti i link frontend alle risorse e alla cronologia puntano "
+"alle pagine corrette."
 
 #: admin/almgr-settings-page.php:943
 msgid "Info — informational and above"
@@ -1556,13 +1567,13 @@ msgstr "Storico dei prestiti"
 #: templates/shortcodes/asset-history.php:39
 #: templates/shortcodes/partials/asset-history-table.php:14
 msgid "Loan history entries"
-msgstr ""
+msgstr "Voci della cronologia prestiti"
 
 #. %s: asset title
 #: templates/shortcodes/asset-history.php:36
 #, php-format
 msgid "Loan history entries for %s"
-msgstr ""
+msgstr "Voci della cronologia prestiti per %s"
 
 #: admin/almgr-settings-page.php:351
 msgid "Loan Limits"
@@ -1891,12 +1902,16 @@ msgid ""
 "Not needed: your classic theme handles the asset archive via its built-in "
 "template."
 msgstr ""
+"Non necessario: il tuo tema classico gestisce l'archivio delle risorse "
+"tramite il suo template integrato."
 
 #: admin/almgr-settings-page.php:655
 msgid ""
 "Not needed: your classic theme handles the asset detail view via its built-"
 "in template."
 msgstr ""
+"Non necessario: il tuo tema classico gestisce la vista di dettaglio della "
+"risorsa tramite il suo template integrato."
 
 #: templates/shortcodes/asset-view.php:278
 #: templates/shortcodes/asset-view.php:741
@@ -2062,12 +2077,16 @@ msgid ""
 "Page containing the asset detail view ([almgr_asset_view]). Required with "
 "block themes."
 msgstr ""
+"Pagina contenente la vista di dettaglio della risorsa ([almgr_asset_view]). "
+"Obbligatoria con i temi a blocchi."
 
 #: admin/almgr-settings-page.php:619
 msgid ""
 "Page containing the asset list ([almgr_asset_list]). Required with block "
 "themes."
 msgstr ""
+"Pagina contenente l'elenco delle risorse ([almgr_asset_list]). Obbligatoria "
+"con i temi a blocchi."
 
 #: admin/almgr-settings-page.php:685
 msgid ""
@@ -2076,6 +2095,11 @@ msgid ""
 "automatically applies a full-width layout for this page — no manual template "
 "selection needed."
 msgstr ""
+"Pagina contenente la vista della cronologia completa delle risorse "
+"([almgr_asset_history]). Lascia vuoto per mantenere la funzionalità "
+"disabilitata. Con i temi classici, il plugin applica automaticamente un "
+"layout a larghezza intera per questa pagina: non è necessaria alcuna "
+"selezione manuale del template."
 
 #: admin/almgr-settings-page.php:587
 msgid "Page Links"
@@ -2413,7 +2437,7 @@ msgstr "Ritirato"
 
 #: templates/shortcodes/asset-history.php:119
 msgid "Rows per page"
-msgstr ""
+msgstr "Righe per pagina"
 
 #: admin/almgr-tools-page.php:418
 msgid "Run Assets Import"
@@ -2474,7 +2498,7 @@ msgstr "Cerca"
 
 #: templates/shortcodes/asset-history.php:60
 msgid "Search and select an asset..."
-msgstr ""
+msgstr "Cerca e seleziona una risorsa..."
 
 #: includes/class-almgr-asset-manager.php:100
 msgid "Search Assets"
@@ -2494,7 +2518,7 @@ msgstr "Comportamento di ricerca"
 
 #: templates/shortcodes/asset-history.php:46
 msgid "Search for an asset to browse its full loan history."
-msgstr ""
+msgstr "Cerca una risorsa per consultarne la cronologia completa dei prestiti."
 
 #: templates/shortcodes/asset-view.php:534
 msgid "Search member or operator..."
@@ -2684,7 +2708,7 @@ msgstr "Account amministratore protetto ignorato."
 
 #: assets/js/frontend-assets.js:1528
 msgid "Some kit components were not transferred:"
-msgstr ""
+msgstr "Alcuni componenti del kit non sono stati trasferiti:"
 
 #: templates/shortcodes/asset-list.php:148
 #: templates/shortcodes/asset-view.php:131
