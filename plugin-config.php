@@ -286,9 +286,11 @@ function almgr_get_allowed_html() {
 			'style'             => true,
 		),
 		'select'   => array(
-			'id'    => true,
-			'name'  => true,
-			'class' => true,
+			'id'       => true,
+			'name'     => true,
+			'class'    => true,
+			'form'     => true,
+			'onchange' => true,
 		),
 		'option'   => array(
 			'value'    => true,
@@ -313,6 +315,7 @@ function almgr_get_allowed_html() {
 			'data-request-id'   => true,
 			'data-asset-id'     => true,
 			'data-target-state' => true,
+			'data-scan-dest'    => true,
 			'style'             => true,
 		),
 	);

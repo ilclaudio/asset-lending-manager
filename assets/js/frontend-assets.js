@@ -1304,6 +1304,7 @@
 			}
 
 			btn.addEventListener('click', function() {
+				var scanDest   = btn.getAttribute('data-scan-dest') || '';
 				var overlay    = document.createElement('div');
 				var inner      = document.createElement('div');
 				var video      = document.createElement('video');
@@ -1407,7 +1408,12 @@
 										var parsed  = new URL(decoded);
 										if (parsed.origin === window.location.origin && parsed.searchParams.has('almgr_scan')) {
 											stopScanner();
-											window.location.href = decoded;
+											if (scanDest) {
+												parsed.searchParams.set('almgr_dest', scanDest);
+												window.location.href = parsed.toString();
+											} else {
+												window.location.href = decoded;
+											}
 											return;
 										}
 										// Non-ALMGR or foreign-origin QR: ignore and keep scanning.

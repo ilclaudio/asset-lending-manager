@@ -541,13 +541,14 @@ class ALMGR_Frontend_Manager {
 		ob_start();
 		$this->render_asset_history_template(
 			array(
-				'almgr_asset_id'       => $almgr_asset_id,
-				'almgr_asset_title'    => $almgr_asset_title,
-				'almgr_per_page'       => $almgr_per_page,
-				'almgr_current_page'   => $almgr_current_page,
-				'almgr_history'        => $almgr_history,
-				'almgr_total'          => $almgr_total,
-				'almgr_total_pages'    => $almgr_total_pages,
+				'almgr_asset_id'        => $almgr_asset_id,
+				'almgr_asset_title'     => $almgr_asset_title,
+				'almgr_asset_url'       => $almgr_asset_id > 0 ? $this->build_asset_link( $almgr_asset_id ) : '',
+				'almgr_per_page'        => $almgr_per_page,
+				'almgr_current_page'    => $almgr_current_page,
+				'almgr_history'         => $almgr_history,
+				'almgr_total'           => $almgr_total,
+				'almgr_total_pages'     => $almgr_total_pages,
 				'almgr_qr_scan_enabled' => (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true ),
 			)
 		);
@@ -771,6 +772,18 @@ class ALMGR_Frontend_Manager {
 		$code    = substr( $code, 0, self::SCAN_QUERY_MAX_LENGTH );
 		$post_id = ALMGR_Asset_Manager::get_asset_id_from_code( $code );
 		if ( $post_id > 0 ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- almgr_dest is appended by the JS scanner when on the history page; no user-submitted form involved.
+			$dest = isset( $_GET['almgr_dest'] ) ? sanitize_key( wp_unslash( $_GET['almgr_dest'] ) ) : '';
+			if ( 'history' === $dest ) {
+				$history_page_id = (int) $this->settings->get( 'frontend.asset_history_page_id', 0 );
+				if ( $history_page_id > 0 ) {
+					$history_url = get_permalink( $history_page_id );
+					if ( $history_url ) {
+						wp_safe_redirect( add_query_arg( 'almgr_asset_id', $post_id, $history_url ) );
+						exit;
+					}
+				}
+			}
 			wp_safe_redirect( $this->build_asset_link( $post_id ) );
 			exit;
 		}

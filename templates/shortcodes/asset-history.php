@@ -6,6 +6,7 @@
  * - $almgr_template_args array{
  *     almgr_asset_id:int,
  *     almgr_asset_title:string,
+ *     almgr_asset_url:string,
  *     almgr_per_page:int,
  *     almgr_current_page:int,
  *     almgr_history:array,
@@ -26,6 +27,7 @@ $almgr_current_page         = isset( $almgr_template_args['almgr_current_page'] 
 $almgr_history              = isset( $almgr_template_args['almgr_history'] ) && is_array( $almgr_template_args['almgr_history'] ) ? $almgr_template_args['almgr_history'] : array();
 $almgr_total                = isset( $almgr_template_args['almgr_total'] ) ? (int) $almgr_template_args['almgr_total'] : 0;
 $almgr_total_pages          = isset( $almgr_template_args['almgr_total_pages'] ) ? (int) $almgr_template_args['almgr_total_pages'] : 0;
+$almgr_asset_url            = isset( $almgr_template_args['almgr_asset_url'] ) ? (string) $almgr_template_args['almgr_asset_url'] : '';
 $almgr_qr_scan_enabled      = ! empty( $almgr_template_args['almgr_qr_scan_enabled'] );
 $almgr_history_partial_path = trailingslashit( ALMGR_PLUGIN_DIR ) . 'templates/shortcodes/partials/asset-history-table.php';
 $almgr_history_caption      = $almgr_asset_title
@@ -79,6 +81,7 @@ $almgr_history_caption      = $almgr_asset_title
 					<button
 						type="button"
 						class="almgr-button almgr-button--secondary almgr-qr-scan-btn"
+						data-scan-dest="history"
 						aria-label="<?php esc_attr_e( 'Scan QR code to find an asset', 'asset-lending-manager' ); ?>"
 					>
 						<?php esc_html_e( 'Scan QR', 'asset-lending-manager' ); ?>
@@ -94,6 +97,18 @@ $almgr_history_caption      = $almgr_asset_title
 	</div>
 
 	<?php if ( $almgr_asset_id > 0 ) : ?>
+		<?php if ( $almgr_asset_title ) : ?>
+			<p class="almgr-asset-history-page__asset-label">
+				<?php esc_html_e( 'Asset:', 'asset-lending-manager' ); ?>
+				<?php if ( $almgr_asset_url ) : ?>
+					<a href="<?php echo esc_url( $almgr_asset_url ); ?>" class="almgr-asset-history-page__asset-link">
+						<?php echo esc_html( $almgr_asset_title ); ?>
+					</a>
+				<?php else : ?>
+					<?php echo esc_html( $almgr_asset_title ); ?>
+				<?php endif; ?>
+			</p>
+		<?php endif; ?>
 		<div class="almgr-asset-history-results">
 			<?php if ( ! empty( $almgr_history ) ) : ?>
 				<?php if ( file_exists( $almgr_history_partial_path ) ) : ?>

@@ -1220,6 +1220,20 @@
 		margin-bottom: 24px;
 	}
 
+	.almgr-asset-history-page__asset-label {
+		margin: 0 0 16px;
+		font-size: 1.1rem;
+		font-weight: 600;
+	}
+
+	.almgr-asset-history-page__asset-link {
+		text-decoration: none;
+	}
+
+	.almgr-asset-history-page__asset-link:hover {
+		text-decoration: underline;
+	}
+
 	.almgr-asset-history-filters,
 	.almgr-asset-history-results {
 		width: 100%;
