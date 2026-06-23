@@ -78,6 +78,7 @@ class ALMGR_Autocomplete_Manager {
 				'restUrl'   => esc_url( rest_url( 'almgr/v1/assets/autocomplete' ) ),
 				'restNonce' => wp_create_nonce( 'wp_rest' ),
 				'minChars'  => (int) $this->settings->get( 'autocomplete.min_chars', 3 ),
+				'widgets'   => $this->get_asset_autocomplete_widgets(),
 			)
 		);
 	}
@@ -195,11 +196,70 @@ class ALMGR_Autocomplete_Manager {
 		}
 
 		global $post;
-		if ( $post && ( has_shortcode( $post->post_content, 'almgr_asset_list' ) || has_shortcode( $post->post_content, 'almgr_asset_view' ) ) ) {
+		if ( $post && ( has_shortcode( $post->post_content, 'almgr_asset_list' ) || has_shortcode( $post->post_content, 'almgr_asset_view' ) || has_shortcode( $post->post_content, 'almgr_asset_history' ) ) ) {
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get asset autocomplete widget configurations for the current page.
+	 *
+	 * @return array<int, array<string, string|int>>
+	 */
+	private function get_asset_autocomplete_widgets() {
+		$widgets = array(
+			array(
+				'mode'       => 'navigate',
+				'inputId'    => 'almgr-search-input',
+				'dropdownId' => 'almgr_asset_autocomplete_dropdown',
+			),
+		);
+
+		if ( ! $this->is_asset_history_page() ) {
+			return $widgets;
+		}
+
+		$selected_asset_id = 0;
+		$selected_title    = '';
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only frontend filter used to prefill the autocomplete widget.
+		if ( isset( $_GET['almgr_asset_id'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only frontend filter used to prefill the autocomplete widget.
+			$selected_asset_id = absint( wp_unslash( $_GET['almgr_asset_id'] ) );
+		}
+
+		if ( $selected_asset_id > 0 ) {
+			$selected_post = get_post( $selected_asset_id );
+			if ( $selected_post instanceof WP_Post && ALMGR_ASSET_CPT_SLUG === $selected_post->post_type ) {
+				$selected_title = get_the_title( $selected_post );
+			} else {
+				$selected_asset_id = 0;
+			}
+		}
+
+		$widgets[] = array(
+			'mode'          => 'select',
+			'inputId'       => 'almgr-history-asset-input',
+			'hiddenId'      => 'almgr-history-asset-id',
+			'dropdownId'    => 'almgr_history_asset_autocomplete_dropdown',
+			'selectedId'    => $selected_asset_id,
+			'selectedTitle' => $selected_title,
+		);
+
+		return $widgets;
+	}
+
+	/**
+	 * Check whether the current page contains the asset history shortcode.
+	 *
+	 * @return bool
+	 */
+	private function is_asset_history_page() {
+		global $post;
+
+		return $post && has_shortcode( $post->post_content, 'almgr_asset_history' );
 	}
 
 	/**

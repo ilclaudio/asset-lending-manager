@@ -112,16 +112,24 @@ Direct assignment can also reassign an already on-loan asset while keeping state
    - `/asset/` — asset catalog with search filters
    - `/asset/asset-name/` — single asset detail page
 5. If `/asset/` returns 404, go to **Settings → Permalinks** and click **Save Changes** once.
+6. The full asset history page is not automatic. Create a normal WordPress page with the `[almgr_asset_history]` shortcode and assign it in **ALM → Settings → Frontend** as **Asset history page**.
 
 **Block themes:**
-4. Block themes do not support automatic PHP template overrides. Create two pages manually:
+4. Block themes do not support automatic PHP template overrides. Create three pages manually:
    - Add `[almgr_asset_list]` to a page — this is your asset catalog.
    - Add `[almgr_asset_view]` to a second page — this is your asset detail view.
-5. In **ALM → Settings → Frontend**, set "Asset archive page" and "Asset detail page" to the pages you just created. This ensures all asset links point to the correct detail page.
+   - Add `[almgr_asset_history]` to a third page — this is your full asset history page for operators.
+5. In **ALM → Settings → Frontend**, set "Asset archive page", "Asset detail page", and "Asset history page" to the pages you just created. This ensures all asset and history links point to the correct pages.
 
 6. Optionally configure email sender settings in wp-admin under **ALM → Settings**.
 
 Settings UI is available in wp-admin under the ALM menu.
+
+## Shortcodes
+
+- `[almgr_asset_list]` — embeds the full asset catalog with search filters into any page or post.
+- `[almgr_asset_view]` — embeds the detail view for a single asset.
+- `[almgr_asset_history]` — embeds the full loan history page for a selected asset. This page is operator-only and should be assigned in **ALM → Settings → Frontend** as **Asset history page**.
 
 ## Uninstall
 

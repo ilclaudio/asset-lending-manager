@@ -89,6 +89,7 @@ $almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 			<li><code>/asset/asset-name/</code> &mdash; <?php esc_html_e( 'single asset detail page', 'asset-lending-manager' ); ?></li>
 		</ul>
 		<p><?php esc_html_e( 'If /asset/ returns a 404, go to Settings > Permalinks and click Save Changes once.', 'asset-lending-manager' ); ?></p>
+		<p><?php esc_html_e( 'The full asset history page requires a dedicated WordPress page. Create a page with the [almgr_asset_history] shortcode and assign it in Settings → Frontend as "Asset history page". The plugin then automatically applies a full-width layout for that page — no manual template selection needed.', 'asset-lending-manager' ); ?></p>
 
 		<h3><?php esc_html_e( 'Block themes', 'asset-lending-manager' ); ?></h3>
 		<p><?php esc_html_e( 'Block themes do not support automatic PHP template overrides. The /asset/ and /asset/slug/ URLs exist but render the theme\'s default layout without any plugin content.', 'asset-lending-manager' ); ?></p>
@@ -96,11 +97,12 @@ $almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 		<ol>
 			<li><?php esc_html_e( 'Create a page and add the [almgr_asset_list] shortcode. This becomes your asset catalog.', 'asset-lending-manager' ); ?></li>
 			<li><?php esc_html_e( 'Create a second page and add the [almgr_asset_view] shortcode. This becomes the asset detail view.', 'asset-lending-manager' ); ?></li>
+			<li><?php esc_html_e( 'Create a third page and add the [almgr_asset_history] shortcode. This becomes the full history page used by the "View full history" link for operators.', 'asset-lending-manager' ); ?></li>
 			<li>
 				<?php
 				printf(
 					/* translators: %s: link to Frontend settings tab */
-					esc_html__( 'In %s, set "Asset archive page" to the first page and "Asset detail page" to the second. This ensures all asset links in the catalog point to the correct detail page.', 'asset-lending-manager' ),
+					esc_html__( 'In %s, set "Asset archive page" to the first page, "Asset detail page" to the second, and "Asset history page" to the third. This ensures all frontend asset and history links point to the correct pages.', 'asset-lending-manager' ),
 					'<a href="' . esc_url( admin_url( 'admin.php?page=almgr-settings&tab=frontend' ) ) . '">' . esc_html__( 'Settings &rarr; Frontend', 'asset-lending-manager' ) . '</a>'
 				);
 				?>
@@ -123,6 +125,10 @@ $almgr_logo_url = ALMGR_PLUGIN_URL . 'assets/img/ALM-logo-128x128.png';
 				<tr>
 					<td><code>[almgr_asset_view]</code></td>
 					<td><?php esc_html_e( 'Embeds the detail view for a single asset. On classic themes this is only needed for custom layouts; on block themes it is required.', 'asset-lending-manager' ); ?></td>
+				</tr>
+				<tr>
+					<td><code>[almgr_asset_history]</code></td>
+					<td><?php esc_html_e( 'Embeds the full loan history page for a selected asset. Operator-only. Assign the page in Settings → Frontend; on classic themes the plugin applies a full-width layout automatically.', 'asset-lending-manager' ); ?></td>
 				</tr>
 			</tbody>
 		</table>

@@ -189,9 +189,10 @@
 		border-radius: 4px;
 	}
 
-	/* Shared button palette for asset list and asset view */
+	/* Shared button palette for asset list, asset view and asset history page */
 	#almgr_asset_search_form,
-	.almgr-asset-view {
+	.almgr-asset-view,
+	.almgr-asset-history-page {
 		--almgr-btn-primary-bg: #0073aa;
 		--almgr-btn-primary-hover-bg: #006a9b;
 		--almgr-btn-primary-border: #243447;
@@ -211,9 +212,10 @@
 		--almgr-btn-danger-border: #b71c1c;
 	}
 
-	/* Search form - used in asset list */
+	/* Search form - used in asset list and asset history page */
 	.almgr-search-submit-btn,
 	#almgr_asset_search_form .almgr-form-actions button[type="submit"],
+	#almgr_asset_history_form .almgr-form-actions button[type="submit"],
 	.almgr-asset-view .almgr-button {
 		padding: 10px 16px;
 		font-size: 0.95rem;
@@ -229,13 +231,17 @@
 	}
 
 	.almgr-search-submit-btn,
-	#almgr_asset_search_form .almgr-form-actions button[type="submit"] {
+	#almgr_asset_search_form .almgr-form-actions button[type="submit"],
+	#almgr_asset_history_form .almgr-form-actions button[type="submit"] {
 		width: 100%;
-		margin-top: 8px;
+		margin-top: 0;
+		min-height: 44px;
+		box-sizing: border-box;
 	}
 
 	.almgr-search-submit-btn,
 	#almgr_asset_search_form .almgr-form-actions button[type="submit"],
+	#almgr_asset_history_form .almgr-form-actions button[type="submit"],
 	.almgr-asset-view .almgr-button,
 	.almgr-asset-view .almgr-button--primary {
 		background: var(--almgr-btn-primary-bg);
@@ -245,6 +251,7 @@
 
 	.almgr-search-submit-btn:hover,
 	#almgr_asset_search_form .almgr-form-actions button[type="submit"]:hover,
+	#almgr_asset_history_form .almgr-form-actions button[type="submit"]:hover,
 	.almgr-asset-view .almgr-button:hover,
 	.almgr-asset-view .almgr-button--primary:hover {
 		background: var(--almgr-btn-primary-hover-bg);
@@ -253,6 +260,7 @@
 
 	.almgr-search-submit-btn:focus-visible,
 	#almgr_asset_search_form .almgr-form-actions button[type="submit"]:focus-visible,
+	#almgr_asset_history_form .almgr-form-actions button[type="submit"]:focus-visible,
 	.almgr-asset-view .almgr-button:focus-visible,
 	.almgr-asset-view .almgr-button--primary:focus-visible {
 		outline: 2px solid var(--almgr-btn-primary-focus);
@@ -372,9 +380,14 @@
 		cursor: not-allowed;
 	}
 
-	#almgr_asset_search_form {
+	#almgr_asset_search_form,
+	#almgr_asset_history_form {
 		position: relative;
 		width: 100%;
+		box-sizing: border-box;
+	}
+
+	#almgr_asset_search_form {
 		margin-bottom: 1em;
 	}
 
@@ -473,6 +486,10 @@
 		margin: 8px 0 0 0;
 	}
 
+	.almgr-history-more {
+		margin-top: 1rem;
+	}
+
 	/* ========================================================================
 		NOTICE COMPONENT — almgr-notice, used in asset detail view.
 		All color combinations verified WCAG AA (contrast ≥ 4.5:1).
@@ -548,10 +565,6 @@
 		ASSET VIEW STYLES - Single asset detail page (asset-view.php)
 		======================================================================== */
 
-	/* Single asset detail container */
-	.almgr-asset-single {
-		max-width: 900px;
-	}
 
 	.almgr-asset-detail {
 		background: #fff;
@@ -1196,6 +1209,68 @@
 		border: 1px solid #c7d3dd;
 	}
 
+	.almgr-asset-history-page {
+		width: 100%;
+		max-width: 1200px;
+		margin: 0 auto;
+		box-sizing: border-box;
+	}
+
+	.almgr-asset-history-page__header {
+		margin-bottom: 24px;
+	}
+
+	.almgr-asset-history-filters,
+	.almgr-asset-history-results {
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.almgr-asset-history-results {
+		overflow-x: auto;
+		font-size: 0.875rem;
+	}
+
+	.almgr-asset-history-results .almgr-status-badge {
+		font-size: 0.72rem;
+	}
+
+	.almgr-asset-history-filters {
+		margin-bottom: 24px;
+		padding: 18px;
+		background: #f8fbfd;
+		border: 1px solid #d9e1e6;
+		border-radius: 8px;
+	}
+
+	#almgr_asset_history_form .almgr-search-input-wrap input[type="search"] {
+		width: 100%;
+		padding: 8px 8px 8px 34px;
+		font-size: 1em;
+		box-sizing: border-box;
+		border: 1px solid #c7d3dd;
+		border-radius: 8px;
+		background: #fff;
+		box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+		transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	#almgr_asset_history_form .almgr-search-input-wrap input[type="search"]:focus {
+		border-color: #0059b3;
+		outline: 2px solid rgba(0, 89, 179, 0.22);
+		outline-offset: 1px;
+		box-shadow: none;
+	}
+
+	.almgr-history-per-page-row {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 8px;
+		margin-top: 10px;
+		font-size: 0.95em;
+	}
+
 	.almgr-filter-field select:focus {
 		outline: none;
 		border-color: #0073aa;
@@ -1213,15 +1288,9 @@
 		flex: 1;
 	}
 
-	#almgr_asset_search_form .almgr-form-actions .almgr-reset-filters,
-	#almgr_asset_search_form .almgr-form-actions button[type="submit"] {
+	#almgr_asset_search_form .almgr-form-actions .almgr-reset-filters {
 		min-height: 44px;
 		border-radius: 8px;
-	}
-
-	#almgr_asset_search_form .almgr-form-actions button[type="submit"] {
-		margin-top: 0;
-		box-sizing: border-box;
 	}
 
 	.almgr-reset-filters {
@@ -1374,6 +1443,7 @@
 		.almgr-asset-title,
 		.almgr-search-submit-btn,
 		#almgr_asset_search_form .almgr-form-actions button[type="submit"],
+		#almgr_asset_history_form .almgr-form-actions button[type="submit"],
 		.almgr-asset-view .almgr-button,
 		.almgr-reset-filters,
 		.almgr-filters-toggle::after {

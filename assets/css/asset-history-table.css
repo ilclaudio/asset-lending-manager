@@ -4,7 +4,8 @@
  * @package AssetLendingManager
  */
 
-.almgr-asset-view .almgr-history-table {
+.almgr-asset-view .almgr-history-table,
+.almgr-asset-history-page .almgr-history-table {
 	width: 100%;
 	font-size: 1em;
 	border-collapse: separate;
@@ -16,11 +17,13 @@
 	overflow: hidden;
 }
 
-.almgr-asset-view .almgr-history-table thead {
+.almgr-asset-view .almgr-history-table thead,
+.almgr-asset-history-page .almgr-history-table thead {
 	background: #f5f7fa;
 }
 
-.almgr-asset-view .almgr-history-table th {
+.almgr-asset-view .almgr-history-table th,
+.almgr-asset-history-page .almgr-history-table th {
 	padding: 0.65rem 0.9rem;
 	text-align: left;
 	font-weight: 600;
@@ -31,40 +34,50 @@
 	border-bottom: 1px solid #d9e1e6;
 }
 
-.almgr-asset-view .almgr-history-table td {
+.almgr-asset-view .almgr-history-table td,
+.almgr-asset-history-page .almgr-history-table td {
 	padding: 0.75rem 0.9rem;
 	vertical-align: top;
 	border: 0;
 	border-bottom: 1px solid #e8edf1;
 }
 
-.almgr-asset-view .almgr-history-table th + th {
+.almgr-asset-view .almgr-history-table th + th,
+.almgr-asset-history-page .almgr-history-table th + th {
 	border-left: 1px solid #e8edf2;
 }
 
-.almgr-asset-view .almgr-history-table td + td {
+.almgr-asset-view .almgr-history-table td + td,
+.almgr-asset-history-page .almgr-history-table td + td {
 	border-left: 1px solid #f1f4f7;
 }
 
 .almgr-asset-view .almgr-history-table thead th:nth-child(1),
-.almgr-asset-view .almgr-history-table thead th:nth-child(2) {
+.almgr-asset-view .almgr-history-table thead th:nth-child(2),
+.almgr-asset-history-page .almgr-history-table thead th:nth-child(1),
+.almgr-asset-history-page .almgr-history-table thead th:nth-child(2) {
 	width: 16%;
 }
 
 .almgr-asset-view .almgr-history-table thead th:nth-child(3),
-.almgr-asset-view .almgr-history-table thead th:nth-child(4) {
+.almgr-asset-view .almgr-history-table thead th:nth-child(4),
+.almgr-asset-history-page .almgr-history-table thead th:nth-child(3),
+.almgr-asset-history-page .almgr-history-table thead th:nth-child(4) {
 	width: 14%;
 }
 
-.almgr-asset-view .almgr-history-table thead th:nth-child(5) {
+.almgr-asset-view .almgr-history-table thead th:nth-child(5),
+.almgr-asset-history-page .almgr-history-table thead th:nth-child(5) {
 	width: 40%;
 }
 
-.almgr-asset-view .almgr-history-table tbody tr:nth-child(even) {
+.almgr-asset-view .almgr-history-table tbody tr:nth-child(even),
+.almgr-asset-history-page .almgr-history-table tbody tr:nth-child(even) {
 	background: #fbfcfd;
 }
 
-.almgr-asset-view .almgr-history-table tbody tr:last-child td {
+.almgr-asset-view .almgr-history-table tbody tr:last-child td,
+.almgr-asset-history-page .almgr-history-table tbody tr:last-child td {
 	border-bottom: 0;
 }
 
@@ -226,30 +239,39 @@
 
 @media (max-width: 900px) {
 	.almgr-asset-view .almgr-history-table th,
-	.almgr-asset-view .almgr-history-table td {
+	.almgr-asset-view .almgr-history-table td,
+	.almgr-asset-history-page .almgr-history-table th,
+	.almgr-asset-history-page .almgr-history-table td {
 		padding: 0.75rem 0.8rem;
 	}
 }
 
 @media (max-width: 768px) {
-	.almgr-asset-view .almgr-history-table thead {
+	.almgr-asset-view .almgr-history-table thead,
+	.almgr-asset-history-page .almgr-history-table thead {
 		display: none;
 	}
 
 	.almgr-asset-view .almgr-history-table,
 	.almgr-asset-view .almgr-history-table tbody,
 	.almgr-asset-view .almgr-history-table tr,
-	.almgr-asset-view .almgr-history-table td {
+	.almgr-asset-view .almgr-history-table td,
+	.almgr-asset-history-page .almgr-history-table,
+	.almgr-asset-history-page .almgr-history-table tbody,
+	.almgr-asset-history-page .almgr-history-table tr,
+	.almgr-asset-history-page .almgr-history-table td {
 		display: block;
 		width: 100%;
 	}
 
-	.almgr-asset-view .almgr-history-table {
+	.almgr-asset-view .almgr-history-table,
+	.almgr-asset-history-page .almgr-history-table {
 		border: 0;
 		background: transparent;
 	}
 
-	.almgr-asset-view .almgr-history-table tr {
+	.almgr-asset-view .almgr-history-table tr,
+	.almgr-asset-history-page .almgr-history-table tr {
 		margin-bottom: 0.85rem;
 		font-size: 1em;
 		background: #fff;
@@ -258,7 +280,8 @@
 		overflow: hidden;
 	}
 
-	.almgr-asset-view .almgr-history-table td {
+	.almgr-asset-view .almgr-history-table td,
+	.almgr-asset-history-page .almgr-history-table td {
 		position: relative;
 		padding: 0.8rem 0.8rem 0.8rem 8.5rem;
 		border-bottom: 1px solid #edf2f6;
@@ -266,15 +289,18 @@
 		min-height: 2.8rem;
 	}
 
-	.almgr-asset-view .almgr-history-table td + td {
+	.almgr-asset-view .almgr-history-table td + td,
+	.almgr-asset-history-page .almgr-history-table td + td {
 		border-left: 0;
 	}
 
-	.almgr-asset-view .almgr-history-table td:last-child {
+	.almgr-asset-view .almgr-history-table td:last-child,
+	.almgr-asset-history-page .almgr-history-table td:last-child {
 		border-bottom: 0;
 	}
 
-	.almgr-asset-view .almgr-history-table td::before {
+	.almgr-asset-view .almgr-history-table td::before,
+	.almgr-asset-history-page .almgr-history-table td::before {
 		content: attr(data-label);
 		position: absolute;
 		left: 0.8rem;

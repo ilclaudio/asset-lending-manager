@@ -932,6 +932,129 @@ class ALMGR_Loan_Manager {
 	}
 
 	/**
+	 * Count history rows for a specific asset, optionally filtered by user involvement.
+	 *
+	 * @param int $asset_id Asset ID.
+	 * @param int $user_id  User ID for member filtering (0 = no filter, operators always see all).
+	 * @return int
+	 */
+	public function count_asset_history( $asset_id, $user_id = 0 ) {
+		global $wpdb;
+
+		$asset_id = max( 0, (int) $asset_id );
+		if ( $asset_id <= 0 ) {
+			return 0;
+		}
+
+		$table_name  = $wpdb->prefix . 'almgr_loan_requests_history';
+		$is_operator = current_user_can( ALMGR_EDIT_ASSET );
+		$user_id     = (int) $user_id;
+
+		if ( ! $is_operator && $user_id > 0 ) {
+			return (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT COUNT(*)
+					FROM %i
+					WHERE asset_id = %d
+					AND ( requester_id = %d OR owner_id = %d OR changed_by = %d )',
+					$table_name,
+					$asset_id,
+					$user_id,
+					$user_id,
+					$user_id
+				)
+			);
+		}
+
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*)
+				FROM %i
+				WHERE asset_id = %d',
+				$table_name,
+				$asset_id
+			)
+		);
+	}
+
+	/**
+	 * Get paginated history rows for a specific asset, optionally filtered by user involvement.
+	 *
+	 * @param int $asset_id Asset ID.
+	 * @param int $per_page Rows per page.
+	 * @param int $page     Current page number.
+	 * @param int $user_id  User ID for member filtering (0 = no filter, operators always see all).
+	 * @return array{items: array, total: int}
+	 */
+	public function get_asset_history_paginated( $asset_id, $per_page = 20, $page = 1, $user_id = 0 ) {
+		global $wpdb;
+
+		$asset_id    = max( 0, (int) $asset_id );
+		$per_page    = max( 1, (int) $per_page );
+		$page        = max( 1, (int) $page );
+		$user_id     = (int) $user_id;
+		$is_operator = current_user_can( ALMGR_EDIT_ASSET );
+
+		if ( $asset_id <= 0 ) {
+			return array(
+				'items' => array(),
+				'total' => 0,
+			);
+		}
+
+		$table_name = $wpdb->prefix . 'almgr_loan_requests_history';
+		$total      = $this->count_asset_history( $asset_id, $user_id );
+
+		if ( $total <= 0 ) {
+			return array(
+				'items' => array(),
+				'total' => 0,
+			);
+		}
+
+		$offset = ( $page - 1 ) * $per_page;
+
+		if ( ! $is_operator && $user_id > 0 ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT *
+					FROM %i
+					WHERE asset_id = %d
+					AND ( requester_id = %d OR owner_id = %d OR changed_by = %d )
+					ORDER BY changed_at DESC
+					LIMIT %d OFFSET %d',
+					$table_name,
+					$asset_id,
+					$user_id,
+					$user_id,
+					$user_id,
+					$per_page,
+					$offset
+				)
+			);
+		} else {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT *
+					FROM %i
+					WHERE asset_id = %d
+					ORDER BY changed_at DESC
+					LIMIT %d OFFSET %d',
+					$table_name,
+					$asset_id,
+					$per_page,
+					$offset
+				)
+			);
+		}
+
+		return array(
+			'items' => is_array( $rows ) ? $rows : array(),
+			'total' => $total,
+		);
+	}
+
+	/**
 	 * Check if user can approve a loan request.
 	 *
 	 * @param object $loan_request Loan request object from database.

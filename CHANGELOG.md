@@ -10,18 +10,18 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## DESIDERATA 2.0.0
 1) Add a dashboard and user badge with: resources on loan, loans to be approved, and resources under maintenance (operator).
+2) Introduction of an MCP server.
 
 ## DESIDERATA 1.0.0
 1) Introduction of unit tests (DEV/TODO/TODO_Introducing_tests.md).
 2) Introduction of integration tests (DEV/TODO/TODO_Introducing_tests.md).
 3) Introduction of e2e functional tests (DEV/TODO/TODO_Introducing_tests.md).
-4) Introduction of an MCP server.
-5) Mass printing of all QR codes in A4 pages.
-6) Review and correction of README.md and documentation.
-7) Github repository link as project link?
-8) Massive security testing.
-9) Add a page with all loan history, with pagination and filters.
-
+4) Mass printing of all QR codes in A4 pages.
+5) Review and correction of README.md and documentation.
+6) Github repository link as project link?
+7) Massive security testing.
+8) Add a page with all loan history, with pagination and filters.
+9) Simple statistics page: number of 
 
 
 

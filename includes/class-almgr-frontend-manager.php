@@ -67,9 +67,11 @@ class ALMGR_Frontend_Manager {
 	public function register() {
 		// Register template loading filter.
 		add_filter( 'template_include', array( $this, 'load_asset_template' ) );
+		add_filter( 'query_vars', array( $this, 'register_frontend_query_vars' ) );
 		// Register shortcodes.
 		add_shortcode( 'almgr_asset_list', array( $this, 'shortcode_asset_list' ) );
 		add_shortcode( 'almgr_asset_view', array( $this, 'shortcode_asset_view' ) );
+		add_shortcode( 'almgr_asset_history', array( $this, 'shortcode_asset_history' ) );
 		// Enqueue frontend assets (CSS/JS).
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 		// Handle QR scan redirect (?almgr_scan=ALMGR-00000052).
@@ -99,7 +101,25 @@ class ALMGR_Frontend_Manager {
 		if ( is_singular( ALMGR_ASSET_CPT_SLUG ) ) {
 			return $this->locate_template( 'single-almgr-asset.php', $template );
 		}
+		$history_page_id = (int) $this->settings->get( 'frontend.asset_history_page_id' );
+		if ( $history_page_id > 0 && is_page( $history_page_id ) ) {
+			return $this->locate_template( 'page-asset-history.php', $template );
+		}
 		return $template;
+	}
+
+	/**
+	 * Register ALMGR frontend query vars used by shortcode-based pages.
+	 *
+	 * @param array $query_vars Public query vars.
+	 * @return array
+	 */
+	public function register_frontend_query_vars( $query_vars ) {
+		$query_vars[] = 'almgr_asset_id';
+		$query_vars[] = 'almgr_per_page';
+		$query_vars[] = 'almgr_paged';
+
+		return $query_vars;
 	}
 
 	/**
@@ -283,8 +303,8 @@ class ALMGR_Frontend_Manager {
 			);
 		}
 
-		// Enqueue jsQR library only on asset list pages (used by the QR scanner button).
-		if ( $this->is_asset_list_page() ) {
+		// Enqueue jsQR library on pages that show the QR scanner button.
+		if ( $this->is_asset_list_page() || $this->is_asset_history_page() ) {
 			wp_enqueue_script(
 				'almgr-jsqr',
 				ALMGR_PLUGIN_URL . 'assets/js/vendor/jsqr.min.js',
@@ -331,7 +351,7 @@ class ALMGR_Frontend_Manager {
 
 		// Page with asset shortcodes.
 		global $post;
-		if ( $post && ( has_shortcode( $post->post_content, 'almgr_asset_list' ) || has_shortcode( $post->post_content, 'almgr_asset_view' ) ) ) {
+		if ( $post && ( has_shortcode( $post->post_content, 'almgr_asset_list' ) || has_shortcode( $post->post_content, 'almgr_asset_view' ) || has_shortcode( $post->post_content, 'almgr_asset_history' ) ) ) {
 			return true;
 		}
 
@@ -469,6 +489,68 @@ class ALMGR_Frontend_Manager {
 
 		// Render the asset view template.
 		$this->render_asset_view_template( $asset_id );
+
+		return ob_get_clean();
+	}
+
+	/**
+	 * Shortcode handler for the full asset history page.
+	 *
+	 * @param array $attributes Shortcode attributes.
+	 * @return string HTML output.
+	 */
+	public function shortcode_asset_history( $attributes ) {
+		if ( ! current_user_can( ALMGR_EDIT_ASSET ) ) {
+			return '<p class="almgr-error">' . esc_html__( 'You do not have permission to view asset history.', 'asset-lending-manager' ) . '</p>';
+		}
+
+		$attributes = shortcode_atts(
+			array(),
+			$attributes,
+			'almgr_asset_history'
+		);
+
+		$almgr_asset_id     = $this->get_sanitized_query_absint( 'almgr_asset_id' );
+		$almgr_per_page     = $this->get_sanitized_query_absint( 'almgr_per_page' );
+		$almgr_current_page = max( 1, $this->get_sanitized_query_absint( 'almgr_paged' ) );
+		$almgr_per_page     = in_array( $almgr_per_page, array( 10, 20, 50, 100, 200 ), true ) ? $almgr_per_page : 20;
+		$almgr_asset_title  = '';
+		$almgr_history      = array();
+		$almgr_total        = 0;
+		$almgr_total_pages  = 0;
+
+		if ( $almgr_asset_id > 0 ) {
+			$almgr_asset_post = get_post( $almgr_asset_id );
+			if ( $almgr_asset_post instanceof WP_Post && ALMGR_ASSET_CPT_SLUG === $almgr_asset_post->post_type ) {
+				$almgr_asset_title = get_the_title( $almgr_asset_post );
+				$almgr_caller_id   = get_current_user_id();
+				$almgr_result      = ALMGR_Plugin_Manager::get_instance()->get_module( 'loan' )->get_asset_history_paginated( $almgr_asset_id, $almgr_per_page, $almgr_current_page, $almgr_caller_id );
+				$almgr_history     = $almgr_result['items'];
+				$almgr_total       = (int) $almgr_result['total'];
+				$almgr_total_pages = $almgr_total > 0 ? (int) ceil( $almgr_total / $almgr_per_page ) : 0;
+				if ( $almgr_total_pages > 0 && $almgr_current_page > $almgr_total_pages ) {
+					$almgr_current_page = $almgr_total_pages;
+					$almgr_result       = ALMGR_Plugin_Manager::get_instance()->get_module( 'loan' )->get_asset_history_paginated( $almgr_asset_id, $almgr_per_page, $almgr_current_page, $almgr_caller_id );
+					$almgr_history      = $almgr_result['items'];
+				}
+			} else {
+				$almgr_asset_id = 0;
+			}
+		}
+
+		ob_start();
+		$this->render_asset_history_template(
+			array(
+				'almgr_asset_id'       => $almgr_asset_id,
+				'almgr_asset_title'    => $almgr_asset_title,
+				'almgr_per_page'       => $almgr_per_page,
+				'almgr_current_page'   => $almgr_current_page,
+				'almgr_history'        => $almgr_history,
+				'almgr_total'          => $almgr_total,
+				'almgr_total_pages'    => $almgr_total_pages,
+				'almgr_qr_scan_enabled' => (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true ),
+			)
+		);
 
 		return ob_get_clean();
 	}
@@ -712,6 +794,16 @@ class ALMGR_Frontend_Manager {
 	}
 
 	/**
+	 * Check if the current page shows the asset history shortcode.
+	 *
+	 * @return bool
+	 */
+	private function is_asset_history_page() {
+		global $post;
+		return $post && has_shortcode( $post->post_content, 'almgr_asset_history' );
+	}
+
+	/**
 	 * Check if the current page shows a single asset detail view.
 	 *
 	 * @return bool
@@ -744,6 +836,20 @@ class ALMGR_Frontend_Manager {
 
 		// Include template.
 		$template_path = trailingslashit( ALMGR_PLUGIN_DIR ) . 'templates/shortcodes/asset-view.php';
+		if ( file_exists( $template_path ) ) {
+			include $template_path;
+		}
+	}
+
+	/**
+	 * Render the asset history template.
+	 *
+	 * @param array $template_args Variables passed to the template.
+	 * @return void
+	 */
+	private function render_asset_history_template( array $template_args ) {
+		$almgr_template_args = $template_args;
+		$template_path       = trailingslashit( ALMGR_PLUGIN_DIR ) . 'templates/shortcodes/asset-history.php';
 		if ( file_exists( $template_path ) ) {
 			include $template_path;
 		}

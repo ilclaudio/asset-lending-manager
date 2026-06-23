@@ -640,6 +640,31 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				</tr>
 				<tr>
 					<th scope="row">
+						<label for="almgr_frontend_asset_history_page_id">
+							<?php esc_html_e( 'Asset history page', 'asset-lending-manager' ); ?>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						</label>
+					</th>
+					<td>
+						<?php
+						wp_dropdown_pages(
+							array(
+								'name'              => 'almgr_frontend_asset_history_page_id',
+								'id'                => 'almgr_frontend_asset_history_page_id',
+								'selected'          => (int) $almgr_settings->get( 'frontend.asset_history_page_id' ),
+								'show_option_none'  => esc_html__( '— Not set —', 'asset-lending-manager' ),
+								'option_none_value' => '0',
+								'disabled'          => absint( ! $almgr_is_admin ),
+							)
+						);
+						?>
+						<p class="description">
+							<?php esc_html_e( 'Page containing the full asset history view ([almgr_asset_history]). Leave empty to keep the feature disabled. On classic themes, the plugin automatically applies a full-width layout for this page — no manual template selection needed.', 'asset-lending-manager' ); ?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
 						<label for="almgr_frontend_login_redirect_page_id">
 							<?php esc_html_e( 'Login redirect page', 'asset-lending-manager' ); ?>
 							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
