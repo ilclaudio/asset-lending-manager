@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-06-23 14:59+0000\n"
+"PO-Revision-Date: 2026-06-23 15:17+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -2793,6 +2793,11 @@ msgid ""
 "Frontend as \"Asset history page\". The plugin then automatically applies a "
 "full-width layout for that page — no manual template selection needed."
 msgstr ""
+"La pagina della cronologia completa delle risorse richiede una pagina "
+"WordPress dedicata. Crea una pagina con lo shortcode [almgr_asset_history] e "
+"assegnala in Impostazioni → Frontend come \"Pagina cronologia risorsa\". Il "
+"plugin applica quindi automaticamente un layout a larghezza intera per "
+"quella pagina: non è necessaria alcuna selezione manuale del template."
 
 #: includes/class-almgr-tools-manager.php:673
 #: includes/class-almgr-tools-manager.php:1332
@@ -3004,7 +3009,7 @@ msgstr "Vedi risorsa"
 #. %d: total number of history entries.
 #: templates/shortcodes/asset-view.php:753
 msgid "View full history (%d entries)"
-msgstr ""
+msgstr "Vedi cronologia completa (%d voci)"
 
 #: assets/js/admin-assets.js:79
 msgid "View on Frontend"
@@ -3153,7 +3158,7 @@ msgstr "Non hai i permessi per ripristinare gli stati delle risorse."
 
 #: includes/class-almgr-frontend-manager.php:504
 msgid "You do not have permission to view asset history."
-msgstr ""
+msgstr "Non hai i permessi per visualizzare la cronologia delle risorse."
 
 #: includes/class-almgr-rest-manager.php:182
 #: includes/class-almgr-rest-manager.php:205

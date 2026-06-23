@@ -28,6 +28,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ## [0.2.4] - 2026-06-10
 ### Added
 - Added asset history page.
+- Added unit tests: only some examples for now.
 ### Fixed
 - Kit transfer (loan approval and direct assignment) no longer overwrites components assigned to other users or in maintenance/retired state; excluded components are left untouched and reported to the operator with explicit reasons.
 - Kit state changes (maintenance, retired, force-return, restore) no longer affect components outside the kit's control; only components in a compatible state and with the expected owner are modified.
