@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Verifies the settings service behavior without bootstrapping WordPress.
  *
- * These tests intentionally use an in-memory option store from tests/bootstrap.php
+ * These tests intentionally use an in-memory option store from tests/bootstrap-unit.php
  * so the unit lane can validate ALMGR_Settings_Manager without requiring a real
  * WordPress database or the full plugin module graph.
  */

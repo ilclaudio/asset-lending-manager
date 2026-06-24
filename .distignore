@@ -16,6 +16,14 @@ composer.lock
 .composer-cache
 .composer-home
 
+# Node / E2E dev tooling
+node_modules
+package.json
+package-lock.json
+playwright.config.js
+playwright-report
+test-results
+
 # Test suite
 tests
 phpunit.xml
