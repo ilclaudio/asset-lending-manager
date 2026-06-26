@@ -178,3 +178,10 @@ composer test:integration
 ```
 
 For environment setup instructions (database, `wordpress-develop` checkout, configuration file) see [`tests/integration/README.md`](tests/integration/README.md).
+
+**Functional (E2E) tests** run through a real browser against a dedicated local WordPress site (`alm-e2e`).
+```bash
+composer test:e2e
+```
+
+For environment setup instructions (Node.js, Playwright browsers, `alm-e2e` site, base URL) see [`tests/e2e/README.md`](tests/e2e/README.md).

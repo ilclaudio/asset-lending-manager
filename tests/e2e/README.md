@@ -177,7 +177,7 @@ The Playwright config reads the site URL from the environment variable
 If the variable is not set, the current fallback is:
 
 ```text
-http://alm-e2e.local
+https://alm-e2e.local
 ```
 
 If your local site uses a different URL, you must set the environment variable
@@ -186,14 +186,14 @@ explicitly before running the suite.
 ### PowerShell
 
 ```powershell
-$env:ALMGR_E2E_BASE_URL = "http://alm-e2e.local"
+$env:ALMGR_E2E_BASE_URL = "https://alm-e2e.local"
 composer test:e2e
 ```
 
 ### Bash
 
 ```bash
-ALMGR_E2E_BASE_URL="http://alm-e2e.local" composer test:e2e
+ALMGR_E2E_BASE_URL="https://alm-e2e.local" composer test:e2e
 ```
 
 If the site URL is different, replace it with the real LocalWP domain.
