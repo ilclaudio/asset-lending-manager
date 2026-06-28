@@ -20,8 +20,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 5) Review and correction of README.md and documentation.
 6) Github repository link as project link?
 7) Massive security testing.
-8) Add a page with all loan history, with pagination and filters.
-9) Simple statistics page: number of 
+8) Simple statistics page.
 
 
 

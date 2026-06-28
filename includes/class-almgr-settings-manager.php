@@ -119,6 +119,10 @@ class ALMGR_Settings_Manager {
 			'rest_api'      => array(
 				'enabled' => true,
 			),
+			'contact_form'  => array(
+				'enabled'            => true,
+				'max_message_length' => 500,
+			),
 		);
 	}
 

@@ -148,6 +148,7 @@ class ALMGR_Plugin_Manager {
 				'tools'        => new ALMGR_Tools_Manager(),
 				'autocomplete' => new ALMGR_Autocomplete_Manager( $settings ),
 				'rest'         => new ALMGR_REST_Manager( $settings, $loan ),
+				'contact'      => new ALMGR_Contact_Manager( $settings, $role ),
 			);
 		}
 	}
@@ -437,6 +438,9 @@ class ALMGR_Plugin_Manager {
 			$changes['notifications.loan_request']      = isset( $_POST['almgr_notifications_loan_request'] );
 			$changes['notifications.loan_decision']     = isset( $_POST['almgr_notifications_loan_decision'] );
 			$changes['notifications.loan_confirmation'] = isset( $_POST['almgr_notifications_loan_confirmation'] );
+			// Contact form settings.
+			$changes['contact_form.enabled']            = isset( $_POST['almgr_contact_form_enabled'] );
+			$changes['contact_form.max_message_length'] = min( 2000, max( 50, absint( wp_unslash( $_POST['almgr_contact_form_max_length'] ?? 500 ) ) ) );
 		}
 
 		if ( 'loans' === $active_tab ) {

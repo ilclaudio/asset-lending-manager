@@ -292,6 +292,31 @@ class ALMGR_Frontend_Manager {
 			)
 		);
 
+		// Enqueue contact form JS only on asset detail pages.
+		if ( $this->is_asset_view_page() ) {
+			global $post;
+			$almgr_contact_asset_id = is_singular( ALMGR_ASSET_CPT_SLUG )
+				? get_queried_object_id()
+				: ( $post ? $post->ID : 0 );
+			wp_enqueue_script(
+				'almgr-contact-form',
+				ALMGR_PLUGIN_URL . 'assets/js/alm-contact-form.js',
+				array(),
+				ALMGR_VERSION,
+				true
+			);
+			wp_localize_script(
+				'almgr-contact-form',
+				'almgrContact',
+				array(
+					'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+					'nonce'        => wp_create_nonce( 'almgr_contact_nonce' ),
+					'assetId'      => $almgr_contact_asset_id,
+					'errorMessage' => __( 'Error while sending. Please try again.', 'asset-lending-manager' ),
+				)
+			);
+		}
+
 		// Enqueue QR code generator library only on asset detail pages.
 		if ( $this->is_asset_view_page() ) {
 			wp_enqueue_script(

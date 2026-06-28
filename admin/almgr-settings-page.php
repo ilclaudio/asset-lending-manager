@@ -261,6 +261,50 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				</tr>
 			</table>
 
+			<h2><?php esc_html_e( 'Contact the asset owner', 'asset-lending-manager' ); ?></h2>
+			<p class="description">
+				<?php esc_html_e( 'Settings for the "Contact operator" form on the asset detail page. Messages are delivered by email; the plugin stores no record of them.', 'asset-lending-manager' ); ?>
+			</p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Enable contact form', 'asset-lending-manager' ); ?>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								name="almgr_contact_form_enabled"
+								value="1"
+								<?php checked( $almgr_settings->get( 'contact_form.enabled', true ) ); ?>
+							>
+							<?php esc_html_e( 'Allow logged-in users to send a message to the asset owner or operators', 'asset-lending-manager' ); ?>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="almgr_contact_form_max_length">
+							<?php esc_html_e( 'Max message length', 'asset-lending-manager' ); ?>
+						</label>
+					</th>
+					<td>
+						<input
+							type="number"
+							id="almgr_contact_form_max_length"
+							name="almgr_contact_form_max_length"
+							value="<?php echo esc_attr( $almgr_settings->get( 'contact_form.max_message_length', 500 ) ); ?>"
+							min="50"
+							max="2000"
+							class="small-text"
+						>
+						<p class="description">
+							<?php esc_html_e( 'Maximum number of characters allowed in the contact message. Minimum 50, maximum 2000. Default: 500.', 'asset-lending-manager' ); ?>
+						</p>
+					</td>
+				</tr>
+			</table>
+
 			<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
 
 		<?php elseif ( 'templates' === $almgr_active_tab ) : ?>

@@ -362,7 +362,69 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 		</section>
 	<?php endif; ?>
 
-	<!-- VI section: Loan requests (hidden for maintenance/retired assets and when loan requests are disabled) -->
+	<!-- VI section: Contact form (logged-in users with view permission, when feature is enabled) -->
+	<?php
+	$almgr_contact_settings = ALMGR_Plugin_Manager::get_instance()->get_module( 'settings' );
+	$almgr_contact_enabled  = (bool) $almgr_contact_settings->get( 'contact_form.enabled', true );
+	$almgr_contact_max      = (int) $almgr_contact_settings->get( 'contact_form.max_message_length', 500 );
+	$almgr_contact_role     = ALMGR_Plugin_Manager::get_instance()->get_module( 'role' );
+	if ( $almgr_contact_enabled && $almgr_contact_role->current_user_can_contact_resource() ) :
+		?>
+	<section class="almgr-asset-view__contact" aria-label="<?php esc_attr_e( 'Contact current owner', 'asset-lending-manager' ); ?>">
+		<details class="almgr-collapsible almgr-collapsible--contact">
+			<summary class="almgr-collapsible__summary">
+				<span class="almgr-collapsible__title" role="heading" aria-level="2">
+					<?php esc_html_e( 'Contact current owner', 'asset-lending-manager' ); ?>
+				</span>
+				<span class="almgr-collapsible__hint" aria-hidden="true">
+					<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
+				</span>
+			</summary>
+			<div class="almgr-collapsible__body">
+				<form id="almgr-contact-form" class="almgr-loan-form" novalidate>
+					<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>">
+					<ul class="almgr-contact-info description">
+						<li><?php esc_html_e( 'The message will be delivered by email.', 'asset-lending-manager' ); ?></li>
+						<li><?php esc_html_e( 'You will receive a copy at your registered email address.', 'asset-lending-manager' ); ?></li>
+						<li>
+							<?php
+							printf(
+								/* translators: %s: name of the loan request section. */
+								esc_html__( 'Sending a message does not initiate a loan request. To request a loan, use the "%s" section.', 'asset-lending-manager' ),
+								esc_html__( 'Request loan', 'asset-lending-manager' )
+							);
+							?>
+						</li>
+					</ul>
+					<div class="almgr-form-field">
+						<label for="almgr-contact-message">
+							<?php esc_html_e( 'Your message:', 'asset-lending-manager' ); ?>
+						</label>
+						<textarea
+							id="almgr-contact-message"
+							name="message"
+							rows="4"
+							maxlength="<?php echo esc_attr( $almgr_contact_max ); ?>"
+							placeholder="<?php esc_attr_e( 'Write your message...', 'asset-lending-manager' ); ?>"
+							aria-describedby="almgr-contact-char-count"
+							aria-required="true"
+							required
+						></textarea>
+						<div class="almgr-char-count" id="almgr-contact-char-count">0 / <?php echo esc_html( $almgr_contact_max ); ?></div>
+					</div>
+					<div class="almgr-form-actions">
+						<button type="submit" class="almgr-button almgr-button--primary">
+							<?php esc_html_e( 'Send message', 'asset-lending-manager' ); ?>
+						</button>
+					</div>
+					<div id="almgr-contact-response" class="almgr-response-message" role="status" aria-live="polite" style="display:none;"></div>
+				</form>
+			</div>
+		</details>
+	</section>
+	<?php endif; ?>
+
+	<!-- VIII section: Loan requests (hidden for maintenance/retired assets and when loan requests are disabled) -->
 	<?php
 	if (
 				$almgr_loan_requests_enabled &&
@@ -505,7 +567,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	}
 	?>
 
-	<!-- VII section: Direct assignment (operator only, hidden for maintenance/retired assets) -->
+	<!-- IX section: Direct assignment (operator only, hidden for maintenance/retired assets) -->
 	<?php if ( $almgr_is_operator && ! in_array( $almgr_state_slug, array( 'maintenance', 'retired' ), true ) ) : ?>
 	<section class="almgr-asset-view__direct-assign" aria-label="<?php esc_attr_e( 'Direct assignment', 'asset-lending-manager' ); ?>">
 		<details class="almgr-collapsible almgr-collapsible--directassign">
@@ -571,7 +633,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	</section>
 	<?php endif; ?>
 
-	<!-- VIII section: Asset state management (operator only) -->
+	<!-- X section: Asset state management (operator only) -->
 	<?php if ( $almgr_is_operator ) : ?>
 		<section class="almgr-asset-view__change-state" aria-label="<?php esc_attr_e( 'Asset state management', 'asset-lending-manager' ); ?>">
 			<details class="almgr-collapsible almgr-collapsible--changestate">
@@ -703,7 +765,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 		</section>
 	<?php endif; ?>
 
-	<!-- IX section: Loan history -->
+	<!-- XI section: Loan history -->
 	<?php if ( is_user_logged_in() && current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
 		<section class="almgr-asset-view__loan-history" aria-label="<?php esc_attr_e( 'Loan history', 'asset-lending-manager' ); ?>">
 			<details class="almgr-collapsible almgr-collapsible--history">
