@@ -248,6 +248,26 @@ if ( ! function_exists( 'wp_unslash' ) ) {
 	}
 }
 
+if ( ! function_exists( 'absint' ) ) {
+	/**
+	 * Lightweight absint() implementation.
+	 *
+	 * @param mixed $value Raw value.
+	 * @return int
+	 */
+	function absint( $value ) {
+		return abs( (int) $value );
+	}
+}
+
+if ( ! class_exists( 'ALMGR_Role_Manager' ) ) {
+	/**
+	 * Minimal stub so ALMGR_Notification_Manager can be constructed in unit tests
+	 * without loading the real class and its WordPress hook registrations.
+	 */
+	class ALMGR_Role_Manager {}
+}
+
 if ( ! function_exists( 'get_option' ) ) {
 	/**
 	 * In-memory get_option() stub.
@@ -300,3 +320,5 @@ require_once dirname( __DIR__ ) . '/includes/class-almgr-frontend-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-loan-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-notification-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-tools-manager.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-autocomplete-manager.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-rest-manager.php';

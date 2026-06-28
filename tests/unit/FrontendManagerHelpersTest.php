@@ -80,4 +80,34 @@ class ALMGR_Frontend_Manager_Helpers_Unit_Test extends TestCase {
 		$this->assertSame( 'kit-alpha', $this->invoke_private_method( 'get_sanitized_query_slug', array( 'structure' ) ) );
 		$this->assertSame( '', $this->invoke_private_method( 'get_sanitized_query_slug', array( 'missing' ) ) );
 	}
+
+	/**
+	 * Verify that missing or empty-string keys return 0.
+	 *
+	 * @return void
+	 */
+	public function test_get_sanitized_query_absint_returns_zero_for_missing_or_empty_key(): void {
+		$this->assertSame( 0, $this->invoke_private_method( 'get_sanitized_query_absint', array( 'missing' ) ) );
+
+		$_GET['empty_val'] = '';
+		$this->assertSame( 0, $this->invoke_private_method( 'get_sanitized_query_absint', array( 'empty_val' ) ) );
+
+		$_GET['zero_val'] = '0';
+		$this->assertSame( 0, $this->invoke_private_method( 'get_sanitized_query_absint', array( 'zero_val' ) ) );
+	}
+
+	/**
+	 * Verify that numeric query strings are converted to positive integers via absint().
+	 *
+	 * @return void
+	 */
+	public function test_get_sanitized_query_absint_converts_numeric_query_values_to_positive_integers(): void {
+		$_GET['page']   = '42';
+		$_GET['level']  = '<b>7</b>';
+		$_GET['offset'] = '-5';
+
+		$this->assertSame( 42, $this->invoke_private_method( 'get_sanitized_query_absint', array( 'page' ) ) );
+		$this->assertSame( 7, $this->invoke_private_method( 'get_sanitized_query_absint', array( 'level' ) ) );
+		$this->assertSame( 5, $this->invoke_private_method( 'get_sanitized_query_absint', array( 'offset' ) ) );
+	}
 }
