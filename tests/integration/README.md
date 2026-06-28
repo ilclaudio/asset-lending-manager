@@ -209,6 +209,37 @@ OK (6 tests, 13 assertions)
 
 ---
 
+## Quick database model
+
+These integration tests use a **real MySQL/MariaDB database**.
+
+- The database must be **dedicated to tests only**.
+- It should be considered **disposable**: never point the suite at a production,
+  shared, or day-to-day LocalWP site database.
+- Before a run, the database does **not** need business data or manual fixtures.
+  An empty database is the recommended starting point.
+
+What the suite does with it:
+
+1. WordPress Test Suite installs WordPress into the test database using tables
+   prefixed with `wptests_`.
+2. The plugin is loaded inside that WordPress test environment.
+3. Individual tests create the users, posts, meta, taxonomy terms, options,
+   and plugin table rows they need.
+
+Does the database get "dirty"?
+
+- **During the suite:** yes, tests write real data.
+- **Between individual tests:** `WP_UnitTestCase` isolates test state, so one test
+  should not leave persistent application data for the next one.
+- **At the suite level:** the database remains a test database and may be dropped,
+  recreated, and reused by future runs. Do not treat it as a source of truth.
+
+In short: use a real but throwaway database, let the suite create its own data,
+and expect WordPress Test Suite to manage installation/reset behavior for you.
+
+---
+
 ## How it works internally
 
 1. `composer test:integration` runs PHPUnit with `phpunit-integration.xml`.

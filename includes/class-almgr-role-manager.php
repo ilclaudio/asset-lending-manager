@@ -192,4 +192,45 @@ class ALMGR_Role_Manager {
 	public function current_user_can_view_assets() {
 		return current_user_can( ALMGR_VIEW_ASSETS );
 	}
+
+	/**
+	 * Check if the current user can use the contact resource form.
+	 *
+	 * Members, operators, and administrators all have ALMGR_VIEW_ASSET.
+	 *
+	 * @return bool
+	 */
+	public function current_user_can_contact_resource() {
+		return is_user_logged_in() && current_user_can( ALMGR_VIEW_ASSET );
+	}
+
+	/**
+	 * Return unique email addresses of all users with the operator role.
+	 *
+	 * Falls back to an empty array when no operator exists; callers are
+	 * responsible for providing a fallback address (e.g. admin email).
+	 *
+	 * @return string[] List of sanitized, non-empty email addresses.
+	 */
+	public function get_operator_emails() {
+		$query = new WP_User_Query(
+			array(
+				'role'   => ALMGR_OPERATOR_ROLE,
+				'fields' => array( 'user_email' ),
+			)
+		);
+
+		$emails = array();
+		foreach ( $query->get_results() as $user ) {
+			if ( ! is_object( $user ) || ! isset( $user->user_email ) ) {
+				continue;
+			}
+			$email = sanitize_email( $user->user_email );
+			if ( $email ) {
+				$emails[] = $email;
+			}
+		}
+
+		return array_values( array_unique( $emails ) );
+	}
 }

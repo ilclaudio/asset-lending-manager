@@ -135,13 +135,14 @@ class ALMGR_Plugin_Manager {
 	private function init_modules() {
 		if ( empty( $this->modules ) ) {
 			$settings      = new ALMGR_Settings_Manager();
+			$role          = new ALMGR_Role_Manager();
 			$loan          = new ALMGR_Loan_Manager( $settings );
 			$this->modules = array(
 				'settings'     => $settings,
-				'role'         => new ALMGR_Role_Manager(),
+				'role'         => $role,
 				'asset'        => new ALMGR_Asset_Manager(),
 				'loan'         => $loan,
-				'notification' => new ALMGR_Notification_Manager( $settings ),
+				'notification' => new ALMGR_Notification_Manager( $settings, $role ),
 				'frontend'     => new ALMGR_Frontend_Manager( $settings ),
 				'admin'        => new ALMGR_Admin_Manager(),
 				'tools'        => new ALMGR_Tools_Manager(),

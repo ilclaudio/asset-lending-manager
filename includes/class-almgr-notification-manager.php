@@ -28,12 +28,21 @@ class ALMGR_Notification_Manager {
 	private $settings;
 
 	/**
+	 * Role manager instance.
+	 *
+	 * @var ALMGR_Role_Manager
+	 */
+	private $role_manager;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param ALMGR_Settings_Manager $settings Plugin settings instance.
+	 * @param ALMGR_Settings_Manager $settings     Plugin settings instance.
+	 * @param ALMGR_Role_Manager     $role_manager Role manager instance.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings ) {
-		$this->settings = $settings;
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Role_Manager $role_manager ) {
+		$this->settings     = $settings;
+		$this->role_manager = $role_manager;
 	}
 
 	/**
@@ -147,7 +156,7 @@ class ALMGR_Notification_Manager {
 		}
 
 		if ( $this->should_notify_all_operators_for_loan_request( $owner_id ) ) {
-			$operator_emails = $this->get_operator_emails();
+			$operator_emails = $this->role_manager->get_operator_emails();
 			foreach ( $operator_emails as $operator_email ) {
 				$this->send_notification_email_unique(
 					$operator_email,
@@ -410,37 +419,6 @@ class ALMGR_Notification_Manager {
 	}
 
 	/**
-	 * Return unique operator email addresses.
-	 *
-	 * @return string[] List of non-empty email addresses.
-	 */
-	private function get_operator_emails() {
-		$operators_query = new WP_User_Query(
-			array(
-				'role'   => ALMGR_OPERATOR_ROLE,
-				'fields' => array( 'user_email' ),
-			)
-		);
-
-		$operator_emails = array();
-		$operators       = $operators_query->get_results();
-		foreach ( $operators as $operator ) {
-			if ( ! is_object( $operator ) || ! isset( $operator->user_email ) ) {
-				continue;
-			}
-
-			$operator_email = sanitize_email( $operator->user_email );
-			if ( empty( $operator_email ) ) {
-				continue;
-			}
-
-			$operator_emails[] = $operator_email;
-		}
-
-		return array_values( array_unique( $operator_emails ) );
-	}
-
-	/**
 	 * Send notification to borrower when an operator force-returns an on-loan asset.
 	 *
 	 * @param int    $asset_id    Post ID of the asset.
@@ -492,13 +470,15 @@ class ALMGR_Notification_Manager {
 	 * It translates the subject and body templates, fills the placeholders,
 	 * logs the attempt, calls wp_mail(), and logs any failure.
 	 *
-	 * @param string $to_email     Recipient email address.
-	 * @param string $subject_tpl  Subject template (may contain {PLACEHOLDER} tokens).
-	 * @param string $body_tpl     Body template (may contain {PLACEHOLDER} tokens).
-	 * @param array  $placeholders Associative array of '{TOKEN}' => 'value' pairs.
+	 * @param string   $to_email      Recipient email address.
+	 * @param string   $subject_tpl   Subject template (may contain {PLACEHOLDER} tokens).
+	 * @param string   $body_tpl      Body template (may contain {PLACEHOLDER} tokens).
+	 * @param array    $placeholders  Associative array of '{TOKEN}' => 'value' pairs.
+	 * @param string[] $extra_headers Additional headers merged after Content-Type and From
+	 *                                (e.g. Reply-To, Cc).
 	 * @return bool True if wp_mail() reported success, false otherwise.
 	 */
-	private function send_notification_email( $to_email, $subject_tpl, $body_tpl, $placeholders ) {
+	public function send_notification_email( $to_email, $subject_tpl, $body_tpl, $placeholders, $extra_headers = array() ) {
 		// Guard: do not attempt sending to an empty address.
 		if ( empty( $to_email ) ) {
 			ALMGR_Logger::warning(
@@ -517,9 +497,12 @@ class ALMGR_Notification_Manager {
 		$from_name    = $this->settings->get( 'email.from_name', '' );
 		$from_name    = $from_name ? $from_name : get_bloginfo( 'name' );
 		$from_name    = str_replace( array( "\r", "\n" ), '', $from_name );
-		$headers      = array(
-			'Content-Type: text/plain; charset=UTF-8',
-			'From: ' . $from_name . ' <' . $from_address . '>',
+		$headers      = array_merge(
+			array(
+				'Content-Type: text/plain; charset=UTF-8',
+				'From: ' . $from_name . ' <' . $from_address . '>',
+			),
+			array_values( (array) $extra_headers )
 		);
 
 		// Log the outgoing email attempt when email event logging is enabled.
