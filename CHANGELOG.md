@@ -25,11 +25,13 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 
-## [0.2.4] - 2026-06-10
+## [0.2.4] - 2026-07-01
 ### Added
 - Added asset history page.
 - Added unit tests: only some examples on SettingsManager for now.
-- Added integration tests: only some examples on SettingsManager for now.
+- Added integration tests.
+- Added e2e tests: only infrastructur to manage theme and one example.
+- Added feature to send e-mail messages to the owner of a resource.
 ### Fixed
 - Kit transfer (loan approval and direct assignment) no longer overwrites components assigned to other users or in maintenance/retired state; excluded components are left untouched and reported to the operator with explicit reasons.
 - Kit state changes (maintenance, retired, force-return, restore) no longer affect components outside the kit's control; only components in a compatible state and with the expected owner are modified.
@@ -42,7 +44,6 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Location field set only on kit and included components on operator-driven state changes.
 - Excluded and skipped components returned in AJAX response and shown as a warning notice after page redirect.
 - Changed the layout of the asset detail page, now is full height to improve readability.
-
 
 
 ## [0.2.3] - 2026-05-23
