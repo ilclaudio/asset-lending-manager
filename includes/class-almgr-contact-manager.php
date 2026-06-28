@@ -2,7 +2,7 @@
 /**
  * Asset Lending Manager - Contact Manager
  *
- * Handles the "Contact operator" form on the asset detail page.
+ * Handles the "Contact current owner" form on the asset detail page.
  * Logged-in users with view permission can send a plain-text message to
  * the current asset owner (if assigned) or to all operators/administrators.
  * The sender receives a CC copy; Reply-To is set to the sender's address.

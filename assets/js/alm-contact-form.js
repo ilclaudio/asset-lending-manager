@@ -1,7 +1,7 @@
 /**
  * Contact form JavaScript for ALMGR assets
  *
- * Handles AJAX submission and character counter for the "Contact operator"
+ * Handles AJAX submission and character counter for the "Contact current owner"
  * form on the asset detail page. The collapsible toggle is handled natively
  * by the <details>/<summary> HTML elements and requires no JavaScript.
  *

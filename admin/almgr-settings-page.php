@@ -261,9 +261,9 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				</tr>
 			</table>
 
-			<h2><?php esc_html_e( 'Contact the asset owner', 'asset-lending-manager' ); ?></h2>
+			<h2><?php esc_html_e( 'Contact current owner', 'asset-lending-manager' ); ?></h2>
 			<p class="description">
-				<?php esc_html_e( 'Settings for the "Contact operator" form on the asset detail page. Messages are delivered by email; the plugin stores no record of them.', 'asset-lending-manager' ); ?>
+				<?php esc_html_e( 'Settings for the "Contact current owner" form on the asset detail page. Messages are delivered by email; the plugin stores no record of them.', 'asset-lending-manager' ); ?>
 			</p>
 			<table class="form-table" role="presentation">
 				<tr>
@@ -278,7 +278,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 								value="1"
 								<?php checked( $almgr_settings->get( 'contact_form.enabled', true ) ); ?>
 							>
-							<?php esc_html_e( 'Allow logged-in users to send a message to the asset owner or operators', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Allow logged-in users to send a message to the current owner or, when unassigned, to operators and administrators', 'asset-lending-manager' ); ?>
 						</label>
 					</td>
 				</tr>
