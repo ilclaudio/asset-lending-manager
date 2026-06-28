@@ -10,15 +10,16 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## DESIDERATA 2.0.0
 1) Add a dashboard and user badge with: resources on loan, loans to be approved, and resources under maintenance (operator).
+2) Dedicated landing page for the plugin.
 
 ## DESIDERATA 1.0.0
 1) Mass printing of all QR codes in A4 pages.
-2) Review and correction of README.md and documentation.
-3) Github repository link as project link?
-4) Massive security testing.
-5) Simple statistics page.
-6) Abilities for MCP server.
+4) Simple statistics page.
+5) Abilities for MCP server.
 
+## DESIDERATA 0.3.1
+1) Review and correction of README.md and documentation.
+2) Massive security testing.
 
 
 ## [0.2.4] - 2026-07-01
