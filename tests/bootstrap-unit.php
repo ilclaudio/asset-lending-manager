@@ -49,6 +49,70 @@ if ( ! function_exists( '__' ) ) {
 	}
 }
 
+if ( ! class_exists( 'WP_Error' ) ) {
+	/**
+	 * Minimal WP_Error replacement for unit tests.
+	 */
+	class WP_Error {
+		/**
+		 * Error code.
+		 *
+		 * @var string
+		 */
+		private $code;
+
+		/**
+		 * Error message.
+		 *
+		 * @var string
+		 */
+		private $message;
+
+		/**
+		 * Constructor.
+		 *
+		 * @param string $code Error code.
+		 * @param string $message Error message.
+		 */
+		public function __construct( $code = '', $message = '' ) {
+			$this->code    = (string) $code;
+			$this->message = (string) $message;
+		}
+
+		/**
+		 * Return the first error code.
+		 *
+		 * @return string
+		 */
+		public function get_error_code() {
+			return $this->code;
+		}
+
+		/**
+		 * Return the first error message.
+		 *
+		 * @return string
+		 */
+		public function get_error_message() {
+			return $this->message;
+		}
+	}
+}
+
+if ( ! class_exists( 'WP_Post' ) ) {
+	/**
+	 * Minimal WP_Post replacement for unit tests.
+	 */
+	class WP_Post {
+		/**
+		 * Post ID.
+		 *
+		 * @var int
+		 */
+		public $ID = 0;
+	}
+}
+
 if ( ! function_exists( 'did_action' ) ) {
 	/**
 	 * Pretend no WordPress actions have fired in lightweight unit tests.
@@ -58,6 +122,75 @@ if ( ! function_exists( 'did_action' ) ) {
 	 */
 	function did_action( $hook_name ) {
 		return 0;
+	}
+}
+
+if ( ! function_exists( 'maybe_unserialize' ) ) {
+	/**
+	 * Lightweight maybe_unserialize() implementation.
+	 *
+	 * @param mixed $data Raw value.
+	 * @return mixed
+	 */
+	function maybe_unserialize( $data ) {
+		if ( ! is_string( $data ) ) {
+			return $data;
+		}
+
+		$trimmed = trim( $data );
+		if ( '' === $trimmed ) {
+			return $data;
+		}
+
+		if ( ! preg_match( '/^(a|O|s|i|b|d)\:/', $trimmed ) ) {
+			return $data;
+		}
+
+		$unserialized = @unserialize( $data ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
+		if ( false === $unserialized && 'b:0;' !== $trimmed ) {
+			return $data;
+		}
+
+		return $unserialized;
+	}
+}
+
+if ( ! function_exists( 'sanitize_key' ) ) {
+	/**
+	 * Lightweight sanitize_key() implementation.
+	 *
+	 * @param string $key Raw key.
+	 * @return string
+	 */
+	function sanitize_key( $key ) {
+		$key = strtolower( (string) $key );
+		return preg_replace( '/[^a-z0-9_\-]/', '', $key );
+	}
+}
+
+if ( ! function_exists( 'sanitize_title' ) ) {
+	/**
+	 * Lightweight sanitize_title() implementation.
+	 *
+	 * @param string $title Raw title.
+	 * @return string
+	 */
+	function sanitize_title( $title ) {
+		$title = strtolower( trim( wp_strip_all_tags( (string) $title ) ) );
+		$title = preg_replace( '/[^a-z0-9]+/', '-', $title );
+		return trim( (string) $title, '-' );
+	}
+}
+
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	/**
+	 * Lightweight wp_strip_all_tags() implementation.
+	 *
+	 * @param string $text Raw text.
+	 * @return string
+	 */
+	function wp_strip_all_tags( $text ) {
+		return strip_tags( (string) $text );
 	}
 }
 
@@ -108,3 +241,4 @@ if ( ! function_exists( 'delete_option' ) ) {
 }
 
 require_once dirname( __DIR__ ) . '/includes/class-almgr-settings-manager.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-tools-manager.php';

@@ -92,6 +92,7 @@ function almgr_get_email_templates() {
 			'direct_assign'               => __( '[ALM] Asset assigned to you: {ASSET_TITLE}', 'asset-lending-manager' ),
 			'direct_assign_to_prev_owner' => __( '[ALM] Asset reassigned: {ASSET_TITLE}', 'asset-lending-manager' ),
 			'force_return'                => __( '[ALM] Asset returned: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'contact_message'             => __( '[ALM] Message from {SENDER_NAME} about {ASSET_TITLE}', 'asset-lending-manager' ),
 		),
 		'body'    => array(
 			'request_to_requester'        => __(
@@ -124,6 +125,10 @@ function almgr_get_email_templates() {
 			),
 			'force_return'                => __(
 				"Hello {BORROWER_NAME},\n\nThe loan for \"{ASSET_TITLE}\" has been closed by the operator {ACTOR_NAME}.\n\nNotes: {NOTES}\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
+			'contact_message'             => __(
+				"{SENDER_NAME} sent you a message about the asset \"{ASSET_TITLE}\":\n\n{MESSAGE}\n\nView the asset: {ASSET_URL}",
 				'asset-lending-manager'
 			),
 		),

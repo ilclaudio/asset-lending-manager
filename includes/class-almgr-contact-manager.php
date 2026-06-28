@@ -111,25 +111,29 @@ class ALMGR_Contact_Manager {
 
 		$to = $this->build_recipient_list( $owner_id );
 
-		$subject = sprintf(
-			/* translators: 1: sender display name, 2: asset title. */
-			__( '[ALM] Message from %1$s about %2$s', 'asset-lending-manager' ),
-			$sender->display_name,
-			$asset_title
+		$placeholders = array(
+			'{SENDER_NAME}' => $sender->display_name,
+			'{ASSET_TITLE}' => $asset_title,
+			'{MESSAGE}'     => $message,
+			'{ASSET_URL}'   => (string) get_permalink( $asset_id ),
 		);
 
-		$body = sprintf(
-			/* translators: 1: sender display name, 2: asset title, 3: message text, 4: asset URL. */
-			__( "%1\$s sent you a message about the asset \"%2\$s\":\n\n---\n\n%3\$s\n\n---\n\nView the asset: %4\$s", 'asset-lending-manager' ),
-			$sender->display_name,
-			$asset_title,
-			$message,
-			get_permalink( $asset_id )
-		);
+		$subject = strtr( $this->get_template( 'subject', 'contact_message' ), $placeholders );
+		$body    = strtr( $this->get_template( 'body', 'contact_message' ), $placeholders );
 
 		$sender_email = sanitize_email( $sender->user_email );
-		$headers      = array(
+
+		$from_address = sanitize_email( (string) $this->settings->get( 'email.from_address', '' ) );
+		if ( ! $from_address ) {
+			$from_address = sanitize_email( (string) get_bloginfo( 'admin_email' ) );
+		}
+		$from_name = (string) $this->settings->get( 'email.from_name', '' );
+		$from_name = $from_name ? $from_name : get_bloginfo( 'name' );
+		$from_name = str_replace( array( "\r", "\n" ), '', $from_name );
+
+		$headers = array(
 			'Content-Type: text/plain; charset=UTF-8',
+			'From: ' . $from_name . ' <' . $from_address . '>',
 			'Reply-To: ' . $sender->display_name . ' <' . $sender_email . '>',
 			'Cc: ' . $sender_email,
 		);
@@ -161,6 +165,22 @@ class ALMGR_Contact_Manager {
 				500
 			);
 		}
+	}
+
+	/**
+	 * Return an email template string from settings, falling back to the default.
+	 *
+	 * @param string $group 'subject' or 'body'.
+	 * @param string $key   Template key.
+	 * @return string
+	 */
+	private function get_template( $group, $key ) {
+		$value = (string) $this->settings->get( 'template.' . $group . '.' . $key, '' );
+		if ( '' !== $value ) {
+			return $value;
+		}
+		$defaults = almgr_get_email_templates();
+		return $defaults[ $group ][ $key ] ?? '';
 	}
 
 	/**

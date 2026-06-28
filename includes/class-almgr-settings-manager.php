@@ -99,6 +99,7 @@ class ALMGR_Settings_Manager {
 				'logout_redirect_page_id' => 0,
 				'asset_list_per_page'     => ALMGR_ASSET_LIST_PER_PAGE,
 				'default_filters_open'    => false,
+				'default_kit_filter'      => false,
 			),
 			'autocomplete'  => array(
 				'min_chars'                      => 3,

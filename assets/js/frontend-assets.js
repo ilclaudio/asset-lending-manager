@@ -144,10 +144,12 @@
 			filters.forEach(function(filterEl) {
 				var selects = filterEl.querySelectorAll('select');
 
-				// Auto-open filters if any filter is active
+				// Auto-open filters only when the user explicitly set a filter via URL.
+				// Values set server-side as defaults (not in URL) are excluded.
+				var urlParams = new URLSearchParams(window.location.search);
 				var hasActiveFilters = false;
 				selects.forEach(function(selectEl) {
-					if (selectEl.value !== '') {
+					if (selectEl.value !== '' && urlParams.get(selectEl.name)) {
 						hasActiveFilters = true;
 					}
 				});

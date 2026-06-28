@@ -490,6 +490,7 @@ class ALMGR_Plugin_Manager {
 			// [A/O] fields.
 			$changes['frontend.asset_list_per_page']  = min( 100, max( 1, absint( wp_unslash( $_POST['almgr_frontend_asset_list_per_page'] ?? ALMGR_ASSET_LIST_PER_PAGE ) ) ) );
 			$changes['frontend.default_filters_open'] = isset( $_POST['almgr_frontend_default_filters_open'] );
+			$changes['frontend.default_kit_filter']   = isset( $_POST['almgr_frontend_default_kit_filter'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
 				// Archive and detail page IDs are only configurable with block themes.
@@ -568,6 +569,7 @@ class ALMGR_Plugin_Manager {
 				'canceled',
 				'direct_assign',
 				'direct_assign_to_prev_owner',
+				'contact_message',
 			);
 			foreach ( $types as $type ) {
 				$changes[ 'template.subject.' . $type ] = sanitize_text_field( wp_unslash( $_POST[ 'almgr_tpl_subject_' . $type ] ?? '' ) );

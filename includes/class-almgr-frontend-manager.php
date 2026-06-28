@@ -651,9 +651,22 @@ class ALMGR_Frontend_Manager {
 		$filter_state     = '';
 		$filter_level     = '';
 		$filter_structure = $this->get_validated_query_term_slug( 'almgr_structure', ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
-		$filter_type      = $this->get_validated_query_term_slug( 'almgr_type', ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
-		$filter_state     = $this->get_validated_query_term_slug( 'almgr_state', ALMGR_ASSET_STATE_TAXONOMY_SLUG );
-		$filter_level     = $this->get_validated_query_term_slug( 'almgr_level', ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
+
+		// Apply default kit filter when enabled and the user has not explicitly set a structure filter.
+		$almgr_structure_is_default = false;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only query param for display filtering.
+		if ( '' === $filter_structure && ! isset( $_GET['almgr_structure'] ) ) {
+			if ( (bool) $this->settings->get( 'frontend.default_kit_filter', false ) ) {
+				if ( term_exists( 'kit', ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG ) ) {
+					$filter_structure           = 'kit';
+					$almgr_structure_is_default = true;
+				}
+			}
+		}
+
+		$filter_type  = $this->get_validated_query_term_slug( 'almgr_type', ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
+		$filter_state = $this->get_validated_query_term_slug( 'almgr_state', ALMGR_ASSET_STATE_TAXONOMY_SLUG );
+		$filter_level = $this->get_validated_query_term_slug( 'almgr_level', ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
 		// Read owner filter (operator: by user ID; member: "my assets" checkbox).
 		$filter_owner      = 0;
 		$filter_owner_name = '';

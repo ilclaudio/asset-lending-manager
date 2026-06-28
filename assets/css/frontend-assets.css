@@ -212,6 +212,10 @@
 		--almgr-btn-danger-border: #b71c1c;
 	}
 
+	.almgr-asset-view__back {
+		margin-top: 2.5rem;
+	}
+
 	/* Search form - used in asset list and asset history page */
 	.almgr-search-submit-btn,
 	#almgr_asset_search_form .almgr-form-actions button[type="submit"],
@@ -782,6 +786,15 @@
 	.almgr-asset-view .almgr-loan-form label {
 		font-size: 1em;
 		font-weight: 600;
+	}
+
+	#almgr-contact-form .almgr-contact-info {
+		margin-bottom: 1.25rem;
+	}
+
+	#almgr-contact-form label {
+		display: block;
+		margin-bottom: 0.5rem;
 	}
 
 	.almgr-asset-view .almgr-loan-form textarea,

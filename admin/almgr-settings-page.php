@@ -50,6 +50,7 @@ $almgr_email_type_labels = array(
 	'canceled'                    => __( 'Request canceled', 'asset-lending-manager' ),
 	'direct_assign'               => __( 'Direct assignment — to assignee', 'asset-lending-manager' ),
 	'direct_assign_to_prev_owner' => __( 'Direct assignment — to previous owner', 'asset-lending-manager' ),
+	'contact_message'             => __( 'Contact current owner — to recipient', 'asset-lending-manager' ),
 );
 
 // Available placeholders per template type.
@@ -61,6 +62,7 @@ $almgr_placeholders = array(
 	'canceled'                    => '{ASSET_TITLE}, {ASSET_URL}, {REQUESTER_NAME}',
 	'direct_assign'               => '{ASSET_TITLE}, {ASSET_URL}, {ASSIGNEE_NAME}, {ACTOR_NAME}, {REASON}',
 	'direct_assign_to_prev_owner' => '{ASSET_TITLE}, {ASSET_URL}, {PREV_OWNER_NAME}, {ASSIGNEE_NAME}, {ACTOR_NAME}, {REASON}',
+	'contact_message'             => '{SENDER_NAME}, {ASSET_TITLE}, {ASSET_URL}, {MESSAGE}',
 );
 
 $almgr_loan_request_operator_mode = sanitize_key( (string) $almgr_settings->get( 'notifications.loan_request_operator_mode', 'no_owner' ) );
@@ -826,6 +828,22 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 								<?php checked( $almgr_settings->get( 'frontend.default_filters_open' ) ); ?>
 							>
 							<?php esc_html_e( 'Show the search/filter panel expanded when the asset list loads', 'asset-lending-manager' ); ?>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Default kit filter', 'asset-lending-manager' ); ?>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								name="almgr_frontend_default_kit_filter"
+								value="1"
+								<?php checked( $almgr_settings->get( 'frontend.default_kit_filter' ) ); ?>
+							>
+							<?php esc_html_e( 'Pre-select "Kit" in the Structure filter when the asset list loads without an explicit filter', 'asset-lending-manager' ); ?>
 						</label>
 					</td>
 				</tr>

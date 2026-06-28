@@ -597,7 +597,7 @@ class ALMGR_Tools_Manager {
 	 * @return string
 	 */
 	private function sanitize_users_export_csv_cell( $value ) {
-		$value = trim( (string) $value );
+		$value = (string) $value;
 		if ( '' === $value ) {
 			return '';
 		}
@@ -1096,7 +1096,7 @@ class ALMGR_Tools_Manager {
 		}
 
 		if ( isset( $normalized[0] ) ) {
-			$normalized[0] = (string) preg_replace( '/^\xEF\xBB\xBF/', '', $normalized[0] );
+			$normalized[0] = trim( (string) preg_replace( '/^\xEF\xBB\xBF/', '', $normalized[0] ) );
 		}
 
 		return $normalized;
@@ -1937,7 +1937,7 @@ class ALMGR_Tools_Manager {
 		}
 
 		if ( isset( $normalized[0] ) ) {
-			$normalized[0] = (string) preg_replace( '/^\xEF\xBB\xBF/', '', $normalized[0] );
+			$normalized[0] = trim( (string) preg_replace( '/^\xEF\xBB\xBF/', '', $normalized[0] ) );
 		}
 
 		return $normalized;

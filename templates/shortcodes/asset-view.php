@@ -368,7 +368,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	$almgr_contact_enabled  = (bool) $almgr_contact_settings->get( 'contact_form.enabled', true );
 	$almgr_contact_max      = (int) $almgr_contact_settings->get( 'contact_form.max_message_length', 500 );
 	$almgr_contact_role     = ALMGR_Plugin_Manager::get_instance()->get_module( 'role' );
-	if ( $almgr_contact_enabled && $almgr_contact_role->current_user_can_contact_resource() ) :
+	if ( $almgr_contact_enabled && ! $almgr_is_current_owner && $almgr_contact_role->current_user_can_contact_resource() ) :
 		?>
 	<section class="almgr-asset-view__contact" aria-label="<?php esc_attr_e( 'Contact current owner', 'asset-lending-manager' ); ?>">
 		<details class="almgr-collapsible almgr-collapsible--contact">
@@ -828,5 +828,19 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 			</details>
 		</section>
 	<?php endif; ?>
+
+<?php
+$almgr_list_page_id  = (int) $almgr_settings->get( 'frontend.assets_page_id', 0 );
+$almgr_list_page_url = $almgr_list_page_id > 0
+	? get_permalink( $almgr_list_page_id )
+	: get_post_type_archive_link( ALMGR_ASSET_CPT_SLUG );
+if ( $almgr_list_page_url ) :
+	?>
+	<p class="almgr-asset-view__back">
+		<a href="<?php echo esc_url( $almgr_list_page_url ); ?>" class="almgr-link">
+			&larr; <?php esc_html_e( 'Back to asset list', 'asset-lending-manager' ); ?>
+		</a>
+	</p>
+<?php endif; ?>
 
 </article>
