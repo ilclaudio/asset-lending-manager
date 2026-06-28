@@ -121,7 +121,8 @@ class ALMGR_Contact_Manager {
 		$subject = strtr( $this->get_template( 'subject', 'contact_message' ), $placeholders );
 		$body    = strtr( $this->get_template( 'body', 'contact_message' ), $placeholders );
 
-		$sender_email = sanitize_email( $sender->user_email );
+		$sender_email        = sanitize_email( $sender->user_email );
+		$sender_display_name = str_replace( array( "\r", "\n" ), '', $sender->display_name );
 
 		$from_address = sanitize_email( (string) $this->settings->get( 'email.from_address', '' ) );
 		if ( ! $from_address ) {
@@ -134,7 +135,7 @@ class ALMGR_Contact_Manager {
 		$headers = array(
 			'Content-Type: text/plain; charset=UTF-8',
 			'From: ' . $from_name . ' <' . $from_address . '>',
-			'Reply-To: ' . $sender->display_name . ' <' . $sender_email . '>',
+			'Reply-To: ' . $sender_display_name . ' <' . $sender_email . '>',
 			'Cc: ' . $sender_email,
 		);
 
