@@ -17,6 +17,20 @@ use PHPUnit\Framework\TestCase;
 class ALMGR_Settings_Manager_Unit_Test extends TestCase {
 
 	/**
+	 * Invoke a private helper through reflection.
+	 *
+	 * @param string $method_name Method name.
+	 * @param array  $arguments Method arguments.
+	 * @return mixed
+	 */
+	private function invoke_private_method( $method_name, array $arguments = array() ) {
+		$method = new ReflectionMethod( ALMGR_Settings_Manager::class, $method_name );
+		$method->setAccessible( true );
+
+		return $method->invokeArgs( new ALMGR_Settings_Manager(), $arguments );
+	}
+
+	/**
 	 * Reset the in-memory option store before each test.
 	 *
 	 * @return void
@@ -122,5 +136,128 @@ class ALMGR_Settings_Manager_Unit_Test extends TestCase {
 		$settings->reset();
 
 		$this->assertFalse( $settings->get( 'logging.enabled' ) );
+	}
+
+	/**
+	 * Verifies deep_merge preserves defaults, merges nested arrays, and allows scalar overrides.
+	 *
+	 * @return void
+	 */
+	public function test_deep_merge_handles_schema_evolution_and_scalar_overrides(): void {
+		$merged = $this->invoke_private_method(
+			'deep_merge',
+			array(
+				array(
+					'notifications' => array(
+						'enabled' => false,
+						'modes'   => array(
+							'owner'    => true,
+							'operator' => false,
+						),
+					),
+					'frontend'      => array(
+						'asset_list_per_page' => 12,
+						'default_filters'     => array(
+							'state' => 'available',
+							'type'  => '',
+						),
+					),
+					'logging'       => false,
+				),
+				array(
+					'notifications' => array(
+						'modes' => array(
+							'operator' => true,
+						),
+					),
+					'frontend'      => array(
+						'default_filters' => 'legacy-flat-value',
+					),
+					'logging'       => array(
+						'enabled' => true,
+					),
+					'new_group'     => array(
+						'enabled' => true,
+					),
+				),
+			)
+		);
+
+		$this->assertSame( false, $merged['notifications']['enabled'] );
+		$this->assertSame( true, $merged['notifications']['modes']['owner'] );
+		$this->assertSame( true, $merged['notifications']['modes']['operator'] );
+		$this->assertSame( 'legacy-flat-value', $merged['frontend']['default_filters'] );
+		$this->assertSame( 12, $merged['frontend']['asset_list_per_page'] );
+		$this->assertSame( array( 'enabled' => true ), $merged['logging'] );
+		$this->assertSame( array( 'enabled' => true ), $merged['new_group'] );
+	}
+
+	/**
+	 * Verifies that every default group is present and that key scalar defaults match
+	 * the values other modules depend on.
+	 *
+	 * Adding or removing a group, or silently changing a scalar default, will break
+	 * the module that reads it — this test catches those regressions early.
+	 *
+	 * @return void
+	 */
+	public function test_all_default_groups_and_key_scalars_are_present(): void {
+		$settings = new ALMGR_Settings_Manager();
+		$all      = $settings->get_all();
+
+		$expected_groups = array(
+			'email',
+			'notifications',
+			'template',
+			'loans',
+			'direct_assign',
+			'workflow',
+			'frontend',
+			'autocomplete',
+			'logging',
+			'asset',
+			'rest_api',
+			'contact_form',
+		);
+		foreach ( $expected_groups as $group ) {
+			$this->assertArrayHasKey( $group, $all, "Missing default group: {$group}" );
+		}
+
+		// Notifications — controls whether emails are sent at all.
+		$this->assertFalse( $all['notifications']['enabled'] );
+		$this->assertTrue( $all['notifications']['loan_request'] );
+		$this->assertSame( 'no_owner', $all['notifications']['loan_request_operator_mode'] );
+		$this->assertTrue( $all['notifications']['loan_decision'] );
+		$this->assertTrue( $all['notifications']['loan_confirmation'] );
+
+		// Loans — loan-request business rules.
+		$this->assertTrue( $all['loans']['loan_requests_enabled'] );
+		$this->assertSame( 0, $all['loans']['max_active_per_user'] );
+		$this->assertSame( 500, $all['loans']['request_message_max_length'] );
+
+		// Direct assign — operator direct-assignment toggle.
+		$this->assertTrue( $all['direct_assign']['enabled'] );
+
+		// Workflow — cancel-concurrent-requests behavior.
+		$this->assertTrue( $all['workflow']['cancel_concurrent_requests_on_assign'] );
+
+		// Frontend — filter and pagination defaults.
+		$this->assertFalse( $all['frontend']['default_filters_open'] );
+		$this->assertFalse( $all['frontend']['default_kit_filter'] );
+		$this->assertSame( ALMGR_ASSET_LIST_PER_PAGE, $all['frontend']['asset_list_per_page'] );
+
+		// Autocomplete — search thresholds.
+		$this->assertSame( 3, $all['autocomplete']['min_chars'] );
+
+		// Logging — debug output is off by default.
+		$this->assertFalse( $all['logging']['enabled'] );
+		$this->assertSame( 'error', $all['logging']['level'] );
+
+		// REST API — enabled by default.
+		$this->assertTrue( $all['rest_api']['enabled'] );
+
+		// Contact form — enabled by default.
+		$this->assertTrue( $all['contact_form']['enabled'] );
+		$this->assertSame( 500, $all['contact_form']['max_message_length'] );
 	}
 }

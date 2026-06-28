@@ -47,15 +47,25 @@ define(
 );
 
 // Roles and permissions.
-define( 'ALMGR_MEMBER_ROLE', 'almgr_member' );
-define( 'ALMGR_OPERATOR_ROLE', 'almgr_operator' );
+if ( ! defined( 'ALMGR_MEMBER_ROLE' ) ) {
+	define( 'ALMGR_MEMBER_ROLE', 'almgr_member' );
+}
+if ( ! defined( 'ALMGR_OPERATOR_ROLE' ) ) {
+	define( 'ALMGR_OPERATOR_ROLE', 'almgr_operator' );
+}
 
 // Autocomplete.
-define( 'ALMGR_AUTOCOMPLETE_MAX_RESULTS', 5 );
-define( 'ALMGR_AUTOCOMPLETE_DESC_LENGTH', 20 );
+if ( ! defined( 'ALMGR_AUTOCOMPLETE_MAX_RESULTS' ) ) {
+	define( 'ALMGR_AUTOCOMPLETE_MAX_RESULTS', 5 );
+}
+if ( ! defined( 'ALMGR_AUTOCOMPLETE_DESC_LENGTH' ) ) {
+	define( 'ALMGR_AUTOCOMPLETE_DESC_LENGTH', 20 );
+}
 
 // Asset list.
-define( 'ALMGR_ASSET_LIST_PER_PAGE', 12 );
+if ( ! defined( 'ALMGR_ASSET_LIST_PER_PAGE' ) ) {
+	define( 'ALMGR_ASSET_LIST_PER_PAGE', 12 );
+}
 
 // QR print label.
 define( 'ALMGR_QR_LABEL_TITLE_MAX_LENGTH', 30 );
@@ -64,7 +74,9 @@ define( 'ALMGR_QR_LABEL_TITLE_MAX_LENGTH', 30 );
 // ALMGR_ASSET_CODE_PREFIX is the alphanumeric prefix used to build the human-readable asset code
 // displayed in the frontend detail view (e.g. "ALMGR-00000045").
 // ALMGR_ASSET_CODE_FORMAT is the sprintf format: %s = prefix, %08d = ID zero-padded to 8 digits.
-define( 'ALMGR_ASSET_CODE_PREFIX', 'ALMGR' );
+if ( ! defined( 'ALMGR_ASSET_CODE_PREFIX' ) ) {
+	define( 'ALMGR_ASSET_CODE_PREFIX', 'ALMGR' );
+}
 define( 'ALMGR_ASSET_CODE_FORMAT', '%s-%08d' );
 
 // Email notifications — sender configuration.

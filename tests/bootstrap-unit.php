@@ -125,6 +125,30 @@ if ( ! function_exists( 'did_action' ) ) {
 	}
 }
 
+if ( ! function_exists( 'plugin_dir_path' ) ) {
+	/**
+	 * Lightweight plugin_dir_path() stub for unit tests.
+	 *
+	 * @param string $file Absolute path to a file inside the plugin.
+	 * @return string Directory path with trailing slash.
+	 */
+	function plugin_dir_path( $file ) {
+		return rtrim( dirname( $file ), '/\\' ) . '/';
+	}
+}
+
+if ( ! function_exists( 'plugin_dir_url' ) ) {
+	/**
+	 * Lightweight plugin_dir_url() stub for unit tests.
+	 *
+	 * @param string $file Absolute path to a file inside the plugin.
+	 * @return string Placeholder URL with trailing slash.
+	 */
+	function plugin_dir_url( $file ) {
+		return 'http://localhost/wp-content/plugins/asset-lending-manager/';
+	}
+}
+
 if ( ! function_exists( 'maybe_unserialize' ) ) {
 	/**
 	 * Lightweight maybe_unserialize() implementation.
@@ -194,6 +218,36 @@ if ( ! function_exists( 'wp_strip_all_tags' ) ) {
 	}
 }
 
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+	/**
+	 * Lightweight sanitize_text_field() implementation.
+	 *
+	 * @param string $text Raw text.
+	 * @return string
+	 */
+	function sanitize_text_field( $text ) {
+		$text = wp_strip_all_tags( (string) $text );
+		$text = preg_replace( '/[\r\n\t ]+/', ' ', $text );
+		return trim( (string) $text );
+	}
+}
+
+if ( ! function_exists( 'wp_unslash' ) ) {
+	/**
+	 * Lightweight wp_unslash() implementation.
+	 *
+	 * @param mixed $value Raw value.
+	 * @return mixed
+	 */
+	function wp_unslash( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( 'wp_unslash', $value );
+		}
+
+		return is_string( $value ) ? stripslashes( $value ) : $value;
+	}
+}
+
 if ( ! function_exists( 'get_option' ) ) {
 	/**
 	 * In-memory get_option() stub.
@@ -240,5 +294,9 @@ if ( ! function_exists( 'delete_option' ) ) {
 	}
 }
 
+require_once dirname( __DIR__ ) . '/plugin-config.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-settings-manager.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-frontend-manager.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-loan-manager.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-notification-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-tools-manager.php';

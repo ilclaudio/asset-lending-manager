@@ -215,4 +215,206 @@ class ALMGR_Tools_Manager_Helpers_Unit_Test extends TestCase {
 
 		$this->assertSame( array( 12, 34 ), $normalized );
 	}
+
+	/**
+	 * Verify import report builders expose the stable CSV contract metadata.
+	 *
+	 * @return void
+	 */
+	public function test_import_report_builders_expose_expected_contract_defaults(): void {
+		$users_report = $this->invoke_private_method(
+			'new_users_import_report',
+			array( 'upsert', 'dry_run', 'users.csv' )
+		);
+		$assets_report = $this->invoke_private_method(
+			'new_assets_import_report',
+			array( 'create_only', 'execute', 'assets.csv' )
+		);
+
+		$this->assertSame( 'upsert', $users_report['import_mode'] );
+		$this->assertSame( 'dry_run', $users_report['run_mode'] );
+		$this->assertSame( 'users.csv', $users_report['file_name'] );
+		$this->assertSame( 'Username;Email;First_Name;Last_Name;Role', $users_report['header'] );
+		$this->assertSame(
+			array(
+				'processed' => 0,
+				'created'   => 0,
+				'updated'   => 0,
+				'skipped'   => 0,
+				'errors'    => 0,
+			),
+			$users_report['counts']
+		);
+		$this->assertSame( array(), $users_report['logs'] );
+		$this->assertSame( array(), $users_report['errors'] );
+
+		$this->assertSame( 'create_only', $assets_report['import_mode'] );
+		$this->assertSame( 'execute', $assets_report['run_mode'] );
+		$this->assertSame( 'assets.csv', $assets_report['file_name'] );
+		$this->assertSame( 'Title;Structure;Type;State;Level;External_Code;Description;Manufacturer;Model;Wp_Status;Kit_Component_Titles', $assets_report['header'] );
+		$this->assertSame(
+			array(
+				'processed' => 0,
+				'created'   => 0,
+				'updated'   => 0,
+				'skipped'   => 0,
+				'errors'    => 0,
+			),
+			$assets_report['counts']
+		);
+		$this->assertSame( array(), $assets_report['logs'] );
+		$this->assertSame( array(), $assets_report['errors'] );
+	}
+
+	/**
+	 * Verify slug references and title normalization stay compatible for import matching.
+	 *
+	 * @return void
+	 */
+	public function test_assets_import_helpers_keep_round_trip_matching_stable(): void {
+		$index = array();
+
+		$this->invoke_private_method(
+			'append_assets_import_slug_reference',
+			array(
+				&$index,
+				'  Lens  ',
+				array(
+					'post_id' => 21,
+					'title'   => 'Lens',
+				),
+			)
+		);
+		$this->invoke_private_method(
+			'append_assets_import_slug_reference',
+			array(
+				&$index,
+				'<b>Lens</b>',
+				array(
+					'post_id' => 22,
+					'title'   => 'Lens Duplicate',
+				),
+			)
+		);
+		$this->invoke_private_method(
+			'append_assets_import_slug_reference',
+			array(
+				&$index,
+				'',
+				array(
+					'post_id' => 23,
+				),
+			)
+		);
+
+		$this->assertSame( 'lens', sanitize_title( $this->invoke_private_method( 'normalize_assets_import_title_key', array( ' Lens ' ) ) ) );
+		$this->assertArrayHasKey( 'lens', $index );
+		$this->assertCount( 2, $index['lens'] );
+		$this->assertSame( 21, $index['lens'][0]['post_id'] );
+		$this->assertSame( 22, $index['lens'][1]['post_id'] );
+		$this->assertCount( 1, $index );
+	}
+
+	/**
+	 * Verify users import log and error helpers append stable payloads and counts.
+	 *
+	 * @return void
+	 */
+	public function test_users_import_log_and_error_helpers_build_expected_report_entries(): void {
+		$report = $this->invoke_private_method(
+			'new_users_import_report',
+			array( 'upsert', 'dry_run', 'users.csv' )
+		);
+
+		$this->invoke_private_method(
+			'add_users_import_log_entry',
+			array( &$report, 3, 'mrossi', 'm@example.com', 'ok', 'Created successfully' )
+		);
+		$this->invoke_private_method(
+			'add_users_import_error',
+			array( &$report, 4, 'bad@example.com', 'Invalid role', 'broken-user' )
+		);
+
+		$this->assertCount( 2, $report['logs'] );
+		$this->assertSame(
+			array(
+				'line'     => 3,
+				'username' => 'mrossi',
+				'email'    => 'm@example.com',
+				'status'   => 'ok',
+				'message'  => 'Created successfully',
+			),
+			$report['logs'][0]
+		);
+		$this->assertSame(
+			array(
+				'line'     => 4,
+				'username' => 'broken-user',
+				'email'    => 'bad@example.com',
+				'status'   => 'error',
+				'message'  => 'Invalid role',
+			),
+			$report['logs'][1]
+		);
+		$this->assertSame(
+			array(
+				'line'     => 4,
+				'username' => 'broken-user',
+				'email'    => 'bad@example.com',
+				'message'  => 'Invalid role',
+			),
+			$report['errors'][0]
+		);
+		$this->assertSame( 1, $report['counts']['errors'] );
+	}
+
+	/**
+	 * Verify assets import log and error helpers append stable payloads and counts.
+	 *
+	 * @return void
+	 */
+	public function test_assets_import_log_and_error_helpers_build_expected_report_entries(): void {
+		$report = $this->invoke_private_method(
+			'new_assets_import_report',
+			array( 'create_only', 'execute', 'assets.csv' )
+		);
+
+		$this->invoke_private_method(
+			'add_assets_import_log_entry',
+			array( &$report, 8, 'Kit Alpha', 'skipped', 'Already exists' )
+		);
+		$this->invoke_private_method(
+			'add_assets_import_error',
+			array( &$report, 9, 'Kit Beta', 'Invalid structure' )
+		);
+
+		$this->assertCount( 2, $report['logs'] );
+		$this->assertSame(
+			array(
+				'line'    => 8,
+				'title'   => 'Kit Alpha',
+				'status'  => 'skipped',
+				'message' => 'Already exists',
+			),
+			$report['logs'][0]
+		);
+		$this->assertSame(
+			array(
+				'line'    => 9,
+				'title'   => 'Kit Beta',
+				'status'  => 'error',
+				'message' => 'Invalid structure',
+			),
+			$report['logs'][1]
+		);
+		$this->assertSame(
+			array(
+				'line'    => 9,
+				'title'   => 'Kit Beta',
+				'message' => 'Invalid structure',
+			),
+			$report['errors'][0]
+		);
+		$this->assertSame( 1, $report['counts']['errors'] );
+	}
 }
