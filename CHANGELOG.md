@@ -17,12 +17,8 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 4) Simple statistics page.
 5) Abilities for MCP server.
 
-## DESIDERATA 0.3.1
-1) Review and correction of README.md and documentation.
-2) Massive security testing.
 
-
-## [0.2.4] - 2026-07-01
+## [0.3.0] - 2026-07-01
 ### Added
 - Added asset history page.
 - Added unit tests.

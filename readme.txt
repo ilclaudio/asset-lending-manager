@@ -6,7 +6,7 @@ Tags: asset management, loans, library, equipment, organization
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.2.4
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,33 +26,23 @@ Born within an association of amateur astronomers to manage telescopes and equip
 
 == Features ==
 * Asset and kit management (a kit is a group of items lent together as a set)
-* Public browsing page with search and taxonomy filters
-* QR code generation and printable label from the asset detail page
-* QR scanner from the asset list (camera-based quick lookup)
-* Loan request workflow: members submit requests, the current asset owner approves or rejects
-* Direct assignment by operators and admins (when enabled; a reason is always required)
-* By default, when an asset is assigned, all other pending requests for it are automatically canceled (configurable)
+* Public browsing page with search, taxonomy filters, QR labels, and QR scanner lookup
+* Loan request workflow with approval, rejection, direct assignment, and configurable cancellation of competing pending requests
 * Optional contact form to send email messages to the current asset owner
-* Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
-* Asset state management from the frontend: operators can set assets to maintenance or retired, or force-return on-loan assets directly to available; a location is required on every state change
-* Full loan history for each asset
-* Full asset history page for operators via the `[almgr_asset_history]` shortcode
-* Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)
-* Read-only JSON REST API at `/wp-json/almgr/v1/` for asset list, asset detail, member list, and member assets; authentication via WordPress core (cookie session, REST nonce, Application Passwords)
+* Email notifications for the main loan workflow events
+* Frontend asset state management for operators, including force-return and restore flows
+* Full loan history, plus a dedicated full asset history page for operators via `[almgr_asset_history]`
+* Two user roles included: Member and Operator
+* Read-only JSON REST API at `/wp-json/almgr/v1/` for asset list, asset detail, member list, and member assets
 * Back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs
-* Users CSV import from the Tools page (admin only)
-* Users CSV export from the Tools page (admin and operator)
-* Assets CSV import from the Tools page (admin and operator)
-* Assets CSV export from the Tools page (admin and operator)
+* Users and assets CSV import/export, including kit components and their ACF fields in asset CSV files
 * Translation-ready
 
 
 == Requirements ==
-This plugin requires the **Advanced Custom Fields** plugin (free version is sufficient).
-You can install it for free from the WordPress plugin directory: https://wordpress.org/plugins/advanced-custom-fields/
-
-ACF is used to store and retrieve all custom asset fields (manufacturer, model, location, serial number, etc.).
-The plugin registers the ACF field group automatically — no manual configuration of ACF fields is needed.
+Requires the **Advanced Custom Fields** plugin (free version is sufficient):
+https://wordpress.org/plugins/advanced-custom-fields/
+The plugin registers its ACF field group automatically, so no manual field setup is needed.
 
 
 == Loan Workflow ==
@@ -111,6 +101,14 @@ No. Asset delivery and handover are handled offline. The plugin tracks requests 
 = Is there a settings page in wp-admin? =
 Yes. Under the **ALM** menu in wp-admin you can configure the email sender, loan rules (maximum active loans per member, message length limits), and other workflow options.
 
+= Which shortcodes are available and when should I use them? =
+The plugin provides three shortcodes:
+`[almgr_asset_list]` for the asset catalog,
+`[almgr_asset_view]` for the single asset detail view,
+and `[almgr_asset_history]` for the full asset history page (operator-only).
+On classic themes, catalog and detail pages are usually served automatically, so the history shortcode is the one most commonly needed.
+On block themes, create and assign all three shortcode pages manually in **ALM > Settings > Frontend**.
+
 = Is the plugin translation-ready? =
 Yes. English and Italian are included out of the box. Other languages can be added using standard WordPress translation tools.
 
@@ -126,62 +124,38 @@ An asset is a single physical item (for example, a telescope, a book, or a camer
 Yes. Multiple members can submit requests for the same asset simultaneously. By default, when a request is approved or the asset is directly assigned, all other pending requests for that asset are automatically canceled (this behavior is configurable), and requesters are notified by email when notifications are enabled.
 
 = Do I need a developer to set up this plugin? =
-On classic themes, basic setup only requires installing the plugin and activating ACF — asset pages are served automatically with no shortcodes needed, except for the optional full asset history page. On block themes, three pages with shortcodes must be created manually and configured in the plugin settings (catalog, asset detail, and full asset history). Some advanced customization such as user role adjustments may benefit from developer support.
+On classic themes, basic setup usually only requires installing the plugin and activating ACF; asset pages are served automatically, except for the optional full asset history page. On block themes, three shortcode pages must be created manually and assigned in the plugin settings: catalog, asset detail, and full asset history.
 
 
 == Changelog ==
 
 For full release notes see `CHANGELOG.md`.
 
-= 0.2.4 =
+= 0.3.0 =
 * Added: full asset history page for operators via `[almgr_asset_history]`.
 * Added: optional contact form to send email messages to the current asset owner.
-* Fixed: kit loan approval and direct assignment no longer overwrite components assigned to other users or in maintenance/retired state; excluded components are left untouched and reported to the operator with explicit reasons.
-* Fixed: kit state changes only affect eligible components; components under maintenance, retired, or assigned to another user are skipped.
-* Fixed: component sent to maintenance no longer removed from parent kit; `_almgr_removed_from_kit_ids` is now written only on permanent retirement.
-* Fixed: restore from maintenance is now a state-only change; no kit re-attach is performed.
-* Fixed: ACF write return values checked with read-back; failures inside transactions trigger rollback; post-commit failures log a warning.
-* Changed: location field cleared only on kit and included components when an asset moves to on-loan.
-* Changed: excluded and skipped kit components returned in the AJAX response and shown as a warning notice after redirect.
+* Fixed: kit loan approval, direct assignment, and state changes now affect only eligible components; excluded components are skipped safely and reported to the operator.
+* Fixed: maintenance/restore kit behavior and ACF write handling are now more robust and consistent.
 
 = 0.2.3 =
-* Fixed: Checked compatibility with WordPress 7.0: No intervention required.
-* Fixed: corrected minor typos in release documentation.
-* Fixed: small admin CSS compatibility adjustment.
+* Fixed: WordPress 7.0 compatibility check, minor documentation corrections, and a small admin CSS adjustment.
 
 = 0.2.2 =
-* Security: migrated REST API to native WordPress REST API routes; removed custom authentication logic (`wp_authenticate()`).
-* Security: escaped `do_blocks()` output with `wp_kses_post()` in fallback templates.
+* Security: migrated the REST API to native WordPress REST API routes and removed custom authentication logic.
 * Fixed: operators can upload and manage images from the Media Library.
 
 = 0.2.1 =
-* Changed: internal refactoring, all plugin identifiers migrated from the `alm_` prefix to `almgr_` for namespace safety.
-* Changed: all ACF custom field storage keys now use the `almgr_` prefix for WordPress.org namespace compliance.
-* Added: back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs.
-* Added: users CSV import (admin only) and users CSV export (admin and operator) in Tools.
-* Added: assets CSV import (admin and operator) and assets CSV export (admin and operator) in Tools.
-* Added: kit import and export — kit components and their ACF fields are included in the asset CSV.
-* Added: notification policy setting to control if/when all operators are notified for a new loan request (`never`, `no owner`, `always`).
-* Added: `ALMGR_REMOVE_ALL_DATA` constant — define as `true` in `wp-config.php` before uninstalling to remove all plugin data including assets.
-* Fixed: operators can approve/reject requests for assets without a current owner.
-* Security: fixes and hardening from code audit.
+* Added: Tools page with users/assets CSV import-export and utilities.
+* Added: notification policy settings and full-data uninstall constant.
+* Changed: internal `alm_` identifiers and ACF storage keys migrated to the `almgr_` prefix.
+* Fixed/Security: operators can approve requests without a current owner; additional hardening from code audit.
 
 = 0.1.1 =
-* Added: read-only JSON REST API at `/wp-json/almgr/v1/` (asset list, asset detail, member list, member assets). Authentication via WordPress core (cookie session, REST nonce, Application Passwords).
-* Added: REST API settings tab in wp-admin (admin only) with enable/disable toggle, endpoint reference, and authentication guide.
+* Added: read-only JSON REST API and dedicated REST API settings tab.
 * Security: added resource-status checks on all AJAX endpoints.
 
 = 0.1.0 =
-* First public release.
-* Asset and kit management with full loan workflow (request, approve, reject, direct assign).
-* Role-based access control (almgr_member, almgr_operator).
-* Email notifications for all loan workflow events.
-* Loan history tracking, including per-component entries for kit operations.
-* Frontend asset browsing with filters, QR code generation, and QR scanner.
-* Asset state management (available, on-loan, maintenance, retired) with kit propagation; operators can force-return on-loan assets to available from the frontend, closing the active loan and notifying the borrower.
-* Location field required on every state change; propagated to kit components.
-* Translation-ready with English and Italian included.
-* Settings page in wp-admin.
+* First public release with asset and kit management, full loan workflow, role-based access control, email notifications, loan history, frontend browsing, QR support, asset state management, translations, and settings page.
 
 
 == Credits ==
@@ -196,8 +170,8 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 
 == Upgrade Notice ==
 
-= 0.2.4 =
-Feature and fix release. Adds an operator asset history page and optional owner contact messages. Kit loan approval and state changes now propagate only to eligible components; components under maintenance, retired, or assigned to another user are excluded and left unchanged. No database changes; no manual intervention required.
+= 0.3.0 =
+Adds an operator asset history page and optional owner contact messages. Kit operations now skip ineligible components safely. No database changes; no manual intervention required.
 
 = 0.2.2 =
 Security and fix release. REST API migrated to native WordPress REST API routes. No database changes; no manual intervention required.
