@@ -30,7 +30,7 @@ $almgr_tabs = array(
 	'templates'     => __( 'Email Templates', 'asset-lending-manager' ),
 	'loans'         => __( 'Loan Rules', 'asset-lending-manager' ),
 	'direct_assign' => __( 'Direct Assignment', 'asset-lending-manager' ),
-	'workflow'      => __( 'Workflow', 'asset-lending-manager' ),
+	'workflow'      => __( 'Automations', 'asset-lending-manager' ),
 	'logging'       => __( 'Logging', 'asset-lending-manager' ),
 	'asset'         => __( 'Advanced Settings', 'asset-lending-manager' ),
 	'rest_api'      => __( 'REST API', 'asset-lending-manager' ),
@@ -145,7 +145,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				<tr>
 					<th scope="row">
 						<label for="almgr_email_system_email">
-							<?php esc_html_e( 'System email', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Supervision email', 'asset-lending-manager' ); ?>
 							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
@@ -159,13 +159,13 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 							<?php disabled( ! $almgr_is_admin ); ?>
 						>
 						<p class="description">
-							<?php esc_html_e( 'Optional additional recipient for every loan request submission (with or without current owner). Leave empty to disable.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Additional address that receives a copy of every loan request. Leave empty to disable.', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
 			</table>
 
-			<h2><?php esc_html_e( 'Notification Toggles', 'asset-lending-manager' ); ?></h2>
+			<h2><?php esc_html_e( 'Notifications', 'asset-lending-manager' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
@@ -229,7 +229,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 							</option>
 						</select>
 						<p class="description">
-							<?php esc_html_e( 'Controls additional notifications to users with role "almgr_operator". Duplicate email addresses are automatically de-duplicated.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Controls whether operators receive an additional notification for each loan request submitted.', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
@@ -248,16 +248,16 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><?php esc_html_e( 'Loan confirmation', 'asset-lending-manager' ); ?></th>
+					<th scope="row"><?php esc_html_e( 'Direct assignment', 'asset-lending-manager' ); ?></th>
 					<td>
 						<label>
 							<input
 								type="checkbox"
-								name="almgr_notifications_loan_confirmation"
+								name="almgr_notifications_direct_assign"
 								value="1"
-								<?php checked( $almgr_settings->get( 'notifications.loan_confirmation' ) ); ?>
+								<?php checked( $almgr_settings->get( 'notifications.direct_assign' ) ); ?>
 							>
-							<?php esc_html_e( 'Send confirmation email when a loan is confirmed (if/when the feature is introduced)', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Send a notification email to the assignee (and to the previous owner, if any) when an operator directly assigns an asset', 'asset-lending-manager' ); ?>
 						</label>
 					</td>
 				</tr>
@@ -502,13 +502,35 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						</p>
 					</td>
 				</tr>
+				<tr>
+					<th scope="row">
+						<label for="almgr_loans_change_state_notes_max_length">
+							<?php esc_html_e( 'State change notes max length', 'asset-lending-manager' ); ?>
+							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+						</label>
+					</th>
+					<td>
+						<input
+							type="number"
+							id="almgr_loans_change_state_notes_max_length"
+							name="almgr_loans_change_state_notes_max_length"
+							value="<?php echo esc_attr( $almgr_settings->get( 'loans.change_state_notes_max_length' ) ); ?>"
+							min="0"
+							class="small-text"
+							<?php disabled( ! $almgr_is_admin ); ?>
+						>
+						<p class="description">
+							<?php esc_html_e( 'Maximum character length of the notes field when changing an asset state (to maintenance, return, restore). Set to 0 for unlimited.', 'asset-lending-manager' ); ?>
+						</p>
+					</td>
+				</tr>
 			</table>
 
 			<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
 
 		<?php elseif ( 'direct_assign' === $almgr_active_tab ) : ?>
 
-			<h2><?php esc_html_e( 'Direct Assignment Settings', 'asset-lending-manager' ); ?></h2>
+			<h2><?php esc_html_e( 'Options', 'asset-lending-manager' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
@@ -530,7 +552,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				</tr>
 				<tr>
 					<th scope="row">
-						<?php esc_html_e( 'Allowed target roles', 'asset-lending-manager' ); ?>
+						<?php esc_html_e( 'Assignable user types', 'asset-lending-manager' ); ?>
 						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 					</th>
 					<td>
@@ -554,7 +576,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 							</label>
 						<?php endforeach; ?>
 						<p class="description">
-							<?php esc_html_e( 'Which user roles can be selected as the target of a direct assignment.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Select which types of users an operator can assign an asset to.', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
@@ -600,12 +622,12 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				</tr>
 			</table>
 
-			<h2><?php esc_html_e( 'System Actor', 'asset-lending-manager' ); ?></h2>
+			<h2><?php esc_html_e( 'System User', 'asset-lending-manager' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
 						<label for="almgr_workflow_actor_user_id">
-							<?php esc_html_e( 'Automatic operations actor user ID', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'System user for automatic operations', 'asset-lending-manager' ); ?>
 							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
@@ -620,7 +642,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 							<?php disabled( ! $almgr_is_admin ); ?>
 						>
 						<p class="description">
-							<?php esc_html_e( 'WordPress user ID recorded as the actor for automatic system operations (e.g. auto-cancellations). Defaults to 1 (site administrator).', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'ID of the WordPress user recorded as responsible for automatic operations (e.g. auto-cancellations). Default: 1 (site administrator).', 'asset-lending-manager' ); ?>
 						</p>
 					</td>
 				</tr>
@@ -630,15 +652,15 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 
 		<?php elseif ( 'frontend' === $almgr_active_tab ) : ?>
 
-			<h2><?php esc_html_e( 'Page Links', 'asset-lending-manager' ); ?></h2>
+			<h2><?php esc_html_e( 'Plugin Pages', 'asset-lending-manager' ); ?></h2>
 			<p>
-				<?php esc_html_e( 'With block themes, using shortcodes is required. With classic themes, you can use either shortcodes or the built-in templates (recommended).', 'asset-lending-manager' ); ?>
+				<?php esc_html_e( 'Link the plugin to the WordPress pages you created. With block themes (Site Editor), you must set the pages here; with classic themes the plugin handles them automatically.', 'asset-lending-manager' ); ?>
 			</p>
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
 						<label for="almgr_frontend_assets_page_id">
-							<?php esc_html_e( 'Asset archive page', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Asset list page', 'asset-lending-manager' ); ?>
 							<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
 						</label>
 					</th>
@@ -982,7 +1004,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 								<?php checked( $almgr_settings->get( 'logging.enabled' ) ); ?>
 								<?php disabled( ! $almgr_is_admin ); ?>
 							>
-							<?php esc_html_e( 'Write ALM events to the debug log (requires WP_DEBUG to be enabled)', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Write plugin events to the debug log (requires WP_DEBUG to be enabled in wp-config.php)', 'asset-lending-manager' ); ?>
 						</label>
 					</td>
 				</tr>

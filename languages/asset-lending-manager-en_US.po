@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-06-28 15:40+0000\n"
+"PO-Revision-Date: 2026-06-30 11:20+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Loco-Version: 2.8.2; wp-6.9.1; php-8.4.10\n"
 "X-Domain: asset-lending-manager"
 
-#: templates/shortcodes/asset-view.php:204
+#: templates/shortcodes/asset-view.php:205
 msgid "(opens in new tab)"
 msgstr ""
 
@@ -29,46 +29,46 @@ msgid ""
 msgstr ""
 
 #. %s: current owner display name
-#: templates/shortcodes/asset-view.php:658
+#: templates/shortcodes/asset-view.php:659
 #, php-format
 msgid ""
 "<strong>Warning:</strong> this asset is currently on loan to %s. Changing "
 "state will terminate the active loan."
 msgstr ""
 
-#: plugin-config.php:92
+#: plugin-config.php:104
 msgid "[ALM] Asset assigned to you: {ASSET_TITLE}"
 msgstr ""
 
-#: plugin-config.php:93
+#: plugin-config.php:105
 msgid "[ALM] Asset reassigned: {ASSET_TITLE}"
 msgstr ""
 
-#: plugin-config.php:94
+#: plugin-config.php:106
 msgid "[ALM] Asset returned: {ASSET_TITLE}"
 msgstr ""
 
-#: plugin-config.php:89
+#: plugin-config.php:101
 msgid "[ALM] Loan request approved: {ASSET_TITLE}"
 msgstr ""
 
-#: plugin-config.php:91
+#: plugin-config.php:103
 msgid "[ALM] Loan request canceled: {ASSET_TITLE}"
 msgstr ""
 
-#: plugin-config.php:90
+#: plugin-config.php:102
 msgid "[ALM] Loan request rejected: {ASSET_TITLE}"
 msgstr ""
 
-#: plugin-config.php:87
+#: plugin-config.php:99
 msgid "[ALM] Loan request submitted: {ASSET_TITLE}"
 msgstr ""
 
-#: plugin-config.php:95
+#: plugin-config.php:107
 msgid "[ALM] Message from {SENDER_NAME} about {ASSET_TITLE}"
 msgstr ""
 
-#: plugin-config.php:88
+#: plugin-config.php:100
 msgid "[ALM] New loan request received: {ASSET_TITLE}"
 msgstr ""
 
@@ -80,8 +80,8 @@ msgstr ""
 msgid "Accessory"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:478
-#: templates/shortcodes/asset-view.php:527
+#: templates/shortcodes/asset-view.php:479
+#: templates/shortcodes/asset-view.php:528
 msgid "Actions"
 msgstr ""
 
@@ -98,7 +98,13 @@ msgstr ""
 msgid "Add New Asset"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:153
+#: admin/almgr-settings-page.php:162
+msgid ""
+"Additional address that receives a copy of every loan request. Leave empty "
+"to disable."
+msgstr ""
+
+#: templates/shortcodes/asset-view.php:154
 msgid "Additional fields"
 msgstr ""
 
@@ -106,14 +112,14 @@ msgstr ""
 #: admin/almgr-settings-page.php:149 admin/almgr-settings-page.php:173
 #: admin/almgr-settings-page.php:212 admin/almgr-settings-page.php:443
 #: admin/almgr-settings-page.php:465 admin/almgr-settings-page.php:487
-#: admin/almgr-settings-page.php:516 admin/almgr-settings-page.php:534
-#: admin/almgr-settings-page.php:609 admin/almgr-settings-page.php:642
-#: admin/almgr-settings-page.php:676 admin/almgr-settings-page.php:710
-#: admin/almgr-settings-page.php:739 admin/almgr-settings-page.php:768
-#: admin/almgr-settings-page.php:928 admin/almgr-settings-page.php:974
-#: admin/almgr-settings-page.php:993 admin/almgr-settings-page.php:1025
-#: admin/almgr-settings-page.php:1043 admin/almgr-settings-page.php:1070
-#: admin/almgr-settings-page.php:1105
+#: admin/almgr-settings-page.php:509 admin/almgr-settings-page.php:538
+#: admin/almgr-settings-page.php:556 admin/almgr-settings-page.php:631
+#: admin/almgr-settings-page.php:664 admin/almgr-settings-page.php:698
+#: admin/almgr-settings-page.php:732 admin/almgr-settings-page.php:761
+#: admin/almgr-settings-page.php:790 admin/almgr-settings-page.php:950
+#: admin/almgr-settings-page.php:996 admin/almgr-settings-page.php:1015
+#: admin/almgr-settings-page.php:1047 admin/almgr-settings-page.php:1065
+#: admin/almgr-settings-page.php:1092 admin/almgr-settings-page.php:1127
 msgid "Administrator only"
 msgstr ""
 
@@ -156,13 +162,13 @@ msgstr ""
 msgid "Allow multiple requests"
 msgstr ""
 
-#: admin/almgr-settings-page.php:527
+#: admin/almgr-settings-page.php:549
 msgid ""
 "Allow operators/administrators to assign an asset directly to a user without "
 "a loan request"
 msgstr ""
 
-#: admin/almgr-settings-page.php:939
+#: admin/almgr-settings-page.php:961
 msgid ""
 "Allow unauthenticated requests to the asset autocomplete REST endpoint (/wp-"
 "json/almgr/v1/assets/autocomplete)"
@@ -170,10 +176,6 @@ msgstr ""
 
 #: admin/almgr-tools-page.php:154 admin/almgr-tools-page.php:597
 msgid "Allowed role values:"
-msgstr ""
-
-#: admin/almgr-settings-page.php:533
-msgid "Allowed target roles"
 msgstr ""
 
 #: admin/almgr-tools-page.php:365
@@ -194,7 +196,7 @@ msgid "ALM Tools"
 msgstr ""
 
 #. %s: example formatted code
-#: admin/almgr-settings-page.php:1087
+#: admin/almgr-settings-page.php:1109
 #, php-format
 msgid ""
 "Alphanumeric prefix prepended to the asset ID to form the human-readable "
@@ -206,7 +208,7 @@ msgid "Always"
 msgstr ""
 
 #. %s: ambiguous kit component title from CSV.
-#: includes/class-almgr-tools-manager.php:1689
+#: includes/class-almgr-tools-manager.php:1699
 #, php-format
 msgid "Ambiguous component slug for \"%s\"."
 msgstr ""
@@ -219,11 +221,11 @@ msgstr ""
 msgid "an operator"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:654
+#: templates/shortcodes/asset-view.php:655
 msgid "an unknown user"
 msgstr ""
 
-#: admin/almgr-settings-page.php:923
+#: admin/almgr-settings-page.php:945
 msgid "API Access"
 msgstr ""
 
@@ -235,17 +237,17 @@ msgstr ""
 msgid "Approval request failed. Please try again."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:537
+#: templates/shortcodes/asset-view.php:538
 msgid "Approve"
 msgstr ""
 
 #. %s: loan requester display name.
-#: templates/shortcodes/asset-view.php:496
+#: templates/shortcodes/asset-view.php:497
 #, php-format
 msgid "Approve request from %s"
 msgstr ""
 
-#: plugin-config.php:150
+#: plugin-config.php:162
 msgid "Approved"
 msgstr ""
 
@@ -261,10 +263,6 @@ msgstr ""
 msgid "Asset"
 msgstr ""
 
-#: admin/almgr-settings-page.php:641
-msgid "Asset archive page"
-msgstr ""
-
 #: includes/class-almgr-loan-manager.php:1853
 #: includes/class-almgr-loan-manager.php:1963 assets/js/frontend-assets.js:1187
 msgid "Asset assigned successfully."
@@ -278,15 +276,15 @@ msgstr ""
 msgid "asset catalog with search filters"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1064
+#: admin/almgr-settings-page.php:1086
 msgid "Asset Code"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1867
+#: includes/class-almgr-tools-manager.php:1877
 msgid "Asset created."
 msgstr ""
 
-#: admin/almgr-settings-page.php:675
+#: admin/almgr-settings-page.php:697
 msgid "Asset detail page"
 msgstr ""
 
@@ -295,7 +293,7 @@ msgstr ""
 msgid "Asset history"
 msgstr ""
 
-#: admin/almgr-settings-page.php:709
+#: admin/almgr-settings-page.php:731
 msgid "Asset history page"
 msgstr ""
 
@@ -340,8 +338,12 @@ msgstr ""
 msgid "Asset Levels"
 msgstr ""
 
-#: admin/almgr-settings-page.php:795
+#: admin/almgr-settings-page.php:817
 msgid "Asset List"
+msgstr ""
+
+#: admin/almgr-settings-page.php:663
+msgid "Asset list page"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:311
@@ -363,7 +365,7 @@ msgstr ""
 msgid "Asset not found."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:71
+#: templates/shortcodes/asset-view.php:72
 msgid "Asset overview"
 msgstr ""
 
@@ -387,8 +389,8 @@ msgstr ""
 msgid "Asset state cannot be changed from its current state."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:638
-#: templates/shortcodes/asset-view.php:642
+#: templates/shortcodes/asset-view.php:639
+#: templates/shortcodes/asset-view.php:643
 msgid "Asset state management"
 msgstr ""
 
@@ -414,7 +416,7 @@ msgstr ""
 msgid "Asset suggestions"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:103
+#: templates/shortcodes/asset-view.php:104
 msgid "Asset taxonomies"
 msgstr ""
 
@@ -442,7 +444,7 @@ msgstr ""
 msgid "Assets"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1184
+#: admin/almgr-settings-page.php:1206
 msgid ""
 "Assets currently held by a specific member (on-loan). Returns id, code, "
 "title, structure, type, external_code, location, thumbnail_url, permalink."
@@ -453,16 +455,20 @@ msgstr ""
 msgid "Assets found: %d"
 msgstr ""
 
-#: admin/almgr-settings-page.php:800
+#: admin/almgr-settings-page.php:822
 msgid "Assets per page"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:626
+#: templates/shortcodes/asset-view.php:627
 msgid "Assign asset"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:588
+#: templates/shortcodes/asset-view.php:589
 msgid "Assign to user:"
+msgstr ""
+
+#: admin/almgr-settings-page.php:555
+msgid "Assignable user types"
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1814
@@ -486,7 +492,7 @@ msgstr ""
 msgid "Assignment reason must not exceed %d characters."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1125
+#: admin/almgr-settings-page.php:1147
 msgid "Authentication"
 msgstr ""
 
@@ -494,12 +500,12 @@ msgstr ""
 msgid "Author site"
 msgstr ""
 
-#: admin/almgr-settings-page.php:567
+#: admin/almgr-settings-page.php:589
 msgid "Automatic Cancellations"
 msgstr ""
 
-#: admin/almgr-settings-page.php:608
-msgid "Automatic operations actor user ID"
+#: admin/almgr-settings-page.php:33
+msgid "Automations"
 msgstr ""
 
 #: includes/class-almgr-asset-manager.php:529
@@ -507,7 +513,7 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1157
+#: admin/almgr-settings-page.php:1179
 msgid "Available Endpoints"
 msgstr ""
 
@@ -515,12 +521,12 @@ msgstr ""
 msgid "Available placeholders:"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:841
+#: templates/shortcodes/asset-view.php:842
 msgid "Back to asset list"
 msgstr ""
 
 #. %s: example base URL
-#: admin/almgr-settings-page.php:1194
+#: admin/almgr-settings-page.php:1216
 #, php-format
 msgid "Base URL: %s"
 msgstr ""
@@ -561,15 +567,15 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: admin/almgr-settings-page.php:587
+#: admin/almgr-settings-page.php:609
 msgid "Cancel component requests when kit assigned"
 msgstr ""
 
-#: admin/almgr-settings-page.php:571
+#: admin/almgr-settings-page.php:593
 msgid "Cancel concurrent requests on assign"
 msgstr ""
 
-#: plugin-config.php:152
+#: plugin-config.php:164
 msgid "Canceled"
 msgstr ""
 
@@ -583,7 +589,7 @@ msgstr ""
 
 #: includes/class-almgr-tools-manager.php:186
 #: includes/class-almgr-tools-manager.php:290
-#: includes/class-almgr-tools-manager.php:384
+#: includes/class-almgr-tools-manager.php:394
 msgid "Cannot start CSV export because headers are already sent."
 msgstr ""
 
@@ -608,7 +614,7 @@ msgstr ""
 msgid "Close image"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:515
+#: templates/shortcodes/asset-view.php:516
 #: templates/shortcodes/partials/asset-history-table.php:103
 #: assets/js/frontend-assets.js:1462
 msgid "Close message"
@@ -618,11 +624,11 @@ msgstr ""
 msgid "Close QR scanner"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:235
+#: templates/shortcodes/asset-view.php:236
 msgid "Code"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1069
+#: admin/almgr-settings-page.php:1091
 msgid "Code prefix"
 msgstr ""
 
@@ -631,7 +637,7 @@ msgid "Component"
 msgstr ""
 
 #. %s: invalid kit component title.
-#: includes/class-almgr-tools-manager.php:1658
+#: includes/class-almgr-tools-manager.php:1668
 #, php-format
 msgid "Component \"%s\" is not valid."
 msgstr ""
@@ -657,7 +663,7 @@ msgid "Component is under maintenance."
 msgstr ""
 
 #. %s: missing kit component title from CSV.
-#: includes/class-almgr-tools-manager.php:1680
+#: includes/class-almgr-tools-manager.php:1690
 #, php-format
 msgid "Component not found: \"%s\"."
 msgstr ""
@@ -679,8 +685,8 @@ msgstr ""
 msgid "Confirm Approval"
 msgstr ""
 
-#: admin/almgr-settings-page.php:266 templates/shortcodes/asset-view.php:373
-#: templates/shortcodes/asset-view.php:377
+#: admin/almgr-settings-page.php:266 templates/shortcodes/asset-view.php:374
+#: templates/shortcodes/asset-view.php:378
 msgid "Contact current owner"
 msgstr ""
 
@@ -690,8 +696,8 @@ msgstr ""
 
 #: admin/almgr-settings-page.php:232
 msgid ""
-"Controls additional notifications to users with role \"almgr_operator\". "
-"Duplicate email addresses are automatically de-duplicated."
+"Controls whether operators receive an additional notification for each loan "
+"request submitted."
 msgstr ""
 
 #: includes/class-almgr-acf-asset-adapter.php:30
@@ -703,7 +709,7 @@ msgstr ""
 msgid "Could not determine target state."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1138
+#: admin/almgr-settings-page.php:1160
 msgid "Create a new Application Password and copy it."
 msgstr ""
 
@@ -738,7 +744,7 @@ msgstr ""
 msgid "CSV file"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:182
+#: templates/shortcodes/asset-view.php:183
 msgid "Current owner"
 msgstr ""
 
@@ -749,16 +755,16 @@ msgid ""
 "translated default."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:477
-#: templates/shortcodes/asset-view.php:524
+#: templates/shortcodes/asset-view.php:478
+#: templates/shortcodes/asset-view.php:525
 msgid "Date"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1004
+#: admin/almgr-settings-page.php:1026
 msgid "Debug — all events"
 msgstr ""
 
-#: admin/almgr-settings-page.php:836
+#: admin/almgr-settings-page.php:858
 msgid "Default kit filter"
 msgstr ""
 
@@ -774,19 +780,19 @@ msgstr ""
 msgid "Delimiter: semicolon (;). Existing assets are skipped in this MVP."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:750
+#: templates/shortcodes/asset-view.php:751
 msgid "Describe the reason for restoring this asset..."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:691
+#: templates/shortcodes/asset-view.php:692
 msgid "Describe the reason for this state change..."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1162 admin/plugin-main-page.php:117
+#: admin/almgr-settings-page.php:1184 admin/plugin-main-page.php:117
 msgid "Description"
 msgstr ""
 
-#: admin/almgr-settings-page.php:903
+#: admin/almgr-settings-page.php:925
 msgid "Description snippet length"
 msgstr ""
 
@@ -803,13 +809,10 @@ msgstr ""
 msgid "Direct Assignment"
 msgstr ""
 
-#: plugin-config.php:153 templates/shortcodes/asset-view.php:572
-#: templates/shortcodes/asset-view.php:576
+#: plugin-config.php:165 admin/almgr-settings-page.php:251
+#: templates/shortcodes/asset-view.php:573
+#: templates/shortcodes/asset-view.php:577
 msgid "Direct assignment"
-msgstr ""
-
-#: admin/almgr-settings-page.php:511
-msgid "Direct Assignment Settings"
 msgstr ""
 
 #: admin/almgr-settings-page.php:51
@@ -840,11 +843,11 @@ msgstr ""
 msgid "dry_run (simulation)"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:738
+#: templates/shortcodes/asset-view.php:739
 msgid "e.g. Room A, shelf 3"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:679
+#: templates/shortcodes/asset-view.php:680
 msgid "e.g. Room A, shelf 3 or at David's house"
 msgstr ""
 
@@ -882,7 +885,7 @@ msgid ""
 "a full-width layout automatically."
 msgstr ""
 
-#: admin/almgr-settings-page.php:973
+#: admin/almgr-settings-page.php:995
 msgid "Enable ALM logging"
 msgstr ""
 
@@ -890,7 +893,7 @@ msgstr ""
 msgid "Enable contact form"
 msgstr ""
 
-#: admin/almgr-settings-page.php:515
+#: admin/almgr-settings-page.php:537
 msgid "Enable direct assignment"
 msgstr ""
 
@@ -902,19 +905,19 @@ msgstr ""
 msgid "Enable notifications"
 msgstr ""
 
-#: admin/almgr-settings-page.php:949
+#: admin/almgr-settings-page.php:971
 msgid "Enable QR code search"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1104
+#: admin/almgr-settings-page.php:1126
 msgid "Enable REST API"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1116
+#: admin/almgr-settings-page.php:1138
 msgid "Enable the ALM JSON API endpoints under /wp-json/almgr/v1/."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1161
+#: admin/almgr-settings-page.php:1183
 msgid "Endpoint"
 msgstr ""
 
@@ -926,7 +929,7 @@ msgstr ""
 msgid "Error while sending. Please try again."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1007
+#: admin/almgr-settings-page.php:1029
 msgid "Error — errors only"
 msgstr ""
 
@@ -949,7 +952,7 @@ msgstr ""
 msgid "Execution mode"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:616
+#: templates/shortcodes/asset-view.php:617
 msgid "Explain the reason for this assignment..."
 msgstr ""
 
@@ -1076,7 +1079,7 @@ msgstr ""
 msgid "Failed to send loan request. Please try again."
 msgstr ""
 
-#: includes/class-almgr-contact-manager.php:163
+#: includes/class-almgr-contact-manager.php:164
 msgid "Failed to send the message. Please try again in a moment."
 msgstr ""
 
@@ -1103,8 +1106,8 @@ msgstr ""
 msgid "Feature disabled."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:657
-#: includes/class-almgr-tools-manager.php:1316
+#: includes/class-almgr-tools-manager.php:667
+#: includes/class-almgr-tools-manager.php:1326
 msgid "File upload failed. Please try again."
 msgstr ""
 
@@ -1112,11 +1115,11 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: admin/almgr-settings-page.php:820
+#: admin/almgr-settings-page.php:842
 msgid "Filters open by default"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:850
+#: includes/class-almgr-tools-manager.php:860
 msgid "First_Name and Last_Name cannot be empty after sanitization."
 msgstr ""
 
@@ -1132,7 +1135,7 @@ msgstr ""
 msgid "Frontend"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:145
+#: templates/shortcodes/asset-view.php:146
 msgid "Full description"
 msgstr ""
 
@@ -1145,12 +1148,12 @@ msgid "GitHub repository"
 msgstr ""
 
 #. %s: link to WP admin profile page
-#: admin/almgr-settings-page.php:1133
+#: admin/almgr-settings-page.php:1155
 #, php-format
 msgid "Go to %s → Application Passwords."
 msgstr ""
 
-#: plugin-config.php:118
+#: plugin-config.php:130
 msgid ""
 "Hello {ASSIGNEE_NAME},\n"
 "\n"
@@ -1163,7 +1166,7 @@ msgid ""
 "-- ALM"
 msgstr ""
 
-#: plugin-config.php:126
+#: plugin-config.php:138
 msgid ""
 "Hello {BORROWER_NAME},\n"
 "\n"
@@ -1177,7 +1180,7 @@ msgid ""
 "-- ALM"
 msgstr ""
 
-#: plugin-config.php:122
+#: plugin-config.php:134
 msgid ""
 "Hello {PREV_OWNER_NAME},\n"
 "\n"
@@ -1191,7 +1194,7 @@ msgid ""
 "-- ALM"
 msgstr ""
 
-#: plugin-config.php:106
+#: plugin-config.php:118
 msgid ""
 "Hello {REQUESTER_NAME},\n"
 "\n"
@@ -1202,7 +1205,7 @@ msgid ""
 "-- ALM"
 msgstr ""
 
-#: plugin-config.php:114
+#: plugin-config.php:126
 msgid ""
 "Hello {REQUESTER_NAME},\n"
 "\n"
@@ -1214,7 +1217,7 @@ msgid ""
 "-- ALM"
 msgstr ""
 
-#: plugin-config.php:110
+#: plugin-config.php:122
 msgid ""
 "Hello {REQUESTER_NAME},\n"
 "\n"
@@ -1227,7 +1230,7 @@ msgid ""
 "-- ALM"
 msgstr ""
 
-#: plugin-config.php:98
+#: plugin-config.php:110
 msgid ""
 "Hello {REQUESTER_NAME},\n"
 "\n"
@@ -1239,7 +1242,7 @@ msgid ""
 "-- ALM"
 msgstr ""
 
-#: plugin-config.php:102
+#: plugin-config.php:114
 msgid ""
 "Hello,\n"
 "\n"
@@ -1257,7 +1260,7 @@ msgstr ""
 msgid "How It Works"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1127
+#: admin/almgr-settings-page.php:1149
 msgid "How to authenticate with the ALM API"
 msgstr ""
 
@@ -1267,6 +1270,12 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "https://www.claudiobattaglino.it"
+msgstr ""
+
+#: admin/almgr-settings-page.php:645
+msgid ""
+"ID of the WordPress user recorded as responsible for automatic operations (e."
+"g. auto-cancellations). Default: 1 (site administrator)."
 msgstr ""
 
 #: admin/plugin-main-page.php:91
@@ -1317,7 +1326,7 @@ msgid ""
 "frontend asset and history links point to the correct pages."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1005
+#: admin/almgr-settings-page.php:1027
 msgid "Info — informational and above"
 msgstr ""
 
@@ -1344,22 +1353,22 @@ msgid "Invalid assignee ID."
 msgstr ""
 
 #. %s: expected CSV header with semicolon delimiter.
-#: includes/class-almgr-tools-manager.php:740
-#: includes/class-almgr-tools-manager.php:1410
+#: includes/class-almgr-tools-manager.php:750
+#: includes/class-almgr-tools-manager.php:1420
 #, php-format
 msgid "Invalid CSV header. Expected exactly: %s"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:808
+#: includes/class-almgr-tools-manager.php:818
 msgid "Invalid email format."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1561
+#: includes/class-almgr-tools-manager.php:1571
 msgid "Invalid Level. Use an existing level taxonomy slug."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:768
-#: includes/class-almgr-tools-manager.php:1438
+#: includes/class-almgr-tools-manager.php:778
+#: includes/class-almgr-tools-manager.php:1448
 msgid "Invalid number of columns. Use only the ; delimiter."
 msgstr ""
 
@@ -1368,7 +1377,7 @@ msgstr ""
 msgid "Invalid request ID."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1136
+#: includes/class-almgr-tools-manager.php:1146
 msgid "Invalid role. Allowed values are: member, operator."
 msgstr ""
 
@@ -1378,19 +1387,19 @@ msgstr ""
 msgid "Invalid state slug: %s"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1550
+#: includes/class-almgr-tools-manager.php:1560
 msgid "Invalid State taxonomy term."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1541
+#: includes/class-almgr-tools-manager.php:1551
 msgid "Invalid State. Allowed values are: available, maintenance, retired."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1571
+#: includes/class-almgr-tools-manager.php:1581
 msgid "Invalid Structure taxonomy term."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1519
+#: includes/class-almgr-tools-manager.php:1529
 msgid "Invalid Structure. Allowed values are: component, kit."
 msgstr ""
 
@@ -1398,29 +1407,29 @@ msgstr ""
 msgid "Invalid target state."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1471
+#: includes/class-almgr-tools-manager.php:1481
 msgid "Invalid title."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1530
+#: includes/class-almgr-tools-manager.php:1540
 msgid "Invalid Type. Use an existing type taxonomy slug."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:670
-#: includes/class-almgr-tools-manager.php:1329
+#: includes/class-almgr-tools-manager.php:680
+#: includes/class-almgr-tools-manager.php:1339
 msgid "Invalid uploaded file source."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:667
-#: includes/class-almgr-tools-manager.php:1326
+#: includes/class-almgr-tools-manager.php:677
+#: includes/class-almgr-tools-manager.php:1336
 msgid "Invalid uploaded file."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:796
+#: includes/class-almgr-tools-manager.php:806
 msgid "Invalid username format."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1597
+#: includes/class-almgr-tools-manager.php:1607
 msgid "Invalid Wp_Status. Allowed values are: publish, draft."
 msgstr ""
 
@@ -1434,7 +1443,7 @@ msgid "Kit"
 msgstr ""
 
 #. %s: kit title.
-#: includes/class-almgr-tools-manager.php:1667
+#: includes/class-almgr-tools-manager.php:1677
 #, php-format
 msgid "Kit \"%s\" cannot include itself."
 msgstr ""
@@ -1443,13 +1452,13 @@ msgstr ""
 msgid "Kit membership"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1151
+#: admin/almgr-settings-page.php:1173
 msgid "Learn more"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:161
 #: templates/shortcodes/asset-list.php:281
-#: templates/shortcodes/asset-view.php:123
+#: templates/shortcodes/asset-view.php:124
 msgid "Level"
 msgstr ""
 
@@ -1458,12 +1467,15 @@ msgstr ""
 msgid "Line"
 msgstr ""
 
-#: admin/almgr-settings-page.php:251
-msgid "Loan confirmation"
+#: admin/almgr-settings-page.php:657
+msgid ""
+"Link the plugin to the WordPress pages you created. With block themes (Site "
+"Editor), you must set the pages here; with classic themes the plugin handles "
+"them automatically."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:770
-#: templates/shortcodes/asset-view.php:774
+#: templates/shortcodes/asset-view.php:771
+#: templates/shortcodes/asset-view.php:775
 msgid "Loan history"
 msgstr ""
 
@@ -1482,7 +1494,7 @@ msgstr ""
 msgid "Loan Limits"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:305
+#: templates/shortcodes/asset-view.php:306
 msgid "Loan request"
 msgstr ""
 
@@ -1533,8 +1545,8 @@ msgstr ""
 msgid "Loan Requests"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:456
-#: templates/shortcodes/asset-view.php:460
+#: templates/shortcodes/asset-view.php:457
+#: templates/shortcodes/asset-view.php:461
 msgid "Loan requests"
 msgstr ""
 
@@ -1553,8 +1565,8 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:670
-#: templates/shortcodes/asset-view.php:729
+#: templates/shortcodes/asset-view.php:671
+#: templates/shortcodes/asset-view.php:730
 msgid "Location (required):"
 msgstr ""
 
@@ -1568,23 +1580,23 @@ msgstr ""
 msgid "Location must not exceed 255 characters."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1042
+#: admin/almgr-settings-page.php:1064
 msgid "Log email events"
 msgstr ""
 
-#: admin/almgr-settings-page.php:992
+#: admin/almgr-settings-page.php:1014
 msgid "Log level"
 msgstr ""
 
-#: admin/almgr-settings-page.php:34 admin/almgr-settings-page.php:969
+#: admin/almgr-settings-page.php:34 admin/almgr-settings-page.php:991
 msgid "Logging"
 msgstr ""
 
-#: admin/almgr-settings-page.php:738
+#: admin/almgr-settings-page.php:760
 msgid "Login redirect page"
 msgstr ""
 
-#: admin/almgr-settings-page.php:767
+#: admin/almgr-settings-page.php:789
 msgid "Logout redirect page"
 msgstr ""
 
@@ -1597,7 +1609,7 @@ msgstr ""
 msgid "Maintenance"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:757
+#: templates/shortcodes/asset-view.php:758
 msgid "Make available"
 msgstr ""
 
@@ -1606,11 +1618,11 @@ msgstr ""
 msgid "Manufacturer"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1583
+#: includes/class-almgr-tools-manager.php:1593
 msgid "Manufacturer and Model cannot be empty after sanitization."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1024
+#: admin/almgr-settings-page.php:1046
 msgid "Mask personal data in logs"
 msgstr ""
 
@@ -1628,7 +1640,7 @@ msgstr ""
 msgid "Max message length"
 msgstr ""
 
-#: admin/almgr-settings-page.php:882
+#: admin/almgr-settings-page.php:904
 msgid "Max results"
 msgstr ""
 
@@ -1636,6 +1648,12 @@ msgstr ""
 msgid ""
 "Maximum character length of the message a member writes when submitting a "
 "loan request. Set to 0 for unlimited."
+msgstr ""
+
+#: admin/almgr-settings-page.php:523
+msgid ""
+"Maximum character length of the notes field when changing an asset state (to "
+"maintenance, return, restore). Set to 0 for unlimited."
 msgstr ""
 
 #: admin/almgr-settings-page.php:501
@@ -1662,7 +1680,7 @@ msgid ""
 "maximum 2000. Default: 500."
 msgstr ""
 
-#: admin/almgr-settings-page.php:896
+#: admin/almgr-settings-page.php:918
 msgid ""
 "Maximum number of suggestions returned by the autocomplete endpoint. Default:"
 " 5."
@@ -1672,7 +1690,7 @@ msgstr ""
 msgid "Maximum size: 1MB."
 msgstr ""
 
-#: admin/almgr-settings-page.php:540
+#: admin/almgr-settings-page.php:562
 #: includes/class-almgr-autocomplete-manager.php:343
 #: includes/class-almgr-role-manager.php:73
 msgid "Member"
@@ -1699,8 +1717,8 @@ msgstr ""
 
 #: admin/almgr-tools-page.php:293 admin/almgr-tools-page.php:320
 #: admin/almgr-tools-page.php:498 admin/almgr-tools-page.php:529
-#: templates/shortcodes/asset-view.php:476
-#: templates/shortcodes/asset-view.php:504
+#: templates/shortcodes/asset-view.php:477
+#: templates/shortcodes/asset-view.php:505
 #: templates/shortcodes/partials/asset-history-table.php:53
 #: templates/shortcodes/partials/asset-history-table.php:92
 msgid "Message"
@@ -1710,7 +1728,7 @@ msgstr ""
 msgid "Message cannot be empty."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:330
+#: templates/shortcodes/asset-view.php:331
 msgid "Message for the current owner:"
 msgstr ""
 
@@ -1718,7 +1736,7 @@ msgstr ""
 msgid "Message Length Limits"
 msgstr ""
 
-#: includes/class-almgr-contact-manager.php:157
+#: includes/class-almgr-contact-manager.php:158
 msgid ""
 "Message sent. A copy has been delivered to your registered email address."
 msgstr ""
@@ -1727,11 +1745,11 @@ msgstr ""
 msgid "Message too long."
 msgstr ""
 
-#: admin/almgr-settings-page.php:861
+#: admin/almgr-settings-page.php:883
 msgid "Minimum characters"
 msgstr ""
 
-#: admin/almgr-settings-page.php:875
+#: admin/almgr-settings-page.php:897
 msgid "Minimum characters typed before autocomplete activates. Default: 3."
 msgstr ""
 
@@ -1761,7 +1779,7 @@ msgstr ""
 msgid "Next page"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:263
+#: templates/shortcodes/asset-view.php:264
 msgid "No additional details available."
 msgstr ""
 
@@ -1777,7 +1795,7 @@ msgstr ""
 msgid "No assets found."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1026
+#: includes/class-almgr-tools-manager.php:1036
 msgid "No changes required."
 msgstr ""
 
@@ -1786,11 +1804,11 @@ msgid "No import errors are available for download."
 msgstr ""
 
 #: templates/shortcodes/asset-history.php:154
-#: templates/shortcodes/asset-view.php:824
+#: templates/shortcodes/asset-view.php:825
 msgid "No loan history available for this asset."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:559
+#: templates/shortcodes/asset-view.php:560
 msgid "No pending requests for this asset."
 msgstr ""
 
@@ -1804,20 +1822,20 @@ msgstr ""
 msgid "No rows were processed for this run."
 msgstr ""
 
-#: admin/almgr-settings-page.php:667
+#: admin/almgr-settings-page.php:689
 msgid ""
 "Not needed: your classic theme handles the asset archive via its built-in "
 "template."
 msgstr ""
 
-#: admin/almgr-settings-page.php:701
+#: admin/almgr-settings-page.php:723
 msgid ""
 "Not needed: your classic theme handles the asset detail view via its built-"
 "in template."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:278
-#: templates/shortcodes/asset-view.php:803
+#: templates/shortcodes/asset-view.php:279
+#: templates/shortcodes/asset-view.php:804
 msgid "Note:"
 msgstr ""
 
@@ -1826,8 +1844,8 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:684
-#: templates/shortcodes/asset-view.php:743
+#: templates/shortcodes/asset-view.php:685
+#: templates/shortcodes/asset-view.php:744
 msgid "Notes (optional):"
 msgstr ""
 
@@ -1837,11 +1855,7 @@ msgstr ""
 msgid "Notes must not exceed %d characters."
 msgstr ""
 
-#: admin/almgr-settings-page.php:168
-msgid "Notification Toggles"
-msgstr ""
-
-#: admin/almgr-settings-page.php:29
+#: admin/almgr-settings-page.php:29 admin/almgr-settings-page.php:168
 msgid "Notifications"
 msgstr ""
 
@@ -1858,13 +1872,13 @@ msgstr ""
 msgid "Notify requester when a loan request is approved or rejected"
 msgstr ""
 
-#: admin/almgr-settings-page.php:814
+#: admin/almgr-settings-page.php:836
 msgid ""
 "Number of assets displayed per page in the frontend list. Minimum 1, maximum "
 "100."
 msgstr ""
 
-#: admin/almgr-settings-page.php:917
+#: admin/almgr-settings-page.php:939
 msgid ""
 "Number of characters of the asset description shown in each suggestion. Set "
 "to 0 to hide the description."
@@ -1883,8 +1897,8 @@ msgstr ""
 msgid "On loan"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:681
-#: includes/class-almgr-tools-manager.php:1340
+#: includes/class-almgr-tools-manager.php:691
+#: includes/class-almgr-tools-manager.php:1350
 msgid "Only .csv files are allowed."
 msgstr ""
 
@@ -1920,17 +1934,17 @@ msgid ""
 "associations, schools, libraries, laboratories, and any organization."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:160
-#: templates/shortcodes/asset-view.php:312
-#: templates/shortcodes/asset-view.php:380
-#: templates/shortcodes/asset-view.php:463
-#: templates/shortcodes/asset-view.php:579
-#: templates/shortcodes/asset-view.php:645
-#: templates/shortcodes/asset-view.php:777
+#: templates/shortcodes/asset-view.php:161
+#: templates/shortcodes/asset-view.php:313
+#: templates/shortcodes/asset-view.php:381
+#: templates/shortcodes/asset-view.php:464
+#: templates/shortcodes/asset-view.php:580
+#: templates/shortcodes/asset-view.php:646
+#: templates/shortcodes/asset-view.php:778
 msgid "Open/Close"
 msgstr ""
 
-#: admin/almgr-settings-page.php:541
+#: admin/almgr-settings-page.php:563
 #: includes/class-almgr-autocomplete-manager.php:342
 #: includes/class-almgr-role-manager.php:83
 msgid "Operator"
@@ -1944,10 +1958,8 @@ msgstr ""
 msgid "Optical Tube"
 msgstr ""
 
-#: admin/almgr-settings-page.php:162
-msgid ""
-"Optional additional recipient for every loan request submission (with or "
-"without current owner). Leave empty to disable."
+#: admin/almgr-settings-page.php:533
+msgid "Options"
 msgstr ""
 
 #: admin/almgr-tools-page.php:44
@@ -1959,19 +1971,19 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
-#: admin/almgr-settings-page.php:699
+#: admin/almgr-settings-page.php:721
 msgid ""
 "Page containing the asset detail view ([almgr_asset_view]). Required with "
 "block themes."
 msgstr ""
 
-#: admin/almgr-settings-page.php:665
+#: admin/almgr-settings-page.php:687
 msgid ""
 "Page containing the asset list ([almgr_asset_list]). Required with block "
 "themes."
 msgstr ""
 
-#: admin/almgr-settings-page.php:731
+#: admin/almgr-settings-page.php:753
 msgid ""
 "Page containing the full asset history view ([almgr_asset_history]). Leave "
 "empty to keep the feature disabled. On classic themes, the plugin "
@@ -1979,39 +1991,35 @@ msgid ""
 "selection needed."
 msgstr ""
 
-#: admin/almgr-settings-page.php:633
-msgid "Page Links"
-msgstr ""
-
-#: admin/almgr-settings-page.php:760
+#: admin/almgr-settings-page.php:782
 msgid ""
 "Page members are redirected to after login. Leave empty to use the default "
 "asset archive URL (/asset/)."
 msgstr ""
 
-#: admin/almgr-settings-page.php:789
+#: admin/almgr-settings-page.php:811
 msgid ""
 "Page members are redirected to after logout. Leave empty to use the site "
 "home page."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1169
+#: admin/almgr-settings-page.php:1191
 msgid ""
 "Paginated asset list. Supports ?state, ?type, ?structure, ?search, ?owner, ?"
 "page, ?per_page."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1179
+#: admin/almgr-settings-page.php:1201
 msgid ""
 "Paginated list of ALM members and operators. Supports ?search, ?role, ?page, "
 "?per_page."
 msgstr ""
 
-#: plugin-config.php:149
+#: plugin-config.php:161
 msgid "Pending"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:471
+#: templates/shortcodes/asset-view.php:472
 msgid "Pending loan requests for this asset"
 msgstr ""
 
@@ -2045,11 +2053,15 @@ msgstr ""
 msgid "Please select a user from the list."
 msgstr ""
 
+#: admin/almgr-settings-page.php:655
+msgid "Plugin Pages"
+msgstr ""
+
 #: assets/js/frontend-assets.js:1333
 msgid "Point the camera at the QR code"
 msgstr ""
 
-#: admin/almgr-settings-page.php:846
+#: admin/almgr-settings-page.php:868
 msgid ""
 "Pre-select \"Kit\" in the Structure filter when the asset list loads without "
 "an explicit filter"
@@ -2060,11 +2072,11 @@ msgstr ""
 msgid "Previous page"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:256
+#: templates/shortcodes/asset-view.php:257
 msgid "Print QR code"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1020
+#: admin/almgr-settings-page.php:1042
 msgid "Privacy"
 msgstr ""
 
@@ -2076,7 +2088,7 @@ msgstr ""
 msgid "Processing..."
 msgstr ""
 
-#: admin/almgr-settings-page.php:927
+#: admin/almgr-settings-page.php:949
 msgid "Public asset search endpoint"
 msgstr ""
 
@@ -2085,15 +2097,15 @@ msgstr ""
 msgid "Purchase date"
 msgstr ""
 
-#: admin/almgr-settings-page.php:945
+#: admin/almgr-settings-page.php:967
 msgid "QR Code"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:244
+#: templates/shortcodes/asset-view.php:245
 msgid "QR code"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:252
+#: templates/shortcodes/asset-view.php:253
 msgid "QR code for this asset"
 msgstr ""
 
@@ -2105,8 +2117,8 @@ msgstr ""
 msgid "Quick start"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:157
-#: templates/shortcodes/asset-view.php:512
+#: templates/shortcodes/asset-view.php:158
+#: templates/shortcodes/asset-view.php:513
 #: templates/shortcodes/partials/asset-history-table.php:100
 msgid "Read details"
 msgstr ""
@@ -2115,11 +2127,11 @@ msgstr ""
 msgid "Reason must not exceed %d characters."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:609
+#: templates/shortcodes/asset-view.php:610
 msgid "Reason:"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:789
+#: templates/shortcodes/asset-view.php:790
 msgid "Recent loan history entries for this asset"
 msgstr ""
 
@@ -2128,11 +2140,11 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1054
+#: admin/almgr-settings-page.php:1076
 msgid "Record each notification email dispatch attempt in the log"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1036
+#: admin/almgr-settings-page.php:1058
 msgid "Redact user names and email addresses from log entries"
 msgstr ""
 
@@ -2140,7 +2152,7 @@ msgstr ""
 msgid "Refractor"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:547
+#: templates/shortcodes/asset-view.php:548
 msgid "Reject"
 msgstr ""
 
@@ -2153,12 +2165,12 @@ msgid "Reject Request"
 msgstr ""
 
 #. %s: loan requester display name.
-#: templates/shortcodes/asset-view.php:498
+#: templates/shortcodes/asset-view.php:499
 #, php-format
 msgid "Reject request from %s"
 msgstr ""
 
-#: plugin-config.php:151
+#: plugin-config.php:163
 msgid "Rejected"
 msgstr ""
 
@@ -2231,8 +2243,8 @@ msgstr ""
 msgid "Request is not pending."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:309
-#: templates/shortcodes/asset-view.php:394
+#: templates/shortcodes/asset-view.php:310
+#: templates/shortcodes/asset-view.php:395
 msgid "Request loan"
 msgstr ""
 
@@ -2253,12 +2265,12 @@ msgstr ""
 msgid "Request rejected"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:475
-#: templates/shortcodes/asset-view.php:501
+#: templates/shortcodes/asset-view.php:476
+#: templates/shortcodes/asset-view.php:502
 msgid "Requester"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1163
+#: admin/almgr-settings-page.php:1185
 msgid "Required capability"
 msgstr ""
 
@@ -2273,7 +2285,7 @@ msgid "Requires WordPress %s"
 msgstr ""
 
 #. %s: link to WP Application Passwords documentation
-#: admin/almgr-settings-page.php:1150
+#: admin/almgr-settings-page.php:1172
 #, php-format
 msgid "Requires WordPress 5.6 or later. %s"
 msgstr ""
@@ -2282,7 +2294,7 @@ msgstr ""
 msgid "Reset Filters"
 msgstr ""
 
-#: admin/almgr-settings-page.php:36 admin/almgr-settings-page.php:1100
+#: admin/almgr-settings-page.php:36 admin/almgr-settings-page.php:1122
 msgid "REST API"
 msgstr ""
 
@@ -2290,7 +2302,7 @@ msgstr ""
 msgid "Restore failed. Please try again."
 msgstr ""
 
-#: plugin-config.php:156
+#: plugin-config.php:168
 msgid "Restored to available"
 msgstr ""
 
@@ -2334,10 +2346,10 @@ msgid "Run utility actions for taxonomy and plugin data alignment."
 msgstr ""
 
 #: admin/almgr-settings-page.php:310 admin/almgr-settings-page.php:372
-#: admin/almgr-settings-page.php:507 admin/almgr-settings-page.php:563
-#: admin/almgr-settings-page.php:629 admin/almgr-settings-page.php:852
-#: admin/almgr-settings-page.php:965 admin/almgr-settings-page.php:1060
-#: admin/almgr-settings-page.php:1096 admin/almgr-settings-page.php:1204
+#: admin/almgr-settings-page.php:529 admin/almgr-settings-page.php:585
+#: admin/almgr-settings-page.php:651 admin/almgr-settings-page.php:874
+#: admin/almgr-settings-page.php:987 admin/almgr-settings-page.php:1082
+#: admin/almgr-settings-page.php:1118 admin/almgr-settings-page.php:1226
 msgid "Save Settings"
 msgstr ""
 
@@ -2378,7 +2390,7 @@ msgstr ""
 msgid "Search assets..."
 msgstr ""
 
-#: admin/almgr-settings-page.php:856
+#: admin/almgr-settings-page.php:878
 msgid "Search Behaviour"
 msgstr ""
 
@@ -2386,7 +2398,7 @@ msgstr ""
 msgid "Search for an asset to browse its full loan history."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:596
+#: templates/shortcodes/asset-view.php:597
 msgid "Search member or operator..."
 msgstr ""
 
@@ -2408,30 +2420,34 @@ msgstr ""
 msgid "Security token not found. Please reload the page."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:652
-#: includes/class-almgr-tools-manager.php:1311
+#: includes/class-almgr-tools-manager.php:662
+#: includes/class-almgr-tools-manager.php:1321
 msgid "Select a CSV file to import."
+msgstr ""
+
+#: admin/almgr-settings-page.php:579
+msgid "Select which types of users an operator can assign an asset to."
 msgstr ""
 
 #: admin/almgr-settings-page.php:260
 msgid ""
-"Send confirmation email when a loan is confirmed (if/when the feature is "
-"introduced)"
+"Send a notification email to the assignee (and to the previous owner, if any)"
+" when an operator directly assigns an asset"
 msgstr ""
 
 #: admin/almgr-settings-page.php:184
 msgid "Send email notifications"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:417
+#: templates/shortcodes/asset-view.php:418
 msgid "Send message"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:346
+#: templates/shortcodes/asset-view.php:347
 msgid "Send request"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1141
+#: admin/almgr-settings-page.php:1163
 msgid "Send requests with the Authorization header:"
 msgstr ""
 
@@ -2448,7 +2464,7 @@ msgid "Sender name shown in outgoing emails. Leave empty to use the site name."
 msgstr ""
 
 #. %s: name of the loan request section.
-#: templates/shortcodes/asset-view.php:393
+#: templates/shortcodes/asset-view.php:394
 #, php-format
 msgid ""
 "Sending a message does not initiate a loan request. To request a loan, use "
@@ -2464,15 +2480,15 @@ msgstr ""
 msgid "Serial number"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:699
+#: templates/shortcodes/asset-view.php:700
 msgid "Set to available"
 msgstr ""
 
-#: plugin-config.php:154 templates/shortcodes/asset-view.php:703
+#: plugin-config.php:166 templates/shortcodes/asset-view.php:704
 msgid "Set to maintenance"
 msgstr ""
 
-#: plugin-config.php:155 templates/shortcodes/asset-view.php:706
+#: plugin-config.php:167 templates/shortcodes/asset-view.php:707
 msgid "Set to retired"
 msgstr ""
 
@@ -2510,17 +2526,17 @@ msgstr ""
 msgid "Show only my assets"
 msgstr ""
 
-#: admin/almgr-settings-page.php:959
+#: admin/almgr-settings-page.php:981
 msgid ""
 "Show the \"Scan QR\" button on the asset list page, allowing users to find "
 "an asset by scanning its QR code with the device camera."
 msgstr ""
 
-#: admin/almgr-settings-page.php:830
+#: admin/almgr-settings-page.php:852
 msgid "Show the search/filter panel expanded when the asset list loads"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:804
+#: templates/shortcodes/asset-view.php:805
 msgid "Showing the last 10 loan history entries for this asset."
 msgstr ""
 
@@ -2528,7 +2544,7 @@ msgstr ""
 msgid "single asset detail page"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1174
+#: admin/almgr-settings-page.php:1196
 msgid ""
 "Single asset detail with ACF fields. Operators additionally see cost, "
 "purchase date, notes, and loan history."
@@ -2542,35 +2558,35 @@ msgstr ""
 msgid "skipped"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:824
+#: includes/class-almgr-tools-manager.php:834
 msgid "Skipped duplicate email in the same CSV file."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1495
+#: includes/class-almgr-tools-manager.php:1505
 msgid "Skipped duplicate title in the same CSV file."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:836
+#: includes/class-almgr-tools-manager.php:846
 msgid "Skipped duplicate username in the same CSV file."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1508
+#: includes/class-almgr-tools-manager.php:1518
 msgid "Skipped in create-only mode: asset already exists."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:988
+#: includes/class-almgr-tools-manager.php:998
 msgid "Skipped in create_only mode: user already exists."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:902
+#: includes/class-almgr-tools-manager.php:912
 msgid "Skipped in update_only mode: no existing user found for this email."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:926
+#: includes/class-almgr-tools-manager.php:936
 msgid "Skipped in update_only mode: user not found."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1001
+#: includes/class-almgr-tools-manager.php:1011
 msgid "Skipped protected administrator account."
 msgstr ""
 
@@ -2579,12 +2595,16 @@ msgid "Some kit components were not transferred:"
 msgstr ""
 
 #: templates/shortcodes/asset-list.php:148
-#: templates/shortcodes/asset-view.php:131
+#: templates/shortcodes/asset-view.php:132
 msgid "State"
 msgstr ""
 
 #: assets/js/frontend-assets.js:505
 msgid "State change failed. Please try again."
+msgstr ""
+
+#: admin/almgr-settings-page.php:508
+msgid "State change notes max length"
 msgstr ""
 
 #: admin/almgr-tools-page.php:319 admin/almgr-tools-page.php:528
@@ -2595,7 +2615,7 @@ msgstr ""
 
 #: templates/shortcodes/asset-list.php:119
 #: templates/shortcodes/asset-list.php:270
-#: templates/shortcodes/asset-view.php:107
+#: templates/shortcodes/asset-view.php:108
 msgid "Structure"
 msgstr ""
 
@@ -2609,17 +2629,21 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
+#: admin/almgr-settings-page.php:148
+msgid "Supervision email"
+msgstr ""
+
 #: includes/class-almgr-notification-manager.php:320
 #: templates/shortcodes/partials/asset-history-table.php:66
 msgid "System"
 msgstr ""
 
-#: admin/almgr-settings-page.php:603
-msgid "System Actor"
+#: admin/almgr-settings-page.php:625
+msgid "System User"
 msgstr ""
 
-#: admin/almgr-settings-page.php:148
-msgid "System email"
+#: admin/almgr-settings-page.php:630
+msgid "System user for automatic operations"
 msgstr ""
 
 #: includes/class-almgr-acf-asset-adapter.php:36
@@ -2637,15 +2661,15 @@ msgstr ""
 msgid "The ALM API is disabled."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1200
+#: admin/almgr-settings-page.php:1222
 msgid ""
 "The API uses the native WordPress REST API infrastructure. Authentication is "
 "handled by WordPress core (cookie session, REST nonce, Application Passwords)"
 "."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:676
-#: includes/class-almgr-tools-manager.php:1335
+#: includes/class-almgr-tools-manager.php:686
+#: includes/class-almgr-tools-manager.php:1345
 msgid "The CSV file exceeds the 1MB limit."
 msgstr ""
 
@@ -2657,22 +2681,22 @@ msgid ""
 "full-width layout for that page — no manual template selection needed."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:387
+#: templates/shortcodes/asset-view.php:388
 msgid "The message will be delivered by email."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:673
-#: includes/class-almgr-tools-manager.php:1332
+#: includes/class-almgr-tools-manager.php:683
+#: includes/class-almgr-tools-manager.php:1342
 msgid "The uploaded CSV file is empty."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:693
-#: includes/class-almgr-tools-manager.php:1352
+#: includes/class-almgr-tools-manager.php:703
+#: includes/class-almgr-tools-manager.php:1362
 msgid "The uploaded file is not a valid CSV."
 msgstr ""
 
 #. %s: current asset state label
-#: templates/shortcodes/asset-view.php:718
+#: templates/shortcodes/asset-view.php:719
 #, php-format
 msgid ""
 "This asset is currently <strong>%s</strong>. Restoring it will set it back "
@@ -2685,7 +2709,7 @@ msgid "This asset is not available for loan."
 msgstr ""
 
 #. %s: comma-separated kit names as links.
-#: templates/shortcodes/asset-view.php:297
+#: templates/shortcodes/asset-view.php:298
 #, php-format
 msgid ""
 "This component is part of the following kits: %s. You may also request an "
@@ -2693,7 +2717,7 @@ msgid ""
 msgstr ""
 
 #. %s: kit name as a link.
-#: templates/shortcodes/asset-view.php:289
+#: templates/shortcodes/asset-view.php:290
 #, php-format
 msgid ""
 "This component is part of the kit %s. You may also request the entire kit "
@@ -2708,13 +2732,13 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1460
+#: includes/class-almgr-tools-manager.php:1470
 msgid ""
 "Title, Structure, Type, State, Level, Manufacturer and Model are required "
 "for every row."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:356
+#: templates/shortcodes/asset-view.php:357
 msgid "To request a loan, you must log in as a member."
 msgstr ""
 
@@ -2732,37 +2756,37 @@ msgstr ""
 
 #: templates/shortcodes/asset-list.php:132
 #: templates/shortcodes/asset-list.php:275
-#: templates/shortcodes/asset-view.php:115
+#: templates/shortcodes/asset-view.php:116
 msgid "Type"
 msgstr ""
 
 #. %s: taxonomy slug.
-#: includes/class-almgr-tools-manager.php:1836
+#: includes/class-almgr-tools-manager.php:1846
 #, php-format
 msgid "Unable to assign taxonomy term for %s."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1483
+#: includes/class-almgr-tools-manager.php:1493
 msgid "Unable to derive a valid title key from Title."
 msgstr ""
 
 #: includes/class-almgr-tools-manager.php:201
 #: includes/class-almgr-tools-manager.php:305
-#: includes/class-almgr-tools-manager.php:399
+#: includes/class-almgr-tools-manager.php:409
 msgid "Unable to generate CSV export output stream."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1904
+#: includes/class-almgr-tools-manager.php:1914
 msgid "Unable to link kit components using ACF."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:725
-#: includes/class-almgr-tools-manager.php:1396
+#: includes/class-almgr-tools-manager.php:735
+#: includes/class-almgr-tools-manager.php:1406
 msgid "Unable to read the uploaded CSV file."
 msgstr ""
 
 #: includes/class-almgr-plugin-manager.php:390
-#: includes/class-almgr-plugin-manager.php:617
+#: includes/class-almgr-plugin-manager.php:618
 #: includes/class-almgr-tools-manager.php:77
 #: includes/class-almgr-tools-manager.php:131
 #: includes/class-almgr-tools-manager.php:172
@@ -2775,7 +2799,7 @@ msgstr ""
 msgid "Unauthorized."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:487
+#: templates/shortcodes/asset-view.php:488
 #: templates/shortcodes/partials/asset-history-table.php:63
 msgid "Unknown"
 msgstr ""
@@ -2796,7 +2820,7 @@ msgstr ""
 msgid "Use this section to manage data import, export and utility operations."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:973
+#: includes/class-almgr-tools-manager.php:983
 msgid "User created."
 msgstr ""
 
@@ -2809,7 +2833,7 @@ msgstr ""
 msgid "User suggestions"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1075
+#: includes/class-almgr-tools-manager.php:1085
 msgid "User updated."
 msgstr ""
 
@@ -2817,15 +2841,15 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:910
+#: includes/class-almgr-tools-manager.php:920
 msgid "Username already exists for another user."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:878
+#: includes/class-almgr-tools-manager.php:888
 msgid "Username and email point to different existing users."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:888
+#: includes/class-almgr-tools-manager.php:898
 msgid "Username does not match the existing user for this email."
 msgstr ""
 
@@ -2833,7 +2857,7 @@ msgstr ""
 msgid "Username is required and must be unique together with email."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:784
+#: includes/class-almgr-tools-manager.php:794
 msgid ""
 "Username, Email, First_Name, Last_Name and Role are required for every row."
 msgstr ""
@@ -2861,7 +2885,7 @@ msgid "View Asset"
 msgstr ""
 
 #. %d: total number of history entries.
-#: templates/shortcodes/asset-view.php:815
+#: templates/shortcodes/asset-view.php:816
 msgid "View full history (%d entries)"
 msgstr ""
 
@@ -2869,7 +2893,7 @@ msgstr ""
 msgid "View on Frontend"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1006
+#: admin/almgr-settings-page.php:1028
 msgid "Warning — warnings and errors only"
 msgstr ""
 
@@ -2878,67 +2902,49 @@ msgstr ""
 msgid "Weight"
 msgstr ""
 
-#: admin/almgr-settings-page.php:597
+#: admin/almgr-settings-page.php:619
 msgid ""
 "When a kit is assigned, automatically cancel pending requests for its "
 "individual components"
 msgstr ""
 
-#: admin/almgr-settings-page.php:581
+#: admin/almgr-settings-page.php:603
 msgid ""
 "When an asset is assigned, automatically cancel all other pending loan "
 "requests for that asset"
 msgstr ""
 
-#: admin/almgr-settings-page.php:1119
+#: admin/almgr-settings-page.php:1141
 msgid "When disabled, all /wp-json/almgr/v1/ routes return a 503 response."
 msgstr ""
 
-#: admin/almgr-settings-page.php:557
-msgid "Which user roles can be selected as the target of a direct assignment."
-msgstr ""
-
-#: admin/almgr-settings-page.php:635
-msgid ""
-"With block themes, using shortcodes is required. With classic themes, you "
-"can use either shortcodes or the built-in templates (recommended)."
-msgstr ""
-
-#: admin/almgr-settings-page.php:623
-msgid ""
-"WordPress user ID recorded as the actor for automatic system operations (e.g."
-" auto-cancellations). Defaults to 1 (site administrator)."
-msgstr ""
-
-#: admin/almgr-settings-page.php:33
-msgid "Workflow"
-msgstr ""
-
-#: includes/class-almgr-tools-manager.php:1796
+#: includes/class-almgr-tools-manager.php:1806
 msgid "Would create asset (dry-run)."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:938
+#: includes/class-almgr-tools-manager.php:948
 msgid "Would create user (dry-run)."
 msgstr ""
 
-#: includes/class-almgr-tools-manager.php:1038
+#: includes/class-almgr-tools-manager.php:1048
 msgid "Would update user (dry-run)."
 msgstr ""
 
-#: admin/almgr-settings-page.php:1134
+#: admin/almgr-settings-page.php:1156
 msgid "WP Admin → Your Profile"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:337
+#: templates/shortcodes/asset-view.php:338
 msgid "Write a brief message explaining why you need this asset..."
 msgstr ""
 
-#: admin/almgr-settings-page.php:985
-msgid "Write ALM events to the debug log (requires WP_DEBUG to be enabled)"
+#: admin/almgr-settings-page.php:1007
+msgid ""
+"Write plugin events to the debug log (requires WP_DEBUG to be enabled in wp-"
+"config.php)"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:408
+#: templates/shortcodes/asset-view.php:409
 msgid "Write your message..."
 msgstr ""
 
@@ -3011,7 +3017,7 @@ msgstr ""
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:322
+#: templates/shortcodes/asset-view.php:323
 msgid "You have already requested a loan for this asset."
 msgstr ""
 
@@ -3020,15 +3026,15 @@ msgstr ""
 msgid "You have reached the maximum number of active loans (%d)."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:388
+#: templates/shortcodes/asset-view.php:389
 msgid "You will receive a copy at your registered email address."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:401
+#: templates/shortcodes/asset-view.php:402
 msgid "Your message:"
 msgstr ""
 
-#: plugin-config.php:130
+#: plugin-config.php:142
 msgid ""
 "{SENDER_NAME} sent you a message about the asset \"{ASSET_TITLE}\":\n"
 "\n"
@@ -3041,15 +3047,15 @@ msgstr ""
 msgid "—"
 msgstr ""
 
-#: admin/almgr-settings-page.php:749
+#: admin/almgr-settings-page.php:771
 msgid "— Default (/asset/) —"
 msgstr ""
 
-#: admin/almgr-settings-page.php:778
+#: admin/almgr-settings-page.php:800
 msgid "— Default (home) —"
 msgstr ""
 
-#: admin/almgr-settings-page.php:653 admin/almgr-settings-page.php:687
-#: admin/almgr-settings-page.php:720
+#: admin/almgr-settings-page.php:675 admin/almgr-settings-page.php:709
+#: admin/almgr-settings-page.php:742
 msgid "— Not set —"
 msgstr "— Not set —"

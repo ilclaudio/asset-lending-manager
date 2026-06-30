@@ -302,7 +302,7 @@ class ALMGR_Notification_Manager {
 		if ( ! $this->settings->get( 'notifications.enabled', false ) ) {
 			return;
 		}
-		if ( ! $this->settings->get( 'notifications.loan_confirmation', true ) ) {
+		if ( ! $this->settings->get( 'notifications.direct_assign', true ) ) {
 			return;
 		}
 

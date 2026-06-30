@@ -228,7 +228,7 @@ class ALMGR_Settings_Manager_Unit_Test extends TestCase {
 		$this->assertTrue( $all['notifications']['loan_request'] );
 		$this->assertSame( 'no_owner', $all['notifications']['loan_request_operator_mode'] );
 		$this->assertTrue( $all['notifications']['loan_decision'] );
-		$this->assertTrue( $all['notifications']['loan_confirmation'] );
+		$this->assertTrue( $all['notifications']['direct_assign'] );
 
 		// Loans — loan-request business rules.
 		$this->assertTrue( $all['loans']['loan_requests_enabled'] );

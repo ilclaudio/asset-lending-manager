@@ -437,7 +437,7 @@ class ALMGR_Plugin_Manager {
 			// [A/O] fields.
 			$changes['notifications.loan_request']      = isset( $_POST['almgr_notifications_loan_request'] );
 			$changes['notifications.loan_decision']     = isset( $_POST['almgr_notifications_loan_decision'] );
-			$changes['notifications.loan_confirmation'] = isset( $_POST['almgr_notifications_loan_confirmation'] );
+			$changes['notifications.direct_assign'] = isset( $_POST['almgr_notifications_direct_assign'] );
 			// Contact form settings.
 			$changes['contact_form.enabled']            = isset( $_POST['almgr_contact_form_enabled'] );
 			$changes['contact_form.max_message_length'] = min( 2000, max( 50, absint( wp_unslash( $_POST['almgr_contact_form_max_length'] ?? 500 ) ) ) );
@@ -453,6 +453,7 @@ class ALMGR_Plugin_Manager {
 				$changes['loans.request_message_max_length']      = max( 0, absint( wp_unslash( $_POST['almgr_loans_request_message_max_length'] ?? 500 ) ) );
 				$changes['loans.rejection_message_max_length']    = max( 0, absint( wp_unslash( $_POST['almgr_loans_rejection_message_max_length'] ?? 500 ) ) );
 				$changes['loans.direct_assign_reason_max_length'] = max( 0, absint( wp_unslash( $_POST['almgr_loans_direct_assign_reason_max_length'] ?? 500 ) ) );
+				$changes['loans.change_state_notes_max_length']   = max( 0, absint( wp_unslash( $_POST['almgr_loans_change_state_notes_max_length'] ?? 500 ) ) );
 			}
 		}
 

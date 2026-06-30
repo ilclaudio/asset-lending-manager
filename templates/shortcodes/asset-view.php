@@ -24,6 +24,7 @@ $almgr_settings                 = ALMGR_Plugin_Manager::get_instance()->get_modu
 $almgr_loan_requests_enabled    = (bool) $almgr_settings->get( 'loans.loan_requests_enabled', true );
 $almgr_request_message_max      = (int) $almgr_settings->get( 'loans.request_message_max_length', 500 );
 $almgr_rejection_message_max    = (int) $almgr_settings->get( 'loans.rejection_message_max_length', 500 );
+$almgr_direct_assign_enabled    = (bool) $almgr_settings->get( 'direct_assign.enabled', true );
 $almgr_direct_assign_reason_max = (int) $almgr_settings->get( 'loans.direct_assign_reason_max_length', 500 );
 $almgr_change_state_notes_max   = (int) $almgr_settings->get( 'loans.change_state_notes_max_length', 500 );
 $almgr_asset_location           = (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $almgr_asset_id );
@@ -568,7 +569,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	?>
 
 	<!-- IX section: Direct assignment (operator only, hidden for maintenance/retired assets) -->
-	<?php if ( $almgr_is_operator && ! in_array( $almgr_state_slug, array( 'maintenance', 'retired' ), true ) ) : ?>
+	<?php if ( $almgr_is_operator && $almgr_direct_assign_enabled && ! in_array( $almgr_state_slug, array( 'maintenance', 'retired' ), true ) ) : ?>
 	<section class="almgr-asset-view__direct-assign" aria-label="<?php esc_attr_e( 'Direct assignment', 'asset-lending-manager' ); ?>">
 		<details class="almgr-collapsible almgr-collapsible--directassign">
 			<summary class="almgr-collapsible__summary">

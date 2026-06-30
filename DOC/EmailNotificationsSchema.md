@@ -8,7 +8,7 @@ Sender and copy recipients are read from runtime settings:
 `email.from_name`, `email.from_address`, `email.system_email`.
 Event notifications are controlled by:
 `notifications.enabled`, `notifications.loan_request`,
-`notifications.loan_decision`, `notifications.loan_confirmation`,
+`notifications.loan_decision`, `notifications.direct_assign`,
 and policy `notifications.loan_request_operator_mode` (`never`, `no_owner`, `always`).
 Current fallbacks: site name (`get_bloginfo('name')`) and admin email (`get_bloginfo('admin_email')`) when sender fields are empty.
 
@@ -79,7 +79,7 @@ Runtime settings in `almgr_settings`:
 | `notifications.enabled` | Global master switch for notifications |
 | `notifications.loan_request` | Enable/disable loan request related notifications |
 | `notifications.loan_decision` | Enable/disable approval/rejection notifications |
-| `notifications.loan_confirmation` | Enable/disable direct assignment notifications |
+| `notifications.direct_assign` | Enable/disable direct assignment notifications |
 | `notifications.loan_request_operator_mode` | Operator recipient policy for loan requests: `never`, `no_owner`, `always` |
 
 Note: in the current flow, `ALMGR_Notification_Manager` uses runtime settings; `ALMGR_EMAIL_*` constants in `plugin-config.php` are not read directly by the send logic.

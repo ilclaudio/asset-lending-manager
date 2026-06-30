@@ -67,7 +67,7 @@ class ALMGR_Settings_Manager {
 				'loan_request'               => true,
 				'loan_request_operator_mode' => 'no_owner',
 				'loan_decision'              => true,
-				'loan_confirmation'          => true,
+				'direct_assign'              => true,
 			),
 			'template'      => array(
 				'subject' => $templates['subject'],
@@ -166,6 +166,13 @@ class ALMGR_Settings_Manager {
 
 		if ( ! is_array( $saved ) ) {
 			$saved = array();
+		}
+
+		// Migration: notifications.loan_confirmation renamed to notifications.direct_assign.
+		if ( isset( $saved['notifications']['loan_confirmation'] ) && ! isset( $saved['notifications']['direct_assign'] ) ) {
+			$saved['notifications']['direct_assign'] = $saved['notifications']['loan_confirmation'];
+			unset( $saved['notifications']['loan_confirmation'] );
+			update_option( $this->option_name, $saved );
 		}
 
 		return $this->deep_merge( $this->get_defaults(), $saved );
