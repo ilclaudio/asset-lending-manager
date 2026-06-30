@@ -202,10 +202,13 @@ Expected output on first run (WordPress installs its tables into the test databa
 ```
 Installing...
 Running as single site...
-PHPUnit 9.6.34 by Sebastian Bergmann and contributors.
-......
-OK (6 tests, 13 assertions)
+PHPUnit 9.6.x by Sebastian Bergmann and contributors.
+...................
+OK (22 tests, 96 assertions)
 ```
+
+The test count grows as coverage increases. The exact numbers do not matter as
+long as the suite ends with `OK`.
 
 ---
 

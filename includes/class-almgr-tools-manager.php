@@ -316,9 +316,27 @@ class ALMGR_Tools_Manager {
 			'\\'
 		);
 
+		foreach ( $this->get_users_for_export() as $row ) {
+			fputcsv( $output, $row, ';', '"', '\\' );
+		}
+
+		exit;
+	}
+
+	/**
+	 * Query all ALM users and build the export rows as plain arrays.
+	 *
+	 * Separated from stream_users_csv_export() so the DB-dependent logic can be
+	 * tested via ReflectionMethod without triggering HTTP headers or exit().
+	 *
+	 * @return array<int, array<string>> Each element is a five-column CSV row:
+	 *                                   login, email, first_name, last_name, role.
+	 */
+	private function get_users_for_export(): array {
 		$per_page = 200;
 		$offset   = 0;
-		$rows     = 0;
+		$fetched  = 0;
+		$result   = array();
 
 		do {
 			$user_query = new WP_User_Query(
@@ -348,28 +366,20 @@ class ALMGR_Tools_Manager {
 					continue;
 				}
 
-				$row = array(
+				$result[] = array(
 					$this->sanitize_users_export_csv_cell( $user->user_login ),
 					$this->sanitize_users_export_csv_cell( $user->user_email ),
 					$this->sanitize_users_export_csv_cell( (string) get_user_meta( (int) $user->ID, 'first_name', true ) ),
 					$this->sanitize_users_export_csv_cell( (string) get_user_meta( (int) $user->ID, 'last_name', true ) ),
 					$this->sanitize_users_export_csv_cell( $export_role ),
 				);
-
-				fputcsv(
-					$output,
-					$row,
-					';',
-					'"',
-					'\\'
-				);
 			}
 
-			$rows    = count( $users );
-			$offset += $per_page;
-		} while ( $rows === $per_page );
+			$fetched  = count( $users );
+			$offset  += $per_page;
+		} while ( $fetched === $per_page );
 
-		exit;
+		return $result;
 	}
 
 	/**

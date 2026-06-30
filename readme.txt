@@ -32,9 +32,11 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Loan request workflow: members submit requests, the current asset owner approves or rejects
 * Direct assignment by operators and admins (when enabled; a reason is always required)
 * By default, when an asset is assigned, all other pending requests for it are automatically canceled (configurable)
+* Optional contact form to send email messages to the current asset owner
 * Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
 * Asset state management from the frontend: operators can set assets to maintenance or retired, or force-return on-loan assets directly to available; a location is required on every state change
 * Full loan history for each asset
+* Full asset history page for operators via the `[almgr_asset_history]` shortcode
 * Two user roles included: Member (can browse and request loans) and Operator (can manage assignments, states, and history)
 * Read-only JSON REST API at `/wp-json/almgr/v1/` for asset list, asset detail, member list, and member assets; authentication via WordPress core (cookie session, REST nonce, Application Passwords)
 * Back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs
@@ -60,7 +62,8 @@ The plugin registers the ACF field group automatically — no manual configurati
 * The current owner can approve or reject the request.
 * On approval, the asset is marked as on loan and the new borrower is recorded.
 * Operators and admins can also directly assign any asset that is not retired or under maintenance, without a prior request (when direct assignment is enabled).
-* All decisions and assignments are recorded in loan history.
+* Operators can force-return an on-loan asset to available, or restore an asset from maintenance or retired back to available.
+* All decisions, assignments, and state changes are recorded in loan history.
 
 
 == Installation ==
@@ -73,12 +76,14 @@ The plugin registers the ACF field group automatically — no manual configurati
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page
 5. If `/asset/` returns 404, go to Settings > Permalinks and click Save Changes once.
+6. The full asset history page is not automatic. Create a normal WordPress page with the `[almgr_asset_history]` shortcode and assign it in **ALM > Settings > Frontend** as **Asset history page**.
 
 **Block themes:**
-4. Block themes do not support automatic PHP template overrides. Create two pages manually:
+4. Block themes do not support automatic PHP template overrides. Create three pages manually:
    * Add `[almgr_asset_list]` to a page — this is your asset catalog.
    * Add `[almgr_asset_view]` to a second page — this is your asset detail view.
-5. In **ALM > Settings > Frontend**, set "Asset archive page" and "Asset detail page" to the pages you just created. This ensures all asset links point to the correct detail page.
+   * Add `[almgr_asset_history]` to a third page — this is your full asset history page for operators.
+5. In **ALM > Settings > Frontend**, set "Asset archive page", "Asset detail page", and "Asset history page" to the pages you just created. This ensures all asset and history links point to the correct pages.
 6. Optionally configure email sender settings in wp-admin under **ALM > Settings**.
 
 == Screenshots ==
@@ -121,7 +126,7 @@ An asset is a single physical item (for example, a telescope, a book, or a camer
 Yes. Multiple members can submit requests for the same asset simultaneously. By default, when a request is approved or the asset is directly assigned, all other pending requests for that asset are automatically canceled (this behavior is configurable), and requesters are notified by email when notifications are enabled.
 
 = Do I need a developer to set up this plugin? =
-On classic themes, basic setup only requires installing the plugin and activating ACF — asset pages are served automatically with no shortcodes needed. On block themes, two pages with shortcodes must be created manually and configured in the plugin settings. Some advanced customization such as user role adjustments may benefit from developer support.
+On classic themes, basic setup only requires installing the plugin and activating ACF — asset pages are served automatically with no shortcodes needed, except for the optional full asset history page. On block themes, three pages with shortcodes must be created manually and configured in the plugin settings (catalog, asset detail, and full asset history). Some advanced customization such as user role adjustments may benefit from developer support.
 
 
 == Changelog ==
@@ -129,6 +134,8 @@ On classic themes, basic setup only requires installing the plugin and activatin
 For full release notes see `CHANGELOG.md`.
 
 = 0.2.4 =
+* Added: full asset history page for operators via `[almgr_asset_history]`.
+* Added: optional contact form to send email messages to the current asset owner.
 * Fixed: kit loan approval and direct assignment no longer overwrite components assigned to other users or in maintenance/retired state; excluded components are left untouched and reported to the operator with explicit reasons.
 * Fixed: kit state changes only affect eligible components; components under maintenance, retired, or assigned to another user are skipped.
 * Fixed: component sent to maintenance no longer removed from parent kit; `_almgr_removed_from_kit_ids` is now written only on permanent retirement.
@@ -190,7 +197,7 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 == Upgrade Notice ==
 
 = 0.2.4 =
-Fix release for kit operations. Kit loan approval and state changes now propagate only to eligible components; components under maintenance, retired, or assigned to another user are excluded and left unchanged. No database changes; no manual intervention required.
+Feature and fix release. Adds an operator asset history page and optional owner contact messages. Kit loan approval and state changes now propagate only to eligible components; components under maintenance, retired, or assigned to another user are excluded and left unchanged. No database changes; no manual intervention required.
 
 = 0.2.2 =
 Security and fix release. REST API migrated to native WordPress REST API routes. No database changes; no manual intervention required.

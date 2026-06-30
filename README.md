@@ -20,8 +20,10 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Direct assignment by operator/admin (reason is mandatory; max length is configurable)
 - Automatic cancellation of concurrent pending requests after assignment (configurable)
 - Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; location field required on every state change
+- Optional contact form to send email messages to the current asset owner
 - Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
 - Loan history tracking
+- Full asset history page for operators via `[almgr_asset_history]`
 - Role-based permissions (`almgr_member`, `almgr_operator`)
 - Read-only JSON REST API (`/wp-json/almgr/v1/`) for asset list, asset detail, member list, and member assets; authentication via WordPress core (cookie session, REST nonce, Application Passwords)
 - Back-office Tools page (`ALM → Tools`) with Import, Export, and Utilities tabs
@@ -165,19 +167,22 @@ composer lint:fix
 
 ### Tests
 
-**Unit tests** run without a WordPress installation and require no environment setup:
+All test commands require **PHP 8.x** in the system PATH and `composer install` already run (see above).
+
+**Unit tests** run without a WordPress installation or database — no additional setup needed:
 ```bash
 composer test:unit
 ```
 
-Unit tests are also enforced automatically by the pre-commit hook — a failing suite blocks the commit.
+Unit tests run automatically as a pre-commit hook: a failing suite blocks the commit.
+For setup details and a description of what is covered, see [`tests/unit/README.md`](tests/unit/README.md).
 
 **Integration tests** run against a real WordPress environment and a dedicated test database.
+Before running them for the first time, follow the setup guide:
+[`tests/integration/README.md`](tests/integration/README.md).
 ```bash
 composer test:integration
 ```
-
-For environment setup instructions (database, `wordpress-develop` checkout, configuration file) see [`tests/integration/README.md`](tests/integration/README.md).
 
 **Functional (E2E) tests** run through a real browser against a dedicated local WordPress site (`alm-e2e`).
 ```bash
