@@ -65,10 +65,12 @@
 		}
 
 		const assetInput = form.querySelector( '[name="asset_id"]' );
+		const nonceInput = form.querySelector( '[name="almgr_contact_nonce_field"]' );
+		const nonceValue = nonceInput && nonceInput.value ? nonceInput.value : window.almgrContact.nonce;
 
 		const data = new FormData();
 		data.append( 'action',   'almgr_send_contact_message' );
-		data.append( 'nonce',    window.almgrContact.nonce );
+		data.append( 'nonce',    nonceValue );
 		data.append( 'asset_id', assetInput ? assetInput.value : '0' );
 		data.append( 'message',  textarea ? textarea.value : '' );
 

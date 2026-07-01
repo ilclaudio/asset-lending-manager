@@ -1598,6 +1598,16 @@ class ALMGR_Loan_Manager {
 	 * @return array Array of component post IDs.
 	 */
 	private function get_kit_components( $asset_id ) {
+		if ( ! ALMGR_ACF_Asset_Adapter::is_acf_available() ) {
+			ALMGR_Logger::error(
+				'ACF unavailable during kit component read — kit operation aborted.',
+				array( 'kit_id' => $asset_id )
+			);
+			// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			throw new RuntimeException( __( 'ACF plugin is not active. Kit operations require ACF.', 'asset-lending-manager' ) );
+			// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
+		}
+
 		$components = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_components', $asset_id );
 
 		if ( ! is_array( $components ) || empty( $components ) ) {

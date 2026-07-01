@@ -43,6 +43,15 @@ class ALMGR_ACF_Asset_Adapter {
 	}
 
 	/**
+	 * Check whether the ACF plugin is active and its functions are available.
+	 *
+	 * @return bool
+	 */
+	public static function is_acf_available(): bool {
+		return function_exists( 'get_field' );
+	}
+
+	/**
 	 * Read all ACF custom field objects for a given post.
 	 *
 	 * Single ACF read entry point for structured field data (label, type, value).
@@ -52,6 +61,10 @@ class ALMGR_ACF_Asset_Adapter {
 	 * @return array Field objects keyed by field name.
 	 */
 	public static function get_custom_fields( int $post_id ): array {
+		if ( ! function_exists( 'get_field_objects' ) ) {
+			ALMGR_Logger::error( 'ACF unavailable: get_field_objects() not defined — returning empty field list.', array( 'post_id' => $post_id ) );
+			return array();
+		}
 		$result = get_field_objects( $post_id );
 		return is_array( $result ) ? $result : array();
 	}
@@ -67,6 +80,10 @@ class ALMGR_ACF_Asset_Adapter {
 	 * @return mixed Field value.
 	 */
 	public static function get_custom_field( string $field_name, int $post_id ) {
+		if ( ! function_exists( 'get_field' ) ) {
+			ALMGR_Logger::error( 'ACF unavailable: get_field() not defined — returning null.', array( 'field_name' => $field_name, 'post_id' => $post_id ) );
+			return null;
+		}
 		return get_field( $field_name, $post_id );
 	}
 
@@ -81,6 +98,10 @@ class ALMGR_ACF_Asset_Adapter {
 	 * @return bool
 	 */
 	public static function set_custom_field( string $field_name, $value, int $post_id ): bool {
+		if ( ! function_exists( 'update_field' ) ) {
+			ALMGR_Logger::error( 'ACF unavailable: update_field() not defined — write aborted.', array( 'field_name' => $field_name, 'post_id' => $post_id ) );
+			return false;
+		}
 		return (bool) update_field( $field_name, $value, $post_id );
 	}
 

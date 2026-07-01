@@ -383,6 +383,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 			</summary>
 			<div class="almgr-collapsible__body">
 				<form id="almgr-contact-form" class="almgr-loan-form" novalidate>
+					<?php wp_nonce_field( 'almgr_contact_nonce', 'almgr_contact_nonce_field' ); ?>
 					<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>">
 					<ul class="almgr-contact-info description">
 						<li><?php esc_html_e( 'The message will be delivered by email.', 'asset-lending-manager' ); ?></li>
