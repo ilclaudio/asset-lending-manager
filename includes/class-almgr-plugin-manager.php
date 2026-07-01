@@ -435,8 +435,8 @@ class ALMGR_Plugin_Manager {
 				$changes['notifications.loan_request_operator_mode'] = $operator_mode;
 			}
 			// [A/O] fields.
-			$changes['notifications.loan_request']      = isset( $_POST['almgr_notifications_loan_request'] );
-			$changes['notifications.loan_decision']     = isset( $_POST['almgr_notifications_loan_decision'] );
+			$changes['notifications.loan_request']  = isset( $_POST['almgr_notifications_loan_request'] );
+			$changes['notifications.loan_decision'] = isset( $_POST['almgr_notifications_loan_decision'] );
 			$changes['notifications.direct_assign'] = isset( $_POST['almgr_notifications_direct_assign'] );
 			// Contact form settings.
 			$changes['contact_form.enabled']            = isset( $_POST['almgr_contact_form_enabled'] );

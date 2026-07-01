@@ -81,7 +81,13 @@ class ALMGR_ACF_Asset_Adapter {
 	 */
 	public static function get_custom_field( string $field_name, int $post_id ) {
 		if ( ! function_exists( 'get_field' ) ) {
-			ALMGR_Logger::error( 'ACF unavailable: get_field() not defined — returning null.', array( 'field_name' => $field_name, 'post_id' => $post_id ) );
+			ALMGR_Logger::error(
+				'ACF unavailable: get_field() not defined — returning null.',
+				array(
+					'field_name' => $field_name,
+					'post_id'    => $post_id,
+				)
+			);
 			return null;
 		}
 		return get_field( $field_name, $post_id );
@@ -99,7 +105,13 @@ class ALMGR_ACF_Asset_Adapter {
 	 */
 	public static function set_custom_field( string $field_name, $value, int $post_id ): bool {
 		if ( ! function_exists( 'update_field' ) ) {
-			ALMGR_Logger::error( 'ACF unavailable: update_field() not defined — write aborted.', array( 'field_name' => $field_name, 'post_id' => $post_id ) );
+			ALMGR_Logger::error(
+				'ACF unavailable: update_field() not defined — write aborted.',
+				array(
+					'field_name' => $field_name,
+					'post_id'    => $post_id,
+				)
+			);
 			return false;
 		}
 		return (bool) update_field( $field_name, $value, $post_id );

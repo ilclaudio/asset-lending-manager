@@ -1596,6 +1596,7 @@ class ALMGR_Loan_Manager {
 	 *
 	 * @param int $asset_id Kit asset ID.
 	 * @return array Array of component post IDs.
+	 * @throws RuntimeException When ACF is unavailable during kit component read.
 	 */
 	private function get_kit_components( $asset_id ) {
 		if ( ! ALMGR_ACF_Asset_Adapter::is_acf_available() ) {

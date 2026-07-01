@@ -375,8 +375,8 @@ class ALMGR_Tools_Manager {
 				);
 			}
 
-			$fetched  = count( $users );
-			$offset  += $per_page;
+			$fetched = count( $users );
+			$offset += $per_page;
 		} while ( $fetched === $per_page );
 
 		return $result;
