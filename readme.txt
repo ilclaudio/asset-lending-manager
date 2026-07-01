@@ -136,6 +136,8 @@ For full release notes see `CHANGELOG.md`.
 * Added: optional contact form to send email messages to the current asset owner.
 * Fixed: kit loan approval, direct assignment, and state changes now affect only eligible components; excluded components are skipped safely and reported to the operator.
 * Fixed: maintenance/restore kit behavior and ACF write handling are now more robust and consistent.
+* Fixed: operator actions (direct assignment, state change, restore) now reject non-published assets.
+* Fixed: asset list search field no longer collides with the WordPress reserved search query variable.
 
 = 0.2.3 =
 * Fixed: WordPress 7.0 compatibility check, minor documentation corrections, and a small admin CSS adjustment.

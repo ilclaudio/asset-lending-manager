@@ -31,6 +31,9 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Component sent to maintenance no longer removed from parent kit(s); `_almgr_removed_from_kit_ids` is now written only on permanent retirement.
 - Restore from maintenance is now a state-only change; no kit re-attach is performed because the component was never removed.
 - ACF write return values now checked with read-back: failures inside transactions throw and trigger rollback; post-commit failures log a warning.
+- Operator AJAX handlers (direct assignment, state change, restore state) now reject non-published (draft/private/trash) assets, matching the existing guard on loan request submission.
+- Asset list search field renamed from `s` to `almgr_search` to avoid colliding with the WordPress-reserved global search query variable; `s` is still read as a fallback for previously bookmarked links.
+- Hardened the REST API active-loan-count query (`count_active_loans()`) to use `$wpdb->prepare()` with placeholders instead of an interpolated ID list.
 ### Changed
 - Kit loan approval and direct assignment use a unified pre-computed transfer plan; the previous `$check_component_conflicts` bypass parameter has been removed.
 - Location field cleared only on kit and included components when an asset moves to on-loan.

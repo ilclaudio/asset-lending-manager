@@ -22,7 +22,7 @@ When disabled, all endpoints return HTTP 503 with a JSON error body:
 { "code": "almgr_rest_disabled", "message": "REST API is disabled." }
 ```
 
-Setting key: `rest_api.enabled` (boolean, default `false`).
+Setting key: `rest_api.enabled` (boolean, default `true`).
 
 ---
 
@@ -180,4 +180,4 @@ curl -u "username:xxxx xxxx xxxx xxxx xxxx xxxx" \
 
 ---
 
-*Last update: 2026-06-02 (rev 1)*
+*Last update: 2026-07-01 (rev 2)*
