@@ -129,8 +129,10 @@ Open the `alm-e2e` site admin and make sure:
 
 - the plugin is installed;
 - the plugin is activated;
-- required companion setup such as ACF is also present if the plugin depends on it;
-- the site frontend loads without fatal errors.
+- ACF (Advanced Custom Fields) is also installed and activated — the plugin requires it;
+- the site frontend loads without fatal errors;
+- at least one asset post is published — the detail-page smoke test navigates from
+  the archive to the first available asset and will fail if the list is empty.
 
 Because the first smoke test opens `/asset/`, also verify this once manually:
 
@@ -217,32 +219,57 @@ npm run test:e2e
 Optional variants:
 
 ```bash
-npm run test:e2e:headed
-npm run test:e2e:ui
+npm run test:e2e:headed   # opens a visible browser window — useful to watch what Playwright does
+npm run test:e2e:ui       # opens the Playwright interactive UI — useful to debug a failing test step by step
 ```
 
-Expected result for the current first smoke test:
+Expected result for the current smoke tests:
 
 ```text
-Running 1 test using 1 worker
+Running 5 tests using 1 worker
   ✓ Asset archive smoke test › asset archive page renders without a fatal frontend failure
-  1 passed
+  ✓ Asset detail smoke test › asset detail page renders without a fatal frontend failure
+  ✓ Asset list filter smoke tests › filter by type renders without a fatal frontend failure
+  ✓ Asset list filter smoke tests › filter by structure renders without a fatal frontend failure
+  ✓ Asset list filter smoke tests › text search renders without a fatal frontend failure
+  5 passed
 ```
 
 ---
 
-## Current smoke test
+## Current smoke tests
 
-Current scope:
+### archive-smoke
 
 - open `/asset/`;
 - verify that the page responds successfully;
 - verify that the page body renders;
-- verify that no obvious WordPress fatal frontend message is present.
+- verify that no WordPress fatal error is present.
 
-This is intentionally minimal.
-It proves that the browser, site URL, plugin routing, and repository wiring are
-connected end to end.
+### asset-detail-smoke
+
+- open `/asset/` and verify the asset list renders;
+- navigate to the first asset card link;
+- verify the detail page responds successfully;
+- verify `article.almgr-asset-view` and `h1.almgr-asset-title` are visible;
+- verify the title is non-empty;
+- verify that no WordPress fatal error is present.
+
+### filters-smoke (3 tests)
+
+- **Filter by type:** navigate to `/asset/?almgr_type=telescope`; verify the type select
+  reflects the active filter; verify results section and form render; verify no fatal error.
+- **Filter by structure:** navigate to `/asset/?almgr_structure=kit`; same checks on the
+  structure select.
+- **Text search:** read the first asset title from the archive; navigate to
+  `/asset/?s=<first-word>`; verify the search input reflects the term; verify at least one
+  result appears; verify no fatal error.
+
+The type and structure filter tests use `telescope` and `kit` as filter values — both are
+default taxonomy terms seeded by the plugin on activation and are always present in a
+correctly configured `alm-e2e` site.
+
+All tests are intentionally read-only and leave the database unmodified.
 
 ---
 

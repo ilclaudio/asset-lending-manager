@@ -21,9 +21,9 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ## [0.3.0] - 2026-07-01
 ### Added
 - Added asset history page.
-- Added unit tests.
-- Added integration tests.
-- Added e2e tests: only infrastructur to manage theme and one example.
+- Added unit tests: basic coverage for now.
+- Added integration: basic coverage for now.
+- Added e2e tests: covered only read only features for now.
 - Added feature to send e-mail messages to the owner of a resource.
 ### Fixed
 - Kit transfer (loan approval and direct assignment) no longer overwrites components assigned to other users or in maintenance/retired state; excluded components are left untouched and reported to the operator with explicit reasons.
