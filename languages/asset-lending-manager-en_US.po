@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-06-30 11:20+0000\n"
+"PO-Revision-Date: 2026-07-01 08:09+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 
 #. %s: current owner display name
-#: templates/shortcodes/asset-view.php:659
+#: templates/shortcodes/asset-view.php:660
 #, php-format
 msgid ""
 "<strong>Warning:</strong> this asset is currently on loan to %s. Changing "
@@ -80,8 +80,12 @@ msgstr ""
 msgid "Accessory"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:479
-#: templates/shortcodes/asset-view.php:528
+#: includes/class-almgr-loan-manager.php:1607
+msgid "ACF plugin is not active. Kit operations require ACF."
+msgstr ""
+
+#: templates/shortcodes/asset-view.php:480
+#: templates/shortcodes/asset-view.php:529
 msgid "Actions"
 msgstr ""
 
@@ -221,7 +225,7 @@ msgstr ""
 msgid "an operator"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:655
+#: templates/shortcodes/asset-view.php:656
 msgid "an unknown user"
 msgstr ""
 
@@ -237,12 +241,12 @@ msgstr ""
 msgid "Approval request failed. Please try again."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:538
+#: templates/shortcodes/asset-view.php:539
 msgid "Approve"
 msgstr ""
 
 #. %s: loan requester display name.
-#: templates/shortcodes/asset-view.php:497
+#: templates/shortcodes/asset-view.php:498
 #, php-format
 msgid "Approve request from %s"
 msgstr ""
@@ -263,12 +267,12 @@ msgstr ""
 msgid "Asset"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1853
-#: includes/class-almgr-loan-manager.php:1963 assets/js/frontend-assets.js:1187
+#: includes/class-almgr-loan-manager.php:1863
+#: includes/class-almgr-loan-manager.php:1973 assets/js/frontend-assets.js:1187
 msgid "Asset assigned successfully."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2170
+#: includes/class-almgr-loan-manager.php:2180
 msgid "Asset can only be force-returned when it is on loan."
 msgstr ""
 
@@ -315,7 +319,7 @@ msgstr ""
 msgid "Asset image"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2531
+#: includes/class-almgr-loan-manager.php:2541
 msgid "Asset is not in a restorable state."
 msgstr ""
 
@@ -358,9 +362,9 @@ msgstr ""
 #: includes/class-almgr-frontend-manager.php:882
 #: includes/class-almgr-loan-manager.php:144
 #: includes/class-almgr-loan-manager.php:1389
-#: includes/class-almgr-loan-manager.php:1808
-#: includes/class-almgr-loan-manager.php:2165
-#: includes/class-almgr-loan-manager.php:2526
+#: includes/class-almgr-loan-manager.php:1818
+#: includes/class-almgr-loan-manager.php:2175
+#: includes/class-almgr-loan-manager.php:2536
 #: includes/class-almgr-rest-manager.php:435
 msgid "Asset not found."
 msgstr ""
@@ -375,7 +379,7 @@ msgid ""
 "no shortcodes required:"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2669 assets/js/frontend-assets.js:1195
+#: includes/class-almgr-loan-manager.php:2679 assets/js/frontend-assets.js:1195
 msgid "Asset restored to available successfully."
 msgstr ""
 
@@ -385,16 +389,16 @@ msgstr ""
 msgid "Asset State"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2173
+#: includes/class-almgr-loan-manager.php:2183
 msgid "Asset state cannot be changed from its current state."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:639
-#: templates/shortcodes/asset-view.php:643
+#: templates/shortcodes/asset-view.php:640
+#: templates/shortcodes/asset-view.php:644
 msgid "Asset state management"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2360 assets/js/frontend-assets.js:1191
+#: includes/class-almgr-loan-manager.php:2370 assets/js/frontend-assets.js:1191
 msgid "Asset state updated successfully."
 msgstr ""
 
@@ -459,11 +463,11 @@ msgstr ""
 msgid "Assets per page"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:627
+#: templates/shortcodes/asset-view.php:628
 msgid "Assign asset"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:589
+#: templates/shortcodes/asset-view.php:590
 msgid "Assign to user:"
 msgstr ""
 
@@ -471,7 +475,7 @@ msgstr ""
 msgid "Assignable user types"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1814
+#: includes/class-almgr-loan-manager.php:1824
 msgid "Assignee user not found."
 msgstr ""
 
@@ -483,12 +487,12 @@ msgstr ""
 msgid "Assignment failed. Please try again."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1789
+#: includes/class-almgr-loan-manager.php:1799
 msgid "Assignment reason is required."
 msgstr ""
 
 #. %d: maximum number of characters allowed
-#: includes/class-almgr-loan-manager.php:1798
+#: includes/class-almgr-loan-manager.php:1808
 msgid "Assignment reason must not exceed %d characters."
 msgstr ""
 
@@ -521,7 +525,7 @@ msgstr ""
 msgid "Available placeholders:"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:842
+#: templates/shortcodes/asset-view.php:843
 msgid "Back to asset list"
 msgstr ""
 
@@ -583,7 +587,7 @@ msgstr ""
 msgid "Cannot approve: asset is no longer available for loan."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1891
+#: includes/class-almgr-loan-manager.php:1901
 msgid "Cannot assign an asset that is in maintenance or retired state."
 msgstr ""
 
@@ -614,7 +618,7 @@ msgstr ""
 msgid "Close image"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:516
+#: templates/shortcodes/asset-view.php:517
 #: templates/shortcodes/partials/asset-history-table.php:103
 #: assets/js/frontend-assets.js:1462
 msgid "Close message"
@@ -643,13 +647,13 @@ msgid "Component \"%s\" is not valid."
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1146
-#: includes/class-almgr-loan-manager.php:2075
+#: includes/class-almgr-loan-manager.php:2085
 msgid "Component has been retired."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2061
-#: includes/class-almgr-loan-manager.php:2067
-#: includes/class-almgr-loan-manager.php:2083
+#: includes/class-almgr-loan-manager.php:2071
+#: includes/class-almgr-loan-manager.php:2077
+#: includes/class-almgr-loan-manager.php:2093
 msgid "Component is not controlled by this kit."
 msgstr ""
 
@@ -658,7 +662,7 @@ msgid "Component is on loan to another user."
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1142
-#: includes/class-almgr-loan-manager.php:2074
+#: includes/class-almgr-loan-manager.php:2084
 msgid "Component is under maintenance."
 msgstr ""
 
@@ -755,8 +759,8 @@ msgid ""
 "translated default."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:478
-#: templates/shortcodes/asset-view.php:525
+#: templates/shortcodes/asset-view.php:479
+#: templates/shortcodes/asset-view.php:526
 msgid "Date"
 msgstr ""
 
@@ -780,11 +784,11 @@ msgstr ""
 msgid "Delimiter: semicolon (;). Existing assets are skipped in this MVP."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:751
+#: templates/shortcodes/asset-view.php:752
 msgid "Describe the reason for restoring this asset..."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:692
+#: templates/shortcodes/asset-view.php:693
 msgid "Describe the reason for this state change..."
 msgstr ""
 
@@ -801,7 +805,7 @@ msgstr ""
 msgid "Dimensions"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1770
+#: includes/class-almgr-loan-manager.php:1780
 msgid "Direct asset assignment is currently disabled."
 msgstr ""
 
@@ -810,8 +814,8 @@ msgid "Direct Assignment"
 msgstr ""
 
 #: plugin-config.php:165 admin/almgr-settings-page.php:251
-#: templates/shortcodes/asset-view.php:573
-#: templates/shortcodes/asset-view.php:577
+#: templates/shortcodes/asset-view.php:574
+#: templates/shortcodes/asset-view.php:578
 msgid "Direct assignment"
 msgstr ""
 
@@ -843,11 +847,11 @@ msgstr ""
 msgid "dry_run (simulation)"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:739
+#: templates/shortcodes/asset-view.php:740
 msgid "e.g. Room A, shelf 3"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:680
+#: templates/shortcodes/asset-view.php:681
 msgid "e.g. Room A, shelf 3 or at David's house"
 msgstr ""
 
@@ -952,7 +956,7 @@ msgstr ""
 msgid "Execution mode"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:617
+#: templates/shortcodes/asset-view.php:618
 msgid "Explain the reason for this assignment..."
 msgstr ""
 
@@ -996,7 +1000,7 @@ msgid "External code"
 msgstr ""
 
 #. 1: component post ID, 2: kit post ID
-#: includes/class-almgr-loan-manager.php:2475
+#: includes/class-almgr-loan-manager.php:2485
 #, php-format
 msgid "Failed to add component %1$d to kit %2$d."
 msgstr ""
@@ -1018,7 +1022,7 @@ msgid "Failed to delete loan request."
 msgstr ""
 
 #. %d: loan request ID
-#: includes/class-almgr-loan-manager.php:1700
+#: includes/class-almgr-loan-manager.php:1710
 msgid "Failed to delete request ID %d."
 msgstr ""
 
@@ -1027,29 +1031,29 @@ msgid "Failed to insert history record."
 msgstr ""
 
 #. %d: loan request ID
-#: includes/class-almgr-loan-manager.php:1683
+#: includes/class-almgr-loan-manager.php:1693
 msgid "Failed to log cancellation for request ID %d."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2254
-#: includes/class-almgr-loan-manager.php:2290
-#: includes/class-almgr-loan-manager.php:2601
+#: includes/class-almgr-loan-manager.php:2264
+#: includes/class-almgr-loan-manager.php:2300
+#: includes/class-almgr-loan-manager.php:2611
 msgid "Failed to log history entry for component."
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1456
-#: includes/class-almgr-loan-manager.php:1940
+#: includes/class-almgr-loan-manager.php:1950
 msgid "Failed to log history entry for kit component."
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1441
-#: includes/class-almgr-loan-manager.php:1925
-#: includes/class-almgr-loan-manager.php:2245
-#: includes/class-almgr-loan-manager.php:2268
-#: includes/class-almgr-loan-manager.php:2281
-#: includes/class-almgr-loan-manager.php:2317
-#: includes/class-almgr-loan-manager.php:2590
-#: includes/class-almgr-loan-manager.php:2632
+#: includes/class-almgr-loan-manager.php:1935
+#: includes/class-almgr-loan-manager.php:2255
+#: includes/class-almgr-loan-manager.php:2278
+#: includes/class-almgr-loan-manager.php:2291
+#: includes/class-almgr-loan-manager.php:2327
+#: includes/class-almgr-loan-manager.php:2600
+#: includes/class-almgr-loan-manager.php:2642
 msgid "Failed to log history entry."
 msgstr ""
 
@@ -1066,7 +1070,7 @@ msgid "Failed to reject request. Please try again."
 msgstr ""
 
 #. 1: component post ID, 2: kit post ID
-#: includes/class-almgr-loan-manager.php:2440
+#: includes/class-almgr-loan-manager.php:2450
 #, php-format
 msgid "Failed to remove component %1$d from kit %2$d."
 msgstr ""
@@ -1338,17 +1342,17 @@ msgstr ""
 #: includes/class-almgr-loan-manager.php:135
 #: includes/class-almgr-loan-manager.php:278
 #: includes/class-almgr-loan-manager.php:589
-#: includes/class-almgr-loan-manager.php:1781
+#: includes/class-almgr-loan-manager.php:1791
 msgid "Invalid asset ID."
 msgstr ""
 
 #: includes/class-almgr-contact-manager.php:79
-#: includes/class-almgr-loan-manager.php:2135
-#: includes/class-almgr-loan-manager.php:2501
+#: includes/class-almgr-loan-manager.php:2145
+#: includes/class-almgr-loan-manager.php:2511
 msgid "Invalid asset."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1785
+#: includes/class-almgr-loan-manager.php:1795
 msgid "Invalid assignee ID."
 msgstr ""
 
@@ -1403,7 +1407,7 @@ msgstr ""
 msgid "Invalid Structure. Allowed values are: component, kit."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2147
+#: includes/class-almgr-loan-manager.php:2157
 msgid "Invalid target state."
 msgstr ""
 
@@ -1474,8 +1478,8 @@ msgid ""
 "them automatically."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:771
-#: templates/shortcodes/asset-view.php:775
+#: templates/shortcodes/asset-view.php:772
+#: templates/shortcodes/asset-view.php:776
 msgid "Loan history"
 msgstr ""
 
@@ -1545,8 +1549,8 @@ msgstr ""
 msgid "Loan Requests"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:457
-#: templates/shortcodes/asset-view.php:461
+#: templates/shortcodes/asset-view.php:458
+#: templates/shortcodes/asset-view.php:462
 msgid "Loan requests"
 msgstr ""
 
@@ -1565,18 +1569,18 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:671
-#: templates/shortcodes/asset-view.php:730
+#: templates/shortcodes/asset-view.php:672
+#: templates/shortcodes/asset-view.php:731
 msgid "Location (required):"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2139
-#: includes/class-almgr-loan-manager.php:2505
+#: includes/class-almgr-loan-manager.php:2149
+#: includes/class-almgr-loan-manager.php:2515
 msgid "Location is required."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2142
-#: includes/class-almgr-loan-manager.php:2508
+#: includes/class-almgr-loan-manager.php:2152
+#: includes/class-almgr-loan-manager.php:2518
 msgid "Location must not exceed 255 characters."
 msgstr ""
 
@@ -1609,7 +1613,7 @@ msgstr ""
 msgid "Maintenance"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:758
+#: templates/shortcodes/asset-view.php:759
 msgid "Make available"
 msgstr ""
 
@@ -1717,8 +1721,8 @@ msgstr ""
 
 #: admin/almgr-tools-page.php:293 admin/almgr-tools-page.php:320
 #: admin/almgr-tools-page.php:498 admin/almgr-tools-page.php:529
-#: templates/shortcodes/asset-view.php:477
-#: templates/shortcodes/asset-view.php:505
+#: templates/shortcodes/asset-view.php:478
+#: templates/shortcodes/asset-view.php:506
 #: templates/shortcodes/partials/asset-history-table.php:53
 #: templates/shortcodes/partials/asset-history-table.php:92
 msgid "Message"
@@ -1804,11 +1808,11 @@ msgid "No import errors are available for download."
 msgstr ""
 
 #: templates/shortcodes/asset-history.php:154
-#: templates/shortcodes/asset-view.php:825
+#: templates/shortcodes/asset-view.php:826
 msgid "No loan history available for this asset."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:560
+#: templates/shortcodes/asset-view.php:561
 msgid "No pending requests for this asset."
 msgstr ""
 
@@ -1835,7 +1839,7 @@ msgid ""
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:279
-#: templates/shortcodes/asset-view.php:804
+#: templates/shortcodes/asset-view.php:805
 msgid "Note:"
 msgstr ""
 
@@ -1844,14 +1848,14 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:685
-#: templates/shortcodes/asset-view.php:744
+#: templates/shortcodes/asset-view.php:686
+#: templates/shortcodes/asset-view.php:745
 msgid "Notes (optional):"
 msgstr ""
 
 #. %d: maximum number of characters allowed
-#: includes/class-almgr-loan-manager.php:2156
-#: includes/class-almgr-loan-manager.php:2517
+#: includes/class-almgr-loan-manager.php:2166
+#: includes/class-almgr-loan-manager.php:2527
 msgid "Notes must not exceed %d characters."
 msgstr ""
 
@@ -1937,10 +1941,10 @@ msgstr ""
 #: templates/shortcodes/asset-view.php:161
 #: templates/shortcodes/asset-view.php:313
 #: templates/shortcodes/asset-view.php:381
-#: templates/shortcodes/asset-view.php:464
-#: templates/shortcodes/asset-view.php:580
-#: templates/shortcodes/asset-view.php:646
-#: templates/shortcodes/asset-view.php:778
+#: templates/shortcodes/asset-view.php:465
+#: templates/shortcodes/asset-view.php:581
+#: templates/shortcodes/asset-view.php:647
+#: templates/shortcodes/asset-view.php:779
 msgid "Open/Close"
 msgstr ""
 
@@ -2019,7 +2023,7 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:472
+#: templates/shortcodes/asset-view.php:473
 msgid "Pending loan requests for this asset"
 msgstr ""
 
@@ -2118,7 +2122,7 @@ msgid "Quick start"
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:158
-#: templates/shortcodes/asset-view.php:513
+#: templates/shortcodes/asset-view.php:514
 #: templates/shortcodes/partials/asset-history-table.php:100
 msgid "Read details"
 msgstr ""
@@ -2127,11 +2131,11 @@ msgstr ""
 msgid "Reason must not exceed %d characters."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:610
+#: templates/shortcodes/asset-view.php:611
 msgid "Reason:"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:790
+#: templates/shortcodes/asset-view.php:791
 msgid "Recent loan history entries for this asset"
 msgstr ""
 
@@ -2152,7 +2156,7 @@ msgstr ""
 msgid "Refractor"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:548
+#: templates/shortcodes/asset-view.php:549
 msgid "Reject"
 msgstr ""
 
@@ -2165,7 +2169,7 @@ msgid "Reject Request"
 msgstr ""
 
 #. %s: loan requester display name.
-#: templates/shortcodes/asset-view.php:499
+#: templates/shortcodes/asset-view.php:500
 #, php-format
 msgid "Reject request from %s"
 msgstr ""
@@ -2217,7 +2221,7 @@ msgstr ""
 msgid "Request canceled"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1900
+#: includes/class-almgr-loan-manager.php:1910
 msgid "Request canceled: asset directly assigned by operator."
 msgstr ""
 
@@ -2244,7 +2248,7 @@ msgid "Request is not pending."
 msgstr ""
 
 #: templates/shortcodes/asset-view.php:310
-#: templates/shortcodes/asset-view.php:395
+#: templates/shortcodes/asset-view.php:396
 msgid "Request loan"
 msgstr ""
 
@@ -2265,8 +2269,8 @@ msgstr ""
 msgid "Request rejected"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:476
-#: templates/shortcodes/asset-view.php:502
+#: templates/shortcodes/asset-view.php:477
+#: templates/shortcodes/asset-view.php:503
 msgid "Requester"
 msgstr ""
 
@@ -2398,7 +2402,7 @@ msgstr ""
 msgid "Search for an asset to browse its full loan history."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:597
+#: templates/shortcodes/asset-view.php:598
 msgid "Search member or operator..."
 msgstr ""
 
@@ -2439,7 +2443,7 @@ msgstr ""
 msgid "Send email notifications"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:418
+#: templates/shortcodes/asset-view.php:419
 msgid "Send message"
 msgstr ""
 
@@ -2464,7 +2468,7 @@ msgid "Sender name shown in outgoing emails. Leave empty to use the site name."
 msgstr ""
 
 #. %s: name of the loan request section.
-#: templates/shortcodes/asset-view.php:394
+#: templates/shortcodes/asset-view.php:395
 #, php-format
 msgid ""
 "Sending a message does not initiate a loan request. To request a loan, use "
@@ -2480,15 +2484,15 @@ msgstr ""
 msgid "Serial number"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:700
+#: templates/shortcodes/asset-view.php:701
 msgid "Set to available"
 msgstr ""
 
-#: plugin-config.php:166 templates/shortcodes/asset-view.php:704
+#: plugin-config.php:166 templates/shortcodes/asset-view.php:705
 msgid "Set to maintenance"
 msgstr ""
 
-#: plugin-config.php:167 templates/shortcodes/asset-view.php:707
+#: plugin-config.php:167 templates/shortcodes/asset-view.php:708
 msgid "Set to retired"
 msgstr ""
 
@@ -2536,7 +2540,7 @@ msgstr ""
 msgid "Show the search/filter panel expanded when the asset list loads"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:805
+#: templates/shortcodes/asset-view.php:806
 msgid "Showing the last 10 loan history entries for this asset."
 msgstr ""
 
@@ -2681,7 +2685,7 @@ msgid ""
 "full-width layout for that page — no manual template selection needed."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:388
+#: templates/shortcodes/asset-view.php:389
 msgid "The message will be delivered by email."
 msgstr ""
 
@@ -2696,7 +2700,7 @@ msgid "The uploaded file is not a valid CSV."
 msgstr ""
 
 #. %s: current asset state label
-#: templates/shortcodes/asset-view.php:719
+#: templates/shortcodes/asset-view.php:720
 #, php-format
 msgid ""
 "This asset is currently <strong>%s</strong>. Restoring it will set it back "
@@ -2724,7 +2728,7 @@ msgid ""
 "instead."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1822
+#: includes/class-almgr-loan-manager.php:1832
 msgid "This user is not eligible to receive asset assignments."
 msgstr ""
 
@@ -2799,7 +2803,7 @@ msgstr ""
 msgid "Unauthorized."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:488
+#: templates/shortcodes/asset-view.php:489
 #: templates/shortcodes/partials/asset-history-table.php:63
 msgid "Unknown"
 msgstr ""
@@ -2885,7 +2889,7 @@ msgid "View Asset"
 msgstr ""
 
 #. %d: total number of history entries.
-#: templates/shortcodes/asset-view.php:816
+#: templates/shortcodes/asset-view.php:817
 msgid "View full history (%d entries)"
 msgstr ""
 
@@ -2944,7 +2948,7 @@ msgid ""
 "config.php)"
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:409
+#: templates/shortcodes/asset-view.php:410
 msgid "Write your message..."
 msgstr ""
 
@@ -2978,11 +2982,11 @@ msgstr ""
 msgid "You do not have permission to approve this request."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1759
+#: includes/class-almgr-loan-manager.php:1769
 msgid "You do not have permission to assign assets."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2125
+#: includes/class-almgr-loan-manager.php:2135
 msgid "You do not have permission to change asset states."
 msgstr ""
 
@@ -2998,7 +3002,7 @@ msgstr ""
 msgid "You do not have permission to request loans."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2492
+#: includes/class-almgr-loan-manager.php:2502
 msgid "You do not have permission to restore asset states."
 msgstr ""
 
@@ -3026,11 +3030,11 @@ msgstr ""
 msgid "You have reached the maximum number of active loans (%d)."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:389
+#: templates/shortcodes/asset-view.php:390
 msgid "You will receive a copy at your registered email address."
 msgstr ""
 
-#: templates/shortcodes/asset-view.php:402
+#: templates/shortcodes/asset-view.php:403
 msgid "Your message:"
 msgstr ""
 
