@@ -4,7 +4,7 @@
  *
  * Handles the "Contact current owner" form on the asset detail page.
  * Logged-in users with view permission can send a plain-text message to
- * the current asset owner (if assigned) or to all operators/administrators.
+ * the current asset owner (if assigned) or to all operators when unassigned.
  * The sender receives a CC copy; Reply-To is set to the sender's address.
  *
  * No message storage: the plugin acts only as a delivery relay.
@@ -187,9 +187,9 @@ class ALMGR_Contact_Manager {
 	/**
 	 * Build the recipient list for the contact email.
 	 *
-	 * If the asset has a current owner, the message goes to that user.
-	 * Otherwise it goes to all operators and administrators.
-	 * Falls back to the site admin email when the list is empty.
+	 * If the asset has a current owner, the message goes to that user only.
+	 * Otherwise it goes to all operators. Falls back to the site admin email
+	 * when no operators are configured.
 	 *
 	 * @param int $owner_id Current owner user ID (0 when unassigned).
 	 * @return string[] Non-empty array of sanitized email addresses.
@@ -202,25 +202,7 @@ class ALMGR_Contact_Manager {
 			}
 		}
 
-		$emails = $this->role_manager->get_operator_emails();
-
-		$admin_query = new WP_User_Query(
-			array(
-				'role'   => 'administrator',
-				'fields' => array( 'user_email' ),
-			)
-		);
-		foreach ( $admin_query->get_results() as $user ) {
-			if ( ! is_object( $user ) || ! isset( $user->user_email ) ) {
-				continue;
-			}
-			$email = sanitize_email( $user->user_email );
-			if ( $email ) {
-				$emails[] = $email;
-			}
-		}
-
-		$emails = array_values( array_filter( array_unique( $emails ) ) );
+		$emails = array_values( array_filter( array_unique( $this->role_manager->get_operator_emails() ) ) );
 
 		if ( empty( $emails ) ) {
 			$emails[] = sanitize_email( (string) get_option( 'admin_email' ) );

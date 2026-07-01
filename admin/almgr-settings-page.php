@@ -280,7 +280,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 								value="1"
 								<?php checked( $almgr_settings->get( 'contact_form.enabled', true ) ); ?>
 							>
-							<?php esc_html_e( 'Allow logged-in users to send a message to the current owner or, when unassigned, to operators and administrators', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Allow logged-in users to send a message to the current owner or, when unassigned, to all operators', 'asset-lending-manager' ); ?>
 						</label>
 					</td>
 				</tr>

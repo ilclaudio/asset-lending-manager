@@ -160,7 +160,7 @@ msgstr ""
 #: admin/almgr-settings-page.php:283
 msgid ""
 "Allow logged-in users to send a message to the current owner or, when "
-"unassigned, to operators and administrators"
+"unassigned, to all operators"
 msgstr ""
 
 #: admin/almgr-settings-page.php:421
