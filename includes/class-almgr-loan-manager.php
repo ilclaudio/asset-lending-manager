@@ -1818,6 +1818,11 @@ class ALMGR_Loan_Manager {
 			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
 		}
 
+		// Direct assignment is allowed only for publicly available assets.
+		if ( 'publish' !== $asset->post_status ) {
+			wp_send_json_error( array( 'message' => __( 'This asset is not available for assignment.', 'asset-lending-manager' ) ) );
+		}
+
 		// Verify assignee exists and has an ALMGR role.
 		$assignee = get_userdata( $assignee_id );
 		if ( ! $assignee ) {
@@ -2173,6 +2178,11 @@ class ALMGR_Loan_Manager {
 		$asset = get_post( $asset_id );
 		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
 			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+		}
+
+		// State changes are allowed only for publicly available assets.
+		if ( 'publish' !== $asset->post_status ) {
+			wp_send_json_error( array( 'message' => __( 'This asset is not available for state change.', 'asset-lending-manager' ) ) );
 		}
 
 		$current_state = $this->get_asset_state_slug( $asset_id );
@@ -2534,6 +2544,11 @@ class ALMGR_Loan_Manager {
 		$asset = get_post( $asset_id );
 		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
 			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+		}
+
+		// State restore is allowed only for publicly available assets.
+		if ( 'publish' !== $asset->post_status ) {
+			wp_send_json_error( array( 'message' => __( 'This asset is not available for state restore.', 'asset-lending-manager' ) ) );
 		}
 
 		$current_state = $this->get_asset_state_slug( $asset_id );

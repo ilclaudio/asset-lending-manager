@@ -762,25 +762,38 @@ class ALMGR_REST_Manager {
 
 		global $wpdb;
 
-		$safe_ids  = implode( ',', array_map( 'absint', $user_ids ) );
-		$asset_cpt = ALMGR_ASSET_CPT_SLUG;
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT pm.meta_value AS owner_id, COUNT(*) AS loan_count
-				FROM {$wpdb->postmeta} pm
-				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-				WHERE pm.meta_key = %s
-				  AND pm.meta_value IN ( {$safe_ids} )
-				  AND p.post_status = %s
-				  AND p.post_type = %s
-				GROUP BY pm.meta_value",
+		$user_ids = array_values( array_unique( array_filter( array_map( 'absint', $user_ids ) ) ) );
+		if ( empty( $user_ids ) ) {
+			return array();
+		}
+
+		$asset_cpt    = ALMGR_ASSET_CPT_SLUG;
+		$placeholders = implode( ', ', array_fill( 0, count( $user_ids ), '%d' ) );
+		$query_args   = array_merge(
+			array(
 				'_almgr_current_owner',
 				'publish',
-				$asset_cpt
+				$asset_cpt,
+			),
+			$user_ids
+		);
+		$sql          = "SELECT pm.meta_value AS owner_id, COUNT(*) AS loan_count
+			FROM {$wpdb->postmeta} pm
+			INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+			WHERE pm.meta_key = %s
+			  AND p.post_status = %s
+			  AND p.post_type = %s
+			  AND pm.meta_value IN ( $placeholders )
+			GROUP BY pm.meta_value"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Dynamic placeholder list is generated from sanitized integer IDs only.
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results(
+			$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- Variadic replacements match the generated placeholder list at runtime.
+				$sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query string is stored in $sql only to isolate a documented dynamic placeholder list.
+				...$query_args
 			)
 		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		$counts = array();
 		foreach ( $rows as $row ) {
