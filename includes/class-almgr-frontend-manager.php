@@ -470,8 +470,13 @@ class ALMGR_Frontend_Manager {
 			$attributes,
 			'almgr_asset_list'
 		);
-		// Read and sanitize search parameter.
-		$search_term = $this->get_sanitized_query_text( 's' );
+		// Read and sanitize search parameter. Plugin-scoped 'almgr_search' avoids colliding
+		// with the WordPress-reserved 's' query var; 's' is kept as a fallback for
+		// previously bookmarked/shared links.
+		$search_term = $this->get_sanitized_query_text( 'almgr_search' );
+		if ( '' === $search_term ) {
+			$search_term = $this->get_sanitized_query_text( 's' );
+		}
 		if ( mb_strlen( $search_term ) > self::SEARCH_QUERY_MAX_LENGTH ) {
 			$search_term = mb_substr( $search_term, 0, self::SEARCH_QUERY_MAX_LENGTH );
 		}

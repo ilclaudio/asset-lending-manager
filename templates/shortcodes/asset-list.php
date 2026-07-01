@@ -74,7 +74,7 @@ if ( $filter_owner > 0 ) {
 				<span class="almgr-search-icon" aria-hidden="true"></span>
 				<input
 					type="search"
-					name="s"
+					name="almgr_search"
 					id="almgr-search-input"
 					aria-label="<?php esc_attr_e( 'Search assets', 'asset-lending-manager' ); ?>"
 					aria-autocomplete="list"
@@ -216,7 +216,7 @@ if ( $filter_owner > 0 ) {
 
 		<!-- Form actions: Reset filters + Search -->
 		<div class="almgr-form-actions">
-			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'almgr_structure', 'almgr_type', 'almgr_state', 'almgr_level', 'almgr_owner', 'almgr_my_assets', 'almgr_paged' ) ) ); ?>" class="almgr-reset-filters">
+			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'almgr_search', 'almgr_structure', 'almgr_type', 'almgr_state', 'almgr_level', 'almgr_owner', 'almgr_my_assets', 'almgr_paged' ) ) ); ?>" class="almgr-reset-filters">
 				<?php esc_html_e( 'Reset Filters', 'asset-lending-manager' ); ?>
 			</a>
 			<button type="submit">

@@ -420,7 +420,7 @@
 		min-width: 0;
 	}
 
-	.almgr-asset-search-form input[name="s"] {
+	.almgr-asset-search-form input[name="almgr_search"] {
 		width: 100%;
 		padding: 8px 8px 8px 34px; /* spazio per lente/spinner */
 		font-size: 1em;
@@ -432,7 +432,7 @@
 		transition: border-color 0.2s ease, box-shadow 0.2s ease;
 	}
 
-	.almgr-asset-search-form input[name="s"]:focus {
+	.almgr-asset-search-form input[name="almgr_search"]:focus {
 		border-color: #0059b3;
 		outline: 2px solid rgba(0, 89, 179, 0.22);
 		outline-offset: 1px;
