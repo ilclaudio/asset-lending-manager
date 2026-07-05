@@ -18,6 +18,11 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 5) Abilities for MCP server.
 
 
+
+## [0.3.1] - 2026-07-01
+### Fixed
+
+
 ## [0.3.0] - 2026-07-01
 ### Added
 - Added asset history page.
