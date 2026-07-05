@@ -14,8 +14,10 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## DESIDERATA 1.0.0
 1) Mass printing of all QR codes in A4 pages.
-4) Simple statistics page.
-5) Abilities for MCP server.
+2) Simple statistics page.
+3) Abilities for MCP server.
+4) Location content-type: default location.
+5) Introduce return concept.
 
 
 
