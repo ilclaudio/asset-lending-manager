@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-07-01 08:19+0000\n"
+"PO-Revision-Date: 2026-08-21 07:44+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -80,7 +80,7 @@ msgstr ""
 msgid "Accessory"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1607
+#: includes/class-almgr-loan-manager.php:1608
 msgid "ACF plugin is not active. Kit operations require ACF."
 msgstr ""
 
@@ -267,12 +267,12 @@ msgstr ""
 msgid "Asset"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1863
-#: includes/class-almgr-loan-manager.php:1973 assets/js/frontend-assets.js:1187
+#: includes/class-almgr-loan-manager.php:1869
+#: includes/class-almgr-loan-manager.php:1979 assets/js/frontend-assets.js:1187
 msgid "Asset assigned successfully."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2180
+#: includes/class-almgr-loan-manager.php:2191
 msgid "Asset can only be force-returned when it is on loan."
 msgstr ""
 
@@ -319,7 +319,7 @@ msgstr ""
 msgid "Asset image"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2541
+#: includes/class-almgr-loan-manager.php:2557
 msgid "Asset is not in a restorable state."
 msgstr ""
 
@@ -358,13 +358,13 @@ msgstr ""
 msgid "Asset name is required."
 msgstr ""
 
-#: includes/class-almgr-frontend-manager.php:509
-#: includes/class-almgr-frontend-manager.php:882
+#: includes/class-almgr-frontend-manager.php:514
+#: includes/class-almgr-frontend-manager.php:887
 #: includes/class-almgr-loan-manager.php:144
 #: includes/class-almgr-loan-manager.php:1389
-#: includes/class-almgr-loan-manager.php:1818
-#: includes/class-almgr-loan-manager.php:2175
-#: includes/class-almgr-loan-manager.php:2536
+#: includes/class-almgr-loan-manager.php:1819
+#: includes/class-almgr-loan-manager.php:2181
+#: includes/class-almgr-loan-manager.php:2547
 #: includes/class-almgr-rest-manager.php:435
 msgid "Asset not found."
 msgstr ""
@@ -379,7 +379,7 @@ msgid ""
 "no shortcodes required:"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2679 assets/js/frontend-assets.js:1195
+#: includes/class-almgr-loan-manager.php:2695 assets/js/frontend-assets.js:1195
 msgid "Asset restored to available successfully."
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr ""
 msgid "Asset State"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2183
+#: includes/class-almgr-loan-manager.php:2194
 msgid "Asset state cannot be changed from its current state."
 msgstr ""
 
@@ -398,7 +398,7 @@ msgstr ""
 msgid "Asset state management"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2370 assets/js/frontend-assets.js:1191
+#: includes/class-almgr-loan-manager.php:2381 assets/js/frontend-assets.js:1191
 msgid "Asset state updated successfully."
 msgstr ""
 
@@ -475,7 +475,7 @@ msgstr ""
 msgid "Assignable user types"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1824
+#: includes/class-almgr-loan-manager.php:1830
 msgid "Assignee user not found."
 msgstr ""
 
@@ -487,12 +487,12 @@ msgstr ""
 msgid "Assignment failed. Please try again."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1799
+#: includes/class-almgr-loan-manager.php:1800
 msgid "Assignment reason is required."
 msgstr ""
 
 #. %d: maximum number of characters allowed
-#: includes/class-almgr-loan-manager.php:1808
+#: includes/class-almgr-loan-manager.php:1809
 msgid "Assignment reason must not exceed %d characters."
 msgstr ""
 
@@ -587,7 +587,7 @@ msgstr ""
 msgid "Cannot approve: asset is no longer available for loan."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1901
+#: includes/class-almgr-loan-manager.php:1907
 msgid "Cannot assign an asset that is in maintenance or retired state."
 msgstr ""
 
@@ -647,13 +647,13 @@ msgid "Component \"%s\" is not valid."
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1146
-#: includes/class-almgr-loan-manager.php:2085
+#: includes/class-almgr-loan-manager.php:2091
 msgid "Component has been retired."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2071
 #: includes/class-almgr-loan-manager.php:2077
-#: includes/class-almgr-loan-manager.php:2093
+#: includes/class-almgr-loan-manager.php:2083
+#: includes/class-almgr-loan-manager.php:2099
 msgid "Component is not controlled by this kit."
 msgstr ""
 
@@ -662,7 +662,7 @@ msgid "Component is on loan to another user."
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1142
-#: includes/class-almgr-loan-manager.php:2084
+#: includes/class-almgr-loan-manager.php:2090
 msgid "Component is under maintenance."
 msgstr ""
 
@@ -805,7 +805,7 @@ msgstr ""
 msgid "Dimensions"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1780
+#: includes/class-almgr-loan-manager.php:1781
 msgid "Direct asset assignment is currently disabled."
 msgstr ""
 
@@ -1000,7 +1000,7 @@ msgid "External code"
 msgstr ""
 
 #. 1: component post ID, 2: kit post ID
-#: includes/class-almgr-loan-manager.php:2485
+#: includes/class-almgr-loan-manager.php:2496
 #, php-format
 msgid "Failed to add component %1$d to kit %2$d."
 msgstr ""
@@ -1022,7 +1022,7 @@ msgid "Failed to delete loan request."
 msgstr ""
 
 #. %d: loan request ID
-#: includes/class-almgr-loan-manager.php:1710
+#: includes/class-almgr-loan-manager.php:1711
 msgid "Failed to delete request ID %d."
 msgstr ""
 
@@ -1031,29 +1031,29 @@ msgid "Failed to insert history record."
 msgstr ""
 
 #. %d: loan request ID
-#: includes/class-almgr-loan-manager.php:1693
+#: includes/class-almgr-loan-manager.php:1694
 msgid "Failed to log cancellation for request ID %d."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2264
-#: includes/class-almgr-loan-manager.php:2300
-#: includes/class-almgr-loan-manager.php:2611
+#: includes/class-almgr-loan-manager.php:2275
+#: includes/class-almgr-loan-manager.php:2311
+#: includes/class-almgr-loan-manager.php:2627
 msgid "Failed to log history entry for component."
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1456
-#: includes/class-almgr-loan-manager.php:1950
+#: includes/class-almgr-loan-manager.php:1956
 msgid "Failed to log history entry for kit component."
 msgstr ""
 
 #: includes/class-almgr-loan-manager.php:1441
-#: includes/class-almgr-loan-manager.php:1935
-#: includes/class-almgr-loan-manager.php:2255
-#: includes/class-almgr-loan-manager.php:2278
-#: includes/class-almgr-loan-manager.php:2291
-#: includes/class-almgr-loan-manager.php:2327
-#: includes/class-almgr-loan-manager.php:2600
-#: includes/class-almgr-loan-manager.php:2642
+#: includes/class-almgr-loan-manager.php:1941
+#: includes/class-almgr-loan-manager.php:2266
+#: includes/class-almgr-loan-manager.php:2289
+#: includes/class-almgr-loan-manager.php:2302
+#: includes/class-almgr-loan-manager.php:2338
+#: includes/class-almgr-loan-manager.php:2616
+#: includes/class-almgr-loan-manager.php:2658
 msgid "Failed to log history entry."
 msgstr ""
 
@@ -1070,7 +1070,7 @@ msgid "Failed to reject request. Please try again."
 msgstr ""
 
 #. 1: component post ID, 2: kit post ID
-#: includes/class-almgr-loan-manager.php:2450
+#: includes/class-almgr-loan-manager.php:2461
 #, php-format
 msgid "Failed to remove component %1$d from kit %2$d."
 msgstr ""
@@ -1342,17 +1342,17 @@ msgstr ""
 #: includes/class-almgr-loan-manager.php:135
 #: includes/class-almgr-loan-manager.php:278
 #: includes/class-almgr-loan-manager.php:589
-#: includes/class-almgr-loan-manager.php:1791
+#: includes/class-almgr-loan-manager.php:1792
 msgid "Invalid asset ID."
 msgstr ""
 
 #: includes/class-almgr-contact-manager.php:79
-#: includes/class-almgr-loan-manager.php:2145
-#: includes/class-almgr-loan-manager.php:2511
+#: includes/class-almgr-loan-manager.php:2151
+#: includes/class-almgr-loan-manager.php:2522
 msgid "Invalid asset."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1795
+#: includes/class-almgr-loan-manager.php:1796
 msgid "Invalid assignee ID."
 msgstr ""
 
@@ -1407,7 +1407,7 @@ msgstr ""
 msgid "Invalid Structure. Allowed values are: component, kit."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2157
+#: includes/class-almgr-loan-manager.php:2163
 msgid "Invalid target state."
 msgstr ""
 
@@ -1574,13 +1574,13 @@ msgstr ""
 msgid "Location (required):"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2149
-#: includes/class-almgr-loan-manager.php:2515
+#: includes/class-almgr-loan-manager.php:2155
+#: includes/class-almgr-loan-manager.php:2526
 msgid "Location is required."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2152
-#: includes/class-almgr-loan-manager.php:2518
+#: includes/class-almgr-loan-manager.php:2158
+#: includes/class-almgr-loan-manager.php:2529
 msgid "Location must not exceed 255 characters."
 msgstr ""
 
@@ -1854,8 +1854,8 @@ msgid "Notes (optional):"
 msgstr ""
 
 #. %d: maximum number of characters allowed
-#: includes/class-almgr-loan-manager.php:2166
-#: includes/class-almgr-loan-manager.php:2527
+#: includes/class-almgr-loan-manager.php:2172
+#: includes/class-almgr-loan-manager.php:2538
 msgid "Notes must not exceed %d characters."
 msgstr ""
 
@@ -2221,7 +2221,7 @@ msgstr ""
 msgid "Request canceled"
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1910
+#: includes/class-almgr-loan-manager.php:1916
 msgid "Request canceled: asset directly assigned by operator."
 msgstr ""
 
@@ -2707,9 +2707,21 @@ msgid ""
 "to available."
 msgstr ""
 
+#: includes/class-almgr-loan-manager.php:1824
+msgid "This asset is not available for assignment."
+msgstr ""
+
 #: includes/class-almgr-loan-manager.php:152
 #: includes/class-almgr-loan-manager.php:161
 msgid "This asset is not available for loan."
+msgstr ""
+
+#: includes/class-almgr-loan-manager.php:2186
+msgid "This asset is not available for state change."
+msgstr ""
+
+#: includes/class-almgr-loan-manager.php:2552
+msgid "This asset is not available for state restore."
 msgstr ""
 
 #. %s: comma-separated kit names as links.
@@ -2728,7 +2740,7 @@ msgid ""
 "instead."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1832
+#: includes/class-almgr-loan-manager.php:1838
 msgid "This user is not eligible to receive asset assignments."
 msgstr ""
 
@@ -2982,11 +2994,11 @@ msgstr ""
 msgid "You do not have permission to approve this request."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:1769
+#: includes/class-almgr-loan-manager.php:1770
 msgid "You do not have permission to assign assets."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2135
+#: includes/class-almgr-loan-manager.php:2141
 msgid "You do not have permission to change asset states."
 msgstr ""
 
@@ -3002,11 +3014,11 @@ msgstr ""
 msgid "You do not have permission to request loans."
 msgstr ""
 
-#: includes/class-almgr-loan-manager.php:2502
+#: includes/class-almgr-loan-manager.php:2513
 msgid "You do not have permission to restore asset states."
 msgstr ""
 
-#: includes/class-almgr-frontend-manager.php:529
+#: includes/class-almgr-frontend-manager.php:534
 msgid "You do not have permission to view asset history."
 msgstr ""
 
