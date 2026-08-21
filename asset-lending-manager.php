@@ -29,6 +29,8 @@ require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-settings-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-role-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-query-service.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-access-policy.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-member-assets-service.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-loan-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-notification-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-frontend-manager.php';

@@ -27,10 +27,11 @@ class ALMGR_Asset_Query_Service {
 	 * @return WP_Query
 	 */
 	public function get_assets( array $filters = array(), $fields = 'all' ) {
-		$page     = max( 1, absint( $filters['page'] ?? 1 ) );
-		$per_page = min( self::MAX_PER_PAGE, max( 1, absint( $filters['per_page'] ?? self::MAX_PER_PAGE ) ) );
-		$search   = isset( $filters['search'] ) ? sanitize_text_field( (string) $filters['search'] ) : '';
-		$search   = mb_substr( $search, 0, 200 );
+		$page               = max( 1, absint( $filters['page'] ?? 1 ) );
+		$requested_per_page = isset( $filters['per_page'] ) ? (int) $filters['per_page'] : self::MAX_PER_PAGE;
+		$per_page           = -1 === $requested_per_page ? -1 : min( self::MAX_PER_PAGE, max( 1, absint( $requested_per_page ) ) );
+		$search             = isset( $filters['search'] ) ? sanitize_text_field( (string) $filters['search'] ) : '';
+		$search             = mb_substr( $search, 0, 200 );
 
 		$query_args = array(
 			'post_type'      => ALMGR_ASSET_CPT_SLUG,

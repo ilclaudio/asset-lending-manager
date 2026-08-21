@@ -49,14 +49,23 @@ class ALMGR_Frontend_Manager {
 	private $asset_queries;
 
 	/**
+	 * Shared member-held asset service.
+	 *
+	 * @var ALMGR_Member_Assets_Service
+	 */
+	private $member_assets;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param ALMGR_Settings_Manager    $settings      Plugin settings instance.
-	 * @param ALMGR_Asset_Query_Service $asset_queries Shared asset catalog query service.
+	 * @param ALMGR_Settings_Manager      $settings      Plugin settings instance.
+	 * @param ALMGR_Asset_Query_Service   $asset_queries Shared asset catalog query service.
+	 * @param ALMGR_Member_Assets_Service $member_assets Shared member-held asset service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Query_Service $asset_queries ) {
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Query_Service $asset_queries, ALMGR_Member_Assets_Service $member_assets ) {
 		$this->settings      = $settings;
 		$this->asset_queries = $asset_queries;
+		$this->member_assets = $member_assets;
 	}
 
 	/**
@@ -705,22 +714,22 @@ class ALMGR_Frontend_Manager {
 		$per_page     = max( 1, (int) $attributes['per_page'] );
 		$current_page = max( 1, $this->get_sanitized_query_absint( 'almgr_paged' ) );
 
-		$query        = $this->asset_queries->get_assets(
-			array(
-				'page'      => $current_page,
-				'per_page'  => $per_page,
-				'search'    => $search_term,
-				'structure' => $filter_structure,
-				'type'      => $filter_type,
-				'state'     => $filter_state,
-				'level'     => $filter_level,
-				'owner'     => $filter_owner,
-			)
+		$query_filters = array(
+			'page'      => $current_page,
+			'per_page'  => $per_page,
+			'search'    => $search_term,
+			'structure' => $filter_structure,
+			'type'      => $filter_type,
+			'state'     => $filter_state,
+			'level'     => $filter_level,
 		);
-		$assets       = array();
-		$assets_count = 0;
-		$total_pages  = 0;
-		if ( $query->have_posts() ) {
+		$query         = $filter_owner > 0
+			? $this->member_assets->get_assets_for_member( get_current_user_id(), $filter_owner, $query_filters )
+			: $this->asset_queries->get_assets( $query_filters );
+		$assets        = array();
+		$assets_count  = 0;
+		$total_pages   = 0;
+		if ( ! is_wp_error( $query ) && $query->have_posts() ) {
 			$assets_count = (int) $query->found_posts;
 			$total_pages  = (int) $query->max_num_pages;
 

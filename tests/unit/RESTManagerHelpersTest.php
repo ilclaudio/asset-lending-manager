@@ -30,7 +30,8 @@ class ALMGR_REST_Manager_Helpers_Unit_Test extends TestCase {
 		$this->rest_manager = new ALMGR_REST_Manager(
 			new ALMGR_Settings_Manager(),
 			new ALMGR_Loan_Manager( new ALMGR_Settings_Manager() ),
-			new ALMGR_Asset_Query_Service()
+			new ALMGR_Asset_Query_Service(),
+			new ALMGR_Member_Assets_Service( new ALMGR_Asset_Query_Service(), new ALMGR_Access_Policy() )
 		);
 	}
 

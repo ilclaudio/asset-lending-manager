@@ -10,6 +10,7 @@
  * Endpoints:
  *   GET /wp-json/almgr/v1/assets                    Paginated asset list      (almgr_view_assets)
  *   GET /wp-json/almgr/v1/assets/{id}               Single asset detail       (almgr_view_asset)
+ *   GET /wp-json/almgr/v1/me/assets                 Current member assets     (almgr_view_asset)
  *   GET /wp-json/almgr/v1/members                   Paginated ALMGR user list  (almgr_edit_asset)
  *   GET /wp-json/almgr/v1/members/{member_id}/assets Assets held by a member   (almgr_edit_asset)
  *
@@ -70,6 +71,13 @@ class ALMGR_REST_Manager {
 	 */
 	private $asset_queries;
 
+	/**
+	 * Shared member-held asset service.
+	 *
+	 * @var ALMGR_Member_Assets_Service
+	 */
+	private $member_assets;
+
 	// -------------------------------------------------------------------------
 	// Lifecycle
 	// -------------------------------------------------------------------------
@@ -77,14 +85,16 @@ class ALMGR_REST_Manager {
 	/**
 	 * Constructor.
 	 *
-	 * @param ALMGR_Settings_Manager    $settings      Settings manager instance.
-	 * @param ALMGR_Loan_Manager        $loan_manager  Loan manager instance.
-	 * @param ALMGR_Asset_Query_Service $asset_queries Shared asset catalog query service.
+	 * @param ALMGR_Settings_Manager      $settings      Settings manager instance.
+	 * @param ALMGR_Loan_Manager          $loan_manager  Loan manager instance.
+	 * @param ALMGR_Asset_Query_Service   $asset_queries Shared asset catalog query service.
+	 * @param ALMGR_Member_Assets_Service $member_assets Shared member-held asset service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Loan_Manager $loan_manager, ALMGR_Asset_Query_Service $asset_queries ) {
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Loan_Manager $loan_manager, ALMGR_Asset_Query_Service $asset_queries, ALMGR_Member_Assets_Service $member_assets ) {
 		$this->settings      = $settings;
 		$this->loan_manager  = $loan_manager;
 		$this->asset_queries = $asset_queries;
+		$this->member_assets = $member_assets;
 	}
 
 	/**
@@ -135,6 +145,17 @@ class ALMGR_REST_Manager {
 						'sanitize_callback' => 'absint',
 					),
 				),
+			)
+		);
+
+		register_rest_route(
+			self::API_NAMESPACE,
+			'/me/assets',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_my_assets' ),
+				'permission_callback' => array( $this, 'can_view_asset' ),
+				'args'                => $this->get_member_assets_list_args(),
 			)
 		);
 
@@ -343,6 +364,29 @@ class ALMGR_REST_Manager {
 		);
 	}
 
+	/**
+	 * Return pagination args for member-held asset collections.
+	 *
+	 * @return array
+	 */
+	private function get_member_assets_list_args() {
+		return array(
+			'page'     => array(
+				'type'              => 'integer',
+				'default'           => 1,
+				'minimum'           => 1,
+				'sanitize_callback' => 'absint',
+			),
+			'per_page' => array(
+				'type'              => 'integer',
+				'default'           => self::DEFAULT_PER_PAGE,
+				'minimum'           => 1,
+				'maximum'           => self::MAX_PER_PAGE,
+				'sanitize_callback' => 'absint',
+			),
+		);
+	}
+
 	// -------------------------------------------------------------------------
 	// Endpoint handlers
 	// -------------------------------------------------------------------------
@@ -485,44 +529,43 @@ class ALMGR_REST_Manager {
 	 */
 	public function get_member_assets( WP_REST_Request $request ) {
 		$member_id = (int) $request->get_param( 'member_id' );
-
-		$user = get_userdata( $member_id );
-		if ( ! $user ) {
-			return new WP_Error(
-				'almgr_not_found',
-				__( 'Member not found.', 'asset-lending-manager' ),
-				array( 'status' => 404 )
-			);
-		}
-
-		$query = new WP_Query(
-			array(
-				'post_type'      => ALMGR_ASSET_CPT_SLUG,
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Member asset listing is scoped to one owner and returns IDs only.
-					array(
-						'key'   => '_almgr_current_owner',
-						'value' => $member_id,
-				),
-				),
-			)
+		$query     = $this->member_assets->get_assets_for_member(
+			get_current_user_id(),
+			$member_id,
+			array( 'per_page' => -1 ),
+			'ids'
 		);
 
-		$items = array();
-		foreach ( $query->posts as $post_id ) {
-			$items[] = $this->prepare_member_asset( (int) $post_id );
+		if ( is_wp_error( $query ) ) {
+			return $query;
 		}
 
-		return new WP_REST_Response(
+		return $this->prepare_member_assets_response( $member_id, $query );
+	}
+
+	/**
+	 * Handle GET /wp-json/almgr/v1/me/assets — assets held by the current user.
+	 *
+	 * @param WP_REST_Request $request REST request object.
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function get_my_assets( WP_REST_Request $request ) {
+		$member_id = get_current_user_id();
+		$query     = $this->member_assets->get_assets_for_member(
+			$member_id,
+			$member_id,
 			array(
-				'member_id' => $member_id,
-				'total'     => count( $items ),
-				'data'      => $items,
+				'page'     => max( 1, (int) $request->get_param( 'page' ) ),
+				'per_page' => $this->clamp_per_page( (int) $request->get_param( 'per_page' ) ),
 			),
-			200
+			'ids'
 		);
+
+		if ( is_wp_error( $query ) ) {
+			return $query;
+		}
+
+		return $this->prepare_member_assets_response( $member_id, $query, true );
 	}
 
 	// -------------------------------------------------------------------------
@@ -698,6 +741,39 @@ class ALMGR_REST_Manager {
 			'thumbnail_url' => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ? get_the_post_thumbnail_url( $post_id, 'thumbnail' ) : null,
 			'permalink'     => get_permalink( $post_id ),
 		);
+	}
+
+	/**
+	 * Build a REST response from a member-held asset query.
+	 *
+	 * @param int      $member_id          Member user ID.
+	 * @param WP_Query $query              Executed member asset query.
+	 * @param bool     $include_pagination Whether to include pagination metadata.
+	 * @return WP_REST_Response
+	 */
+	private function prepare_member_assets_response( $member_id, WP_Query $query, $include_pagination = false ) {
+		$items = array();
+		foreach ( $query->posts as $post_id ) {
+			$items[] = $this->prepare_member_asset( (int) $post_id );
+		}
+
+		$data = array(
+			'member_id' => (int) $member_id,
+			'total'     => (int) $query->found_posts,
+			'data'      => $items,
+		);
+
+		if ( $include_pagination ) {
+			$data['pages'] = (int) $query->max_num_pages;
+		}
+
+		$response = new WP_REST_Response( $data, 200 );
+		if ( $include_pagination ) {
+			$response->header( 'X-ALM-Total', (int) $query->found_posts );
+			$response->header( 'X-ALM-TotalPages', (int) $query->max_num_pages );
+		}
+
+		return $response;
 	}
 
 	// -------------------------------------------------------------------------

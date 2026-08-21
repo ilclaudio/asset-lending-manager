@@ -62,7 +62,9 @@ class ALMGR_REST_Members_Integration_Test extends WP_UnitTestCase {
 
 		$settings           = new ALMGR_Settings_Manager();
 		$loan_manager       = new ALMGR_Loan_Manager( $settings );
-		$this->rest_manager = new ALMGR_REST_Manager( $settings, $loan_manager, new ALMGR_Asset_Query_Service() );
+		$asset_queries      = new ALMGR_Asset_Query_Service();
+		$member_assets      = new ALMGR_Member_Assets_Service( $asset_queries, new ALMGR_Access_Policy() );
+		$this->rest_manager = new ALMGR_REST_Manager( $settings, $loan_manager, $asset_queries, $member_assets );
 	}
 
 	/**
@@ -158,5 +160,79 @@ class ALMGR_REST_Members_Integration_Test extends WP_UnitTestCase {
 		$this->assertSame( 2, (int) $members[ $member_one_id ]['active_loans_count'], 'Published assigned assets should be counted for member one.' );
 		$this->assertSame( 1, (int) $members[ $member_two_id ]['active_loans_count'], 'Published assigned assets should be counted for member two.' );
 		$this->assertSame( 0, (int) $members[ $operator_id ]['active_loans_count'], 'Users without assigned published assets should return zero active loans.' );
+	}
+
+	/**
+	 * The current-member endpoint returns only assets held by the authenticated member.
+	 *
+	 * @return void
+	 */
+	public function test_get_my_assets_returns_only_assets_held_by_current_member(): void {
+		$member_id       = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$other_member_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$held_asset_id   = $this->create_assigned_asset( $member_id );
+		$this->create_assigned_asset( $other_member_id );
+
+		wp_set_current_user( $member_id );
+
+		$request = new WP_REST_Request( 'GET', '/almgr/v1/me/assets' );
+		$request->set_param( 'page', 1 );
+		$request->set_param( 'per_page', 20 );
+
+		$response = $this->rest_manager->get_my_assets( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$data = $response->get_data();
+
+		$this->assertSame( $member_id, (int) $data['member_id'] );
+		$this->assertSame( 1, (int) $data['total'] );
+		$this->assertCount( 1, $data['data'] );
+		$this->assertSame( $held_asset_id, (int) $data['data'][0]['id'] );
+	}
+
+	/**
+	 * A member may not use the member endpoint to inspect another member's assets.
+	 *
+	 * @return void
+	 */
+	public function test_get_member_assets_denies_member_access_to_another_member(): void {
+		$member_id       = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$other_member_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$this->create_assigned_asset( $other_member_id );
+
+		wp_set_current_user( $member_id );
+
+		$request = new WP_REST_Request( 'GET', '/almgr/v1/members/' . $other_member_id . '/assets' );
+		$request->set_param( 'member_id', $other_member_id );
+
+		$response = $this->rest_manager->get_member_assets( $request );
+
+		$this->assertWPError( $response );
+		$this->assertSame( 'almgr_member_assets_forbidden', $response->get_error_code() );
+	}
+
+	/**
+	 * An operator may inspect assets held by another member through the shared service.
+	 *
+	 * @return void
+	 */
+	public function test_get_member_assets_allows_operator_access(): void {
+		$operator_id = self::factory()->user->create( array( 'role' => ALMGR_OPERATOR_ROLE ) );
+		$member_id   = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id    = $this->create_assigned_asset( $member_id );
+
+		wp_set_current_user( $operator_id );
+
+		$request = new WP_REST_Request( 'GET', '/almgr/v1/members/' . $member_id . '/assets' );
+		$request->set_param( 'member_id', $member_id );
+
+		$response = $this->rest_manager->get_member_assets( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$data = $response->get_data();
+
+		$this->assertSame( $member_id, (int) $data['member_id'] );
+		$this->assertSame( 1, (int) $data['total'] );
+		$this->assertSame( $asset_id, (int) $data['data'][0]['id'] );
 	}
 }
