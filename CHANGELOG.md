@@ -19,8 +19,9 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 
-## [0.3.1] - 2026-07-01
+## [0.3.1] - 2026-08-21
 ### Fixed
+- Checked compatibility with WordPress 7.1: no code changes required (reviewed iframed post/site editor canvas, client-side media processing, `@wordpress/components` updates, persistent editor toolbar, jQuery UI 1.14.2 upgrade, and block registration — none apply to this plugin).
 
 
 ## [0.3.0] - 2026-07-01

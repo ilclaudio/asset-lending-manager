@@ -4,9 +4,9 @@ Author URI: https://www.claudiobattaglino.it/
 Author: IoClaudio
 Tags: asset management, loans, library, equipment, organization
 Requires at least: 6.2
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -131,6 +131,9 @@ On classic themes, basic setup usually only requires installing the plugin and a
 
 For full release notes see `CHANGELOG.md`.
 
+= 0.3.1 =
+* Fixed: checked compatibility with WordPress 7.1; no code changes required.
+
 = 0.3.0 =
 * Added: full asset history page for operators via `[almgr_asset_history]`.
 * Added: optional contact form to send email messages to the current asset owner.
@@ -171,6 +174,9 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 
 
 == Upgrade Notice ==
+
+= 0.3.1 =
+WordPress 7.1 compatibility check. No code changes, no database changes; no manual intervention required.
 
 = 0.3.0 =
 Adds an operator asset history page and optional owner contact messages. Kit operations now skip ineligible components safely. No database changes; no manual intervention required.
