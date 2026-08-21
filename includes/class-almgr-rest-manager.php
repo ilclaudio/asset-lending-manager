@@ -63,6 +63,13 @@ class ALMGR_REST_Manager {
 	 */
 	private $loan_manager;
 
+	/**
+	 * Shared asset catalog query service.
+	 *
+	 * @var ALMGR_Asset_Query_Service
+	 */
+	private $asset_queries;
+
 	// -------------------------------------------------------------------------
 	// Lifecycle
 	// -------------------------------------------------------------------------
@@ -70,12 +77,14 @@ class ALMGR_REST_Manager {
 	/**
 	 * Constructor.
 	 *
-	 * @param ALMGR_Settings_Manager $settings     Settings manager instance.
-	 * @param ALMGR_Loan_Manager     $loan_manager Loan manager instance.
+	 * @param ALMGR_Settings_Manager    $settings      Settings manager instance.
+	 * @param ALMGR_Loan_Manager        $loan_manager  Loan manager instance.
+	 * @param ALMGR_Asset_Query_Service $asset_queries Shared asset catalog query service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Loan_Manager $loan_manager ) {
-		$this->settings     = $settings;
-		$this->loan_manager = $loan_manager;
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Loan_Manager $loan_manager, ALMGR_Asset_Query_Service $asset_queries ) {
+		$this->settings      = $settings;
+		$this->loan_manager  = $loan_manager;
+		$this->asset_queries = $asset_queries;
 	}
 
 	/**
@@ -350,50 +359,18 @@ class ALMGR_REST_Manager {
 		$page     = max( 1, (int) $request->get_param( 'page' ) );
 		$per_page = $this->clamp_per_page( (int) $request->get_param( 'per_page' ) );
 
-		$args = array(
-			'post_type'      => ALMGR_ASSET_CPT_SLUG,
-			'post_status'    => 'publish',
-			'posts_per_page' => $per_page,
-			'paged'          => $page,
-			'fields'         => 'ids',
+		$query = $this->asset_queries->get_assets(
+			array(
+				'page'      => $page,
+				'per_page'  => $per_page,
+				'search'    => (string) $request->get_param( 'search' ),
+				'state'     => (string) $request->get_param( 'state' ),
+				'type'      => (string) $request->get_param( 'type' ),
+				'structure' => (string) $request->get_param( 'structure' ),
+				'owner'     => (int) $request->get_param( 'owner' ),
+			),
+			'ids'
 		);
-
-		$search = (string) $request->get_param( 'search' );
-		if ( '' !== $search ) {
-			$args['s'] = $search;
-		}
-
-		$tax_query = array();
-		$tax_map   = array(
-			'state'     => ALMGR_ASSET_STATE_TAXONOMY_SLUG,
-			'type'      => ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
-			'structure' => ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
-		);
-		foreach ( $tax_map as $param => $taxonomy ) {
-			$value = (string) $request->get_param( $param );
-			if ( '' !== $value ) {
-				$tax_query[] = array(
-					'taxonomy' => $taxonomy,
-					'field'    => 'slug',
-					'terms'    => $value,
-				);
-			}
-		}
-		if ( ! empty( $tax_query ) ) {
-			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- REST asset listing intentionally supports taxonomy filters and is paginated.
-		}
-
-		$owner = (int) $request->get_param( 'owner' );
-		if ( $owner > 0 && get_userdata( $owner ) ) {
-			$args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Current-owner filtering is a documented REST feature and is paginated.
-				array(
-					'key'   => '_almgr_current_owner',
-					'value' => $owner,
-				),
-			);
-		}
-
-		$query = new WP_Query( $args );
 		$items = array();
 		foreach ( $query->posts as $post_id ) {
 			$prepared = $this->prepare_asset( (int) $post_id, 'list' );

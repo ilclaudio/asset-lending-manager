@@ -42,12 +42,21 @@ class ALMGR_Frontend_Manager {
 	private $settings;
 
 	/**
+	 * Shared asset catalog query service.
+	 *
+	 * @var ALMGR_Asset_Query_Service
+	 */
+	private $asset_queries;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param ALMGR_Settings_Manager $settings Plugin settings instance.
+	 * @param ALMGR_Settings_Manager    $settings      Plugin settings instance.
+	 * @param ALMGR_Asset_Query_Service $asset_queries Shared asset catalog query service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings ) {
-		$this->settings = $settings;
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Query_Service $asset_queries ) {
+		$this->settings      = $settings;
+		$this->asset_queries = $asset_queries;
 	}
 
 	/**
@@ -696,66 +705,18 @@ class ALMGR_Frontend_Manager {
 		$per_page     = max( 1, (int) $attributes['per_page'] );
 		$current_page = max( 1, $this->get_sanitized_query_absint( 'almgr_paged' ) );
 
-		// Build query args.
-		$query_args = array(
-			'post_type'      => ALMGR_ASSET_CPT_SLUG,
-			'post_status'    => 'publish',
-			'posts_per_page' => $per_page,
-			'paged'          => $current_page,
+		$query        = $this->asset_queries->get_assets(
+			array(
+				'page'      => $current_page,
+				'per_page'  => $per_page,
+				'search'    => $search_term,
+				'structure' => $filter_structure,
+				'type'      => $filter_type,
+				'state'     => $filter_state,
+				'level'     => $filter_level,
+				'owner'     => $filter_owner,
+			)
 		);
-		// Add search term if present.
-		if ( ! empty( $search_term ) ) {
-			$query_args['s'] = $search_term;
-		}
-
-		$tax_query = array(
-			'relation' => 'AND',
-		);
-		if ( ! empty( $filter_structure ) ) {
-			$tax_query[] = array(
-				'taxonomy' => ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
-				'field'    => 'slug',
-				'terms'    => $filter_structure,
-			);
-		}
-		if ( ! empty( $filter_type ) ) {
-			$tax_query[] = array(
-				'taxonomy' => ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
-				'field'    => 'slug',
-				'terms'    => $filter_type,
-			);
-		}
-		if ( ! empty( $filter_state ) ) {
-			$tax_query[] = array(
-				'taxonomy' => ALMGR_ASSET_STATE_TAXONOMY_SLUG,
-				'field'    => 'slug',
-				'terms'    => $filter_state,
-			);
-		}
-		if ( ! empty( $filter_level ) ) {
-			$tax_query[] = array(
-				'taxonomy' => ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
-				'field'    => 'slug',
-				'terms'    => $filter_level,
-			);
-		}
-		// Add tax_query to query args if we have filters.
-		if ( count( $tax_query ) > 1 ) {
-			$query_args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Taxonomy filter required for frontend asset list; no alternative without a precomputed index.
-		}
-		// Add meta_query to filter by owner if set.
-		if ( $filter_owner > 0 ) {
-			$query_args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Owner filter on _almgr_current_owner meta; no alternative without a denormalized table.
-				array(
-					'key'     => '_almgr_current_owner',
-					'value'   => $filter_owner,
-					'compare' => '=',
-					'type'    => 'NUMERIC',
-				),
-			);
-		}
-		// Build and execute query.
-		$query        = new WP_Query( $query_args );
 		$assets       = array();
 		$assets_count = 0;
 		$total_pages  = 0;

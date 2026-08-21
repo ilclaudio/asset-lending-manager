@@ -137,17 +137,18 @@ class ALMGR_Plugin_Manager {
 			$settings      = new ALMGR_Settings_Manager();
 			$role          = new ALMGR_Role_Manager();
 			$loan          = new ALMGR_Loan_Manager( $settings );
+			$asset_queries = new ALMGR_Asset_Query_Service();
 			$this->modules = array(
 				'settings'     => $settings,
 				'role'         => $role,
 				'asset'        => new ALMGR_Asset_Manager(),
 				'loan'         => $loan,
 				'notification' => new ALMGR_Notification_Manager( $settings, $role ),
-				'frontend'     => new ALMGR_Frontend_Manager( $settings ),
+				'frontend'     => new ALMGR_Frontend_Manager( $settings, $asset_queries ),
 				'admin'        => new ALMGR_Admin_Manager(),
 				'tools'        => new ALMGR_Tools_Manager(),
 				'autocomplete' => new ALMGR_Autocomplete_Manager( $settings ),
-				'rest'         => new ALMGR_REST_Manager( $settings, $loan ),
+				'rest'         => new ALMGR_REST_Manager( $settings, $loan, $asset_queries ),
 				'contact'      => new ALMGR_Contact_Manager( $settings, $role ),
 			);
 		}

@@ -27,7 +27,10 @@ class ALMGR_Frontend_Manager_Helpers_Unit_Test extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->frontend_manager = new ALMGR_Frontend_Manager( new ALMGR_Settings_Manager() );
+		$this->frontend_manager = new ALMGR_Frontend_Manager(
+			new ALMGR_Settings_Manager(),
+			new ALMGR_Asset_Query_Service()
+		);
 		$_GET                   = array();
 	}
 

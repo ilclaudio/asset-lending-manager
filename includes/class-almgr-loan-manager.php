@@ -88,7 +88,6 @@ class ALMGR_Loan_Manager {
 	 * @return void
 	 */
 	public function ajax_submit_loan_request() {
-		// Check user capabilities.
 		if ( ! current_user_can( ALMGR_VIEW_ASSET ) ) {
 			wp_send_json_error(
 				array(
@@ -96,139 +95,25 @@ class ALMGR_Loan_Manager {
 				)
 			);
 		}
-		// Verify nonce.
+
 		check_ajax_referer( 'almgr_loan_request_nonce', 'nonce' );
-		// Check whether loan requests are enabled by the admin.
-		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Get and validate input.
+
 		$asset_id = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 		$message  = isset( $_POST['message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['message'] ) ) : '';
-		// Validate message length.
-		if ( empty( $message ) ) {
+		$result   = $this->submit_loan_request( $asset_id, get_current_user_id(), $message );
+
+		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
 				array(
-					'message' => __( 'Request message is required.', 'asset-lending-manager' ),
+					'message' => $result->get_error_message(),
 				)
 			);
 		}
-		$request_max = (int) $this->settings->get( 'loans.request_message_max_length', self::SEND_REQUEST_MESSAGE_MAX_LENGTH );
-		if ( $request_max > 0 && mb_strlen( $message ) > $request_max ) {
-			wp_send_json_error(
-				array(
-					'message' => sprintf(
-						/* translators: %d: maximum number of characters allowed in request message */
-						__( 'Request message must not exceed %d characters.', 'asset-lending-manager' ),
-						$request_max
-					),
-				)
-			);
-		}
-		if ( $asset_id <= 0 ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Invalid asset ID.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Verify asset exists.
-		$asset = get_post( $asset_id );
-		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Asset not found.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Loan requests are allowed only for publicly available assets.
-		if ( 'publish' !== $asset->post_status ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'This asset is not available for loan.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Verify asset is in a loanable state.
-		$asset_state = $this->get_asset_state_slug( $asset_id );
-		if ( ! in_array( $asset_state, array( 'available', 'on-loan' ), true ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'This asset is not available for loan.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		$requester_id = get_current_user_id();
-		// Get current owner (if any).
-		$owner_id = $this->get_current_owner( $asset_id );
-		// Current owner cannot request a loan for the same asset.
-		if ( $owner_id > 0 && $requester_id === $owner_id ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'You already own this asset and cannot request it.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Check if user already has a pending request for this asset.
-		if ( $this->has_pending_request( $asset_id, $requester_id ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'You already have a pending request for this asset.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Block if multiple pending requests are not allowed.
-		if ( ! $this->settings->get( 'loans.allow_multiple_requests', true ) ) {
-			if ( $this->has_any_pending_request( $requester_id ) ) {
-				wp_send_json_error(
-					array(
-						'message' => __( 'You already have a pending loan request. Only one request at a time is allowed.', 'asset-lending-manager' ),
-					)
-				);
-			}
-		}
-		// Block if user has reached the active loan limit.
-		$max_active = (int) $this->settings->get( 'loans.max_active_per_user', 0 );
-		if ( $max_active > 0 && $this->count_active_loans_for_user( $requester_id ) >= $max_active ) {
-			wp_send_json_error(
-				array(
-					'message' => sprintf(
-						/* translators: %d: maximum number of active loans allowed */
-						__( 'You have reached the maximum number of active loans (%d).', 'asset-lending-manager' ),
-						$max_active
-					),
-				)
-			);
-		}
-		// Create the loan request.
-		$request_id = $this->create_loan_request( $asset_id, $requester_id, $owner_id, $message );
-		if ( ! $request_id ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Failed to create loan request.', 'asset-lending-manager' ),
-				)
-			);
-		}
-		// Log the request.
-		ALMGR_Logger::info(
-			'Loan request created',
-			array(
-				'request_id'   => $request_id,
-				'asset_id'     => $asset_id,
-				'requester_id' => $requester_id,
-				'owner_id'     => $owner_id,
-			)
-		);
-		// Fire loan request submitted action so ALMGR_Notification_Manager can send emails.
-		do_action( 'almgr_loan_request_submitted', $requester_id, $owner_id, $asset_id, $message );
+
 		wp_send_json_success(
 			array(
 				'message'    => __( 'Loan request sent successfully!', 'asset-lending-manager' ),
-				'request_id' => $request_id,
+				'request_id' => $result['request_id'],
 			)
 		);
 	}
@@ -661,6 +546,109 @@ class ALMGR_Loan_Manager {
 				'message'             => __( 'Loan request approved successfully. The page will reload.', 'asset-lending-manager' ),
 				'excluded_components' => $result['excluded_components'],
 			)
+		);
+	}
+
+	/**
+	 * Create a loan request through the shared loan workflow.
+	 *
+	 * Channel adapters must validate their own transport credentials before
+	 * calling this method. The domain validation, persistence, logging, and
+	 * notification hook are shared by every caller.
+	 *
+	 * @param int    $asset_id     Asset ID.
+	 * @param int    $requester_id Requester user ID.
+	 * @param string $message      Request message.
+	 * @return array|WP_Error Request identifiers on success, otherwise an error.
+	 */
+	public function submit_loan_request( $asset_id, $requester_id, $message ) {
+		$asset_id     = absint( $asset_id );
+		$requester_id = absint( $requester_id );
+		$message      = sanitize_textarea_field( (string) $message );
+
+		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
+			return new WP_Error( 'almgr_loan_requests_disabled', __( 'Loan requests are currently disabled.', 'asset-lending-manager' ) );
+		}
+
+		if ( '' === $message ) {
+			return new WP_Error( 'almgr_request_message_required', __( 'Request message is required.', 'asset-lending-manager' ) );
+		}
+
+		$request_max = (int) $this->settings->get( 'loans.request_message_max_length', self::SEND_REQUEST_MESSAGE_MAX_LENGTH );
+		if ( $request_max > 0 && mb_strlen( $message ) > $request_max ) {
+			return new WP_Error(
+				'almgr_request_message_too_long',
+				sprintf(
+					/* translators: %d: maximum number of characters allowed in request message */
+					__( 'Request message must not exceed %d characters.', 'asset-lending-manager' ),
+					$request_max
+				)
+			);
+		}
+
+		if ( $asset_id <= 0 ) {
+			return new WP_Error( 'almgr_invalid_asset_id', __( 'Invalid asset ID.', 'asset-lending-manager' ) );
+		}
+
+		if ( $requester_id <= 0 || ! get_userdata( $requester_id ) ) {
+			return new WP_Error( 'almgr_invalid_requester', __( 'Invalid requester.', 'asset-lending-manager' ) );
+		}
+
+		$asset = get_post( $asset_id );
+		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
+			return new WP_Error( 'almgr_asset_not_found', __( 'Asset not found.', 'asset-lending-manager' ) );
+		}
+
+		if ( 'publish' !== $asset->post_status || ! in_array( $this->get_asset_state_slug( $asset_id ), array( 'available', 'on-loan' ), true ) ) {
+			return new WP_Error( 'almgr_asset_not_loanable', __( 'This asset is not available for loan.', 'asset-lending-manager' ) );
+		}
+
+		$owner_id = $this->get_current_owner( $asset_id );
+		if ( $owner_id > 0 && $requester_id === $owner_id ) {
+			return new WP_Error( 'almgr_requester_is_owner', __( 'You already own this asset and cannot request it.', 'asset-lending-manager' ) );
+		}
+
+		if ( $this->has_pending_request( $asset_id, $requester_id ) ) {
+			return new WP_Error( 'almgr_duplicate_loan_request', __( 'You already have a pending request for this asset.', 'asset-lending-manager' ) );
+		}
+
+		if ( ! $this->settings->get( 'loans.allow_multiple_requests', true ) && $this->has_any_pending_request( $requester_id ) ) {
+			return new WP_Error( 'almgr_multiple_requests_not_allowed', __( 'You already have a pending loan request. Only one request at a time is allowed.', 'asset-lending-manager' ) );
+		}
+
+		$max_active = (int) $this->settings->get( 'loans.max_active_per_user', 0 );
+		if ( $max_active > 0 && $this->count_active_loans_for_user( $requester_id ) >= $max_active ) {
+			return new WP_Error(
+				'almgr_active_loan_limit_reached',
+				sprintf(
+					/* translators: %d: maximum number of active loans allowed */
+					__( 'You have reached the maximum number of active loans (%d).', 'asset-lending-manager' ),
+					$max_active
+				)
+			);
+		}
+
+		$request_id = $this->create_loan_request( $asset_id, $requester_id, $owner_id, $message );
+		if ( ! $request_id ) {
+			return new WP_Error( 'almgr_loan_request_create_failed', __( 'Failed to create loan request.', 'asset-lending-manager' ) );
+		}
+
+		ALMGR_Logger::info(
+			'Loan request created',
+			array(
+				'request_id'   => $request_id,
+				'asset_id'     => $asset_id,
+				'requester_id' => $requester_id,
+				'owner_id'     => $owner_id,
+			)
+		);
+
+		do_action( 'almgr_loan_request_submitted', $requester_id, $owner_id, $asset_id, $message );
+
+		return array(
+			'request_id' => $request_id,
+			'asset_id'   => $asset_id,
+			'owner_id'   => $owner_id,
 		);
 	}
 

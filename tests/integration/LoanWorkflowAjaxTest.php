@@ -13,6 +13,27 @@ require_once __DIR__ . '/support/class-almgr-loan-integration-test-case.php';
 class LoanWorkflowAjaxTest extends ALMGR_Loan_Integration_Test_Case {
 
 	/**
+	 * Test the shared loan workflow can create a request without the AJAX adapter.
+	 *
+	 * @return void
+	 */
+	public function test_submit_loan_request_shared_workflow_inserts_pending_row() {
+		$member_id = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$asset_id  = $this->create_asset();
+
+		$result = $this->get_loan_manager()->submit_loan_request( $asset_id, $member_id, 'Shared workflow request.' );
+
+		$this->assertNotWPError( $result );
+		$this->assertSame( $asset_id, $result['asset_id'] );
+		$this->assertSame( 1, $this->count_pending_requests_for_asset( $asset_id ) );
+
+		$request_row = $this->get_request_row( (int) $result['request_id'] );
+
+		$this->assertNotNull( $request_row );
+		$this->assertSame( $member_id, (int) $request_row->requester_id );
+	}
+
+	/**
 	 * Test loan request submission persists a pending row.
 	 */
 	public function test_submit_loan_request_inserts_pending_row() {

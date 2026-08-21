@@ -62,7 +62,7 @@ class ALMGR_REST_Members_Integration_Test extends WP_UnitTestCase {
 
 		$settings           = new ALMGR_Settings_Manager();
 		$loan_manager       = new ALMGR_Loan_Manager( $settings );
-		$this->rest_manager = new ALMGR_REST_Manager( $settings, $loan_manager );
+		$this->rest_manager = new ALMGR_REST_Manager( $settings, $loan_manager, new ALMGR_Asset_Query_Service() );
 	}
 
 	/**
