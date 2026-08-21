@@ -2,11 +2,11 @@
 Contributors: ioclaudio
 Author URI: https://www.claudiobattaglino.it/
 Author: IoClaudio
-Tags: asset management, loans, library, equipment, organization
+Tags: asset management, loans, library, inventory, organization
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.3.1
+Stable tag: 0.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,7 +30,7 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Loan request workflow with approval, rejection, direct assignment, and configurable cancellation of competing pending requests
 * Optional contact form to send email messages to the current asset owner
 * Email notifications for the main loan workflow events
-* Frontend asset state management for operators, including force-return and restore flows
+* Frontend asset state management for operators: set maintenance or retired, force-return on-loan assets, and restore assets to available
 * Full loan history, plus a dedicated full asset history page for operators via `[almgr_asset_history]`
 * Two user roles included: Member and Operator
 * Read-only JSON REST API at `/wp-json/almgr/v1/` for asset list, asset detail, member list, and member assets
@@ -61,20 +61,23 @@ The plugin registers its ACF field group automatically, so no manual field setup
    The plugin registers its ACF field group automatically. No manual ACF setup is required.
 2. In WordPress admin, go to Plugins > Add New > Upload Plugin.
 3. Upload the plugin ZIP file, click Install Now, then Activate.
-**Classic themes:**
-4. Asset pages are served automatically — no shortcodes required:
+
+= Classic themes =
+1. Asset pages are served automatically — no shortcodes required:
    * `/asset/` — asset catalog with search and filters
    * `/asset/asset-name/` — single asset detail page
-5. If `/asset/` returns 404, go to Settings > Permalinks and click Save Changes once.
-6. The full asset history page is not automatic. Create a normal WordPress page with the `[almgr_asset_history]` shortcode and assign it in **ALM > Settings > Frontend** as **Asset history page**.
+2. If `/asset/` returns 404, go to Settings > Permalinks and click Save Changes once.
+3. The full asset history page is not automatic. Create a normal WordPress page with the `[almgr_asset_history]` shortcode and assign it in **ALM > Settings > Frontend** as **Asset history page**.
 
-**Block themes:**
-4. Block themes do not support automatic PHP template overrides. Create three pages manually:
+= Block themes =
+1. Block themes do not support automatic PHP template overrides. Create three pages manually:
    * Add `[almgr_asset_list]` to a page — this is your asset catalog.
    * Add `[almgr_asset_view]` to a second page — this is your asset detail view.
    * Add `[almgr_asset_history]` to a third page — this is your full asset history page for operators.
-5. In **ALM > Settings > Frontend**, set "Asset archive page", "Asset detail page", and "Asset history page" to the pages you just created. This ensures all asset and history links point to the correct pages.
-6. Optionally configure email sender settings in wp-admin under **ALM > Settings**.
+2. In **ALM > Settings > Frontend**, set "Asset archive page", "Asset detail page", and "Asset history page" to the pages you just created. This ensures all asset and history links point to the correct pages.
+
+= Common to both =
+1. Optionally configure email sender settings in wp-admin under **ALM > Settings**.
 
 == Screenshots ==
 
@@ -131,6 +134,9 @@ On classic themes, basic setup usually only requires installing the plugin and a
 
 For full release notes see `CHANGELOG.md`.
 
+= 0.3.2 =
+* Fixed: Installation formatting for classic and block themes.
+
 = 0.3.1 =
 * Fixed: checked compatibility with WordPress 7.1; no code changes required.
 
@@ -141,26 +147,6 @@ For full release notes see `CHANGELOG.md`.
 * Fixed: maintenance/restore kit behavior and ACF write handling are now more robust and consistent.
 * Fixed: operator actions (direct assignment, state change, restore) now reject non-published assets.
 * Fixed: asset list search field no longer collides with the WordPress reserved search query variable.
-
-= 0.2.3 =
-* Fixed: WordPress 7.0 compatibility check, minor documentation corrections, and a small admin CSS adjustment.
-
-= 0.2.2 =
-* Security: migrated the REST API to native WordPress REST API routes and removed custom authentication logic.
-* Fixed: operators can upload and manage images from the Media Library.
-
-= 0.2.1 =
-* Added: Tools page with users/assets CSV import-export and utilities.
-* Added: notification policy settings and full-data uninstall constant.
-* Changed: internal `alm_` identifiers and ACF storage keys migrated to the `almgr_` prefix.
-* Fixed/Security: operators can approve requests without a current owner; additional hardening from code audit.
-
-= 0.1.1 =
-* Added: read-only JSON REST API and dedicated REST API settings tab.
-* Security: added resource-status checks on all AJAX endpoints.
-
-= 0.1.0 =
-* First public release with asset and kit management, full loan workflow, role-based access control, email notifications, loan history, frontend browsing, QR support, asset state management, translations, and settings page.
 
 
 == Credits ==
@@ -175,17 +161,11 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 
 == Upgrade Notice ==
 
+= 0.3.2 =
+Documentation-only release. No code or database changes; no action required.
+
 = 0.3.1 =
 WordPress 7.1 compatibility check. No code changes, no database changes; no manual intervention required.
 
 = 0.3.0 =
 Adds an operator asset history page and optional owner contact messages. Kit operations now skip ineligible components safely. No database changes; no manual intervention required.
-
-= 0.2.2 =
-Security and fix release. REST API migrated to native WordPress REST API routes. No database changes; no manual intervention required.
-
-= 0.2.1 =
-Internal refactoring release. All plugin database tables, options, identifiers, and ACF field storage keys have been renamed from the `alm_` / unprefixed form to the `almgr_` prefix.
-
-= 0.1.0 =
-First public release.

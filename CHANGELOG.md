@@ -21,6 +21,12 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 
+## [0.3.2] - 2026-08-21
+### Fixed
+- readme.txt Installation section: Classic themes and Block themes sub-steps were rendering as a single merged numbered list because the sub-section labels were plain bold text instead of proper subheadings; they now render as distinct subsections (`= Classic themes =` / `= Block themes =`).
+- readme.txt Installation section: the optional email sender settings step was listed only under Block themes even though it applies to both; it is now a shared step common to both paths.
+
+
 ## [0.3.1] - 2026-08-21
 ### Fixed
 - Checked compatibility with WordPress 7.1: no code changes required (reviewed iframed post/site editor canvas, client-side media processing, `@wordpress/components` updates, persistent editor toolbar, jQuery UI 1.14.2 upgrade, and block registration — none apply to this plugin).
