@@ -323,6 +323,7 @@ require_once dirname( __DIR__ ) . '/includes/class-almgr-asset-read-service.php'
 require_once dirname( __DIR__ ) . '/includes/class-almgr-asset-detail-service.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-asset-history-result.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-asset-history-service.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-abilities-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-access-policy.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-member-assets-service.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-frontend-manager.php';
