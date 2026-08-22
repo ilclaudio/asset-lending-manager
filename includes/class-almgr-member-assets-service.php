@@ -15,9 +15,9 @@ class ALMGR_Member_Assets_Service {
 	/**
 	 * Shared asset catalog query service.
 	 *
-	 * @var ALMGR_Asset_Query_Service
+	 * @var ALMGR_Asset_Read_Service
 	 */
-	private $asset_queries;
+	private $asset_reads;
 
 	/**
 	 * Shared record-level access policy.
@@ -29,24 +29,23 @@ class ALMGR_Member_Assets_Service {
 	/**
 	 * Constructor.
 	 *
-	 * @param ALMGR_Asset_Query_Service $asset_queries Shared asset catalog query service.
-	 * @param ALMGR_Access_Policy       $access_policy Shared record-level access policy.
+	 * @param ALMGR_Asset_Read_Service $asset_reads Shared asset read service.
+	 * @param ALMGR_Access_Policy      $access_policy Shared record-level access policy.
 	 */
-	public function __construct( ALMGR_Asset_Query_Service $asset_queries, ALMGR_Access_Policy $access_policy ) {
-		$this->asset_queries = $asset_queries;
+	public function __construct( ALMGR_Asset_Read_Service $asset_reads, ALMGR_Access_Policy $access_policy ) {
+		$this->asset_reads   = $asset_reads;
 		$this->access_policy = $access_policy;
 	}
 
 	/**
 	 * Query published assets currently held by a member when the actor may view them.
 	 *
-	 * @param int    $actor_id  Authenticated actor user ID.
-	 * @param int    $member_id Member whose assets are requested.
-	 * @param array  $filters   Optional catalog filters and pagination.
-	 * @param string $fields    WordPress query fields value.
-	 * @return WP_Query|WP_Error
+	 * @param int   $actor_id  Authenticated actor user ID.
+	 * @param int   $member_id Member whose assets are requested.
+	 * @param array $filters   Optional catalog filters and pagination.
+	 * @return ALMGR_Asset_Read_Result|WP_Error
 	 */
-	public function get_assets_for_member( $actor_id, $member_id, array $filters = array(), $fields = 'all' ) {
+	public function get_assets_for_member( $actor_id, $member_id, array $filters = array() ) {
 		$actor_id  = absint( $actor_id );
 		$member_id = absint( $member_id );
 
@@ -68,6 +67,6 @@ class ALMGR_Member_Assets_Service {
 
 		$filters['owner'] = $member_id;
 
-		return $this->asset_queries->get_assets( $filters, $fields );
+		return $this->asset_reads->get_assets( $filters );
 	}
 }

@@ -18,7 +18,7 @@ if ( $almgr_asset_id <= 0 ) {
 	return;
 }
 
-$almgr_asset_fields             = ALMGR_Asset_Manager::get_asset_custom_fields( $almgr_asset_id );
+$almgr_asset_fields             = isset( $asset->asset_fields ) && is_array( $asset->asset_fields ) ? $asset->asset_fields : array();
 $almgr_loan_manager             = ALMGR_Plugin_Manager::get_instance()->get_module( 'loan' );
 $almgr_settings                 = ALMGR_Plugin_Manager::get_instance()->get_module( 'settings' );
 $almgr_loan_requests_enabled    = (bool) $almgr_settings->get( 'loans.loan_requests_enabled', true );
@@ -27,33 +27,15 @@ $almgr_rejection_message_max    = (int) $almgr_settings->get( 'loans.rejection_m
 $almgr_direct_assign_enabled    = (bool) $almgr_settings->get( 'direct_assign.enabled', true );
 $almgr_direct_assign_reason_max = (int) $almgr_settings->get( 'loans.direct_assign_reason_max_length', 500 );
 $almgr_change_state_notes_max   = (int) $almgr_settings->get( 'loans.change_state_notes_max_length', 500 );
-$almgr_asset_location           = (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $almgr_asset_id );
-$almgr_owner_id                 = $almgr_loan_manager->get_current_owner( $almgr_asset_id );
+$almgr_asset_location           = isset( $asset->location ) ? (string) $asset->location : '';
+$almgr_owner_id                 = isset( $asset->owner_id ) ? (int) $asset->owner_id : 0;
 $almgr_asset_title              = isset( $asset->title ) ? (string) $asset->title : '';
-$almgr_asset_content            = '';
-$almgr_owner_name               = '';
+$almgr_asset_content            = isset( $asset->content_html ) ? (string) $asset->content_html : '';
+$almgr_owner_name               = isset( $asset->owner_name ) ? (string) $asset->owner_name : '';
 $almgr_is_current_owner         = is_user_logged_in() && $almgr_owner_id > 0 && ( $almgr_current_user_id === (int) $almgr_owner_id );
 $almgr_is_operator              = is_user_logged_in() && current_user_can( ALMGR_EDIT_ASSET );
 
-$almgr_asset_post = get_post( $almgr_asset_id );
-if ( $almgr_asset_post instanceof WP_Post && ALMGR_ASSET_CPT_SLUG === $almgr_asset_post->post_type ) {
-	$almgr_asset_content = (string) apply_filters( 'the_content', $almgr_asset_post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Applies the core content rendering pipeline to asset descriptions.
-}
-
-if ( $almgr_owner_id > 0 ) {
-	$almgr_owner_data = get_userdata( $almgr_owner_id );
-	$almgr_owner_name = $almgr_owner_data ? $almgr_owner_data->display_name : '';
-}
-/**
- * Big image for detail (do not change list thumbnail).
- */
-$almgr_detail_image_html = '';
-if ( has_post_thumbnail( $almgr_asset_id ) ) {
-	$almgr_detail_image_html = get_the_post_thumbnail( $almgr_asset_id, 'large' );
-} else {
-	// Fallback to wrapper thumbnail (already includes plugin default image).
-	$almgr_detail_image_html = isset( $asset->thumbnail ) ? (string) $asset->thumbnail : '';
-}
+$almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset->detail_image_html : '';
 ?>
 
 <article class="almgr-asset-detail almgr-asset-view" data-asset-id="<?php echo esc_attr( $almgr_asset_id ); ?>">
@@ -64,7 +46,7 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 	</header>
 
 	<?php
-	$almgr_asset_code_str = ALMGR_Asset_Manager::get_asset_code( $almgr_asset_id );
+	$almgr_asset_code_str = isset( $asset->code ) ? (string) $asset->code : '';
 	$almgr_scan_url       = home_url( '/?almgr_scan=' . rawurlencode( $almgr_asset_code_str ) );
 	?>
 
@@ -82,19 +64,11 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 		<!-- Asset taxonomies -->
 		<?php
 		// Get taxonomy values.
-		$almgr_structure   = isset( $asset->almgr_structure ) ? implode( ', ', $asset->almgr_structure ) : '-';
-		$almgr_type        = isset( $asset->almgr_type ) ? implode( ', ', $asset->almgr_type ) : '-';
-		$almgr_level       = isset( $asset->almgr_level ) ? implode( ', ', $asset->almgr_level ) : '-';
-		$almgr_state_terms = get_the_terms( $almgr_asset_id, 'almgr_state' );
-		$almgr_state_slug  = '';
-		$almgr_state_label = '';
-		if ( ! is_wp_error( $almgr_state_terms ) && ! empty( $almgr_state_terms ) ) {
-			$almgr_state_slug  = (string) $almgr_state_terms[0]->slug;
-			$almgr_state_label = ALMGR_Asset_Manager::get_state_label(
-				$almgr_state_slug,
-				(string) $almgr_state_terms[0]->name
-			);
-		}
+		$almgr_structure       = isset( $asset->almgr_structure ) ? implode( ', ', $asset->almgr_structure ) : '-';
+		$almgr_type            = isset( $asset->almgr_type ) ? implode( ', ', $asset->almgr_type ) : '-';
+		$almgr_level           = isset( $asset->almgr_level ) ? implode( ', ', $asset->almgr_level ) : '-';
+		$almgr_state_slug      = isset( $asset->state_slug ) ? (string) $asset->state_slug : '';
+		$almgr_state_label     = isset( $asset->state_label ) ? (string) $asset->state_label : '';
 		$almgr_state_class_map = ALMGR_Asset_Manager::get_state_classes();
 		$almgr_state_css_class = '';
 		if ( $almgr_state_slug && isset( $almgr_state_class_map[ $almgr_state_slug ] ) ) {
@@ -206,13 +180,12 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 											</a>
 											<?php
 										} elseif ( 'post_object' === $almgr_asset_row['type'] && is_array( $almgr_asset_row['value'] ) ) {
-											// Multiple components (objects).
+											// Components are normalized by the shared detail service.
 											echo '<ul class="almgr-asset-components">';
-											foreach ( $almgr_asset_row['value'] as $almgr_component_post ) {
-												if ( is_object( $almgr_component_post ) && ! empty( $almgr_component_post->ID ) ) {
-													$almgr_component_title = get_the_title( $almgr_component_post->ID );
-													$almgr_component_link  = get_permalink( $almgr_component_post->ID );
-													echo '<li><a class="almgr-link" href="' . esc_url( $almgr_component_link ) . '">' . esc_html( $almgr_component_title ) . '</a></li>';
+											$almgr_components = isset( $asset->components ) && is_array( $asset->components ) ? $asset->components : array();
+											foreach ( $almgr_components as $almgr_component ) {
+												if ( ! empty( $almgr_component['title'] ) && ! empty( $almgr_component['permalink'] ) ) {
+													echo '<li><a class="almgr-link" href="' . esc_url( $almgr_component['permalink'] ) . '">' . esc_html( $almgr_component['title'] ) . '</a></li>';
 												}
 											}
 											echo '</ul>';
@@ -783,8 +756,9 @@ if ( has_post_thumbnail( $almgr_asset_id ) ) {
 				<div class="almgr-collapsible__body">
 					<?php
 					// Get loan history for this asset.
-					$almgr_history              = $almgr_loan_manager->get_asset_history( $almgr_asset_id, $almgr_current_user_id );
-					$almgr_history_total        = $almgr_loan_manager->count_asset_history( $almgr_asset_id );
+					$almgr_history_result       = ALMGR_Plugin_Manager::get_instance()->get_module( 'frontend' )->get_asset_history_for_template( $almgr_asset_id, $almgr_current_user_id, 10, 1 );
+					$almgr_history              = $almgr_history_result->get_items();
+					$almgr_history_total        = $almgr_history_result->get_total();
 					$almgr_history_page_id      = (int) $almgr_settings->get( 'frontend.asset_history_page_id', 0 );
 					$almgr_history_page_url     = $almgr_history_page_id > 0 ? get_permalink( $almgr_history_page_id ) : '';
 					$almgr_history_full_url     = '';

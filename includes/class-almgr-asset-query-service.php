@@ -22,11 +22,10 @@ class ALMGR_Asset_Query_Service {
 	/**
 	 * Query published assets with the supported catalog filters.
 	 *
-	 * @param array  $filters Query filters.
-	 * @param string $fields  WordPress query fields value.
-	 * @return WP_Query
+	 * @param array $filters Query filters.
+	 * @return ALMGR_Asset_Query_Result
 	 */
-	public function get_assets( array $filters = array(), $fields = 'all' ) {
+	public function get_assets( array $filters = array() ) {
 		$page               = max( 1, absint( $filters['page'] ?? 1 ) );
 		$requested_per_page = isset( $filters['per_page'] ) ? (int) $filters['per_page'] : self::MAX_PER_PAGE;
 		$per_page           = -1 === $requested_per_page ? -1 : min( self::MAX_PER_PAGE, max( 1, absint( $requested_per_page ) ) );
@@ -38,7 +37,7 @@ class ALMGR_Asset_Query_Service {
 			'post_status'    => 'publish',
 			'posts_per_page' => $per_page,
 			'paged'          => $page,
-			'fields'         => 'ids' === $fields ? 'ids' : 'all',
+			'fields'         => 'ids',
 		);
 
 		if ( '' !== $search ) {
@@ -82,6 +81,14 @@ class ALMGR_Asset_Query_Service {
 			);
 		}
 
-		return new WP_Query( $query_args );
+		$query = new WP_Query( $query_args );
+
+		return new ALMGR_Asset_Query_Result(
+			$query->posts,
+			$query->found_posts,
+			$page,
+			$per_page,
+			$query->max_num_pages
+		);
 	}
 }

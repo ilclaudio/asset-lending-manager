@@ -44,9 +44,23 @@ class ALMGR_Frontend_Manager {
 	/**
 	 * Shared asset catalog query service.
 	 *
-	 * @var ALMGR_Asset_Query_Service
+	 * @var ALMGR_Asset_Read_Service
 	 */
-	private $asset_queries;
+	private $asset_reads;
+
+	/**
+	 * Shared asset detail service.
+	 *
+	 * @var ALMGR_Asset_Detail_Service
+	 */
+	private $asset_details;
+
+	/**
+	 * Shared asset history service.
+	 *
+	 * @var ALMGR_Asset_History_Service
+	 */
+	private $asset_history;
 
 	/**
 	 * Shared member-held asset service.
@@ -59,12 +73,16 @@ class ALMGR_Frontend_Manager {
 	 * Constructor.
 	 *
 	 * @param ALMGR_Settings_Manager      $settings      Plugin settings instance.
-	 * @param ALMGR_Asset_Query_Service   $asset_queries Shared asset catalog query service.
+	 * @param ALMGR_Asset_Read_Service    $asset_reads   Shared asset read service.
+	 * @param ALMGR_Asset_Detail_Service  $asset_details Shared asset detail service.
+	 * @param ALMGR_Asset_History_Service $asset_history Shared asset history service.
 	 * @param ALMGR_Member_Assets_Service $member_assets Shared member-held asset service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Query_Service $asset_queries, ALMGR_Member_Assets_Service $member_assets ) {
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets ) {
 		$this->settings      = $settings;
-		$this->asset_queries = $asset_queries;
+		$this->asset_reads   = $asset_reads;
+		$this->asset_details = $asset_details;
+		$this->asset_history = $asset_history;
 		$this->member_assets = $member_assets;
 	}
 
@@ -570,15 +588,13 @@ class ALMGR_Frontend_Manager {
 		if ( $almgr_asset_id > 0 ) {
 			$almgr_asset_post = get_post( $almgr_asset_id );
 			if ( $almgr_asset_post instanceof WP_Post && ALMGR_ASSET_CPT_SLUG === $almgr_asset_post->post_type ) {
-				$almgr_asset_title = get_the_title( $almgr_asset_post );
-				$almgr_caller_id   = get_current_user_id();
-				$almgr_result      = ALMGR_Plugin_Manager::get_instance()->get_module( 'loan' )->get_asset_history_paginated( $almgr_asset_id, $almgr_per_page, $almgr_current_page, $almgr_caller_id );
-				$almgr_history     = $almgr_result['items'];
-				$almgr_total       = (int) $almgr_result['total'];
-				$almgr_total_pages = $almgr_total > 0 ? (int) ceil( $almgr_total / $almgr_per_page ) : 0;
-				if ( $almgr_total_pages > 0 && $almgr_current_page > $almgr_total_pages ) {
-					$almgr_current_page = $almgr_total_pages;
-				}
+				$almgr_asset_title  = get_the_title( $almgr_asset_post );
+				$almgr_caller_id    = get_current_user_id();
+				$almgr_result       = $this->asset_history->get_history( $almgr_asset_id, $almgr_caller_id, $almgr_per_page, $almgr_current_page );
+				$almgr_history      = $almgr_result->get_items();
+				$almgr_total        = $almgr_result->get_total();
+				$almgr_total_pages  = $almgr_result->get_pages();
+				$almgr_current_page = $almgr_result->get_page();
 			} else {
 				$almgr_asset_id = 0;
 			}
@@ -600,6 +616,19 @@ class ALMGR_Frontend_Manager {
 		);
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Return shared history data for the asset detail template.
+	 *
+	 * @param int $asset_id Asset ID.
+	 * @param int $user_id  Current actor ID.
+	 * @param int $per_page Rows per page.
+	 * @param int $page     Current page.
+	 * @return ALMGR_Asset_History_Result
+	 */
+	public function get_asset_history_for_template( $asset_id, $user_id = 0, $per_page = 20, $page = 1 ) {
+		return $this->asset_history->get_history( $asset_id, $user_id, $per_page, $page );
 	}
 
 	/**
@@ -723,42 +752,26 @@ class ALMGR_Frontend_Manager {
 			'state'     => $filter_state,
 			'level'     => $filter_level,
 		);
-		$query         = $filter_owner > 0
+		$result        = $filter_owner > 0
 			? $this->member_assets->get_assets_for_member( get_current_user_id(), $filter_owner, $query_filters )
-			: $this->asset_queries->get_assets( $query_filters );
+			: $this->asset_reads->get_assets( $query_filters );
 		$assets        = array();
 		$assets_count  = 0;
 		$total_pages   = 0;
-		if ( ! is_wp_error( $query ) && $query->have_posts() ) {
-			$assets_count = (int) $query->found_posts;
-			$total_pages  = (int) $query->max_num_pages;
+		$asset_records = is_wp_error( $result ) ? array() : $result->get_items();
+		if ( ! is_wp_error( $result ) && ! empty( $asset_records ) ) {
+			$assets_count = $result->get_total();
+			$total_pages  = $result->get_pages();
 
-			// Prime the user cache for all asset owners in a single query.
-			// Post meta is already cached by WP_Query; collect owner IDs from cache
-			// and bulk-load user records so get_userdata() inside the loop is a cache hit.
-			$owner_ids = array_filter(
-				array_map(
-					static fn( $p ) => (int) get_post_meta( $p->ID, '_almgr_current_owner', true ),
-					$query->posts
-				)
-			);
-			if ( ! empty( $owner_ids ) ) {
-				cache_users( array_unique( $owner_ids ) );
-			}
-
-			foreach ( $query->posts as $post ) {
-				$wrapper = ALMGR_Asset_Manager::get_asset_wrapper( $post->ID );
-				if ( $wrapper ) {
-					$wrapper->permalink = $this->build_asset_link( $post->ID );
-					foreach ( $wrapper->parent_kits as &$almgr_kit ) {
-						$almgr_kit['permalink'] = $this->build_asset_link( $almgr_kit['id'] );
-					}
-					unset( $almgr_kit );
-					$assets[] = $wrapper;
+			foreach ( $result->get_items() as $asset ) {
+				$asset->permalink = $this->build_asset_link( $asset->id );
+				foreach ( $asset->parent_kits as &$almgr_kit ) {
+					$almgr_kit['permalink'] = $this->build_asset_link( $almgr_kit['id'] );
 				}
+				unset( $almgr_kit );
+				$assets[] = $asset;
 			}
 		}
-		wp_reset_postdata();
 		$almgr_current_search       = $search_term;
 		$almgr_default_filters_open = (bool) $this->settings->get( 'frontend.default_filters_open', false );
 		$almgr_qr_scan_enabled      = (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true );
@@ -850,8 +863,7 @@ class ALMGR_Frontend_Manager {
 	 * @return void
 	 */
 	private function render_asset_view_template( $asset_id ) {
-		// Get asset wrapper.
-		$asset = ALMGR_Asset_Manager::get_asset_wrapper( $asset_id );
+		$asset = $this->asset_details->get_asset_detail( $asset_id );
 
 		if ( ! $asset ) {
 			echo '<p class="almgr-error">' . esc_html__( 'Asset not found.', 'asset-lending-manager' ) . '</p>';

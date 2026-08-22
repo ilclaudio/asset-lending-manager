@@ -58,18 +58,25 @@ class ALMGR_REST_Manager {
 	private $settings;
 
 	/**
-	 * Loan manager instance, injected for asset history retrieval.
+	 * Shared asset read service.
 	 *
-	 * @var ALMGR_Loan_Manager
+	 * @var ALMGR_Asset_Read_Service
 	 */
-	private $loan_manager;
+	private $asset_reads;
 
 	/**
-	 * Shared asset catalog query service.
+	 * Shared asset detail service.
 	 *
-	 * @var ALMGR_Asset_Query_Service
+	 * @var ALMGR_Asset_Detail_Service
 	 */
-	private $asset_queries;
+	private $asset_details;
+
+	/**
+	 * Shared asset history service.
+	 *
+	 * @var ALMGR_Asset_History_Service
+	 */
+	private $asset_history;
 
 	/**
 	 * Shared member-held asset service.
@@ -86,14 +93,16 @@ class ALMGR_REST_Manager {
 	 * Constructor.
 	 *
 	 * @param ALMGR_Settings_Manager      $settings      Settings manager instance.
-	 * @param ALMGR_Loan_Manager          $loan_manager  Loan manager instance.
-	 * @param ALMGR_Asset_Query_Service   $asset_queries Shared asset catalog query service.
+	 * @param ALMGR_Asset_Read_Service    $asset_reads   Shared asset read service.
+	 * @param ALMGR_Asset_Detail_Service  $asset_details Shared asset detail service.
+	 * @param ALMGR_Asset_History_Service $asset_history Shared asset history service.
 	 * @param ALMGR_Member_Assets_Service $member_assets Shared member-held asset service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Loan_Manager $loan_manager, ALMGR_Asset_Query_Service $asset_queries, ALMGR_Member_Assets_Service $member_assets ) {
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets ) {
 		$this->settings      = $settings;
-		$this->loan_manager  = $loan_manager;
-		$this->asset_queries = $asset_queries;
+		$this->asset_reads   = $asset_reads;
+		$this->asset_details = $asset_details;
+		$this->asset_history = $asset_history;
 		$this->member_assets = $member_assets;
 	}
 
@@ -403,7 +412,7 @@ class ALMGR_REST_Manager {
 		$page     = max( 1, (int) $request->get_param( 'page' ) );
 		$per_page = $this->clamp_per_page( (int) $request->get_param( 'per_page' ) );
 
-		$query = $this->asset_queries->get_assets(
+		$result = $this->asset_reads->get_assets(
 			array(
 				'page'      => $page,
 				'per_page'  => $per_page,
@@ -412,19 +421,18 @@ class ALMGR_REST_Manager {
 				'type'      => (string) $request->get_param( 'type' ),
 				'structure' => (string) $request->get_param( 'structure' ),
 				'owner'     => (int) $request->get_param( 'owner' ),
-			),
-			'ids'
+			)
 		);
-		$items = array();
-		foreach ( $query->posts as $post_id ) {
-			$prepared = $this->prepare_asset( (int) $post_id, 'list' );
+		$items  = array();
+		foreach ( $result->get_items() as $asset ) {
+			$prepared = $this->prepare_asset( $asset, 'list' );
 			if ( null !== $prepared ) {
 				$items[] = $prepared;
 			}
 		}
 
-		$total       = (int) $query->found_posts;
-		$total_pages = (int) $query->max_num_pages;
+		$total       = $result->get_total();
+		$total_pages = $result->get_pages();
 
 		$response = new WP_REST_Response(
 			array(
@@ -448,7 +456,7 @@ class ALMGR_REST_Manager {
 	 */
 	public function get_asset( WP_REST_Request $request ) {
 		$id   = (int) $request->get_param( 'id' );
-		$data = $this->prepare_asset( $id, 'detail' );
+		$data = $this->prepare_asset( $this->asset_details->get_asset_detail( $id ), 'detail' );
 
 		if ( null === $data ) {
 			return new WP_Error(
@@ -529,18 +537,17 @@ class ALMGR_REST_Manager {
 	 */
 	public function get_member_assets( WP_REST_Request $request ) {
 		$member_id = (int) $request->get_param( 'member_id' );
-		$query     = $this->member_assets->get_assets_for_member(
+		$result    = $this->member_assets->get_assets_for_member(
 			get_current_user_id(),
 			$member_id,
-			array( 'per_page' => -1 ),
-			'ids'
+			array( 'per_page' => -1 )
 		);
 
-		if ( is_wp_error( $query ) ) {
-			return $query;
+		if ( is_wp_error( $result ) ) {
+			return $result;
 		}
 
-		return $this->prepare_member_assets_response( $member_id, $query );
+		return $this->prepare_member_assets_response( $member_id, $result );
 	}
 
 	/**
@@ -551,21 +558,20 @@ class ALMGR_REST_Manager {
 	 */
 	public function get_my_assets( WP_REST_Request $request ) {
 		$member_id = get_current_user_id();
-		$query     = $this->member_assets->get_assets_for_member(
+		$result    = $this->member_assets->get_assets_for_member(
 			$member_id,
 			$member_id,
 			array(
 				'page'     => max( 1, (int) $request->get_param( 'page' ) ),
 				'per_page' => $this->clamp_per_page( (int) $request->get_param( 'per_page' ) ),
-			),
-			'ids'
+			)
 		);
 
-		if ( is_wp_error( $query ) ) {
-			return $query;
+		if ( is_wp_error( $result ) ) {
+			return $result;
 		}
 
-		return $this->prepare_member_assets_response( $member_id, $query, true );
+		return $this->prepare_member_assets_response( $member_id, $result, true );
 	}
 
 	// -------------------------------------------------------------------------
@@ -580,36 +586,30 @@ class ALMGR_REST_Manager {
 	 * components, parent kits, and (for operators) cost, purchase date, notes,
 	 * and loan history.
 	 *
-	 * @param int    $post_id Asset post ID.
-	 * @param string $context 'list' or 'detail'.
+	 * @param object|null $asset Asset record from the shared read service.
+	 * @param string      $context 'list' or 'detail'.
 	 * @return array|null Asset data array, or null when the asset is invalid.
 	 */
-	private function prepare_asset( $post_id, $context = 'list' ) {
-		$wrapper = ALMGR_Asset_Manager::get_asset_wrapper( $post_id );
+	private function prepare_asset( $asset, $context = 'list' ) {
+		$wrapper = $asset;
+		$post_id = $wrapper ? (int) $wrapper->id : 0;
 		if ( null === $wrapper ) {
 			return null;
 		}
 
-		// Fetch taxonomy slugs directly. get_the_terms() results are cached by
-		// WordPress, so these calls do not add extra DB queries after get_asset_wrapper().
-		$structure_terms = get_the_terms( $post_id, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
-		$type_terms      = get_the_terms( $post_id, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
-		$level_terms     = get_the_terms( $post_id, ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
-
-		$owner_data = $wrapper->owner_id > 0 ? get_userdata( $wrapper->owner_id ) : false;
-		$data       = array(
+		$data = array(
 			'id'             => $post_id,
-			'code'           => ALMGR_Asset_Manager::get_asset_code( $post_id ),
+			'code'           => $wrapper->code,
 			'title'          => $wrapper->title,
 			'permalink'      => $wrapper->permalink,
-			'thumbnail_url'  => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ? get_the_post_thumbnail_url( $post_id, 'thumbnail' ) : null,
-			'structure'      => ( $structure_terms && ! is_wp_error( $structure_terms ) ) ? wp_list_pluck( $structure_terms, 'slug' ) : array(),
-			'type'           => ( $type_terms && ! is_wp_error( $type_terms ) ) ? wp_list_pluck( $type_terms, 'slug' ) : array(),
+			'thumbnail_url'  => $wrapper->thumbnail_url,
+			'structure'      => $wrapper->structure_slugs,
+			'type'           => $wrapper->type_slugs,
 			'state'          => $wrapper->almgr_state_slugs ?? array(),
-			'level'          => ( $level_terms && ! is_wp_error( $level_terms ) ) ? wp_list_pluck( $level_terms, 'slug' ) : array(),
+			'level'          => $wrapper->level_slugs,
 			'owner_id'       => $wrapper->owner_id,
 			'owner_name'     => $wrapper->owner_name,
-			'owner_username' => $owner_data ? $owner_data->user_login : '',
+			'owner_username' => $wrapper->owner_username,
 		);
 
 		if ( 'detail' !== $context ) {
@@ -617,30 +617,17 @@ class ALMGR_REST_Manager {
 		}
 
 		// Post content (HTML stripped for API consumers).
-		$data['content'] = wp_strip_all_tags( $wrapper->content );
+		$data['content'] = wp_strip_all_tags( $wrapper->content_html );
 
 		// Kit/component relationships.
 		$data['parent_kits'] = $wrapper->parent_kits ?? array();
 
-		$raw_components     = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_components', $post_id );
-		$data['components'] = array();
-		if ( is_array( $raw_components ) ) {
-			foreach ( $raw_components as $component ) {
-				$cid = is_object( $component ) ? $component->ID : (int) $component;
-				if ( $cid > 0 ) {
-					$data['components'][] = array(
-						'id'        => $cid,
-						'title'     => get_the_title( $cid ),
-						'permalink' => get_permalink( $cid ),
-					);
-				}
-			}
-		}
+		$data['components'] = $wrapper->components ?? array();
 
 		// ACF fields visible to all authenticated users.
 		// Keys use the prefixed internal name (almgr_*) to read from ACF,
 		// but are exposed in the response without the prefix for API stability.
-		$acf             = ALMGR_ACF_Asset_Adapter::get_custom_fields( $post_id );
+		$acf             = $wrapper->acf_fields ?? array();
 		$public_acf_keys = array(
 			'almgr_manufacturer',
 			'almgr_model',
@@ -667,7 +654,8 @@ class ALMGR_REST_Manager {
 
 			// Last 10 history entries. Current user is operator so get_asset_history
 			// returns all records regardless of the user_id argument.
-			$history_rows    = $this->loan_manager->get_asset_history( $post_id, 0 );
+			$history_result  = $this->asset_history->get_history( $post_id, 0, 10, 1 );
+			$history_rows    = $history_result->get_items();
 			$data['history'] = array();
 			foreach ( $history_rows as $row ) {
 				$changed_by_user   = $row->changed_by > 0 ? get_userdata( (int) $row->changed_by ) : false;
@@ -722,55 +710,51 @@ class ALMGR_REST_Manager {
 	 * physical info (external_code, location), and navigation (thumbnail_url, permalink).
 	 * State is omitted — assets returned by this endpoint are always on-loan.
 	 *
-	 * @param int $post_id Asset post ID.
+	 * @param object $asset Shared asset record.
 	 * @return array
 	 */
-	private function prepare_member_asset( $post_id ) {
-		$wrapper      = ALMGR_Asset_Manager::get_asset_wrapper( $post_id );
-		$type_terms   = get_the_terms( $post_id, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
-		$struct_terms = get_the_terms( $post_id, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
-
+	private function prepare_member_asset( $asset ) {
 		return array(
-			'id'            => $post_id,
-			'code'          => ALMGR_Asset_Manager::get_asset_code( $post_id ),
-			'title'         => $wrapper ? $wrapper->title : get_the_title( $post_id ),
-			'structure'     => ( $struct_terms && ! is_wp_error( $struct_terms ) ) ? wp_list_pluck( $struct_terms, 'slug' ) : array(),
-			'type'          => ( $type_terms && ! is_wp_error( $type_terms ) ) ? wp_list_pluck( $type_terms, 'slug' ) : array(),
-			'external_code' => (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_external_code', $post_id ),
-			'location'      => (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $post_id ),
-			'thumbnail_url' => get_the_post_thumbnail_url( $post_id, 'thumbnail' ) ? get_the_post_thumbnail_url( $post_id, 'thumbnail' ) : null,
-			'permalink'     => get_permalink( $post_id ),
+			'id'            => $asset->id,
+			'code'          => $asset->code,
+			'title'         => $asset->title,
+			'structure'     => $asset->structure_slugs,
+			'type'          => $asset->type_slugs,
+			'external_code' => $asset->external_code,
+			'location'      => $asset->location,
+			'thumbnail_url' => $asset->thumbnail_url,
+			'permalink'     => $asset->permalink,
 		);
 	}
 
 	/**
 	 * Build a REST response from a member-held asset query.
 	 *
-	 * @param int      $member_id          Member user ID.
-	 * @param WP_Query $query              Executed member asset query.
-	 * @param bool     $include_pagination Whether to include pagination metadata.
+	 * @param int                     $member_id          Member user ID.
+	 * @param ALMGR_Asset_Read_Result $result             Normalized member asset result.
+	 * @param bool                    $include_pagination Whether to include pagination metadata.
 	 * @return WP_REST_Response
 	 */
-	private function prepare_member_assets_response( $member_id, WP_Query $query, $include_pagination = false ) {
+	private function prepare_member_assets_response( $member_id, ALMGR_Asset_Read_Result $result, $include_pagination = false ) {
 		$items = array();
-		foreach ( $query->posts as $post_id ) {
-			$items[] = $this->prepare_member_asset( (int) $post_id );
+		foreach ( $result->get_items() as $asset ) {
+			$items[] = $this->prepare_member_asset( $asset );
 		}
 
 		$data = array(
 			'member_id' => (int) $member_id,
-			'total'     => (int) $query->found_posts,
+			'total'     => $result->get_total(),
 			'data'      => $items,
 		);
 
 		if ( $include_pagination ) {
-			$data['pages'] = (int) $query->max_num_pages;
+			$data['pages'] = $result->get_pages();
 		}
 
 		$response = new WP_REST_Response( $data, 200 );
 		if ( $include_pagination ) {
-			$response->header( 'X-ALM-Total', (int) $query->found_posts );
-			$response->header( 'X-ALM-TotalPages', (int) $query->max_num_pages );
+			$response->header( 'X-ALM-Total', $result->get_total() );
+			$response->header( 'X-ALM-TotalPages', $result->get_pages() );
 		}
 
 		return $response;

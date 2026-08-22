@@ -27,11 +27,16 @@ class ALMGR_REST_Manager_Helpers_Unit_Test extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		$asset_reads      = new ALMGR_Asset_Read_Service( new ALMGR_Asset_Query_Service() );
+		$asset_details    = new ALMGR_Asset_Detail_Service( $asset_reads );
+		$asset_history    = new ALMGR_Asset_History_Service( new ALMGR_Loan_Manager( new ALMGR_Settings_Manager() ) );
+		$member_assets    = new ALMGR_Member_Assets_Service( $asset_reads, new ALMGR_Access_Policy() );
 		$this->rest_manager = new ALMGR_REST_Manager(
 			new ALMGR_Settings_Manager(),
-			new ALMGR_Loan_Manager( new ALMGR_Settings_Manager() ),
-			new ALMGR_Asset_Query_Service(),
-			new ALMGR_Member_Assets_Service( new ALMGR_Asset_Query_Service(), new ALMGR_Access_Policy() )
+			$asset_reads,
+			$asset_details,
+			$asset_history,
+			$member_assets
 		);
 	}
 
