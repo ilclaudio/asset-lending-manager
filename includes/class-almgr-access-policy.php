@@ -36,4 +36,25 @@ class ALMGR_Access_Policy {
 
 		return $actor_id === $member_id && user_can( $actor_id, ALMGR_VIEW_ASSET );
 	}
+
+	/**
+	 * Determine whether an actor may view requests for an asset.
+	 *
+	 * Operators may inspect every asset. Other users may inspect requests for
+	 * assets they currently own and still need asset-view capability.
+	 *
+	 * @param int $actor_id Authenticated actor user ID.
+	 * @param int $asset_id Asset whose requests are requested.
+	 * @return bool
+	 */
+	public function can_view_asset_requests( $actor_id, $asset_id ) {
+		$actor_id = absint( $actor_id );
+		$asset_id = absint( $asset_id );
+
+		if ( $actor_id <= 0 || $asset_id <= 0 || ! user_can( $actor_id, ALMGR_VIEW_ASSET ) ) {
+			return false;
+		}
+
+		return user_can( $actor_id, ALMGR_EDIT_ASSET ) || (int) get_post_meta( $asset_id, '_almgr_current_owner', true ) === $actor_id;
+	}
 }

@@ -20,6 +20,7 @@ if ( $almgr_asset_id <= 0 ) {
 
 $almgr_asset_fields             = isset( $asset->asset_fields ) && is_array( $asset->asset_fields ) ? $asset->asset_fields : array();
 $almgr_loan_manager             = ALMGR_Plugin_Manager::get_instance()->get_module( 'loan' );
+$almgr_request_query            = ALMGR_Plugin_Manager::get_instance()->get_module( 'loan_requests' );
 $almgr_settings                 = ALMGR_Plugin_Manager::get_instance()->get_module( 'settings' );
 $almgr_loan_requests_enabled    = (bool) $almgr_settings->get( 'loans.loan_requests_enabled', true );
 $almgr_request_message_max      = (int) $almgr_settings->get( 'loans.request_message_max_length', 500 );
@@ -407,7 +408,7 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 				is_user_logged_in() &&
 				( $almgr_is_current_owner || $almgr_is_operator )
 			) {
-		$almgr_requests        = $almgr_loan_manager->get_asset_requests( $almgr_asset_id );
+		$almgr_requests        = $almgr_request_query->get_for_asset( $almgr_asset_id )->get_items();
 		$almgr_requester_names = array();
 		$almgr_requester_ids   = array();
 

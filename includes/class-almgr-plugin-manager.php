@@ -136,27 +136,29 @@ class ALMGR_Plugin_Manager {
 		if ( empty( $this->modules ) ) {
 			$settings      = new ALMGR_Settings_Manager();
 			$role          = new ALMGR_Role_Manager();
-			$loan          = new ALMGR_Loan_Manager( $settings );
+			$request_query = new ALMGR_Loan_Request_Query_Service();
+			$loan          = new ALMGR_Loan_Manager( $settings, $request_query );
 			$asset_queries = new ALMGR_Asset_Query_Service();
 			$asset_reads   = new ALMGR_Asset_Read_Service( $asset_queries );
 			$asset_details = new ALMGR_Asset_Detail_Service( $asset_reads );
 			$asset_history = new ALMGR_Asset_History_Service( $loan );
-			$abilities     = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history );
 			$access_policy = new ALMGR_Access_Policy();
 			$member_assets = new ALMGR_Member_Assets_Service( $asset_reads, $access_policy );
+			$abilities     = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history, $member_assets, $request_query, $access_policy );
 			$this->modules = array(
-				'settings'     => $settings,
-				'role'         => $role,
-				'asset'        => new ALMGR_Asset_Manager(),
-				'loan'         => $loan,
-				'notification' => new ALMGR_Notification_Manager( $settings, $role ),
-				'frontend'     => new ALMGR_Frontend_Manager( $settings, $asset_reads, $asset_details, $asset_history, $member_assets ),
-				'admin'        => new ALMGR_Admin_Manager(),
-				'tools'        => new ALMGR_Tools_Manager(),
-				'autocomplete' => new ALMGR_Autocomplete_Manager( $settings ),
-				'rest'         => new ALMGR_REST_Manager( $settings, $asset_reads, $asset_details, $asset_history, $member_assets ),
-				'abilities'    => $abilities,
-				'contact'      => new ALMGR_Contact_Manager( $settings, $role ),
+				'settings'      => $settings,
+				'role'          => $role,
+				'asset'         => new ALMGR_Asset_Manager(),
+				'loan'          => $loan,
+				'loan_requests' => $request_query,
+				'notification'  => new ALMGR_Notification_Manager( $settings, $role ),
+				'frontend'      => new ALMGR_Frontend_Manager( $settings, $asset_reads, $asset_details, $asset_history, $member_assets ),
+				'admin'         => new ALMGR_Admin_Manager(),
+				'tools'         => new ALMGR_Tools_Manager(),
+				'autocomplete'  => new ALMGR_Autocomplete_Manager( $settings ),
+				'rest'          => new ALMGR_REST_Manager( $settings, $asset_reads, $asset_details, $asset_history, $member_assets, $request_query, $access_policy ),
+				'abilities'     => $abilities,
+				'contact'       => new ALMGR_Contact_Manager( $settings, $role ),
 			);
 		}
 	}
@@ -170,7 +172,9 @@ class ALMGR_Plugin_Manager {
 		// Register the modules.
 		if ( function_exists( 'add_action' ) ) {
 			foreach ( $this->modules as $module ) {
-				$module->register();
+				if ( is_object( $module ) && method_exists( $module, 'register' ) ) {
+					$module->register();
+				}
 			}
 		}
 	}

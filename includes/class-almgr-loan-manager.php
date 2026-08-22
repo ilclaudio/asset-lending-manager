@@ -49,12 +49,23 @@ class ALMGR_Loan_Manager {
 	private $settings;
 
 	/**
+	 * Shared loan request read service.
+	 *
+	 * @var ALMGR_Loan_Request_Query_Service
+	 */
+	private $request_query;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param ALMGR_Settings_Manager $settings Plugin settings instance.
+	 * @param ALMGR_Settings_Manager                $settings       Plugin settings instance.
+	 * @param ALMGR_Loan_Request_Query_Service|null $request_query Shared request read service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings ) {
-		$this->settings = $settings;
+	public function __construct( ALMGR_Settings_Manager $settings, $request_query = null ) {
+		$this->settings      = $settings;
+		$this->request_query = $request_query instanceof ALMGR_Loan_Request_Query_Service
+			? $request_query
+			: new ALMGR_Loan_Request_Query_Service();
 	}
 
 	/**
@@ -816,20 +827,7 @@ class ALMGR_Loan_Manager {
 	 * @return array Array of request objects.
 	 */
 	public function get_asset_requests( $asset_id, $status = 'pending' ) {
-		global $wpdb;
-		$table_name = $wpdb->prefix . 'almgr_loan_requests';
-
-		return $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT * FROM %i
-				WHERE asset_id = %d
-				AND status = %s
-				ORDER BY request_date DESC',
-				$table_name,
-				$asset_id,
-				$status
-			)
-		);
+		return $this->request_query->get_for_asset( $asset_id, $status )->get_items();
 	}
 
 	/**
@@ -840,31 +838,7 @@ class ALMGR_Loan_Manager {
 	 * @return array Array of request objects.
 	 */
 	public function get_user_requests( $user_id, $status = '' ) {
-		global $wpdb;
-		$table_name = $wpdb->prefix . 'almgr_loan_requests';
-
-		if ( empty( $status ) ) {
-			return $wpdb->get_results(
-				$wpdb->prepare(
-					'SELECT * FROM %i
-					WHERE requester_id = %d
-					ORDER BY request_date DESC',
-					$table_name,
-					$user_id
-				)
-			);
-		}
-		return $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT * FROM %i
-				WHERE requester_id = %d
-				AND status = %s
-				ORDER BY request_date DESC',
-				$table_name,
-				$user_id,
-				$status
-			)
-		);
+		return $this->request_query->get_for_user( $user_id, $status )->get_items();
 	}
 
 	/**

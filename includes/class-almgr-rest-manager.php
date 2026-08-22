@@ -13,6 +13,8 @@
  *   GET /wp-json/almgr/v1/me/assets                 Current member assets     (almgr_view_asset)
  *   GET /wp-json/almgr/v1/members                   Paginated ALMGR user list  (almgr_edit_asset)
  *   GET /wp-json/almgr/v1/members/{member_id}/assets Assets held by a member   (almgr_edit_asset)
+ *   GET /wp-json/almgr/v1/me/loan-requests         Current user's requests    (almgr_view_asset)
+ *   GET /wp-json/almgr/v1/assets/{id}/loan-requests Asset requests            (owner/operator)
  *
  * Response fields differ by caller capability:
  *   - All authenticated users: public asset fields and ACF fields.
@@ -85,6 +87,20 @@ class ALMGR_REST_Manager {
 	 */
 	private $member_assets;
 
+	/**
+	 * Shared loan request query service.
+	 *
+	 * @var ALMGR_Loan_Request_Query_Service
+	 */
+	private $request_query;
+
+	/**
+	 * Shared record-level access policy.
+	 *
+	 * @var ALMGR_Access_Policy
+	 */
+	private $access_policy;
+
 	// -------------------------------------------------------------------------
 	// Lifecycle
 	// -------------------------------------------------------------------------
@@ -92,18 +108,22 @@ class ALMGR_REST_Manager {
 	/**
 	 * Constructor.
 	 *
-	 * @param ALMGR_Settings_Manager      $settings      Settings manager instance.
-	 * @param ALMGR_Asset_Read_Service    $asset_reads   Shared asset read service.
-	 * @param ALMGR_Asset_Detail_Service  $asset_details Shared asset detail service.
-	 * @param ALMGR_Asset_History_Service $asset_history Shared asset history service.
-	 * @param ALMGR_Member_Assets_Service $member_assets Shared member-held asset service.
+	 * @param ALMGR_Settings_Manager           $settings      Settings manager instance.
+	 * @param ALMGR_Asset_Read_Service         $asset_reads   Shared asset read service.
+	 * @param ALMGR_Asset_Detail_Service       $asset_details Shared asset detail service.
+	 * @param ALMGR_Asset_History_Service      $asset_history Shared asset history service.
+	 * @param ALMGR_Member_Assets_Service      $member_assets Shared member-held asset service.
+	 * @param ALMGR_Loan_Request_Query_Service $request_query Shared request query service.
+	 * @param ALMGR_Access_Policy              $access_policy Shared access policy.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets ) {
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets, $request_query = null, $access_policy = null ) {
 		$this->settings      = $settings;
 		$this->asset_reads   = $asset_reads;
 		$this->asset_details = $asset_details;
 		$this->asset_history = $asset_history;
 		$this->member_assets = $member_assets;
+		$this->request_query = $request_query instanceof ALMGR_Loan_Request_Query_Service ? $request_query : new ALMGR_Loan_Request_Query_Service();
+		$this->access_policy = $access_policy instanceof ALMGR_Access_Policy ? $access_policy : new ALMGR_Access_Policy();
 	}
 
 	/**
@@ -196,6 +216,38 @@ class ALMGR_REST_Manager {
 				),
 			)
 		);
+
+		register_rest_route(
+			self::API_NAMESPACE,
+			'/me/loan-requests',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_my_loan_requests' ),
+				'permission_callback' => array( $this, 'can_view_asset' ),
+				'args'                => $this->get_loan_requests_args(),
+			)
+		);
+
+		register_rest_route(
+			self::API_NAMESPACE,
+			'/assets/(?P<id>\d+)/loan-requests',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_asset_loan_requests' ),
+				'permission_callback' => array( $this, 'can_view_asset_loan_requests' ),
+				'args'                => array_merge(
+					array(
+						'id' => array(
+							'type'              => 'integer',
+							'required'          => true,
+							'minimum'           => 1,
+							'sanitize_callback' => 'absint',
+						),
+					),
+					$this->get_loan_requests_args()
+				),
+			)
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -268,6 +320,25 @@ class ALMGR_REST_Manager {
 				array( 'status' => 403 )
 			);
 		}
+		return true;
+	}
+
+	/**
+	 * Permission callback for requests belonging to an asset.
+	 *
+	 * @param WP_REST_Request $request REST request object.
+	 * @return true|WP_Error
+	 */
+	public function can_view_asset_loan_requests( WP_REST_Request $request ) {
+		$base_permission = $this->can_view_asset();
+		if ( true !== $base_permission ) {
+			return $base_permission;
+		}
+
+		if ( ! $this->access_policy->can_view_asset_requests( get_current_user_id(), (int) $request->get_param( 'id' ) ) ) {
+			return new WP_Error( 'almgr_forbidden', __( 'You do not have permission to view these loan requests.', 'asset-lending-manager' ), array( 'status' => 403 ) );
+		}
+
 		return true;
 	}
 
@@ -392,6 +463,21 @@ class ALMGR_REST_Manager {
 				'minimum'           => 1,
 				'maximum'           => self::MAX_PER_PAGE,
 				'sanitize_callback' => 'absint',
+			),
+		);
+	}
+
+	/**
+	 * Return arguments for loan request collections.
+	 *
+	 * @return array
+	 */
+	private function get_loan_requests_args() {
+		return array(
+			'status' => array(
+				'type'              => 'string',
+				'default'           => '',
+				'sanitize_callback' => 'sanitize_key',
 			),
 		);
 	}
@@ -574,6 +660,36 @@ class ALMGR_REST_Manager {
 		return $this->prepare_member_assets_response( $member_id, $result, true );
 	}
 
+	/**
+	 * Handle GET /wp-json/almgr/v1/me/loan-requests.
+	 *
+	 * @param WP_REST_Request $request REST request object.
+	 * @return WP_REST_Response
+	 */
+	public function get_my_loan_requests( WP_REST_Request $request ) {
+		$result = $this->request_query->get_for_user( get_current_user_id(), (string) $request->get_param( 'status' ) );
+
+		return new WP_REST_Response(
+			array( 'data' => array_map( array( $this, 'project_loan_request' ), $result->get_items() ) ),
+			200
+		);
+	}
+
+	/**
+	 * Handle GET /wp-json/almgr/v1/assets/{id}/loan-requests.
+	 *
+	 * @param WP_REST_Request $request REST request object.
+	 * @return WP_REST_Response
+	 */
+	public function get_asset_loan_requests( WP_REST_Request $request ) {
+		$result = $this->request_query->get_for_asset( (int) $request->get_param( 'id' ), (string) $request->get_param( 'status' ) );
+
+		return new WP_REST_Response(
+			array( 'data' => array_map( array( $this, 'project_loan_request' ), $result->get_items() ) ),
+			200
+		);
+	}
+
 	// -------------------------------------------------------------------------
 	// Data preparation
 	// -------------------------------------------------------------------------
@@ -669,6 +785,16 @@ class ALMGR_REST_Manager {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Build the shared JSON representation of a loan request.
+	 *
+	 * @param object $request Loan request record.
+	 * @return array
+	 */
+	private function project_loan_request( $request ) {
+		return $this->request_query->project( $request );
 	}
 
 	/**

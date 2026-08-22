@@ -326,6 +326,8 @@ require_once dirname( __DIR__ ) . '/includes/class-almgr-asset-history-service.p
 require_once dirname( __DIR__ ) . '/includes/class-almgr-abilities-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-access-policy.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-member-assets-service.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-loan-request-query-result.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-loan-request-query-service.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-frontend-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-loan-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-notification-manager.php';

@@ -38,6 +38,8 @@ require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-history-service.php'
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-abilities-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-access-policy.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-member-assets-service.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-loan-request-query-result.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-loan-request-query-service.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-loan-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-notification-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-frontend-manager.php';

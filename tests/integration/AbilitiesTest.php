@@ -43,7 +43,8 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 		$asset_reads   = new ALMGR_Asset_Read_Service( new ALMGR_Asset_Query_Service() );
 		$asset_details = new ALMGR_Asset_Detail_Service( $asset_reads );
 		$asset_history = new ALMGR_Asset_History_Service( $loan_manager );
-		$this->abilities = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history );
+		$member_assets = new ALMGR_Member_Assets_Service( $asset_reads, new ALMGR_Access_Policy() );
+		$this->abilities = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history, $member_assets );
 
 		if ( ! wp_get_ability( 'almgr/list-assets' ) ) {
 			$this->abilities->register();
@@ -81,7 +82,7 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_read_only_abilities_are_registered_with_safe_metadata(): void {
-		foreach ( array( 'almgr/list-assets', 'almgr/get-asset', 'almgr/get-asset-loan-history' ) as $ability_id ) {
+		foreach ( array( 'almgr/list-assets', 'almgr/get-asset', 'almgr/get-asset-loan-history', 'almgr/list-my-loan-requests', 'almgr/list-asset-loan-requests' ) as $ability_id ) {
 			$ability = wp_get_ability( $ability_id );
 			$this->assertNotNull( $ability );
 			$this->assertSame( true, $ability->get_meta()['show_in_rest'] );
@@ -145,5 +146,60 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 		$this->assertSame( 1, $result['total'] );
 		$this->assertSame( 'direct_assign', $result['data'][0]['status'] );
 		$this->assertSame( 'Ability history test', $result['data'][0]['message'] );
+	}
+
+	/**
+	 * Verify current-member ability uses the authenticated actor and shared result.
+	 *
+	 * @return void
+	 */
+	public function test_list_my_assets_ability_matches_shared_member_result(): void {
+		$member_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id  = $this->create_asset();
+		wp_set_current_user( $member_id );
+		update_post_meta( $asset_id, '_almgr_current_owner', $member_id );
+		wp_set_object_terms( $asset_id, 'on-loan', ALMGR_ASSET_STATE_TAXONOMY_SLUG, false );
+
+		$result = wp_get_ability( 'almgr/list-my-assets' )->execute( array( 'page' => 1, 'per_page' => 20 ) );
+
+		$this->assertIsArray( $result );
+		$this->assertSame( $member_id, $result['member_id'] );
+		$this->assertSame( 1, $result['total'] );
+		$this->assertSame( $asset_id, $result['data'][0]['id'] );
+	}
+
+	/**
+	 * Verify loan request abilities project the shared request query result.
+	 *
+	 * @return void
+	 */
+	public function test_loan_request_abilities_match_shared_query_result(): void {
+		global $wpdb;
+
+		$member_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id  = $this->create_asset();
+		update_post_meta( $asset_id, '_almgr_current_owner', $member_id );
+		$wpdb->insert(
+			$wpdb->prefix . 'almgr_loan_requests',
+			array(
+				'asset_id'        => $asset_id,
+				'requester_id'    => $member_id,
+				'owner_id'        => 0,
+				'request_date'    => current_time( 'mysql' ),
+				'request_message' => 'Ability request test',
+				'status'          => 'pending',
+			),
+			array( '%d', '%d', '%d', '%s', '%s', '%s' )
+		);
+
+		wp_set_current_user( $member_id );
+		$query  = new ALMGR_Loan_Request_Query_Service();
+		$shared = $query->get_for_user( $member_id );
+		$mine   = wp_get_ability( 'almgr/list-my-loan-requests' )->execute();
+		$asset  = wp_get_ability( 'almgr/list-asset-loan-requests' )->execute( array( 'asset_id' => $asset_id ) );
+
+		$this->assertSame( count( $shared->get_items() ), count( $mine['data'] ) );
+		$this->assertSame( $asset_id, $asset['data'][0]['asset_id'] );
+		$this->assertSame( 'Ability request test', $asset['data'][0]['request_message'] );
 	}
 }

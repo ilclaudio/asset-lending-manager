@@ -12,11 +12,15 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 1) Add a dashboard and user badge with: resources on loan, loans to be approved, and resources under maintenance (operator).
 2) Dedicated landing page for the plugin.
 
-## DESIDERATA 1.0.0
+## DESIDERATA 1.1.0
 1) Mass printing of all QR codes in A4 pages.
 2) Simple statistics page.
-3) Abilities for MCP server.
-4) Location content-type: default location.
+
+## DESIDERATA 1.0.0
+1) Abilities for MCP server (in progress on branch `features/addMCPAbilities`; see `DEV/TODO/TODO_MCP_AbilitiesImplementationPlan.md`).
+2) Integration test suite for core AJAX and workflow state transitions: nonce/capability guard paths, rollback/failure paths (see `ISSUES_TODO.md`).
+3) PHPUnit round-trip test for `almgr_get_allowed_html()` allowlist completeness (see `ISSUES_TODO.md`).
+4) Location content-type: default location (`almgr_warehouse` taxonomy; spec closed in `DEV/TODO/TODO_Warehouse_Location.md`, ready for implementation).
 5) Introduce return concept.
 
 

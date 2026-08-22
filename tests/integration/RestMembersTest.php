@@ -408,4 +408,40 @@ class ALMGR_REST_Members_Integration_Test extends WP_UnitTestCase {
 		$this->assertSame( $result->get_total(), (int) $data['total'] );
 		$this->assertSame( $result->get_pages(), (int) $data['pages'] );
 	}
+
+	/**
+	 * The REST loan request adapters must consume the shared request query.
+	 *
+	 * @return void
+	 */
+	public function test_loan_request_rest_matches_shared_query_result(): void {
+		global $wpdb;
+
+		$member_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id  = $this->create_assigned_asset( $member_id );
+		$wpdb->insert(
+			$wpdb->prefix . 'almgr_loan_requests',
+			array(
+				'asset_id'        => $asset_id,
+				'requester_id'    => $member_id,
+				'owner_id'        => 0,
+				'request_date'    => current_time( 'mysql' ),
+				'request_message' => 'REST request test',
+				'status'          => 'pending',
+			),
+			array( '%d', '%d', '%d', '%s', '%s', '%s' )
+		);
+
+		wp_set_current_user( $member_id );
+		$query  = new ALMGR_Loan_Request_Query_Service();
+		$shared = $query->get_for_user( $member_id );
+		$request = new WP_REST_Request( 'GET', '/almgr/v1/me/loan-requests' );
+		$response = $this->rest_manager->get_my_loan_requests( $request );
+
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$data = $response->get_data();
+		$this->assertCount( count( $shared->get_items() ), $data['data'] );
+		$this->assertSame( $asset_id, (int) $data['data'][0]['asset_id'] );
+		$this->assertSame( 'REST request test', $data['data'][0]['request_message'] );
+	}
 }
