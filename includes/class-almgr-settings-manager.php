@@ -120,6 +120,10 @@ class ALMGR_Settings_Manager {
 			'rest_api'      => array(
 				'enabled' => true,
 			),
+			'abilities'     => array(
+				'public'         => false,
+				'actions_public' => false,
+			),
 			'contact_form'  => array(
 				'enabled'            => true,
 				'max_message_length' => 500,

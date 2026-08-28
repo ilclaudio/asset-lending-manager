@@ -65,6 +65,13 @@ class ALMGR_Abilities_Manager {
 	private $loan_manager;
 
 	/**
+	 * Shared settings manager.
+	 *
+	 * @var ALMGR_Settings_Manager
+	 */
+	private $settings;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param ALMGR_Asset_Read_Service         $asset_reads   Shared asset read service.
@@ -74,8 +81,9 @@ class ALMGR_Abilities_Manager {
 	 * @param ALMGR_Loan_Request_Query_Service $request_query Shared request query service.
 	 * @param ALMGR_Access_Policy              $access_policy Shared access policy.
 	 * @param ALMGR_Loan_Manager               $loan_manager  Shared loan workflow service.
+	 * @param ALMGR_Settings_Manager           $settings      Shared settings manager.
 	 */
-	public function __construct( ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets, $request_query = null, $access_policy = null, $loan_manager = null ) {
+	public function __construct( ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets, $request_query = null, $access_policy = null, $loan_manager = null, $settings = null ) {
 		$this->asset_reads   = $asset_reads;
 		$this->asset_details = $asset_details;
 		$this->asset_history = $asset_history;
@@ -83,6 +91,7 @@ class ALMGR_Abilities_Manager {
 		$this->request_query = $request_query instanceof ALMGR_Loan_Request_Query_Service ? $request_query : new ALMGR_Loan_Request_Query_Service();
 		$this->access_policy = $access_policy instanceof ALMGR_Access_Policy ? $access_policy : new ALMGR_Access_Policy();
 		$this->loan_manager  = $loan_manager instanceof ALMGR_Loan_Manager ? $loan_manager : null;
+		$this->settings      = $settings instanceof ALMGR_Settings_Manager ? $settings : new ALMGR_Settings_Manager();
 	}
 
 	/**
@@ -128,15 +137,29 @@ class ALMGR_Abilities_Manager {
 			return;
 		}
 
+		// 'public' is the WordPress core Abilities API flag (available to REST/MCP/AI
+		// agent clients in general); 'mcp.public' is a separate flag read by the
+		// external `wordpress/mcp-adapter` plugin specifically, which can veto MCP
+		// exposure even when 'public' is true. Both are tied to the same setting here
+		// because this plugin does not need independent control of the two in v1.
+		$abilities_public = (bool) $this->settings->get( 'abilities.public', false );
+
 		$common_meta = array(
 			'show_in_rest' => true,
-			'mcp'          => array( 'public' => false ),
+			'public'       => $abilities_public,
+			'mcp'          => array( 'public' => $abilities_public ),
 			'annotations'  => array(
 				'readonly'    => true,
 				'destructive' => false,
 				'idempotent'  => true,
 			),
 		);
+
+		// The only mutating ability gets its own, separately configurable exposure
+		// flag: a site may want its read-only catalog public without also letting an
+		// MCP/AI client create loan requests. Effective only when 'abilities.public'
+		// is also enabled.
+		$actions_public = $abilities_public && (bool) $this->settings->get( 'abilities.actions_public', false );
 
 		wp_register_ability(
 			'almgr/list-assets',
@@ -261,7 +284,8 @@ class ALMGR_Abilities_Manager {
 				'input_schema'        => $this->get_create_loan_request_input_schema(),
 				'meta'                => array(
 					'show_in_rest' => true,
-					'mcp'          => array( 'public' => false ),
+					'public'       => $actions_public,
+					'mcp'          => array( 'public' => $actions_public ),
 					'annotations'  => array(
 						'readonly'    => false,
 						'destructive' => false,

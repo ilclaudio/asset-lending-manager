@@ -145,13 +145,14 @@ class ALMGR_Plugin_Manager {
 			$asset_history = new ALMGR_Asset_History_Service( $loan );
 			$access_policy = new ALMGR_Access_Policy();
 			$member_assets = new ALMGR_Member_Assets_Service( $asset_reads, $access_policy );
-			$abilities     = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history, $member_assets, $request_query, $access_policy, $loan );
+			$abilities     = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history, $member_assets, $request_query, $access_policy, $loan, $settings );
 			$this->modules = array(
 				'settings'      => $settings,
 				'role'          => $role,
 				'asset'         => new ALMGR_Asset_Manager(),
 				'loan'          => $loan,
 				'loan_requests' => $request_query,
+				'access_policy' => $access_policy,
 				'notification'  => new ALMGR_Notification_Manager( $settings, $role ),
 				'frontend'      => new ALMGR_Frontend_Manager( $settings, $asset_reads, $asset_details, $asset_history, $member_assets ),
 				'admin'         => new ALMGR_Admin_Manager(),
@@ -418,6 +419,7 @@ class ALMGR_Plugin_Manager {
 			'logging',
 			'asset',
 			'rest_api',
+			'abilities',
 		);
 		if ( ! in_array( $active_tab, $allowed_active_tabs, true ) ) {
 			$active_tab = 'email';
@@ -572,6 +574,11 @@ class ALMGR_Plugin_Manager {
 
 		if ( 'rest_api' === $active_tab && $is_admin ) {
 			$changes['rest_api.enabled'] = isset( $_POST['almgr_rest_api_enabled'] );
+		}
+
+		if ( 'abilities' === $active_tab && $is_admin ) {
+			$changes['abilities.public']         = isset( $_POST['almgr_abilities_public'] );
+			$changes['abilities.actions_public'] = isset( $_POST['almgr_abilities_actions_public'] );
 		}
 
 		if ( 'templates' === $active_tab && $is_admin ) {

@@ -33,7 +33,8 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Frontend asset state management for operators: set maintenance or retired, force-return on-loan assets, and restore assets to available
 * Full loan history, plus a dedicated full asset history page for operators via `[almgr_asset_history]`
 * Two user roles included: Member and Operator
-* Read-only JSON REST API at `/wp-json/almgr/v1/` for asset list, asset detail, member list, and member assets
+* Read-only REST API for external integrations (asset catalog, member assets, loan requests); see DOC/REST_API_REFERENCE.md
+* Optional WordPress Abilities for AI-agent/MCP-oriented integrations, sharing the same domain logic as the web UI and REST API; see DOC/AI_ABILITIES_REFERENCE.md
 * Back-office Tools page (ALM → Tools) with Import, Export, and Utilities tabs
 * Users and assets CSV import/export, including kit components and their ACF fields in asset CSV files
 * Translation-ready

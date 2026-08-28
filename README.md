@@ -25,7 +25,8 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Loan history tracking
 - Full asset history page for operators via `[almgr_asset_history]`
 - Role-based permissions (`almgr_member`, `almgr_operator`)
-- Read-only JSON REST API (`/wp-json/almgr/v1/`) for asset list, asset detail, member list, and member assets; authentication via WordPress core (cookie session, REST nonce, Application Passwords)
+- Read-only REST API for external integrations (asset catalog, member assets, loan requests); see `DOC/REST_API_REFERENCE.md`
+- Optional WordPress Abilities for AI-agent/MCP-oriented integrations, sharing the same domain logic as the web UI and REST API; see `DOC/AI_ABILITIES_REFERENCE.md`
 - Back-office Tools page (`ALM → Tools`) with Import, Export, and Utilities tabs
 - Users CSV import from the Tools page (admin only) and users CSV export (admin and operator)
 - Assets CSV import from the Tools page (admin and operator) and assets CSV export (admin and operator)
@@ -80,7 +81,8 @@ For detailed documentation, see the `DOC/` folder:
 - `DOC/RoleActionsSwimlane.md` — loan workflow swimlane diagram
 - `DOC/EmailNotificationsSchema.md` — email event table with placeholders
 - `DOC/KitBehaviorReference.md` — kit transfer and state-change semantics, partial propagation rules
-- `DOC/RestApiReference.md` — REST API endpoints, authentication, parameters, error codes
+- `DOC/REST_API_REFERENCE.md` — REST API endpoints, authentication, parameters, error codes
+- `DOC/AI_ABILITIES_REFERENCE.md` — WordPress Abilities registered by the plugin, permissions, input/output, and how to reach them from an MCP client such as Claude Desktop
 - `DOC/AssetsImportCSV_SimpleProcedure.md` — assets CSV import procedure
 - `DOC/AssetsExportCSV_SimpleProcedure.md` — assets CSV export procedure
 - `DOC/UsersImportCSV_SimpleProcedure.md` — users CSV import procedure

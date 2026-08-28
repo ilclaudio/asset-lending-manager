@@ -32,8 +32,9 @@ $almgr_tabs = array(
 	'direct_assign' => __( 'Direct Assignment', 'asset-lending-manager' ),
 	'workflow'      => __( 'Automations', 'asset-lending-manager' ),
 	'logging'       => __( 'Logging', 'asset-lending-manager' ),
-	'asset'         => __( 'Advanced Settings', 'asset-lending-manager' ),
 	'rest_api'      => __( 'REST API', 'asset-lending-manager' ),
+	'abilities'     => __( 'Abilities', 'asset-lending-manager' ),
+	'asset'         => __( 'Advanced Settings', 'asset-lending-manager' ),
 );
 
 // Validate active tab.
@@ -1221,6 +1222,63 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 			<p class="description">
 				<?php esc_html_e( 'The API uses the native WordPress REST API infrastructure. Authentication is handled by WordPress core (cookie session, REST nonce, Application Passwords).', 'asset-lending-manager' ); ?>
 			</p>
+
+			<?php if ( $almgr_is_admin ) : ?>
+				<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
+			<?php endif; ?>
+
+		<?php elseif ( 'abilities' === $almgr_active_tab ) : ?>
+
+			<h2><?php esc_html_e( 'Abilities', 'asset-lending-manager' ); ?></h2>
+			<p class="description">
+				<?php esc_html_e( 'The plugin registers WordPress Abilities for reading the catalog and loan requests, and for submitting a loan request. They are always available for internal/PHP use and are always exposed via the native wp-abilities/v1 REST surface. The settings below control only whether they are additionally marked public, the flag external clients such as an MCP adapter use to decide whether to expose them to AI agents.', 'asset-lending-manager' ); ?>
+			</p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Public read-only abilities', 'asset-lending-manager' ); ?>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								id="almgr_abilities_public"
+								name="almgr_abilities_public"
+								value="1"
+								<?php checked( $almgr_settings->get( 'abilities.public', false ) ); ?>
+								<?php disabled( ! $almgr_is_admin ); ?>
+							>
+							<?php esc_html_e( 'Mark the read-only abilities (asset catalog, asset detail, my assets, loan history, loan requests) as public.', 'asset-lending-manager' ); ?>
+						</label>
+						<p class="description">
+							<?php esc_html_e( 'Disabled by default. When enabled, an MCP adapter or other external client can discover and call these read-only abilities on behalf of an authenticated user.', 'asset-lending-manager' ); ?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Public loan-request creation', 'asset-lending-manager' ); ?>
+						<span class="almgr-badge-admin" title="<?php esc_attr_e( 'Administrator only', 'asset-lending-manager' ); ?>">A</span>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								id="almgr_abilities_actions_public"
+								name="almgr_abilities_actions_public"
+								value="1"
+								<?php checked( $almgr_settings->get( 'abilities.actions_public', false ) ); ?>
+								<?php disabled( ! $almgr_is_admin || ! $almgr_settings->get( 'abilities.public', false ) ); ?>
+							>
+							<?php esc_html_e( 'Also mark almgr/create-loan-request as public.', 'asset-lending-manager' ); ?>
+						</label>
+						<p class="description">
+							<?php esc_html_e( 'Has no effect unless "Public read-only abilities" above is also enabled. Keep this off if you want AI agents to browse the catalog but never submit loan requests on a user’s behalf.', 'asset-lending-manager' ); ?>
+						</p>
+					</td>
+				</tr>
+			</table>
 
 			<?php if ( $almgr_is_admin ) : ?>
 				<?php submit_button( __( 'Save Settings', 'asset-lending-manager' ) ); ?>
