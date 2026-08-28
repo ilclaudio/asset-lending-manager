@@ -58,6 +58,13 @@ class ALMGR_Abilities_Manager {
 	private $access_policy;
 
 	/**
+	 * Shared loan workflow service.
+	 *
+	 * @var ALMGR_Loan_Manager
+	 */
+	private $loan_manager;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param ALMGR_Asset_Read_Service         $asset_reads   Shared asset read service.
@@ -66,14 +73,16 @@ class ALMGR_Abilities_Manager {
 	 * @param ALMGR_Member_Assets_Service      $member_assets Shared member asset service.
 	 * @param ALMGR_Loan_Request_Query_Service $request_query Shared request query service.
 	 * @param ALMGR_Access_Policy              $access_policy Shared access policy.
+	 * @param ALMGR_Loan_Manager               $loan_manager  Shared loan workflow service.
 	 */
-	public function __construct( ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets, $request_query = null, $access_policy = null ) {
+	public function __construct( ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets, $request_query = null, $access_policy = null, $loan_manager = null ) {
 		$this->asset_reads   = $asset_reads;
 		$this->asset_details = $asset_details;
 		$this->asset_history = $asset_history;
 		$this->member_assets = $member_assets;
 		$this->request_query = $request_query instanceof ALMGR_Loan_Request_Query_Service ? $request_query : new ALMGR_Loan_Request_Query_Service();
 		$this->access_policy = $access_policy instanceof ALMGR_Access_Policy ? $access_policy : new ALMGR_Access_Policy();
+		$this->loan_manager  = $loan_manager instanceof ALMGR_Loan_Manager ? $loan_manager : null;
 	}
 
 	/**
@@ -205,6 +214,30 @@ class ALMGR_Abilities_Manager {
 		);
 
 		wp_register_ability(
+			'almgr/get-loan-request',
+			array(
+				'label'               => __( 'Get loan request', 'asset-lending-manager' ),
+				'description'         => __( 'Returns one loan request visible to the authenticated user.', 'asset-lending-manager' ),
+				'category'            => 'almgr',
+				'execute_callback'    => array( $this, 'execute_get_loan_request' ),
+				'permission_callback' => array( $this, 'can_get_loan_request' ),
+				'input_schema'        => array(
+					'type'                 => 'object',
+					'additionalProperties' => false,
+					'properties'           => array(
+						'loan_request_id' => array(
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'Loan request ID.', 'asset-lending-manager' ),
+						),
+					),
+					'required'             => array( 'loan_request_id' ),
+				),
+				'meta'                => $common_meta,
+			)
+		);
+
+		wp_register_ability(
 			'almgr/list-asset-loan-requests',
 			array(
 				'label'               => __( 'List asset loan requests', 'asset-lending-manager' ),
@@ -214,6 +247,27 @@ class ALMGR_Abilities_Manager {
 				'permission_callback' => array( $this, 'can_list_asset_loan_requests' ),
 				'input_schema'        => $this->get_asset_requests_input_schema(),
 				'meta'                => $common_meta,
+			)
+		);
+
+		wp_register_ability(
+			'almgr/create-loan-request',
+			array(
+				'label'               => __( 'Create loan request', 'asset-lending-manager' ),
+				'description'         => __( 'Creates a loan request using the shared loan workflow for the authenticated user.', 'asset-lending-manager' ),
+				'category'            => 'almgr',
+				'execute_callback'    => array( $this, 'execute_create_loan_request' ),
+				'permission_callback' => array( $this, 'can_create_loan_request' ),
+				'input_schema'        => $this->get_create_loan_request_input_schema(),
+				'meta'                => array(
+					'show_in_rest' => true,
+					'mcp'          => array( 'public' => false ),
+					'annotations'  => array(
+						'readonly'    => false,
+						'destructive' => false,
+						'idempotent'  => false,
+					),
+				),
 			)
 		);
 	}
@@ -274,6 +328,19 @@ class ALMGR_Abilities_Manager {
 	}
 
 	/**
+	 * Check single loan request visibility.
+	 *
+	 * @param mixed $input Ability input.
+	 * @return bool
+	 */
+	public function can_get_loan_request( $input = null ) {
+		$input   = is_array( $input ) ? $input : array();
+		$request = $this->request_query->get_by_id( isset( $input['loan_request_id'] ) ? $input['loan_request_id'] : 0 );
+
+		return $this->access_policy->can_view_loan_request( get_current_user_id(), $request );
+	}
+
+	/**
 	 * Check asset request permission through the shared access policy.
 	 *
 	 * @param mixed $input Ability input.
@@ -282,6 +349,17 @@ class ALMGR_Abilities_Manager {
 	public function can_list_asset_loan_requests( $input = null ) {
 		$input = is_array( $input ) ? $input : array();
 		return $this->access_policy->can_view_asset_requests( get_current_user_id(), isset( $input['asset_id'] ) ? $input['asset_id'] : 0 );
+	}
+
+	/**
+	 * Check create-loan-request permission.
+	 *
+	 * @param mixed $input Ability input, unused by this capability check.
+	 * @return bool
+	 */
+	public function can_create_loan_request( $input = null ) {
+		unset( $input );
+		return current_user_can( ALMGR_VIEW_ASSET );
 	}
 
 	/**
@@ -396,9 +474,34 @@ class ALMGR_Abilities_Manager {
 	 */
 	public function execute_list_my_loan_requests( $input = null ) {
 		$input  = $this->normalize_status_input( $input );
-		$result = $this->request_query->get_for_user( get_current_user_id(), $input['status'] );
+		$result = $this->request_query->get_for_user( get_current_user_id(), $input['status'], $input['page'], $input['per_page'] );
 
-		return array( 'data' => array_map( array( $this->request_query, 'project' ), $result->get_items() ) );
+		return $this->project_request_collection( $result );
+	}
+
+	/**
+	 * Execute single loan request read.
+	 *
+	 * @param mixed $input Ability input.
+	 * @return array|WP_Error
+	 */
+	public function execute_get_loan_request( $input = null ) {
+		$input      = is_array( $input ) ? $input : array();
+		$request_id = isset( $input['loan_request_id'] ) ? absint( $input['loan_request_id'] ) : 0;
+		if ( $request_id <= 0 ) {
+			return new WP_Error( 'almgr_missing_loan_request_id', __( 'A positive integer loan_request_id is required.', 'asset-lending-manager' ) );
+		}
+
+		$request = $this->request_query->get_by_id( $request_id );
+		if ( ! $request ) {
+			return new WP_Error( 'almgr_loan_request_not_found', __( 'Loan request not found.', 'asset-lending-manager' ) );
+		}
+
+		if ( ! $this->access_policy->can_view_loan_request( get_current_user_id(), $request ) ) {
+			return new WP_Error( 'almgr_loan_request_forbidden', __( 'You do not have permission to view this loan request.', 'asset-lending-manager' ) );
+		}
+
+		return $this->request_query->project( $request );
 	}
 
 	/**
@@ -413,9 +516,50 @@ class ALMGR_Abilities_Manager {
 			return $input;
 		}
 
-		$result = $this->request_query->get_for_asset( $input['asset_id'], $input['status'] );
+		$result = $this->request_query->get_for_asset( $input['asset_id'], $input['status'], $input['page'], $input['per_page'] );
 
-		return array( 'data' => array_map( array( $this->request_query, 'project' ), $result->get_items() ) );
+		return $this->project_request_collection( $result );
+	}
+
+	/**
+	 * Project a paginated loan request collection.
+	 *
+	 * @param ALMGR_Loan_Request_Query_Result $result Shared query result.
+	 * @return array
+	 */
+	private function project_request_collection( $result ) {
+		return array(
+			'data'  => array_map( array( $this->request_query, 'project' ), $result->get_items() ),
+			'total' => $result->get_total(),
+			'page'  => $result->get_page(),
+			'pages' => $result->get_pages(),
+		);
+	}
+
+	/**
+	 * Execute loan request creation through the shared loan workflow.
+	 *
+	 * @param mixed $input Ability input.
+	 * @return array|WP_Error
+	 */
+	public function execute_create_loan_request( $input = null ) {
+		if ( ! $this->loan_manager ) {
+			return new WP_Error( 'almgr_not_initialized', __( 'The loan workflow is not initialized.', 'asset-lending-manager' ) );
+		}
+
+		$input = is_array( $input ) ? $input : array();
+		if ( ! isset( $input['asset_id'] ) || absint( $input['asset_id'] ) <= 0 ) {
+			return new WP_Error( 'almgr_missing_asset_id', __( 'A positive integer asset_id is required.', 'asset-lending-manager' ) );
+		}
+		if ( ! isset( $input['request_message'] ) || '' === trim( (string) $input['request_message'] ) ) {
+			return new WP_Error( 'almgr_missing_request_message', __( 'A request_message is required.', 'asset-lending-manager' ) );
+		}
+
+		return $this->loan_manager->submit_loan_request(
+			absint( $input['asset_id'] ),
+			get_current_user_id(),
+			sanitize_textarea_field( (string) $input['request_message'] )
+		);
 	}
 
 	/**
@@ -618,12 +762,24 @@ class ALMGR_Abilities_Manager {
 	 */
 	private function get_status_input_schema() {
 		return array(
-			'type'       => 'object',
-			'default'    => (object) array(),
-			'properties' => array(
-				'status' => array(
+			'type'                 => 'object',
+			'default'              => (object) array(),
+			'additionalProperties' => false,
+			'properties'           => array(
+				'status'   => array(
 					'type'    => 'string',
 					'default' => '',
+				),
+				'page'     => array(
+					'type'    => 'integer',
+					'minimum' => 1,
+					'default' => 1,
+				),
+				'per_page' => array(
+					'type'    => 'integer',
+					'minimum' => 1,
+					'maximum' => 100,
+					'default' => 20,
 				),
 			),
 		);
@@ -653,6 +809,30 @@ class ALMGR_Abilities_Manager {
 	}
 
 	/**
+	 * Return loan request creation input schema.
+	 *
+	 * @return array
+	 */
+	private function get_create_loan_request_input_schema() {
+		return array(
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => array(
+				'asset_id'        => array(
+					'type'        => 'integer',
+					'minimum'     => 1,
+					'description' => __( 'Asset post ID for the requested loan.', 'asset-lending-manager' ),
+				),
+				'request_message' => array(
+					'type'        => 'string',
+					'description' => __( 'Message explaining why the asset is requested.', 'asset-lending-manager' ),
+				),
+			),
+			'required'             => array( 'asset_id', 'request_message' ),
+		);
+	}
+
+	/**
 	 * Normalize a request status input.
 	 *
 	 * @param mixed $input Ability input.
@@ -660,7 +840,11 @@ class ALMGR_Abilities_Manager {
 	 */
 	private function normalize_status_input( $input ) {
 		$input = is_array( $input ) ? $input : array();
-		return array( 'status' => isset( $input['status'] ) ? sanitize_key( $input['status'] ) : '' );
+		return array(
+			'status'   => isset( $input['status'] ) ? sanitize_key( $input['status'] ) : '',
+			'page'     => isset( $input['page'] ) ? max( 1, (int) $input['page'] ) : 1,
+			'per_page' => isset( $input['per_page'] ) ? min( 100, max( 1, (int) $input['per_page'] ) ) : 20,
+		);
 	}
 
 	/**
@@ -679,6 +863,8 @@ class ALMGR_Abilities_Manager {
 		return array(
 			'asset_id' => $asset_id,
 			'status'   => $input['status'],
+			'page'     => $input['page'],
+			'per_page' => $input['per_page'],
 		);
 	}
 

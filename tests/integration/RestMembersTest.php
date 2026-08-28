@@ -441,6 +441,9 @@ class ALMGR_REST_Members_Integration_Test extends WP_UnitTestCase {
 		$this->assertInstanceOf( WP_REST_Response::class, $response );
 		$data = $response->get_data();
 		$this->assertCount( count( $shared->get_items() ), $data['data'] );
+		$this->assertSame( 1, $data['total'] );
+		$this->assertSame( 1, $data['page'] );
+		$this->assertSame( 1, $data['pages'] );
 		$this->assertSame( $asset_id, (int) $data['data'][0]['asset_id'] );
 		$this->assertSame( 'REST request test', $data['data'][0]['request_message'] );
 	}

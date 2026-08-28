@@ -44,7 +44,7 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 		$asset_details = new ALMGR_Asset_Detail_Service( $asset_reads );
 		$asset_history = new ALMGR_Asset_History_Service( $loan_manager );
 		$member_assets = new ALMGR_Member_Assets_Service( $asset_reads, new ALMGR_Access_Policy() );
-		$this->abilities = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history, $member_assets );
+		$this->abilities = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history, $member_assets, null, null, $loan_manager );
 
 		if ( ! wp_get_ability( 'almgr/list-assets' ) ) {
 			$this->abilities->register();
@@ -76,13 +76,13 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Verify that the three first read-only abilities are registered and marked
+	 * Verify that the read-only abilities are registered and marked
 	 * as REST-visible and readonly.
 	 *
 	 * @return void
 	 */
 	public function test_read_only_abilities_are_registered_with_safe_metadata(): void {
-		foreach ( array( 'almgr/list-assets', 'almgr/get-asset', 'almgr/get-asset-loan-history', 'almgr/list-my-loan-requests', 'almgr/list-asset-loan-requests' ) as $ability_id ) {
+		foreach ( array( 'almgr/list-assets', 'almgr/get-asset', 'almgr/get-asset-loan-history', 'almgr/list-my-loan-requests', 'almgr/list-asset-loan-requests', 'almgr/get-loan-request' ) as $ability_id ) {
 			$ability = wp_get_ability( $ability_id );
 			$this->assertNotNull( $ability );
 			$this->assertSame( true, $ability->get_meta()['show_in_rest'] );
@@ -197,9 +197,93 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 		$shared = $query->get_for_user( $member_id );
 		$mine   = wp_get_ability( 'almgr/list-my-loan-requests' )->execute();
 		$asset  = wp_get_ability( 'almgr/list-asset-loan-requests' )->execute( array( 'asset_id' => $asset_id ) );
+		if ( is_wp_error( $asset ) ) {
+			$this->fail(
+				sprintf(
+					'list-asset-loan-requests failed with %s: %s',
+					$asset->get_error_code(),
+					$asset->get_error_message()
+				)
+			);
+		}
 
 		$this->assertSame( count( $shared->get_items() ), count( $mine['data'] ) );
+		$this->assertSame( 1, $mine['total'] );
+		$this->assertSame( 1, $mine['page'] );
+		$this->assertSame( 1, $mine['pages'] );
 		$this->assertSame( $asset_id, $asset['data'][0]['asset_id'] );
+		$this->assertSame( 1, $asset['total'] );
 		$this->assertSame( 'Ability request test', $asset['data'][0]['request_message'] );
+	}
+
+	/**
+	 * Verify loan request creation uses the authenticated actor and shared workflow.
+	 *
+	 * @return void
+	 */
+	public function test_create_loan_request_ability_uses_shared_workflow(): void {
+		global $wpdb;
+
+		$member_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id  = $this->create_asset();
+		wp_set_current_user( $member_id );
+
+		$ability = wp_get_ability( 'almgr/create-loan-request' );
+		$this->assertNotNull( $ability );
+		$this->assertSame( false, $ability->get_meta()['annotations']['readonly'] );
+
+		$result = $ability->execute(
+			array(
+				'asset_id'        => $asset_id,
+				'request_message' => 'Ability create request test',
+			)
+		);
+
+		$this->assertIsArray( $result );
+		$this->assertSame( $asset_id, $result['asset_id'] );
+		$this->assertSame( 0, $result['owner_id'] );
+
+		$request_row = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT * FROM %i WHERE id = %d',
+				$wpdb->prefix . 'almgr_loan_requests',
+				(int) $result['request_id']
+			)
+		);
+
+		$this->assertNotNull( $request_row );
+		$this->assertSame( 'pending', $request_row->status );
+	}
+
+	/**
+	 * Verify a requester can read the loan request through the shared policy.
+	 *
+	 * @return void
+	 */
+	public function test_get_loan_request_ability_respects_request_visibility(): void {
+		global $wpdb;
+
+		$member_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id  = $this->create_asset();
+		$wpdb->insert(
+			$wpdb->prefix . 'almgr_loan_requests',
+			array(
+				'asset_id'        => $asset_id,
+				'requester_id'    => $member_id,
+				'owner_id'        => 0,
+				'request_date'    => current_time( 'mysql' ),
+				'request_message' => 'Ability detail request test',
+				'status'          => 'pending',
+			),
+			array( '%d', '%d', '%d', '%s', '%s', '%s' )
+		);
+		$request_id = (int) $wpdb->insert_id;
+		wp_set_current_user( $member_id );
+
+		$result = wp_get_ability( 'almgr/get-loan-request' )->execute( array( 'loan_request_id' => $request_id ) );
+
+		$this->assertIsArray( $result );
+		$this->assertSame( $request_id, $result['id'] );
+		$this->assertSame( 'Ability detail request test', $result['request_message'] );
 	}
 }

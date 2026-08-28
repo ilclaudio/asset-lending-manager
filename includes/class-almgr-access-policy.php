@@ -57,4 +57,20 @@ class ALMGR_Access_Policy {
 
 		return user_can( $actor_id, ALMGR_EDIT_ASSET ) || (int) get_post_meta( $asset_id, '_almgr_current_owner', true ) === $actor_id;
 	}
+
+	/**
+	 * Determine whether an actor may view one loan request.
+	 *
+	 * @param int    $actor_id Authenticated actor user ID.
+	 * @param object $request  Loan request record.
+	 * @return bool
+	 */
+	public function can_view_loan_request( $actor_id, $request ) {
+		$actor_id = absint( $actor_id );
+		if ( $actor_id <= 0 || ! is_object( $request ) || ! user_can( $actor_id, ALMGR_VIEW_ASSET ) ) {
+			return false;
+		}
+
+		return $actor_id === (int) $request->requester_id || $this->can_view_asset_requests( $actor_id, $request->asset_id );
+	}
 }

@@ -474,7 +474,20 @@ class ALMGR_REST_Manager {
 	 */
 	private function get_loan_requests_args() {
 		return array(
-			'status' => array(
+			'page'     => array(
+				'type'              => 'integer',
+				'default'           => 1,
+				'minimum'           => 1,
+				'sanitize_callback' => 'absint',
+			),
+			'per_page' => array(
+				'type'              => 'integer',
+				'default'           => 20,
+				'minimum'           => 1,
+				'maximum'           => 100,
+				'sanitize_callback' => 'absint',
+			),
+			'status'   => array(
 				'type'              => 'string',
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_key',
@@ -667,10 +680,15 @@ class ALMGR_REST_Manager {
 	 * @return WP_REST_Response
 	 */
 	public function get_my_loan_requests( WP_REST_Request $request ) {
-		$result = $this->request_query->get_for_user( get_current_user_id(), (string) $request->get_param( 'status' ) );
+		$result = $this->request_query->get_for_user(
+			get_current_user_id(),
+			(string) $request->get_param( 'status' ),
+			max( 1, (int) $request->get_param( 'page' ) ),
+			$this->clamp_per_page( (int) $request->get_param( 'per_page' ) )
+		);
 
 		return new WP_REST_Response(
-			array( 'data' => array_map( array( $this, 'project_loan_request' ), $result->get_items() ) ),
+			$this->prepare_loan_requests_response( $result ),
 			200
 		);
 	}
@@ -682,10 +700,15 @@ class ALMGR_REST_Manager {
 	 * @return WP_REST_Response
 	 */
 	public function get_asset_loan_requests( WP_REST_Request $request ) {
-		$result = $this->request_query->get_for_asset( (int) $request->get_param( 'id' ), (string) $request->get_param( 'status' ) );
+		$result = $this->request_query->get_for_asset(
+			(int) $request->get_param( 'id' ),
+			(string) $request->get_param( 'status' ),
+			max( 1, (int) $request->get_param( 'page' ) ),
+			$this->clamp_per_page( (int) $request->get_param( 'per_page' ) )
+		);
 
 		return new WP_REST_Response(
-			array( 'data' => array_map( array( $this, 'project_loan_request' ), $result->get_items() ) ),
+			$this->prepare_loan_requests_response( $result ),
 			200
 		);
 	}
@@ -795,6 +818,21 @@ class ALMGR_REST_Manager {
 	 */
 	private function project_loan_request( $request ) {
 		return $this->request_query->project( $request );
+	}
+
+	/**
+	 * Build the paginated loan request response.
+	 *
+	 * @param ALMGR_Loan_Request_Query_Result $result Shared query result.
+	 * @return array
+	 */
+	private function prepare_loan_requests_response( $result ) {
+		return array(
+			'data'  => array_map( array( $this, 'project_loan_request' ), $result->get_items() ),
+			'total' => $result->get_total(),
+			'page'  => $result->get_page(),
+			'pages' => $result->get_pages(),
+		);
 	}
 
 	/**
