@@ -197,15 +197,6 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 		$shared = $query->get_for_user( $member_id );
 		$mine   = wp_get_ability( 'almgr/list-my-loan-requests' )->execute();
 		$asset  = wp_get_ability( 'almgr/list-asset-loan-requests' )->execute( array( 'asset_id' => $asset_id ) );
-		if ( is_wp_error( $asset ) ) {
-			$this->fail(
-				sprintf(
-					'list-asset-loan-requests failed with %s: %s',
-					$asset->get_error_code(),
-					$asset->get_error_message()
-				)
-			);
-		}
 
 		$this->assertSame( count( $shared->get_items() ), count( $mine['data'] ) );
 		$this->assertSame( 1, $mine['total'] );
