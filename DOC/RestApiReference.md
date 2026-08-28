@@ -111,6 +111,62 @@ Returns assets currently on loan to a specific member.
 
 ---
 
+### GET /me/loan-requests
+
+Returns the loan requests created by the authenticated user.
+
+**Capability required:** `almgr_view_asset`
+
+**Query parameters:**
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `page` | integer | 1 | Page number (minimum 1) |
+| `per_page` | integer | 20 | Results per page (1–100) |
+| `status` | string | — | Optional status filter |
+
+**Response:** An object containing the paginated shared request result:
+
+```json
+{
+  "data": [
+    {
+      "id": 42,
+      "asset_id": 17,
+      "requester_id": 8,
+      "owner_id": 0,
+      "request_date": "2026-08-28 10:30:00",
+      "request_message": "Request message",
+      "status": "pending"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "pages": 1
+}
+```
+
+---
+
+### GET /assets/{id}/loan-requests
+
+Returns the loan requests visible for an asset. Members can access this
+resource only when they are the current owner; operators and administrators
+may access it according to `almgr_view_asset` and the shared asset-request
+visibility policy.
+
+**Capability required:** `almgr_view_asset`, plus asset-request visibility.
+
+**Path parameter:** `id` — asset post ID (integer).
+
+**Query parameters:** The same `page`, `per_page`, and `status` parameters as
+`GET /me/loan-requests`.
+
+**Response:** The same paginated object with `data`, `total`, `page`, and
+`pages`. Request items use the same fields shown above.
+
+---
+
 ### POST /assets/autocomplete
 
 Asset search endpoint for the frontend autocomplete widget.
@@ -180,4 +236,4 @@ curl -u "username:xxxx xxxx xxxx xxxx xxxx xxxx" \
 
 ---
 
-*Last update: 2026-07-01 (rev 2)*
+*Last update: 2026-08-28 (rev 3)*
