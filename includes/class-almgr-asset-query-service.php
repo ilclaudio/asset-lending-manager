@@ -17,8 +17,6 @@ class ALMGR_Asset_Query_Service {
 	 *
 	 * @var int
 	 */
-	const MAX_PER_PAGE = 100;
-
 	/**
 	 * Query published assets with the supported catalog filters.
 	 *
@@ -26,9 +24,9 @@ class ALMGR_Asset_Query_Service {
 	 * @return ALMGR_Asset_Query_Result
 	 */
 	public function get_assets( array $filters = array() ) {
-		$page               = max( 1, absint( $filters['page'] ?? 1 ) );
-		$requested_per_page = isset( $filters['per_page'] ) ? (int) $filters['per_page'] : self::MAX_PER_PAGE;
-		$per_page           = -1 === $requested_per_page ? -1 : min( self::MAX_PER_PAGE, max( 1, absint( $requested_per_page ) ) );
+		$page               = ALMGR_Pagination::normalize_page( $filters['page'] ?? 1 );
+		$requested_per_page = $filters['per_page'] ?? ALMGR_Pagination::MAX_PER_PAGE;
+		$per_page           = ALMGR_Pagination::normalize_per_page( $requested_per_page, true );
 		$search             = isset( $filters['search'] ) ? sanitize_text_field( (string) $filters['search'] ) : '';
 		$search             = mb_substr( $search, 0, 200 );
 

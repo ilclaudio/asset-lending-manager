@@ -25,6 +25,7 @@ require 'plugin-config.php';
 // Load classes.
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-logger.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-plugin-manager.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-pagination.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-settings-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-role-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-manager.php';
@@ -41,6 +42,7 @@ require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-member-assets-service.php'
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-loan-request-query-result.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-loan-request-query-service.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-loan-manager.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-active-loan-count-service.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-notification-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-frontend-manager.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-admin-manager.php';

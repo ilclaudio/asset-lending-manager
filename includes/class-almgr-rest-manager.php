@@ -39,20 +39,6 @@ class ALMGR_REST_Manager {
 	const API_NAMESPACE = 'almgr/v1';
 
 	/**
-	 * Default number of items per page for paginated responses.
-	 *
-	 * @var int
-	 */
-	const DEFAULT_PER_PAGE = 20;
-
-	/**
-	 * Maximum number of items per page accepted from callers.
-	 *
-	 * @var int
-	 */
-	const MAX_PER_PAGE = 100;
-
-	/**
 	 * Settings manager instance.
 	 *
 	 * @var ALMGR_Settings_Manager
@@ -101,6 +87,13 @@ class ALMGR_REST_Manager {
 	 */
 	private $access_policy;
 
+	/**
+	 * Shared active-loan count service.
+	 *
+	 * @var ALMGR_Active_Loan_Count_Service
+	 */
+	private $active_loan_counts;
+
 	// -------------------------------------------------------------------------
 	// Lifecycle
 	// -------------------------------------------------------------------------
@@ -115,15 +108,17 @@ class ALMGR_REST_Manager {
 	 * @param ALMGR_Member_Assets_Service      $member_assets Shared member-held asset service.
 	 * @param ALMGR_Loan_Request_Query_Service $request_query Shared request query service.
 	 * @param ALMGR_Access_Policy              $access_policy Shared access policy.
+	 * @param ALMGR_Active_Loan_Count_Service  $active_loan_counts Shared active-loan count service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets, $request_query = null, $access_policy = null ) {
-		$this->settings      = $settings;
-		$this->asset_reads   = $asset_reads;
-		$this->asset_details = $asset_details;
-		$this->asset_history = $asset_history;
-		$this->member_assets = $member_assets;
-		$this->request_query = $request_query instanceof ALMGR_Loan_Request_Query_Service ? $request_query : new ALMGR_Loan_Request_Query_Service();
-		$this->access_policy = $access_policy instanceof ALMGR_Access_Policy ? $access_policy : new ALMGR_Access_Policy();
+	public function __construct( ALMGR_Settings_Manager $settings, ALMGR_Asset_Read_Service $asset_reads, ALMGR_Asset_Detail_Service $asset_details, ALMGR_Asset_History_Service $asset_history, ALMGR_Member_Assets_Service $member_assets, $request_query = null, $access_policy = null, $active_loan_counts = null ) {
+		$this->settings           = $settings;
+		$this->asset_reads        = $asset_reads;
+		$this->asset_details      = $asset_details;
+		$this->asset_history      = $asset_history;
+		$this->member_assets      = $member_assets;
+		$this->request_query      = $request_query instanceof ALMGR_Loan_Request_Query_Service ? $request_query : new ALMGR_Loan_Request_Query_Service();
+		$this->access_policy      = $access_policy instanceof ALMGR_Access_Policy ? $access_policy : new ALMGR_Access_Policy();
+		$this->active_loan_counts = $active_loan_counts instanceof ALMGR_Active_Loan_Count_Service ? $active_loan_counts : new ALMGR_Active_Loan_Count_Service();
 	}
 
 	/**
@@ -361,9 +356,9 @@ class ALMGR_REST_Manager {
 			),
 			'per_page'  => array(
 				'type'              => 'integer',
-				'default'           => self::DEFAULT_PER_PAGE,
+				'default'           => ALMGR_Pagination::DEFAULT_PER_PAGE,
 				'minimum'           => 1,
-				'maximum'           => self::MAX_PER_PAGE,
+				'maximum'           => ALMGR_Pagination::MAX_PER_PAGE,
 				'sanitize_callback' => 'absint',
 			),
 			'search'    => array(
@@ -422,9 +417,9 @@ class ALMGR_REST_Manager {
 			),
 			'per_page' => array(
 				'type'              => 'integer',
-				'default'           => self::DEFAULT_PER_PAGE,
+				'default'           => ALMGR_Pagination::DEFAULT_PER_PAGE,
 				'minimum'           => 1,
-				'maximum'           => self::MAX_PER_PAGE,
+				'maximum'           => ALMGR_Pagination::MAX_PER_PAGE,
 				'sanitize_callback' => 'absint',
 			),
 			'search'   => array(
@@ -459,9 +454,9 @@ class ALMGR_REST_Manager {
 			),
 			'per_page' => array(
 				'type'              => 'integer',
-				'default'           => self::DEFAULT_PER_PAGE,
+				'default'           => ALMGR_Pagination::DEFAULT_PER_PAGE,
 				'minimum'           => 1,
-				'maximum'           => self::MAX_PER_PAGE,
+				'maximum'           => ALMGR_Pagination::MAX_PER_PAGE,
 				'sanitize_callback' => 'absint',
 			),
 		);
@@ -482,9 +477,9 @@ class ALMGR_REST_Manager {
 			),
 			'per_page' => array(
 				'type'              => 'integer',
-				'default'           => 20,
+				'default'           => ALMGR_Pagination::DEFAULT_PER_PAGE,
 				'minimum'           => 1,
-				'maximum'           => 100,
+				'maximum'           => ALMGR_Pagination::MAX_PER_PAGE,
 				'sanitize_callback' => 'absint',
 			),
 			'status'   => array(
@@ -508,7 +503,7 @@ class ALMGR_REST_Manager {
 	 * @return WP_REST_Response
 	 */
 	public function get_assets( WP_REST_Request $request ) {
-		$page     = max( 1, (int) $request->get_param( 'page' ) );
+		$page     = ALMGR_Pagination::normalize_page( $request->get_param( 'page' ) );
 		$per_page = $this->clamp_per_page( (int) $request->get_param( 'per_page' ) );
 
 		$result = $this->asset_reads->get_assets(
@@ -577,7 +572,7 @@ class ALMGR_REST_Manager {
 	 * @return WP_REST_Response
 	 */
 	public function get_members( WP_REST_Request $request ) {
-		$page     = max( 1, (int) $request->get_param( 'page' ) );
+		$page     = ALMGR_Pagination::normalize_page( $request->get_param( 'page' ) );
 		$per_page = $this->clamp_per_page( (int) $request->get_param( 'per_page' ) );
 		$offset   = ( $page - 1 ) * $per_page;
 
@@ -607,7 +602,7 @@ class ALMGR_REST_Manager {
 
 		$users       = $user_query->get_results();
 		$user_ids    = wp_list_pluck( $users, 'ID' );
-		$loan_counts = $this->batch_active_loan_counts( $user_ids );
+		$loan_counts = $this->active_loan_counts->count_for_users( $user_ids );
 
 		$items = array();
 		foreach ( $users as $user ) {
@@ -661,7 +656,7 @@ class ALMGR_REST_Manager {
 			$member_id,
 			$member_id,
 			array(
-				'page'     => max( 1, (int) $request->get_param( 'page' ) ),
+				'page'     => ALMGR_Pagination::normalize_page( $request->get_param( 'page' ) ),
 				'per_page' => $this->clamp_per_page( (int) $request->get_param( 'per_page' ) ),
 			)
 		);
@@ -683,7 +678,7 @@ class ALMGR_REST_Manager {
 		$result = $this->request_query->get_for_user(
 			get_current_user_id(),
 			(string) $request->get_param( 'status' ),
-			max( 1, (int) $request->get_param( 'page' ) ),
+			ALMGR_Pagination::normalize_page( $request->get_param( 'page' ) ),
 			$this->clamp_per_page( (int) $request->get_param( 'per_page' ) )
 		);
 
@@ -703,7 +698,7 @@ class ALMGR_REST_Manager {
 		$result = $this->request_query->get_for_asset(
 			(int) $request->get_param( 'id' ),
 			(string) $request->get_param( 'status' ),
-			max( 1, (int) $request->get_param( 'page' ) ),
+			ALMGR_Pagination::normalize_page( $request->get_param( 'page' ) ),
 			$this->clamp_per_page( (int) $request->get_param( 'per_page' ) )
 		);
 
@@ -855,7 +850,7 @@ class ALMGR_REST_Manager {
 			}
 		}
 
-		$active_loans = isset( $loan_counts[ $user->ID ] ) ? (int) $loan_counts[ $user->ID ] : $this->count_active_loans( $user->ID );
+		$active_loans = isset( $loan_counts[ $user->ID ] ) ? (int) $loan_counts[ $user->ID ] : $this->active_loan_counts->count_for_user( $user->ID );
 
 		return array(
 			'id'                 => $user->ID,
@@ -944,87 +939,6 @@ class ALMGR_REST_Manager {
 	 * @return int
 	 */
 	private function clamp_per_page( $value ) {
-		return min( self::MAX_PER_PAGE, max( 1, (int) $value ) );
-	}
-
-	/**
-	 * Return a map of active-loan counts for multiple users in a single query.
-	 *
-	 * Replaces N individual count_active_loans() calls with one grouped $wpdb query,
-	 * eliminating the N+1 pattern in get_members().
-	 *
-	 * @param int[] $user_ids Array of WordPress user IDs.
-	 * @return array<int,int> Map of user_id => active loan count. Missing users have count 0.
-	 */
-	private function batch_active_loan_counts( array $user_ids ) {
-		if ( empty( $user_ids ) ) {
-			return array();
-		}
-
-		global $wpdb;
-
-		$user_ids = array_values( array_unique( array_filter( array_map( 'absint', $user_ids ) ) ) );
-		if ( empty( $user_ids ) ) {
-			return array();
-		}
-
-		$asset_cpt    = ALMGR_ASSET_CPT_SLUG;
-		$placeholders = implode( ', ', array_fill( 0, count( $user_ids ), '%d' ) );
-		$query_args   = array_merge(
-			array(
-				'_almgr_current_owner',
-				'publish',
-				$asset_cpt,
-			),
-			$user_ids
-		);
-		$sql          = "SELECT pm.meta_value AS owner_id, COUNT(*) AS loan_count
-			FROM {$wpdb->postmeta} pm
-			INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-			WHERE pm.meta_key = %s
-			  AND p.post_status = %s
-			  AND p.post_type = %s
-			  AND pm.meta_value IN ( $placeholders )
-			GROUP BY pm.meta_value"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Dynamic placeholder list is generated from sanitized integer IDs only.
-
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$rows = $wpdb->get_results(
-			$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- Variadic replacements match the generated placeholder list at runtime.
-				$sql, // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query string is stored in $sql only to isolate a documented dynamic placeholder list.
-				...$query_args
-			)
-		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		$counts = array();
-		foreach ( $rows as $row ) {
-			$counts[ (int) $row->owner_id ] = (int) $row->loan_count;
-		}
-
-		return $counts;
-	}
-
-	/**
-	 * Count assets currently assigned to a given user.
-	 *
-	 * @param int $user_id WordPress user ID.
-	 * @return int
-	 */
-	private function count_active_loans( $user_id ) {
-		$query = new WP_Query(
-			array(
-				'post_type'      => ALMGR_ASSET_CPT_SLUG,
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Active loan counts are scoped to one owner and use IDs only.
-					array(
-						'key'   => '_almgr_current_owner',
-						'value' => $user_id,
-				),
-				),
-			)
-		);
-		return (int) $query->found_posts;
+		return ALMGR_Pagination::normalize_per_page( $value );
 	}
 }

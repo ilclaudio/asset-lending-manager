@@ -137,7 +137,8 @@ class ALMGR_Plugin_Manager {
 			$settings      = new ALMGR_Settings_Manager();
 			$role          = new ALMGR_Role_Manager();
 			$request_query = new ALMGR_Loan_Request_Query_Service();
-			$loan          = new ALMGR_Loan_Manager( $settings, $request_query );
+			$active_loans  = new ALMGR_Active_Loan_Count_Service();
+			$loan          = new ALMGR_Loan_Manager( $settings, $request_query, $active_loans );
 			$asset_queries = new ALMGR_Asset_Query_Service();
 			$asset_reads   = new ALMGR_Asset_Read_Service( $asset_queries );
 			$asset_details = new ALMGR_Asset_Detail_Service( $asset_reads );
@@ -156,7 +157,7 @@ class ALMGR_Plugin_Manager {
 				'admin'         => new ALMGR_Admin_Manager(),
 				'tools'         => new ALMGR_Tools_Manager(),
 				'autocomplete'  => new ALMGR_Autocomplete_Manager( $settings ),
-				'rest'          => new ALMGR_REST_Manager( $settings, $asset_reads, $asset_details, $asset_history, $member_assets, $request_query, $access_policy ),
+				'rest'          => new ALMGR_REST_Manager( $settings, $asset_reads, $asset_details, $asset_history, $member_assets, $request_query, $access_policy, $active_loans ),
 				'abilities'     => $abilities,
 				'contact'       => new ALMGR_Contact_Manager( $settings, $role ),
 			);

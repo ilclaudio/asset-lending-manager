@@ -315,6 +315,7 @@ if ( ! function_exists( 'delete_option' ) ) {
 }
 
 require_once dirname( __DIR__ ) . '/plugin-config.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-pagination.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-settings-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-asset-query-result.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-asset-query-service.php';
@@ -330,6 +331,7 @@ require_once dirname( __DIR__ ) . '/includes/class-almgr-loan-request-query-resu
 require_once dirname( __DIR__ ) . '/includes/class-almgr-loan-request-query-service.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-frontend-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-loan-manager.php';
+require_once dirname( __DIR__ ) . '/includes/class-almgr-active-loan-count-service.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-notification-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-tools-manager.php';
 require_once dirname( __DIR__ ) . '/includes/class-almgr-autocomplete-manager.php';

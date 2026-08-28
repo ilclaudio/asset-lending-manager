@@ -37,10 +37,10 @@ class ALMGR_Asset_History_Service {
 	 * @param int $page     Current page.
 	 * @return ALMGR_Asset_History_Result
 	 */
-	public function get_history( $asset_id, $user_id = 0, $per_page = 20, $page = 1 ) {
+	public function get_history( $asset_id, $user_id = 0, $per_page = ALMGR_Pagination::DEFAULT_PER_PAGE, $page = 1 ) {
 		$asset_id = absint( $asset_id );
-		$per_page = max( 1, (int) $per_page );
-		$page     = max( 1, (int) $page );
+		$per_page = ALMGR_Pagination::normalize_per_page( $per_page );
+		$page     = ALMGR_Pagination::normalize_page( $page );
 
 		$result = $this->loan_manager->get_asset_history_paginated( $asset_id, $per_page, $page, (int) $user_id );
 		$total  = isset( $result['total'] ) ? (int) $result['total'] : 0;

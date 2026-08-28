@@ -571,8 +571,8 @@ class ALMGR_Abilities_Manager {
 	private function normalize_input( $input ) {
 		$input    = is_array( $input ) ? $input : array();
 		$defaults = array(
-			'page'      => 1,
-			'per_page'  => 20,
+			'page'      => ALMGR_Pagination::normalize_page( $input['page'] ?? 1 ),
+			'per_page'  => ALMGR_Pagination::normalize_per_page( $input['per_page'] ?? null ),
 			'search'    => '',
 			'state'     => '',
 			'type'      => '',
@@ -597,8 +597,8 @@ class ALMGR_Abilities_Manager {
 
 		return array(
 			'asset_id' => $input['asset_id'],
-			'page'     => isset( $input['page'] ) ? max( 1, (int) $input['page'] ) : 1,
-			'per_page' => isset( $input['per_page'] ) ? max( 1, (int) $input['per_page'] ) : 20,
+			'page'     => ALMGR_Pagination::normalize_page( $input['page'] ?? 1 ),
+			'per_page' => ALMGR_Pagination::normalize_per_page( $input['per_page'] ?? null ),
 		);
 	}
 
@@ -664,39 +664,31 @@ class ALMGR_Abilities_Manager {
 		return array(
 			'type'       => 'object',
 			'default'    => (object) array(),
-			'properties' => array(
-				'page'      => array(
-					'type'    => 'integer',
-					'minimum' => 1,
-					'default' => 1,
-				),
-				'per_page'  => array(
-					'type'    => 'integer',
-					'minimum' => 1,
-					'maximum' => 100,
-					'default' => 20,
-				),
-				'search'    => array(
-					'type'    => 'string',
-					'default' => '',
-				),
-				'state'     => array(
-					'type'    => 'string',
-					'default' => '',
-				),
-				'type'      => array(
-					'type'    => 'string',
-					'default' => '',
-				),
-				'structure' => array(
-					'type'    => 'string',
-					'default' => '',
-				),
-				'owner'     => array(
-					'type'    => 'integer',
-					'minimum' => 0,
-					'default' => 0,
-				),
+			'properties' => array_merge(
+				ALMGR_Pagination::input_schema(),
+				array(
+					'search'    => array(
+						'type'    => 'string',
+						'default' => '',
+					),
+					'state'     => array(
+						'type'    => 'string',
+						'default' => '',
+					),
+					'type'      => array(
+						'type'    => 'string',
+						'default' => '',
+					),
+					'structure' => array(
+						'type'    => 'string',
+						'default' => '',
+					),
+					'owner'     => array(
+						'type'    => 'integer',
+						'minimum' => 0,
+						'default' => 0,
+					),
+				)
 			),
 		);
 	}
@@ -709,22 +701,14 @@ class ALMGR_Abilities_Manager {
 	private function get_history_input_schema() {
 		return array(
 			'type'       => 'object',
-			'properties' => array(
-				'asset_id' => array(
-					'type'    => 'integer',
-					'minimum' => 1,
+			'properties' => array_merge(
+				array(
+					'asset_id' => array(
+						'type'    => 'integer',
+						'minimum' => 1,
+					),
 				),
-				'page'     => array(
-					'type'    => 'integer',
-					'minimum' => 1,
-					'default' => 1,
-				),
-				'per_page' => array(
-					'type'    => 'integer',
-					'minimum' => 1,
-					'maximum' => 100,
-					'default' => 20,
-				),
+				ALMGR_Pagination::input_schema()
 			),
 			'required'   => array( 'asset_id' ),
 		);
@@ -739,19 +723,7 @@ class ALMGR_Abilities_Manager {
 		return array(
 			'type'       => 'object',
 			'default'    => (object) array(),
-			'properties' => array(
-				'page'     => array(
-					'type'    => 'integer',
-					'minimum' => 1,
-					'default' => 1,
-				),
-				'per_page' => array(
-					'type'    => 'integer',
-					'minimum' => 1,
-					'maximum' => 100,
-					'default' => 20,
-				),
-			),
+			'properties' => ALMGR_Pagination::input_schema(),
 		);
 	}
 
@@ -765,22 +737,14 @@ class ALMGR_Abilities_Manager {
 			'type'                 => 'object',
 			'default'              => (object) array(),
 			'additionalProperties' => false,
-			'properties'           => array(
-				'status'   => array(
-					'type'    => 'string',
-					'default' => '',
+			'properties'           => array_merge(
+				array(
+					'status' => array(
+						'type'    => 'string',
+						'default' => '',
+					),
 				),
-				'page'     => array(
-					'type'    => 'integer',
-					'minimum' => 1,
-					'default' => 1,
-				),
-				'per_page' => array(
-					'type'    => 'integer',
-					'minimum' => 1,
-					'maximum' => 100,
-					'default' => 20,
-				),
+				ALMGR_Pagination::input_schema()
 			),
 		);
 	}
@@ -842,8 +806,8 @@ class ALMGR_Abilities_Manager {
 		$input = is_array( $input ) ? $input : array();
 		return array(
 			'status'   => isset( $input['status'] ) ? sanitize_key( $input['status'] ) : '',
-			'page'     => isset( $input['page'] ) ? max( 1, (int) $input['page'] ) : 1,
-			'per_page' => isset( $input['per_page'] ) ? min( 100, max( 1, (int) $input['per_page'] ) ) : 20,
+			'page'     => ALMGR_Pagination::normalize_page( $input['page'] ?? 1 ),
+			'per_page' => ALMGR_Pagination::normalize_per_page( $input['per_page'] ?? null ),
 		);
 	}
 

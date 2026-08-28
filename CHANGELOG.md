@@ -22,7 +22,8 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 3) PHPUnit round-trip test for `almgr_get_allowed_html()` allowlist completeness (see `ISSUES_TODO.md`).
 4) Location content-type: default location (`almgr_warehouse` taxonomy; spec closed in `DEV/TODO/TODO_Warehouse_Location.md`, ready for implementation).
 5) Introduce return concept.
-
+6) REst procedure for e2e tests.
+7) Documentation for REST API and Abilities.
 
 
 ## [0.3.2] - 2026-08-21

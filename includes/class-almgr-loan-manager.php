@@ -56,16 +56,27 @@ class ALMGR_Loan_Manager {
 	private $request_query;
 
 	/**
+	 * Shared active-loan count service.
+	 *
+	 * @var ALMGR_Active_Loan_Count_Service
+	 */
+	private $active_loan_counts;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param ALMGR_Settings_Manager                $settings       Plugin settings instance.
 	 * @param ALMGR_Loan_Request_Query_Service|null $request_query Shared request read service.
+	 * @param ALMGR_Active_Loan_Count_Service|null  $active_loan_counts Shared active-loan count service.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, $request_query = null ) {
-		$this->settings      = $settings;
-		$this->request_query = $request_query instanceof ALMGR_Loan_Request_Query_Service
+	public function __construct( ALMGR_Settings_Manager $settings, $request_query = null, $active_loan_counts = null ) {
+		$this->settings           = $settings;
+		$this->request_query      = $request_query instanceof ALMGR_Loan_Request_Query_Service
 			? $request_query
 			: new ALMGR_Loan_Request_Query_Service();
+		$this->active_loan_counts = $active_loan_counts instanceof ALMGR_Active_Loan_Count_Service
+			? $active_loan_counts
+			: new ALMGR_Active_Loan_Count_Service();
 	}
 
 	/**
@@ -628,7 +639,7 @@ class ALMGR_Loan_Manager {
 		}
 
 		$max_active = (int) $this->settings->get( 'loans.max_active_per_user', 0 );
-		if ( $max_active > 0 && $this->count_active_loans_for_user( $requester_id ) >= $max_active ) {
+		if ( $max_active > 0 && $this->active_loan_counts->count_for_user( $requester_id ) >= $max_active ) {
 			return new WP_Error(
 				'almgr_active_loan_limit_reached',
 				sprintf(
@@ -792,31 +803,6 @@ class ALMGR_Loan_Manager {
 			)
 		);
 		return $count > 0;
-	}
-
-	/**
-	 * Count the number of assets currently on loan to a user.
-	 *
-	 * @param int $user_id User ID.
-	 * @return int Number of active loans.
-	 */
-	private function count_active_loans_for_user( $user_id ) {
-		$query = new WP_Query(
-			array(
-				'post_type'      => ALMGR_ASSET_CPT_SLUG,
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'meta_query'     => array(
-					array(
-						'key'   => '_almgr_current_owner',
-						'value' => $user_id,
-						'type'  => 'NUMERIC',
-					),
-				),
-			)
-		);
-		return (int) $query->found_posts;
 	}
 
 	/**
