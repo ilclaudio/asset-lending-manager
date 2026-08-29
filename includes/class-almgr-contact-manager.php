@@ -74,7 +74,7 @@ class ALMGR_Contact_Manager {
 
 		$asset_id = absint( wp_unslash( $_POST['asset_id'] ?? 0 ) );
 		$asset    = get_post( $asset_id );
-		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
+		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type || 'publish' !== $asset->post_status ) {
 			wp_send_json_error(
 				array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ),
 				400
