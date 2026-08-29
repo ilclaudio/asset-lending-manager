@@ -91,7 +91,7 @@ class ALMGR_Asset_Manager {
 			)
 		);
 		// Replace the default taxonomy checkbox metabox with a single-select field.
-		add_action( 'add_meta_boxes_' . ALMGR_ASSET_CPT_SLUG, array( $this, 'replace_warehouse_meta_box' ), 20 );
+		add_action( 'add_meta_boxes', array( $this, 'replace_warehouse_meta_box' ), 99 );
 		// Propagate a kit's warehouse to its currently included components on save.
 		add_action( 'save_post_' . ALMGR_ASSET_CPT_SLUG, array( $this, 'propagate_warehouse_to_kit_components' ), 20 );
 		// When enabled, ensure every saved asset has one warehouse.
@@ -120,9 +120,14 @@ class ALMGR_Asset_Manager {
 	/**
 	 * Replace the default warehouse taxonomy metabox with the single-select version.
 	 *
+	 * @param string $post_type Current post type.
 	 * @return void
 	 */
-	public function replace_warehouse_meta_box() {
+	public function replace_warehouse_meta_box( $post_type = '' ) {
+		if ( ALMGR_ASSET_CPT_SLUG !== $post_type ) {
+			return;
+		}
+
 		remove_meta_box( ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . 'div', ALMGR_ASSET_CPT_SLUG, 'side' );
 		remove_meta_box( ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . 'div', ALMGR_ASSET_CPT_SLUG, 'normal' );
 		remove_meta_box( ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . 'div', ALMGR_ASSET_CPT_SLUG, 'advanced' );
@@ -337,9 +342,9 @@ class ALMGR_Asset_Manager {
 					'singular_name' => __( 'Asset Warehouse', 'asset-lending-manager' ),
 				),
 				'hierarchical'      => true,
-				'show_ui'           => true,
-				'show_in_rest'      => true,
-				'show_admin_column' => true,
+				'show_ui'           => self::is_warehouse_enabled(),
+				'show_in_rest'      => self::is_warehouse_enabled(),
+				'show_admin_column' => self::is_warehouse_enabled(),
 				'meta_box_cb'       => array( __CLASS__, 'render_warehouse_meta_box' ),
 				'capabilities'      => array(
 					'manage_terms' => ALMGR_EDIT_ASSET,
