@@ -34,6 +34,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - New `almgr_warehouse` taxonomy: the asset's administrative home location, independent from the existing dynamic `almgr_location` field. Includes default term seeding, member-only exposure in the frontend/REST/Abilities, a frontend catalog filter, a wp-admin list filter, and automatic propagation from a Kit to its currently included components on save.
 - New cooperative "Return asset" action (`ALMGR_Loan_Manager::return_asset()`, AJAX `almgr_return_asset`): a dedicated form on the asset detail page that closes an active loan, distinct from the existing operator-only forced return — its own history status (`returned`) and hook (`almgr_asset_returned`), with the location field pre-filled from the asset's warehouse when one is assigned.
 - New setting `workflow.member_return_enabled` (default off, **ALM > Settings > Automations**) letting operators allow members to return the asset they currently hold, in addition to operators.
+- Cooperative returns notify all operators by email (new `returned_to_operators` template), since the actor may be the borrower themselves.
 
 ### Changed
 - REST and Abilities reference documentation aligned with the implemented pagination defaults, filters, response types, and error codes.

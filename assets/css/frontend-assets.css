@@ -42,6 +42,8 @@
 		--almgr-status-to-retired-text:     #343a40;
 		--almgr-status-to-available-bg:     #d6f1df;  /* same green as approved — restoration is positive */
 		--almgr-status-to-available-text:   #155724;
+		--almgr-status-returned-bg:         #d6f1df;  /* same green as approved/to_available — a completed return is positive */
+		--almgr-status-returned-text:       #155724;
 	}
 
 	/* ========================================================================

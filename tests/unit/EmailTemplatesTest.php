@@ -53,6 +53,7 @@ class ALMGR_Email_Templates_Unit_Test extends TestCase {
 			'direct_assign',
 			'direct_assign_to_prev_owner',
 			'force_return',
+			'returned_to_operators',
 			'contact_message',
 		);
 
@@ -116,6 +117,7 @@ class ALMGR_Email_Templates_Unit_Test extends TestCase {
 			'direct_assign'               => array( '{ASSIGNEE_NAME}', '{ASSET_TITLE}', '{ACTOR_NAME}', '{REASON}', '{ASSET_URL}' ),
 			'direct_assign_to_prev_owner' => array( '{PREV_OWNER_NAME}', '{ASSET_TITLE}', '{ASSIGNEE_NAME}', '{ACTOR_NAME}', '{REASON}', '{ASSET_URL}' ),
 			'force_return'                => array( '{BORROWER_NAME}', '{ASSET_TITLE}', '{ACTOR_NAME}', '{NOTES}', '{ASSET_URL}' ),
+			'returned_to_operators'       => array( '{ACTOR_NAME}', '{ASSET_TITLE}', '{NOTES}', '{ASSET_URL}' ),
 			'contact_message'             => array( '{SENDER_NAME}', '{ASSET_TITLE}', '{MESSAGE}', '{ASSET_URL}' ),
 		);
 

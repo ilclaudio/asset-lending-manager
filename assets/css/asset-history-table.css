@@ -161,6 +161,11 @@
 	color: var(--almgr-status-to-available-text);
 }
 
+.almgr-status-badge.almgr-status--returned {
+	background-color: var(--almgr-status-returned-bg);
+	color: var(--almgr-status-returned-text);
+}
+
 .almgr-history-message {
 	max-width: 36rem;
 }

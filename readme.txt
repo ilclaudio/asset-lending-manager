@@ -26,11 +26,13 @@ Born within an association of amateur astronomers to manage telescopes and equip
 
 == Features ==
 * Asset and kit management (a kit is a group of items lent together as a set)
-* Public browsing page with search, taxonomy filters, QR labels, and QR scanner lookup
+* Public browsing page with search, taxonomy filters (including member-only warehouse filtering), QR labels, and QR scanner lookup
+* Asset warehouse (`almgr_warehouse`) with automatic Kit to component propagation
 * Loan request workflow with approval, rejection, direct assignment, and configurable cancellation of competing pending requests
 * Optional contact form to send email messages to the current asset owner
 * Email notifications for the main loan workflow events
 * Frontend asset state management for operators: set maintenance or retired, force-return on-loan assets, and restore assets to available
+* Cooperative asset return from the frontend, distinct from operator force-return; optionally available to the current-owner member
 * Full loan history, plus a dedicated full asset history page for operators via `[almgr_asset_history]`
 * Two user roles included: Member and Operator
 * Read-only REST API for external integrations (asset catalog, member assets, loan requests); see DOC/REST_API_REFERENCE.md

@@ -13,13 +13,15 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 ## Features
 
 - Asset and kit management
-- Frontend asset browsing with filters (type, state, structure, search)
+- Frontend asset browsing with filters (type, state, structure, warehouse, search)
+- Asset warehouse (`almgr_warehouse`) with member-only visibility and automatic Kit → component propagation
 - QR code generation and print label from asset detail page
 - QR scanner from asset list (camera-based quick lookup)
 - Loan request workflow (submit, approve, reject)
 - Direct assignment by operator/admin (reason is mandatory; max length is configurable)
 - Automatic cancellation of concurrent pending requests after assignment (configurable)
 - Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; location field required on every state change
+- Cooperative asset return from frontend, distinct from operator force-return; optionally available to the current-owner member
 - Optional contact form to send email messages to the current asset owner
 - Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
 - Loan history tracking
@@ -73,8 +75,9 @@ QR features use bundled JavaScript libraries:
 6. Operators/admins can directly assign any asset that is not retired or under maintenance (when direct assignment is enabled).
 7. Operators can change asset state (→ maintenance, → retired) from the frontend, providing a location and optional notes.
 8. Operators can force-return an on-loan asset to available directly from the frontend; this closes the active loan, clears the owner, and notifies the borrower.
-9. Assets in maintenance or retired state can be restored to available by operators.
-10. All decisions, assignments, and state changes are recorded in loan history.
+9. Operators can cooperatively return an on-loan asset; members can do so when enabled and only for assets they currently hold.
+10. Assets in maintenance or retired state can be restored to available by operators.
+11. All decisions, assignments, returns, and state changes are recorded in loan history.
 
 For detailed documentation, see the `DOC/` folder:
 - `DOC/RolePermissionsMatrix.md` — role/operation permission matrix

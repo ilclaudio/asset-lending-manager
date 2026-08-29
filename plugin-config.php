@@ -106,6 +106,7 @@ function almgr_get_email_templates() {
 			'direct_assign'               => __( '[ALM] Asset assigned to you: {ASSET_TITLE}', 'asset-lending-manager' ),
 			'direct_assign_to_prev_owner' => __( '[ALM] Asset reassigned: {ASSET_TITLE}', 'asset-lending-manager' ),
 			'force_return'                => __( '[ALM] Asset returned: {ASSET_TITLE}', 'asset-lending-manager' ),
+			'returned_to_operators'       => __( '[ALM] Asset returned: {ASSET_TITLE}', 'asset-lending-manager' ),
 			'contact_message'             => __( '[ALM] Message from {SENDER_NAME} about {ASSET_TITLE}', 'asset-lending-manager' ),
 		),
 		'body'    => array(
@@ -141,6 +142,10 @@ function almgr_get_email_templates() {
 				"Hello {BORROWER_NAME},\n\nThe loan for \"{ASSET_TITLE}\" has been closed by the operator {ACTOR_NAME}.\n\nNotes: {NOTES}\n\nView asset: {ASSET_URL}\n\n-- ALM",
 				'asset-lending-manager'
 			),
+			'returned_to_operators'       => __(
+				"Hello,\n\n{ACTOR_NAME} has returned the asset \"{ASSET_TITLE}\".\n\nNotes: {NOTES}\n\nView asset: {ASSET_URL}\n\n-- ALM",
+				'asset-lending-manager'
+			),
 			'contact_message'             => __(
 				"{SENDER_NAME} sent you a message about the asset \"{ASSET_TITLE}\":\n\n{MESSAGE}\n\nView the asset: {ASSET_URL}",
 				'asset-lending-manager'
@@ -168,6 +173,7 @@ function almgr_get_loan_status_labels() {
 		'to_maintenance' => __( 'Set to maintenance', 'asset-lending-manager' ),
 		'to_retired'     => __( 'Set to retired', 'asset-lending-manager' ),
 		'to_available'   => __( 'Restored to available', 'asset-lending-manager' ),
+		'returned'       => __( 'Returned', 'asset-lending-manager' ),
 	);
 }
 

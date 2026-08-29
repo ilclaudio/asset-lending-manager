@@ -448,6 +448,53 @@ class LoanWorkflowAjaxExtendedTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Returning an asset notifies all operators (not the borrower), since the
+	 * actor may be the borrower themselves when member returns are enabled.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_return_asset_notifies_operators(): void {
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
+		( new ALMGR_Settings_Manager() )->set( 'notifications.enabled', true );
+
+		$operator_id = $this->create_user_with_role( ALMGR_OPERATOR_ROLE );
+		$borrower_id = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$asset_id    = $this->create_asset( array( 'state' => 'on-loan', 'owner_id' => $borrower_id ) );
+
+		$captured_recipients = array();
+		$capture_mail        = function ( $atts ) use ( &$captured_recipients ) {
+			$captured_recipients[] = $atts['to'];
+			return $atts;
+		};
+		$short_circuit_send = static function () {
+			return true; // Prevent an actual send attempt in the test environment.
+		};
+		add_filter( 'wp_mail', $capture_mail );
+		add_filter( 'pre_wp_mail', $short_circuit_send );
+
+		wp_set_current_user( $borrower_id );
+		$response = $this->call_ajax_handler(
+			'ajax_return_asset',
+			array(
+				'nonce'    => wp_create_nonce( 'almgr_return_asset_nonce' ),
+				'asset_id' => $asset_id,
+				'location' => 'My home',
+			)
+		);
+
+		remove_filter( 'wp_mail', $capture_mail );
+		remove_filter( 'pre_wp_mail', $short_circuit_send );
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+		( new ALMGR_Settings_Manager() )->set( 'notifications.enabled', false );
+
+		$this->assertTrue( $response['success'] );
+
+		$operator = get_userdata( $operator_id );
+		$this->assertContains( $operator->user_email, $captured_recipients, 'The operator must be notified of the return.' );
+		$this->assertNotContains( get_userdata( $borrower_id )->user_email, $captured_recipients, 'The borrower must not be notified of their own return.' );
+	}
+
+	/**
 	 * An operator can always cooperatively return an on-loan asset, regardless
 	 * of the workflow.member_return_enabled setting. The action is recorded
 	 * under its own 'returned' history status, distinct from the force-return's

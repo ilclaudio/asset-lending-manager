@@ -71,6 +71,9 @@ class ALMGR_Notification_Manager {
 		// Notify the assignee, the previous owner (if any), and the system address when an asset is directly assigned.
 		add_action( 'almgr_direct_assign', array( $this, 'send_direct_assign_notification' ), 10, 5 );
 		add_action( 'almgr_asset_force_returned', array( $this, 'send_force_return_notification' ), 10, 4 );
+
+		// Notify operators when an asset is cooperatively returned (member or operator).
+		add_action( 'almgr_asset_returned', array( $this, 'send_return_notification' ), 10, 4 );
 	}
 
 	// -------------------------------------------------------------------------
@@ -461,6 +464,51 @@ class ALMGR_Notification_Manager {
 			$this->get_email_template( 'body', 'force_return' ),
 			$placeholders
 		);
+	}
+
+	/**
+	 * Notify all operators when an asset is cooperatively returned.
+	 *
+	 * Distinct from send_force_return_notification(): the actor here may be the
+	 * borrower themselves (when workflow.member_return_enabled is on), so
+	 * operators are notified that the asset is available again rather than the
+	 * borrower being notified of their own action.
+	 *
+	 * @param int    $asset_id    Post ID of the asset.
+	 * @param int    $borrower_id WordPress user ID of the previous borrower.
+	 * @param int    $actor_id    WordPress user ID of whoever performed the return.
+	 * @param string $notes       Optional notes describing the return.
+	 * @return void
+	 */
+	public function send_return_notification( $asset_id, $borrower_id, $actor_id, $notes ) {
+		if ( ! $this->settings->get( 'notifications.enabled', false ) ) {
+			return;
+		}
+		if ( ! $this->settings->get( 'notifications.loan_request', true ) ) {
+			return;
+		}
+
+		$actor = get_userdata( $actor_id );
+
+		$placeholders = array_merge(
+			$this->get_asset_base_placeholders( $asset_id ),
+			array(
+				'{ACTOR_NAME}' => $actor ? $actor->display_name : __( 'a member', 'asset-lending-manager' ),
+				'{NOTES}'      => $notes ? $notes : __( '—', 'asset-lending-manager' ),
+			)
+		);
+
+		$sent_recipients = array();
+		$operator_emails = $this->role_manager->get_operator_emails();
+		foreach ( $operator_emails as $operator_email ) {
+			$this->send_notification_email_unique(
+				$operator_email,
+				$this->get_email_template( 'subject', 'returned_to_operators' ),
+				$this->get_email_template( 'body', 'returned_to_operators' ),
+				$placeholders,
+				$sent_recipients
+			);
+		}
 	}
 
 	/**
