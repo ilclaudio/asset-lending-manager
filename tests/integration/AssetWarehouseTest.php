@@ -375,4 +375,53 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 
 		$this->assertNull( ALMGR_Asset_Manager::get_asset_warehouse( $asset_id ) );
 	}
+
+	/**
+	 * The "Return asset" form pre-fills the location field from the asset's
+	 * warehouse when one is assigned.
+	 */
+	public function test_return_form_prefills_location_from_warehouse() {
+		ALMGR_Installer::create_default_terms();
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
+
+		$borrower_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id    = $this->create_asset( 'Return Prefill Asset' );
+		wp_set_object_terms( $asset_id, ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, false );
+		wp_set_object_terms( $asset_id, 'on-loan', ALMGR_ASSET_STATE_TAXONOMY_SLUG, false );
+		wp_set_object_terms( $asset_id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+		update_post_meta( $asset_id, '_almgr_current_owner', $borrower_id );
+
+		wp_set_current_user( $borrower_id );
+		$html = $this->render_asset_view( $asset_id );
+		wp_set_current_user( 0 );
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+
+		$this->assertMatchesRegularExpression(
+			'/id="almgr-return-asset-location"[^>]*value="Main warehouse"/',
+			$html
+		);
+	}
+
+	/**
+	 * Without an assigned warehouse, the "Return asset" location field starts empty.
+	 */
+	public function test_return_form_location_empty_without_warehouse() {
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
+
+		$borrower_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id    = $this->create_asset( 'Return No Warehouse Asset' );
+		wp_set_object_terms( $asset_id, ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, false );
+		wp_set_object_terms( $asset_id, 'on-loan', ALMGR_ASSET_STATE_TAXONOMY_SLUG, false );
+		update_post_meta( $asset_id, '_almgr_current_owner', $borrower_id );
+
+		wp_set_current_user( $borrower_id );
+		$html = $this->render_asset_view( $asset_id );
+		wp_set_current_user( 0 );
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+
+		$this->assertMatchesRegularExpression(
+			'/id="almgr-return-asset-location"[^>]*value=""/',
+			$html
+		);
+	}
 }

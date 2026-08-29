@@ -624,6 +624,62 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 	</section>
 	<?php endif; ?>
 
+	<!-- IX-bis section: Return asset (cooperative return; distinct from the operator-only forced return below) -->
+	<?php if ( 'on-loan' === $almgr_state_slug && $almgr_can_return_asset ) : ?>
+		<section class="almgr-asset-view__return" aria-label="<?php esc_attr_e( 'Return asset', 'asset-lending-manager' ); ?>">
+			<details class="almgr-collapsible almgr-collapsible--return" open>
+				<summary class="almgr-collapsible__summary">
+					<span class="almgr-collapsible__title" role="heading" aria-level="2">
+						<?php esc_html_e( 'Return asset', 'asset-lending-manager' ); ?>
+					</span>
+					<span class="almgr-collapsible__hint" aria-hidden="true">
+						<?php esc_html_e( 'Open/Close', 'asset-lending-manager' ); ?>
+					</span>
+				</summary>
+				<div class="almgr-collapsible__body">
+					<form id="almgr-return-asset-form" class="almgr-loan-form" method="post">
+						<?php wp_nonce_field( 'almgr_return_asset_nonce', 'almgr_return_asset_nonce_field' ); ?>
+						<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>" />
+						<div class="almgr-form-field">
+							<label for="almgr-return-asset-location">
+								<?php esc_html_e( 'Location (required):', 'asset-lending-manager' ); ?>
+							</label>
+							<input
+								type="text"
+								id="almgr-return-asset-location"
+								name="location"
+								value="<?php echo esc_attr( $almgr_return_location_default ); ?>"
+								maxlength="255"
+								required
+								placeholder="<?php esc_attr_e( 'e.g. Room A, shelf 3', 'asset-lending-manager' ); ?>"
+							/>
+						</div>
+						<div class="almgr-form-field">
+							<label for="almgr-return-asset-notes">
+								<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>
+							</label>
+							<textarea
+								id="almgr-return-asset-notes"
+								name="notes"
+								rows="3"
+								maxlength="<?php echo esc_attr( $almgr_change_state_notes_max ); ?>"
+								placeholder="<?php esc_attr_e( 'Describe anything relevant about this return...', 'asset-lending-manager' ); ?>"
+								aria-describedby="almgr-return-asset-char-count"
+							></textarea>
+							<div class="almgr-char-count" id="almgr-return-asset-char-count">0 / <?php echo esc_html( $almgr_change_state_notes_max ); ?></div>
+						</div>
+						<div class="almgr-form-actions">
+							<button type="submit" class="almgr-button almgr-button--approve">
+								<?php esc_html_e( 'Return asset', 'asset-lending-manager' ); ?>
+							</button>
+						</div>
+						<div id="almgr-return-asset-response" class="almgr-response-message" role="status" aria-live="polite" style="display:none;"></div>
+					</form>
+				</div>
+			</details>
+		</section>
+	<?php endif; ?>
+
 	<!-- X section: Asset state management (operator only) -->
 	<?php if ( $almgr_is_operator ) : ?>
 		<section class="almgr-asset-view__change-state" aria-label="<?php esc_attr_e( 'Asset state management', 'asset-lending-manager' ); ?>">

@@ -20,12 +20,10 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 1) WordPress Abilities v1 completed (read-only catalog/requests plus `create-loan-request`; see `DOC/AI_ABILITIES_REFERENCE.md`). MCP adapter integration remains future/optional, not required by the plugin.
 2) Integration test suite for core AJAX and workflow state transitions: nonce/capability guard paths, rollback/failure paths (see `ISSUES_TODO.md`).
 3) PHPUnit round-trip test for `almgr_get_allowed_html()` allowlist completeness (see `ISSUES_TODO.md`).
-4) Location content-type: default location (`almgr_warehouse` taxonomy; spec closed in `DEV/TODO/TODO_Warehouse_Location.md`, ready for implementation).
-5) Introduce return concept.
-6) Reset procedure for e2e tests.
+4) Reset procedure for e2e tests.
 
 
-## [Unreleased]
+## [0.4.0] - 2026-08-29
 ### Added
 - Shared `ALMGR_Asset_Projection_Service` for common asset and member-asset response fields used by REST and Abilities.
 - Shared domain services layer used identically by the frontend, the REST API, and Abilities for every equivalent use case: `ALMGR_Asset_Query_Service`, `ALMGR_Asset_Read_Service`, `ALMGR_Asset_Detail_Service`, `ALMGR_Asset_History_Service`, `ALMGR_Member_Assets_Service`, `ALMGR_Loan_Request_Query_Service`, `ALMGR_Access_Policy`, `ALMGR_Pagination`, `ALMGR_Active_Loan_Count_Service`.
@@ -33,6 +31,9 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - New REST endpoints: `GET /me/assets` (current user's held assets) and paginated `GET /me/loan-requests`/`GET /assets/{id}/loan-requests` for loan requests.
 - New setting tab **ALM > Settings > Abilities** with `abilities.public` and `abilities.actions_public` toggles, controlling whether Abilities are marked public for external clients such as an MCP adapter (default: off for both).
 - `DOC/REST_API_REFERENCE.md` and `DOC/AI_ABILITIES_REFERENCE.md`: full reference documentation for the REST API and for the Abilities layer (endpoints/abilities, authentication, permissions, input/output, error codes).
+- New `almgr_warehouse` taxonomy: the asset's administrative home location, independent from the existing dynamic `almgr_location` field. Includes default term seeding, member-only exposure in the frontend/REST/Abilities, a frontend catalog filter, a wp-admin list filter, and automatic propagation from a Kit to its currently included components on save.
+- New cooperative "Return asset" action (`ALMGR_Loan_Manager::return_asset()`, AJAX `almgr_return_asset`): a dedicated form on the asset detail page that closes an active loan, distinct from the existing operator-only forced return — its own history status (`returned`) and hook (`almgr_asset_returned`), with the location field pre-filled from the asset's warehouse when one is assigned.
+- New setting `workflow.member_return_enabled` (default off, **ALM > Settings > Automations**) letting operators allow members to return the asset they currently hold, in addition to operators.
 
 ### Changed
 - REST and Abilities reference documentation aligned with the implemented pagination defaults, filters, response types, and error codes.

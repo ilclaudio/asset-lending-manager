@@ -38,6 +38,7 @@
 			this.initDirectAssignForm();
 			this.initChangeStateForm();
 			this.initRestoreStateForm();
+			this.initReturnAssetForm();
 			this.showActionResultMessage();
 			this.initQrCode();
 			this.initQrScanner();
@@ -589,6 +590,93 @@
 							window.location.href = currentUrl + '?almgr_action=restore_state&almgr_status=success';
 						} else {
 							var errorMsg = data.data && data.data.message ? data.data.message : __( 'Restore failed. Please try again.', 'asset-lending-manager' );
+							ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
+							if (submitBtn) {
+								submitBtn.disabled    = false;
+								submitBtn.textContent = originalBtnText;
+							}
+						}
+					})
+					.catch(function(error) {
+						ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Request failed. Please try again.', 'asset-lending-manager' ));
+						if (submitBtn) {
+							submitBtn.disabled    = false;
+							submitBtn.textContent = originalBtnText;
+						}
+					});
+			});
+		},
+
+		/**
+		 * Initialize return asset form (owner and/or operator, depending on settings).
+		 *
+		 * Handles the cooperative return of an on-loan asset. Distinct from the
+		 * operator-only force-return handled by initChangeStateForm().
+		 */
+		initReturnAssetForm: function() {
+			var form = document.getElementById('almgr-return-asset-form');
+
+			if (!form) {
+				return;
+			}
+
+			// Character counter for notes field.
+			var notesField = document.getElementById('almgr-return-asset-notes');
+			var charCount  = document.getElementById('almgr-return-asset-char-count');
+
+			if (notesField && charCount) {
+				notesField.addEventListener('input', function() {
+					var length = notesField.value.length;
+					charCount.textContent = length + ' / ' + notesField.getAttribute('maxlength');
+				});
+			}
+
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+
+				var responseDiv = document.getElementById('almgr-return-asset-response');
+				var submitBtn   = form.querySelector('button[type="submit"]');
+
+				var returnAssetNonceField = form.querySelector('input[name="almgr_return_asset_nonce_field"]');
+				if ((!returnAssetNonceField || !returnAssetNonceField.value) && (typeof window.almgrFrontend === 'undefined' || !window.almgrFrontend.returnAssetNonce)) {
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Security token not found. Please reload the page.', 'asset-lending-manager' ));
+					return;
+				}
+
+				var assetId = ALMGR_Frontend.getAssetIdFromPage();
+				if (!assetId) {
+					ALMGR_Frontend.showResponse(responseDiv, 'error', __( 'Asset ID not found.', 'asset-lending-manager' ));
+					return;
+				}
+
+				var originalBtnText = submitBtn ? submitBtn.textContent : '';
+				if (submitBtn) {
+					submitBtn.disabled    = true;
+					submitBtn.textContent = __( 'Returning...', 'asset-lending-manager' );
+				}
+				responseDiv.style.display = 'none';
+
+				var locationField = document.getElementById('almgr-return-asset-location');
+
+				var formData = new FormData();
+				formData.append('action',    'almgr_return_asset');
+				formData.append('nonce',     returnAssetNonceField && returnAssetNonceField.value ? returnAssetNonceField.value : window.almgrFrontend.returnAssetNonce);
+				formData.append('asset_id',  assetId);
+				formData.append('location',  locationField ? locationField.value.trim() : '');
+				formData.append('notes',     notesField ? notesField.value.trim() : '');
+
+				fetch(window.almgrFrontend.ajaxUrl, { method: 'POST', body: formData })
+					.then(function(response) { return response.json(); })
+					.then(function(data) {
+						if (data.success) {
+							var skipped = data.data && data.data.skipped_components;
+							if (skipped && skipped.length) {
+								try { sessionStorage.setItem('almgr_excluded_notice', JSON.stringify(skipped)); } catch (e) {}
+							}
+							var currentUrl = window.location.href.split('?')[0];
+							window.location.href = currentUrl + '?almgr_action=return&almgr_status=success';
+						} else {
+							var errorMsg = data.data && data.data.message ? data.data.message : __( 'Return failed. Please try again.', 'asset-lending-manager' );
 							ALMGR_Frontend.showResponse(responseDiv, 'error', errorMsg);
 							if (submitBtn) {
 								submitBtn.disabled    = false;
@@ -1195,6 +1283,10 @@
 				message = __( 'Asset restored to available successfully.', 'asset-lending-manager' );
 			} else if (action === 'restore_state' && status === 'error') {
 				message = __( 'Failed to restore asset. Please try again.', 'asset-lending-manager' );
+			} else if (action === 'return' && status === 'success') {
+				message = __( 'Asset returned successfully.', 'asset-lending-manager' );
+			} else if (action === 'return' && status === 'error') {
+				message = __( 'Failed to return asset. Please try again.', 'asset-lending-manager' );
 			}
 
 			if (message) {

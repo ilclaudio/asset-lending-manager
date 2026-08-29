@@ -5,7 +5,7 @@
  * Description: Open-source tool to manage shared physical assets and loan workflows for associations, schools, libraries, laboratories, and any organization.
  * Requires at least: 6.2
  * Requires Plugins: advanced-custom-fields
- * Version:     0.3.2
+ * Version:     0.4.0
  * Author:      IoClaudio
  * Author URI:  https://www.claudiobattaglino.it
  * Text Domain: asset-lending-manager

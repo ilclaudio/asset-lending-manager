@@ -400,4 +400,172 @@ class LoanWorkflowAjaxExtendedTest extends WP_UnitTestCase {
 		$history_statuses = wp_list_pluck( $this->get_history_rows_for_asset( $asset_id ), 'status' );
 		$this->assertContains( 'to_available', $history_statuses, 'History should contain a to_available entry.' );
 	}
+
+	/**
+	 * Returning a Kit propagates to its included components (same owner,
+	 * state=on-loan), reusing build_kit_state_change_plan() as for force-return.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_return_asset_propagates_to_kit_components(): void {
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+
+		$operator_id = $this->create_user_with_role( 'administrator' );
+		$borrower_id = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$kit_id      = $this->create_asset(
+			array(
+				'structure' => ALMGR_ASSET_KIT_SLUG,
+				'state'     => 'on-loan',
+				'owner_id'  => $borrower_id,
+			)
+		);
+		$comp_id     = $this->create_asset(
+			array(
+				'state'    => 'on-loan',
+				'owner_id' => $borrower_id,
+			)
+		);
+		update_post_meta( $kit_id, 'almgr_components', array( $comp_id ) );
+
+		wp_set_current_user( $operator_id );
+
+		$response = $this->call_ajax_handler(
+			'ajax_return_asset',
+			array(
+				'nonce'    => wp_create_nonce( 'almgr_return_asset_nonce' ),
+				'asset_id' => $kit_id,
+				'location' => 'Clubhouse shelf',
+			)
+		);
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( 'available', $this->get_asset_state_slug( $kit_id ) );
+		$this->assertSame( 'available', $this->get_asset_state_slug( $comp_id ) );
+		$this->assertSame( 0, (int) get_post_meta( $comp_id, '_almgr_current_owner', true ) );
+
+		$comp_history_statuses = wp_list_pluck( $this->get_history_rows_for_asset( $comp_id ), 'status' );
+		$this->assertContains( 'returned', $comp_history_statuses );
+	}
+
+	/**
+	 * An operator can always cooperatively return an on-loan asset, regardless
+	 * of the workflow.member_return_enabled setting. The action is recorded
+	 * under its own 'returned' history status, distinct from the force-return's
+	 * 'to_available'.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_return_asset_by_operator_returns_asset_and_clears_owner(): void {
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+
+		$operator_id = $this->create_user_with_role( 'administrator' );
+		$borrower_id = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$asset_id    = $this->create_asset( array( 'state' => 'on-loan', 'owner_id' => $borrower_id ) );
+
+		wp_set_current_user( $operator_id );
+
+		$response = $this->call_ajax_handler(
+			'ajax_return_asset',
+			array(
+				'nonce'    => wp_create_nonce( 'almgr_return_asset_nonce' ),
+				'asset_id' => $asset_id,
+				'location' => 'Clubhouse shelf',
+				'notes'    => 'Returned at the end of the observation night.',
+			)
+		);
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( 'available', $this->get_asset_state_slug( $asset_id ) );
+		$this->assertSame( 0, (int) get_post_meta( $asset_id, '_almgr_current_owner', true ) );
+
+		$history_statuses = wp_list_pluck( $this->get_history_rows_for_asset( $asset_id ), 'status' );
+		$this->assertContains( 'returned', $history_statuses, 'History should contain a returned entry, distinct from to_available.' );
+		$this->assertNotContains( 'to_available', $history_statuses, 'Cooperative return must not be recorded as a force-return.' );
+	}
+
+	/**
+	 * A member cannot return an asset they hold when member_return_enabled is
+	 * disabled: only operators can, via this handler.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_return_asset_denied_for_member_when_setting_disabled(): void {
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+
+		$borrower_id = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$asset_id    = $this->create_asset( array( 'state' => 'on-loan', 'owner_id' => $borrower_id ) );
+
+		wp_set_current_user( $borrower_id );
+
+		$response = $this->call_ajax_handler(
+			'ajax_return_asset',
+			array(
+				'nonce'    => wp_create_nonce( 'almgr_return_asset_nonce' ),
+				'asset_id' => $asset_id,
+				'location' => 'My home',
+			)
+		);
+
+		$this->assertFalse( $response['success'] );
+		$this->assertSame( 'on-loan', $this->get_asset_state_slug( $asset_id ), 'Asset must remain on-loan when the return is denied.' );
+	}
+
+	/**
+	 * When member_return_enabled is on, the asset's current owner can return it.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_return_asset_allowed_for_owning_member_when_setting_enabled(): void {
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
+
+		$borrower_id = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$asset_id    = $this->create_asset( array( 'state' => 'on-loan', 'owner_id' => $borrower_id ) );
+
+		wp_set_current_user( $borrower_id );
+
+		$response = $this->call_ajax_handler(
+			'ajax_return_asset',
+			array(
+				'nonce'    => wp_create_nonce( 'almgr_return_asset_nonce' ),
+				'asset_id' => $asset_id,
+				'location' => 'My home',
+			)
+		);
+
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+
+		$this->assertTrue( $response['success'] );
+		$this->assertSame( 'available', $this->get_asset_state_slug( $asset_id ) );
+		$this->assertSame( 0, (int) get_post_meta( $asset_id, '_almgr_current_owner', true ) );
+	}
+
+	/**
+	 * Even when member_return_enabled is on, a member who is not the current
+	 * owner is always denied — the setting never authorizes an arbitrary asset.
+	 *
+	 * @return void
+	 */
+	public function test_ajax_return_asset_denied_for_non_owner_member_even_when_setting_enabled(): void {
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
+
+		$borrower_id  = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$other_member = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$asset_id     = $this->create_asset( array( 'state' => 'on-loan', 'owner_id' => $borrower_id ) );
+
+		wp_set_current_user( $other_member );
+
+		$response = $this->call_ajax_handler(
+			'ajax_return_asset',
+			array(
+				'nonce'    => wp_create_nonce( 'almgr_return_asset_nonce' ),
+				'asset_id' => $asset_id,
+				'location' => 'Somewhere else',
+			)
+		);
+
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+
+		$this->assertFalse( $response['success'] );
+		$this->assertSame( 'on-loan', $this->get_asset_state_slug( $asset_id ), 'Asset must remain on-loan when the return is denied.' );
+	}
 }
