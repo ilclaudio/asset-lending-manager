@@ -138,12 +138,12 @@ class ALMGR_Plugin_Manager {
 			$role          = new ALMGR_Role_Manager();
 			$request_query = new ALMGR_Loan_Request_Query_Service();
 			$active_loans  = new ALMGR_Active_Loan_Count_Service();
-			$loan          = new ALMGR_Loan_Manager( $settings, $request_query, $active_loans );
+			$access_policy = new ALMGR_Access_Policy();
+			$loan          = new ALMGR_Loan_Manager( $settings, $request_query, $active_loans, $access_policy );
 			$asset_queries = new ALMGR_Asset_Query_Service();
 			$asset_reads   = new ALMGR_Asset_Read_Service( $asset_queries );
 			$asset_details = new ALMGR_Asset_Detail_Service( $asset_reads );
 			$asset_history = new ALMGR_Asset_History_Service( $loan );
-			$access_policy = new ALMGR_Access_Policy();
 			$member_assets = new ALMGR_Member_Assets_Service( $asset_reads, $access_policy );
 			$abilities     = new ALMGR_Abilities_Manager( $asset_reads, $asset_details, $asset_history, $member_assets, $request_query, $access_policy, $loan, $settings );
 			$this->modules = array(
@@ -489,6 +489,7 @@ class ALMGR_Plugin_Manager {
 			// [A/O] fields.
 			$changes['workflow.cancel_concurrent_requests_on_assign']        = isset( $_POST['almgr_workflow_cancel_concurrent'] );
 			$changes['workflow.cancel_component_requests_when_kit_assigned'] = isset( $_POST['almgr_workflow_cancel_component_requests'] );
+			$changes['workflow.member_return_enabled']                       = isset( $_POST['almgr_workflow_member_return_enabled'] );
 			// [A]-only fields.
 			if ( $is_admin ) {
 				$actor_user_id = max( 1, absint( wp_unslash( $_POST['almgr_workflow_actor_user_id'] ?? 1 ) ) );

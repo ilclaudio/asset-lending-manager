@@ -34,6 +34,7 @@ require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-query-service.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-read-result.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-read-service.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-detail-service.php';
+require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-projection-service.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-history-result.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-asset-history-service.php';
 require_once ALMGR_PLUGIN_DIR . 'includes/class-almgr-abilities-manager.php';

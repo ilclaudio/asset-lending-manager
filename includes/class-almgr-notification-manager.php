@@ -5,8 +5,8 @@
  * Listens to custom WordPress actions fired by ALMGR_Loan_Manager and sends
  * transactional email notifications to the involved parties via wp_mail().
  *
- * Sender configuration is controlled by the constants ALMGR_EMAIL_FROM_NAME,
- * ALMGR_EMAIL_FROM_ADDRESS, and ALMGR_EMAIL_SYSTEM_ADDRESS defined in plugin-config.php.
+ * Sender configuration is controlled by the runtime email settings exposed by
+ * the plugin settings page.
  * Email subjects and body templates are resolved via almgr_get_email_templates()
  * to keep translation strings discoverable by Loco/makepot.
  *
@@ -573,8 +573,8 @@ class ALMGR_Notification_Manager {
 	/**
 	 * Return the sender email address.
 	 *
-	 * Uses ALMGR_EMAIL_FROM_ADDRESS when set; falls back to the WordPress site
-	 * admin email returned by get_bloginfo('admin_email').
+	 * Uses the configured runtime email address when set; falls back to the
+	 * WordPress site admin email returned by get_bloginfo('admin_email').
 	 *
 	 * @return string Sender email address.
 	 */

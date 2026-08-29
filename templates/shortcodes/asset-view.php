@@ -36,6 +36,10 @@ $almgr_asset_content            = isset( $asset->content_html ) ? (string) $asse
 $almgr_owner_name               = isset( $asset->owner_name ) ? (string) $asset->owner_name : '';
 $almgr_is_current_owner         = is_user_logged_in() && $almgr_owner_id > 0 && ( $almgr_current_user_id === (int) $almgr_owner_id );
 $almgr_is_operator              = is_user_logged_in() && current_user_can( ALMGR_EDIT_ASSET );
+$almgr_member_return_enabled    = (bool) $almgr_settings->get( 'workflow.member_return_enabled', false );
+$almgr_can_return_asset         = is_user_logged_in() && $almgr_access_policy->can_return_asset( $almgr_current_user_id, $almgr_asset_id, $almgr_member_return_enabled );
+$almgr_return_warehouse_term    = ALMGR_Asset_Manager::get_asset_warehouse( $almgr_asset_id );
+$almgr_return_location_default  = $almgr_return_warehouse_term ? $almgr_return_warehouse_term->name : '';
 
 $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset->detail_image_html : '';
 ?>
@@ -69,6 +73,7 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 		$almgr_structure       = isset( $asset->almgr_structure ) ? implode( ', ', $asset->almgr_structure ) : '-';
 		$almgr_type            = isset( $asset->almgr_type ) ? implode( ', ', $asset->almgr_type ) : '-';
 		$almgr_level           = isset( $asset->almgr_level ) ? implode( ', ', $asset->almgr_level ) : '-';
+		$almgr_warehouse       = isset( $asset->almgr_warehouse ) ? implode( ', ', $asset->almgr_warehouse ) : '-';
 		$almgr_state_slug      = isset( $asset->state_slug ) ? (string) $asset->state_slug : '';
 		$almgr_state_label     = isset( $asset->state_label ) ? (string) $asset->state_label : '';
 		$almgr_state_class_map = ALMGR_Asset_Manager::get_state_classes();
@@ -113,6 +118,16 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 						</span>
 					</span>
 				</div>
+				<?php if ( is_user_logged_in() ) : ?>
+				<div class="almgr-asset-tax-row">
+					<span class="almgr-tax-label">
+						<?php esc_html_e( 'Warehouse', 'asset-lending-manager' ); ?>
+					</span>
+					<span class="almgr-tax-value">
+						<?php echo esc_html( $almgr_warehouse ); ?>
+					</span>
+				</div>
+				<?php endif; ?>
 			</div>
 		</aside>
 	</section>

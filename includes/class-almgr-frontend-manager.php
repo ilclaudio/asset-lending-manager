@@ -319,6 +319,7 @@ class ALMGR_Frontend_Manager {
 				'directAssignNonce'           => wp_create_nonce( 'almgr_direct_assign_nonce' ),
 				'changeStateNonce'            => wp_create_nonce( 'almgr_change_state_nonce' ),
 				'restoreStateNonce'           => wp_create_nonce( 'almgr_restore_state_nonce' ),
+				'returnAssetNonce'            => wp_create_nonce( 'almgr_return_asset_nonce' ),
 				'qrScanEnabled'               => (bool) $this->settings->get( 'autocomplete.qr_scan_enabled', true ),
 				'qrLabelTitleMaxLength'       => ALMGR_QR_LABEL_TITLE_MAX_LENGTH,
 				'requestMessageMaxLength'     => (int) $this->settings->get( 'loans.request_message_max_length', 500 ),
@@ -719,6 +720,11 @@ class ALMGR_Frontend_Manager {
 		$filter_type  = $this->get_validated_query_term_slug( 'almgr_type', ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
 		$filter_state = $this->get_validated_query_term_slug( 'almgr_state', ALMGR_ASSET_STATE_TAXONOMY_SLUG );
 		$filter_level = $this->get_validated_query_term_slug( 'almgr_level', ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
+		// Warehouse is a member-only filter: anonymous visitors never see it, and any
+		// manually crafted query string for it is ignored (see Fase 4 visibility rule).
+		$filter_warehouse = is_user_logged_in()
+			? $this->get_validated_query_term_slug( 'almgr_warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG )
+			: '';
 		// Read owner filter (operator: by user ID; member: "my assets" checkbox).
 		$filter_owner      = 0;
 		$filter_owner_name = '';
@@ -751,6 +757,7 @@ class ALMGR_Frontend_Manager {
 			'type'      => $filter_type,
 			'state'     => $filter_state,
 			'level'     => $filter_level,
+			'warehouse' => $filter_warehouse,
 		);
 		$result        = $filter_owner > 0
 			? $this->member_assets->get_assets_for_member( get_current_user_id(), $filter_owner, $query_filters )

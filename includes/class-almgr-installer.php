@@ -305,6 +305,17 @@ class ALMGR_Installer {
 				),
 			)
 		);
+
+		// Asset warehouse.
+		self::add_default_terms(
+			ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
+			array(
+				array(
+					'slug'  => 'main-warehouse',
+					'label' => __( 'Main warehouse', 'asset-lending-manager' ),
+				),
+			)
+		);
 	}
 
 	/**

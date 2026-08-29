@@ -166,4 +166,4 @@ restricted iframe) the notice is silently skipped; the operation itself is not a
 
 ---
 
-*Last update: 2026-06-02 (rev 1)*
+*Last update: 2026-08-29 (rev 2)*

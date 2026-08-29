@@ -98,6 +98,7 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 	public function test_asset_abilities_return_shared_asset_data(): void {
 		$operator_id = self::factory()->user->create( array( 'role' => ALMGR_OPERATOR_ROLE ) );
 		$asset_id    = $this->create_asset();
+		wp_set_object_terms( $asset_id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
 		wp_set_current_user( $operator_id );
 
 		$list = wp_get_ability( 'almgr/list-assets' )->execute(
@@ -112,6 +113,7 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 		$this->assertIsArray( $detail );
 		$this->assertContains( $asset_id, wp_list_pluck( $list['data'], 'id' ) );
 		$this->assertSame( $asset_id, $detail['id'] );
+		$this->assertSame( array( 'main-warehouse' ), $detail['warehouse'] );
 	}
 
 	/**

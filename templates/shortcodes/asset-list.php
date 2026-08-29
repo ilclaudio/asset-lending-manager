@@ -12,6 +12,7 @@
  * - $filter_type:        string  Active type taxonomy filter slug.
  * - $filter_state:       string  Active state taxonomy filter slug.
  * - $filter_level:       string  Active level taxonomy filter slug.
+ * - $filter_warehouse:   string  Active warehouse taxonomy filter slug (member-only).
  * - $filter_owner:       int     Active owner user ID (0 if none).
  * - $filter_owner_name:  string  Display name of the active owner filter user.
  * - $filter_my_assets:   bool    True if member's "show only my assets" is active.
@@ -46,6 +47,15 @@ $almgr_terms_level     = get_terms(
 		'hide_empty' => true,
 	)
 );
+// Warehouse is a member-only filter: never query or expose its terms to anonymous visitors.
+$almgr_terms_warehouse = is_user_logged_in()
+	? get_terms(
+		array(
+			'taxonomy'   => ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
+			'hide_empty' => true,
+		)
+	)
+	: array();
 // Count active filters.
 $almgr_active_filters_count = 0;
 if ( ! empty( $filter_structure ) ) {
@@ -58,6 +68,9 @@ if ( ! empty( $filter_state ) ) {
 	++$almgr_active_filters_count;
 }
 if ( ! empty( $filter_level ) ) {
+	++$almgr_active_filters_count;
+}
+if ( ! empty( $filter_warehouse ) ) {
 	++$almgr_active_filters_count;
 }
 if ( $filter_owner > 0 ) {
@@ -171,6 +184,24 @@ if ( $filter_owner > 0 ) {
 							</select>
 						</div>
 					</div>
+					<!-- Row 2b: Warehouse (member-only) -->
+					<?php if ( is_user_logged_in() ) : ?>
+						<div class="almgr-filter-row">
+							<div class="almgr-filter-field">
+								<label for="almgr_filter_warehouse"><?php esc_html_e( 'Warehouse', 'asset-lending-manager' ); ?></label>
+								<select name="almgr_warehouse" id="almgr_filter_warehouse">
+									<option value=""><?php esc_html_e( 'All warehouses', 'asset-lending-manager' ); ?></option>
+										<?php if ( ! is_wp_error( $almgr_terms_warehouse ) && ! empty( $almgr_terms_warehouse ) ) : ?>
+											<?php foreach ( $almgr_terms_warehouse as $almgr_term ) : ?>
+												<option value="<?php echo esc_attr( $almgr_term->slug ); ?>" <?php selected( $filter_warehouse, $almgr_term->slug ); ?>>
+													<?php echo esc_html( $almgr_term->name ); ?>
+												</option>
+											<?php endforeach; ?>
+										<?php endif; ?>
+								</select>
+							</div>
+						</div>
+					<?php endif; ?>
 					<!-- Row 3: Owner -->
 					<?php if ( current_user_can( ALMGR_EDIT_ASSET ) ) : ?>
 						<div class="almgr-filter-row">
@@ -216,7 +247,7 @@ if ( $filter_owner > 0 ) {
 
 		<!-- Form actions: Reset filters + Search -->
 		<div class="almgr-form-actions">
-			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'almgr_search', 'almgr_structure', 'almgr_type', 'almgr_state', 'almgr_level', 'almgr_owner', 'almgr_my_assets', 'almgr_paged' ) ) ); ?>" class="almgr-reset-filters">
+			<a href="<?php echo esc_url( remove_query_arg( array( 's', 'almgr_search', 'almgr_structure', 'almgr_type', 'almgr_state', 'almgr_level', 'almgr_warehouse', 'almgr_owner', 'almgr_my_assets', 'almgr_paged' ) ) ); ?>" class="almgr-reset-filters">
 				<?php esc_html_e( 'Reset Filters', 'asset-lending-manager' ); ?>
 			</a>
 			<button type="submit">

@@ -90,6 +90,7 @@ class ALMGR_Settings_Manager {
 				'cancel_concurrent_requests_on_assign' => true,
 				'cancel_component_requests_when_kit_assigned' => true,
 				'automatic_operations_actor_user_id'   => 1,
+				'member_return_enabled'                => false,
 			),
 			'frontend'      => array(
 				'assets_page_id'          => 0,

@@ -5,9 +5,10 @@
 Asset Lending Manager registers a set of WordPress Abilities under the category
 `almgr`, using the WordPress core Abilities API (`wp_register_ability()`).
 Abilities are a typed, PHP-callable contract on top of the same shared domain
-services used by the web interface and by the REST API described in
-`DOC/REST_API_REFERENCE.md`: every Ability delegates its query, visibility, and
-data-shaping logic to a shared service class, so results are always consistent
+  services used by the web interface and by the REST API described in
+  `DOC/REST_API_REFERENCE.md`: every Ability delegates its query and visibility
+  logic to shared services, while common asset projections are shared between
+  REST and Abilities, so results remain consistent
 with what the same user would see in the frontend or via REST.
 
 The Abilities module is entirely optional and self-disabling: the WordPress
@@ -139,10 +140,11 @@ List form (`list-assets`, via `project_asset()`):
 | `title` | string |
 | `permalink` | string |
 | `thumbnail_url` | string\|null |
-| `structure` | string |
-| `type` | string |
-| `state` | string |
-| `level` | string |
+| `structure` | array |
+| `type` | array |
+| `state` | array |
+| `level` | array |
+| `warehouse` | array |
 | `owner_id` | integer |
 | `owner_name` | string |
 | `owner_username` | string |
@@ -158,8 +160,8 @@ flattened keys as in the REST API).
 | `id` | integer |
 | `code` | string |
 | `title` | string |
-| `structure` | string |
-| `type` | string |
+| `structure` | array |
+| `type` | array |
 | `external_code` | string |
 | `location` | string |
 | `thumbnail_url` | string\|null |
@@ -386,5 +388,5 @@ the history of changes that affected the Abilities layer, see `CHANGELOG.md`.
 
 ---
 
-*Last update: 2026-08-29 (rev 2) — stated the WordPress 6.9+ requirement for the
-Abilities API explicitly in §1.*
+*Last update: 2026-08-29 (rev 3) — documented the shared common asset projections
+used by REST and Abilities.*

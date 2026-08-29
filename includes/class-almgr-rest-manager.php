@@ -731,20 +731,7 @@ class ALMGR_REST_Manager {
 			return null;
 		}
 
-		$data = array(
-			'id'             => $post_id,
-			'code'           => $wrapper->code,
-			'title'          => $wrapper->title,
-			'permalink'      => $wrapper->permalink,
-			'thumbnail_url'  => $wrapper->thumbnail_url,
-			'structure'      => $wrapper->structure_slugs,
-			'type'           => $wrapper->type_slugs,
-			'state'          => $wrapper->almgr_state_slugs ?? array(),
-			'level'          => $wrapper->level_slugs,
-			'owner_id'       => $wrapper->owner_id,
-			'owner_name'     => $wrapper->owner_name,
-			'owner_username' => $wrapper->owner_username,
-		);
+		$data = ALMGR_Asset_Projection_Service::asset( $wrapper );
 
 		if ( 'detail' !== $context ) {
 			return $data;
@@ -873,17 +860,7 @@ class ALMGR_REST_Manager {
 	 * @return array
 	 */
 	private function prepare_member_asset( $asset ) {
-		return array(
-			'id'            => $asset->id,
-			'code'          => $asset->code,
-			'title'         => $asset->title,
-			'structure'     => $asset->structure_slugs,
-			'type'          => $asset->type_slugs,
-			'external_code' => $asset->external_code,
-			'location'      => $asset->location,
-			'thumbnail_url' => $asset->thumbnail_url,
-			'permalink'     => $asset->permalink,
-		);
+		return ALMGR_Asset_Projection_Service::member_asset( $asset );
 	}
 
 	/**

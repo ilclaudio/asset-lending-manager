@@ -63,13 +63,21 @@ class ALMGR_Loan_Manager {
 	private $active_loan_counts;
 
 	/**
+	 * Shared record-level access policy.
+	 *
+	 * @var ALMGR_Access_Policy
+	 */
+	private $access_policy;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param ALMGR_Settings_Manager                $settings       Plugin settings instance.
 	 * @param ALMGR_Loan_Request_Query_Service|null $request_query Shared request read service.
 	 * @param ALMGR_Active_Loan_Count_Service|null  $active_loan_counts Shared active-loan count service.
+	 * @param ALMGR_Access_Policy|null              $access_policy Shared record-level access policy.
 	 */
-	public function __construct( ALMGR_Settings_Manager $settings, $request_query = null, $active_loan_counts = null ) {
+	public function __construct( ALMGR_Settings_Manager $settings, $request_query = null, $active_loan_counts = null, $access_policy = null ) {
 		$this->settings           = $settings;
 		$this->request_query      = $request_query instanceof ALMGR_Loan_Request_Query_Service
 			? $request_query
@@ -77,6 +85,9 @@ class ALMGR_Loan_Manager {
 		$this->active_loan_counts = $active_loan_counts instanceof ALMGR_Active_Loan_Count_Service
 			? $active_loan_counts
 			: new ALMGR_Active_Loan_Count_Service();
+		$this->access_policy      = $access_policy instanceof ALMGR_Access_Policy
+			? $access_policy
+			: new ALMGR_Access_Policy();
 	}
 
 	/**
@@ -102,6 +113,7 @@ class ALMGR_Loan_Manager {
 		add_action( 'wp_ajax_almgr_direct_assign_asset', array( $this, 'ajax_direct_assign_asset' ) );
 		add_action( 'wp_ajax_almgr_change_asset_state', array( $this, 'ajax_change_asset_state' ) );
 		add_action( 'wp_ajax_almgr_restore_asset_state', array( $this, 'ajax_restore_asset_state' ) );
+		add_action( 'wp_ajax_almgr_return_asset', array( $this, 'ajax_return_asset' ) );
 	}
 
 	/**
@@ -2238,23 +2250,7 @@ class ALMGR_Loan_Manager {
 			$wpdb->query( 'COMMIT' );
 
 			// Update ACF location field on all affected assets (outside transaction).
-			if ( '' !== $location ) {
-				foreach ( $location_targets as $target_id ) {
-					$written = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
-					if ( ! $written ) {
-						$current = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $target_id );
-						if ( $current !== $location ) {
-							ALMGR_Logger::warning(
-								'Failed to set almgr_location after state change',
-								array(
-									'asset_id' => $target_id,
-									'location' => $location,
-								)
-							);
-						}
-					}
-				}
-			}
+			$this->write_location_to_targets( $location_targets, $location );
 
 			// Fire notification hook for forced return after transaction commits.
 			if ( 'available' === $target_state && $previous_owner ) {
@@ -2283,6 +2279,203 @@ class ALMGR_Loan_Manager {
 
 			ALMGR_Logger::error(
 				'Failed to change asset state',
+				array(
+					'asset_id' => $asset_id,
+					'error'    => $e->getMessage(),
+					'db_error' => $wpdb->last_error,
+				)
+			);
+
+			return array(
+				'success' => false,
+				'message' => $e->getMessage(),
+			);
+		}
+	}
+
+	/**
+	 * Write the ACF location field to a list of assets after a state-change
+	 * transaction has committed. Shared by change_asset_state() and
+	 * return_asset(). A write failure is logged, never thrown: location is a
+	 * best-effort convenience field written outside the state-change transaction.
+	 *
+	 * @param int[]  $target_ids Asset IDs to update.
+	 * @param string $location   Location value to write; a no-op when empty.
+	 * @return void
+	 */
+	private function write_location_to_targets( array $target_ids, $location ) {
+		if ( '' === $location ) {
+			return;
+		}
+
+		foreach ( $target_ids as $target_id ) {
+			$written = ALMGR_ACF_Asset_Adapter::set_custom_field( 'almgr_location', $location, $target_id );
+			if ( ! $written ) {
+				$current = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $target_id );
+				if ( $current !== $location ) {
+					ALMGR_Logger::warning(
+						'Failed to set almgr_location after state change',
+						array(
+							'asset_id' => $target_id,
+							'location' => $location,
+						)
+					);
+				}
+			}
+		}
+	}
+
+	/**
+	 * AJAX handler for the cooperative return of an on-loan asset.
+	 *
+	 * Distinct from ajax_change_asset_state()'s operator-only forced return:
+	 * permission additionally allows the asset's current owner when
+	 * workflow.member_return_enabled is set.
+	 *
+	 * @return void
+	 */
+	public function ajax_return_asset() {
+		check_ajax_referer( 'almgr_return_asset_nonce', 'nonce' );
+
+		$asset_id = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
+		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
+		$location = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
+
+		if ( $asset_id <= 0 ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
+		}
+
+		$asset = get_post( $asset_id );
+		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type || 'publish' !== $asset->post_status ) {
+			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+		}
+
+		$actor_id              = get_current_user_id();
+		$member_return_enabled = (bool) $this->settings->get( 'workflow.member_return_enabled', false );
+		if ( ! $this->access_policy->can_return_asset( $actor_id, $asset_id, $member_return_enabled ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to return this asset.', 'asset-lending-manager' ) ) );
+		}
+
+		if ( 'on-loan' !== $this->get_asset_state_slug( $asset_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Asset can only be returned when it is on loan.', 'asset-lending-manager' ) ) );
+		}
+
+		if ( '' === $location ) {
+			wp_send_json_error( array( 'message' => __( 'Location is required.', 'asset-lending-manager' ) ) );
+		}
+		if ( mb_strlen( $location ) > 255 ) {
+			wp_send_json_error( array( 'message' => __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) ) );
+		}
+
+		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
+		if ( mb_strlen( $notes ) > $notes_max ) {
+			wp_send_json_error(
+				array(
+					'message' => sprintf(
+						/* translators: %d: maximum number of characters allowed */
+						__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
+						$notes_max
+					),
+				)
+			);
+		}
+
+		$result = $this->return_asset( $asset_id, $notes, $actor_id, $location );
+
+		if ( ! $result['success'] ) {
+			wp_send_json_error( array( 'message' => $result['message'] ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'message'            => $result['message'],
+				'skipped_components' => $result['skipped_components'],
+			)
+		);
+	}
+
+	/**
+	 * Cooperatively return an on-loan asset (kit or standalone/component).
+	 *
+	 * Distinct domain action from change_asset_state( 'available', ... ), the
+	 * operator-only forced return: uses its own history status ('returned') and
+	 * its own hook ('almgr_asset_returned') so notifications and history never
+	 * mix an expected return with an override. Reuses
+	 * build_kit_state_change_plan() for the kit/component inclusion rules,
+	 * without duplicating that logic.
+	 *
+	 * @param int    $asset_id Asset ID.
+	 * @param string $notes    Notes describing the return.
+	 * @param int    $actor_id User ID performing the return (operator or owning member).
+	 * @param string $location Physical location of the asset (required, max 255 chars).
+	 * @throws Exception When a database error occurs during the return.
+	 * @return array {
+	 *     @type bool   $success            True on success.
+	 *     @type string $message            User-facing status message.
+	 *     @type array  $skipped_components Components that were not changed, with id/title/reason_label.
+	 * }
+	 */
+	public function return_asset( $asset_id, $notes, $actor_id, $location ) {
+		global $wpdb;
+
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			$is_kit         = $this->is_asset_kit( $asset_id );
+			$previous_owner = $this->get_current_owner( $asset_id );
+
+			$plan             = $this->build_kit_state_change_plan( $asset_id, 'available' );
+			$location_targets = $plan['location_target_ids'];
+
+			$this->set_asset_state( $asset_id, 'available' );
+			$this->set_asset_owner( $asset_id, 0 );
+
+			$logged = $this->log_history_entry( 0, $asset_id, 0, $previous_owner, 'returned', $notes, $actor_id );
+			if ( ! $logged ) {
+				throw new Exception( __( 'Failed to log history entry.', 'asset-lending-manager' ) );
+			}
+
+			foreach ( $plan['included_components'] as $component ) {
+				$this->set_asset_state( $component['id'], 'available' );
+				$this->set_asset_owner( $component['id'], 0 );
+
+				$logged = $this->log_history_entry( 0, $component['id'], 0, $component['current_owner'], 'returned', $notes, $actor_id );
+				if ( ! $logged ) {
+					throw new Exception( __( 'Failed to log history entry for component.', 'asset-lending-manager' ) );
+				}
+			}
+
+			$skipped_components = $plan['excluded_components'];
+
+			$wpdb->query( 'COMMIT' );
+
+			$this->write_location_to_targets( $location_targets, $location );
+
+			if ( $previous_owner ) {
+				do_action( 'almgr_asset_returned', $asset_id, $previous_owner, $actor_id, $notes );
+			}
+
+			ALMGR_Logger::info(
+				'Asset returned',
+				array(
+					'asset_id' => $asset_id,
+					'is_kit'   => $is_kit,
+					'actor_id' => $actor_id,
+					'skipped'  => $skipped_components,
+				)
+			);
+
+			return array(
+				'success'            => true,
+				'message'            => __( 'Asset returned successfully.', 'asset-lending-manager' ),
+				'skipped_components' => $skipped_components,
+			);
+
+		} catch ( Exception $e ) {
+			$wpdb->query( 'ROLLBACK' );
+
+			ALMGR_Logger::error(
+				'Failed to return asset',
 				array(
 					'asset_id' => $asset_id,
 					'error'    => $e->getMessage(),

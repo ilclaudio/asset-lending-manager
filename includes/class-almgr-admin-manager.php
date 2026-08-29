@@ -45,6 +45,37 @@ class ALMGR_Admin_Manager {
 		add_action( 'admin_menu', array( $this, 'remove_menus' ), 999 );
 		// Enqueue admin assets (CSS/JS).
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		// Warehouse filter dropdown on the asset list screen.
+		add_action( 'restrict_manage_posts', array( $this, 'render_warehouse_filter_dropdown' ) );
+	}
+
+	/**
+	 * Render the "Warehouse" filter dropdown on the asset list screen.
+	 *
+	 * @return void
+	 */
+	public function render_warehouse_filter_dropdown() {
+		global $typenow;
+
+		if ( ALMGR_ASSET_CPT_SLUG !== $typenow ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin list filter, applied by WordPress core against the query.
+		$selected = isset( $_GET['almgr_warehouse'] ) ? sanitize_title( wp_unslash( $_GET['almgr_warehouse'] ) ) : '';
+
+		wp_dropdown_categories(
+			array(
+				'show_option_all' => __( 'All warehouses', 'asset-lending-manager' ),
+				'taxonomy'        => ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
+				'name'            => 'almgr_warehouse',
+				'orderby'         => 'name',
+				'selected'        => $selected,
+				'hierarchical'    => true,
+				'value_field'     => 'slug',
+				'hide_empty'      => false,
+			)
+		);
 	}
 
 	/**

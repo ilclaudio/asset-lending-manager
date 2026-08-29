@@ -33,7 +33,7 @@ The entire API can be toggled from **ALM > Settings > REST API**
 endpoint returns HTTP 503:
 
 ```json
-{ "code": "almgr_rest_disabled", "message": "REST API is disabled." }
+  { "code": "almgr_api_disabled", "message": "The ALM API is disabled." }
 ```
 
 ### 2.3 Authentication
@@ -109,9 +109,9 @@ Common codes:
 
 | Code | HTTP status | Meaning |
 |---|---|---|
-| `almgr_rest_disabled` | 503 | API disabled from settings (§2.2). |
-| `rest_forbidden` | 403 | Insufficient capability, or request-visibility policy denied access. |
-| `rest_not_found` | 404 | Asset, member, or request not found. |
+| `almgr_api_disabled` | 503 | API disabled from settings (§2.2). |
+| `almgr_forbidden` | 403 | Insufficient capability, or request-visibility policy denied access. |
+| `almgr_not_found` | 404 | Asset not found. |
 | `almgr_invalid_term` | 400 | Autocomplete search term too short or invalid. |
 
 ---
@@ -130,10 +130,11 @@ adds full ACF fields and loan history).
 | `title` | string | |
 | `permalink` | string | |
 | `thumbnail_url` | string\|null | |
-| `structure` | string | Taxonomy slug: `component` or `kit`. |
-| `type` | string | Taxonomy slug (e.g. `telescope`, `book`, ...). |
-| `state` | string | Taxonomy slug: `available`, `on-loan`, `maintenance`, `retired`. |
-| `level` | string | Taxonomy slug: `basic`, `intermediate`, `advanced`. |
+| `structure` | array | Taxonomy slugs, normally `component` or `kit`. |
+| `type` | array | Taxonomy slugs (e.g. `telescope`, `book`, ...). |
+| `state` | array | Taxonomy slugs: `available`, `on-loan`, `maintenance`, `retired`. |
+| `level` | array | Taxonomy slugs: `basic`, `intermediate`, `advanced`. |
+| `warehouse` | array | Assigned warehouse taxonomy slugs. |
 | `owner_id` | integer | Current owner's WordPress user ID, `0` when not on loan. |
 | `owner_name` | string | Current owner's display name, empty when not on loan. |
 | `owner_username` | string | Current owner's `user_login`, empty when not on loan. |
@@ -179,8 +180,8 @@ question.
 | `id` | integer | |
 | `code` | string | |
 | `title` | string | |
-| `structure` | string | Taxonomy slug. |
-| `type` | string | Taxonomy slug. |
+| `structure` | array | Taxonomy slugs. |
+| `type` | array | Taxonomy slugs. |
 | `external_code` | string | |
 | `location` | string | |
 | `thumbnail_url` | string\|null | |
@@ -241,11 +242,12 @@ Capability: `almgr_view_assets`.
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `page` | integer | 1 | Page number |
-| `per_page` | integer | 10 | Results per page |
+| `per_page` | integer | 20 | Results per page (1–100) |
 | `search` | string | — | Full-text search on asset title |
 | `structure` | string | — | Filter by structure slug (`component`, `kit`) |
 | `type` | string | — | Filter by type taxonomy slug |
 | `state` | string | — | Filter by state taxonomy slug |
+| `owner` | integer | 0 | Filter by current owner user ID |
 
 **Response:** Catalog envelope (§2.5): `{ data, total, pages }`, `data` is an
 array of Asset objects (§3.1, list form).
@@ -272,7 +274,9 @@ Capability: `almgr_edit_asset` (operator or administrator).
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `page` | integer | 1 | Page number |
-| `per_page` | integer | 10 | Results per page |
+| `per_page` | integer | 20 | Results per page (1–100) |
+| `search` | string | — | Search by login, email, or display name |
+| `role` | string | — | Filter by `almgr_member` or `almgr_operator` |
 
 **Response:** Catalog envelope (§2.5): `{ data, total, pages }`, `data` is an
 array of Member list items (§3.2).
@@ -286,7 +290,7 @@ Assets currently held by the authenticated user. Capability: `almgr_view_asset`.
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `page` | integer | 1 | Page number |
-| `per_page` | integer | 10 | Results per page |
+| `per_page` | integer | 20 | Results per page (1–100) |
 
 **Response:** My-assets envelope (§2.5): `{ member_id, total, data, pages }`,
 `data` is an array of Member asset objects (§3.2bis).
@@ -411,7 +415,7 @@ For the history of changes that affected the REST API, see `CHANGELOG.md`.
 
 ---
 
-*Last update: 2026-08-29 (rev 2) — corrected pagination envelopes, response
-headers, missing `GET /me/assets` endpoint, and several field names/omissions
+*Last update: 2026-08-29 (rev 3) — aligned defaults, filters, response types,
+and error codes with the implementation.
 in the Asset and Member data models after verifying against
 `includes/class-almgr-rest-manager.php` directly.*

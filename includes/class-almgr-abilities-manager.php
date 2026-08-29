@@ -635,20 +635,7 @@ class ALMGR_Abilities_Manager {
 	 * @return array
 	 */
 	private function project_asset( $asset, $detail = false ) {
-		$data = array(
-			'id'             => (int) $asset->id,
-			'code'           => (string) $asset->code,
-			'title'          => (string) $asset->title,
-			'permalink'      => (string) $asset->permalink,
-			'thumbnail_url'  => $asset->thumbnail_url,
-			'structure'      => $asset->structure_slugs,
-			'type'           => $asset->type_slugs,
-			'state'          => $asset->almgr_state_slugs,
-			'level'          => $asset->level_slugs,
-			'owner_id'       => (int) $asset->owner_id,
-			'owner_name'     => (string) $asset->owner_name,
-			'owner_username' => (string) $asset->owner_username,
-		);
+		$data = ALMGR_Asset_Projection_Service::asset( $asset );
 
 		if ( $detail ) {
 			$data['content']     = wp_strip_all_tags( (string) $asset->content_html );
@@ -869,16 +856,6 @@ class ALMGR_Abilities_Manager {
 	 * @return array
 	 */
 	private function project_member_asset( $asset ) {
-		return array(
-			'id'            => (int) $asset->id,
-			'code'          => (string) $asset->code,
-			'title'         => (string) $asset->title,
-			'structure'     => $asset->structure_slugs,
-			'type'          => $asset->type_slugs,
-			'external_code' => (string) $asset->external_code,
-			'location'      => (string) $asset->location,
-			'thumbnail_url' => $asset->thumbnail_url,
-			'permalink'     => (string) $asset->permalink,
-		);
+		return ALMGR_Asset_Projection_Service::member_asset( $asset );
 	}
 }

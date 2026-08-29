@@ -95,4 +95,4 @@ Note: the contact-form event (7) is gated only by `contact_form.enabled`, indepe
 
 ---
 
-*Last update: 2026-07-01 (rev 2)*
+*Last update: 2026-08-29 (rev 3)*

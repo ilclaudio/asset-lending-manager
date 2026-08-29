@@ -80,6 +80,56 @@ class ALMGR_Asset_Manager {
 				'register_asset_fields',
 			)
 		);
+		// Propagate a kit's warehouse to its currently included components on save.
+		add_action( 'save_post_' . ALMGR_ASSET_CPT_SLUG, array( $this, 'propagate_warehouse_to_kit_components' ) );
+	}
+
+	/**
+	 * Propagate a Kit's warehouse to its currently included components.
+	 *
+	 * Runs unconditionally and without rollback on every save of a Kit asset:
+	 * if the Kit has no warehouse assigned, nothing is propagated. Individual
+	 * per-component failures are logged and do not stop propagation to the
+	 * remaining components (see TODO_Warehouse_Location.md, decision 6).
+	 *
+	 * @param int $post_id ID of the saved asset post.
+	 * @return void
+	 */
+	public function propagate_warehouse_to_kit_components( $post_id ) {
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		if ( ! has_term( ALMGR_ASSET_KIT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, $post_id ) ) {
+			return;
+		}
+
+		$kit_warehouse = self::get_asset_warehouse( $post_id );
+		if ( null === $kit_warehouse ) {
+			return;
+		}
+
+		$raw_components = ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_components', $post_id );
+		if ( ! is_array( $raw_components ) ) {
+			return;
+		}
+
+		foreach ( $raw_components as $component ) {
+			$component_id = is_object( $component ) ? (int) $component->ID : absint( $component );
+			if ( $component_id <= 0 ) {
+				continue;
+			}
+
+			if ( ! self::set_asset_warehouse( $component_id, $kit_warehouse->slug ) ) {
+				ALMGR_Logger::warning(
+					'Failed to propagate kit warehouse to component.',
+					array(
+						'kit_id'       => $post_id,
+						'component_id' => $component_id,
+					)
+				);
+			}
+		}
 	}
 
 	/**
@@ -215,6 +265,57 @@ class ALMGR_Asset_Manager {
 				),
 			)
 		);
+
+		// Asset warehouse: administrative home location of the asset.
+		register_taxonomy(
+			ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
+			ALMGR_ASSET_CPT_SLUG,
+			array(
+				'labels'            => array(
+					'name'          => __( 'Asset Warehouses', 'asset-lending-manager' ),
+					'singular_name' => __( 'Asset Warehouse', 'asset-lending-manager' ),
+				),
+				'hierarchical'      => true,
+				'show_ui'           => true,
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+				'capabilities'      => array(
+					'manage_terms' => ALMGR_EDIT_ASSET,
+					'edit_terms'   => ALMGR_EDIT_ASSET,
+					'delete_terms' => ALMGR_EDIT_ASSET,
+					'assign_terms' => ALMGR_EDIT_ASSET,
+				),
+			)
+		);
+	}
+
+	/**
+	 * Return the warehouse (home location) term currently assigned to an asset.
+	 *
+	 * @param int $asset_id ID of the asset post.
+	 * @return WP_Term|null The warehouse term, or null if none is assigned.
+	 */
+	public static function get_asset_warehouse( $asset_id ) {
+		$terms = get_the_terms( $asset_id, ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG );
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return null;
+		}
+
+		return $terms[0];
+	}
+
+	/**
+	 * Set the warehouse (home location) of an asset, replacing any previous assignment.
+	 *
+	 * @param int    $asset_id  ID of the asset post.
+	 * @param string $term_slug Slug of the warehouse term to assign.
+	 * @return bool True on success, false on failure.
+	 */
+	public static function set_asset_warehouse( $asset_id, $term_slug ) {
+		$result = wp_set_object_terms( $asset_id, $term_slug, ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+
+		return ! is_wp_error( $result );
 	}
 
 	/**
@@ -253,6 +354,7 @@ class ALMGR_Asset_Manager {
 			ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
 			ALMGR_ASSET_STATE_TAXONOMY_SLUG,
 			ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
+			ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
 		);
 
 		foreach ( $taxonomies as $taxonomy ) {

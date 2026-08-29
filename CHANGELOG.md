@@ -27,6 +27,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 ## [Unreleased]
 ### Added
+- Shared `ALMGR_Asset_Projection_Service` for common asset and member-asset response fields used by REST and Abilities.
 - Shared domain services layer used identically by the frontend, the REST API, and Abilities for every equivalent use case: `ALMGR_Asset_Query_Service`, `ALMGR_Asset_Read_Service`, `ALMGR_Asset_Detail_Service`, `ALMGR_Asset_History_Service`, `ALMGR_Member_Assets_Service`, `ALMGR_Loan_Request_Query_Service`, `ALMGR_Access_Policy`, `ALMGR_Pagination`, `ALMGR_Active_Loan_Count_Service`.
 - WordPress Abilities v1 (optional, feature-detected, category `almgr`): `almgr/list-assets`, `almgr/get-asset`, `almgr/list-my-assets`, `almgr/get-asset-loan-history`, `almgr/list-my-loan-requests`, `almgr/list-asset-loan-requests`, `almgr/get-loan-request`, `almgr/create-loan-request`.
 - New REST endpoints: `GET /me/assets` (current user's held assets) and paginated `GET /me/loan-requests`/`GET /assets/{id}/loan-requests` for loan requests.
@@ -34,6 +35,7 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - `DOC/REST_API_REFERENCE.md` and `DOC/AI_ABILITIES_REFERENCE.md`: full reference documentation for the REST API and for the Abilities layer (endpoints/abilities, authentication, permissions, input/output, error codes).
 
 ### Changed
+- REST and Abilities reference documentation aligned with the implemented pagination defaults, filters, response types, and error codes.
 - Replaced `DOC/RestApiReference.md` with the more complete `DOC/REST_API_REFERENCE.md`.
 - `readme.txt`/`README.md`: REST API and Abilities descriptions made generic, pointing to the two dedicated reference documents instead of listing endpoint details inline.
 - Several Abilities input schemas now declare `additionalProperties: false` and complete descriptions for required fields, for consistency across all Abilities.

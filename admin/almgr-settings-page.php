@@ -623,6 +623,26 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 				</tr>
 			</table>
 
+			<h2><?php esc_html_e( 'Returns', 'asset-lending-manager' ); ?></h2>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row">
+						<?php esc_html_e( 'Allow members to return their own assets', 'asset-lending-manager' ); ?>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								name="almgr_workflow_member_return_enabled"
+								value="1"
+								<?php checked( $almgr_settings->get( 'workflow.member_return_enabled' ) ); ?>
+							>
+							<?php esc_html_e( 'When enabled, a member can return an asset they currently hold, in addition to operators. This is separate from the operator-only forced return.', 'asset-lending-manager' ); ?>
+						</label>
+					</td>
+				</tr>
+			</table>
+
 			<h2><?php esc_html_e( 'System User', 'asset-lending-manager' ); ?></h2>
 			<table class="form-table" role="presentation">
 				<tr>

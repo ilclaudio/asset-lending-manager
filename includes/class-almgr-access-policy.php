@@ -73,4 +73,36 @@ class ALMGR_Access_Policy {
 
 		return $actor_id === (int) $request->requester_id || $this->can_view_asset_requests( $actor_id, $request->asset_id );
 	}
+
+	/**
+	 * Determine whether an actor may perform a cooperative return of an asset.
+	 *
+	 * Operators can always return any asset. A member can return an asset only
+	 * when member-initiated returns are enabled and the member is the asset's
+	 * current owner; a non-owner member is always denied, regardless of the
+	 * setting.
+	 *
+	 * @param int  $actor_id              Authenticated actor user ID.
+	 * @param int  $asset_id              Asset to be returned.
+	 * @param bool $member_return_enabled Whether member-initiated returns are enabled.
+	 * @return bool
+	 */
+	public function can_return_asset( $actor_id, $asset_id, $member_return_enabled ) {
+		$actor_id = absint( $actor_id );
+		$asset_id = absint( $asset_id );
+
+		if ( $actor_id <= 0 || $asset_id <= 0 ) {
+			return false;
+		}
+
+		if ( user_can( $actor_id, ALMGR_EDIT_ASSET ) ) {
+			return true;
+		}
+
+		if ( ! $member_return_enabled ) {
+			return false;
+		}
+
+		return (int) get_post_meta( $asset_id, '_almgr_current_owner', true ) === $actor_id;
+	}
 }
