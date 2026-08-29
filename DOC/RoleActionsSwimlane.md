@@ -35,7 +35,7 @@ flowchart TD
     O6["Change state\nmaintenance / retired\n+ required location\n(kit: partial propagation)"]
     O7["Restore to available\nfrom maintenance / retired\n+ required location\n(kit: partial propagation)"]
     O8["Force return\non-loan -> available\n+ required location\n(kit: partial propagation)"]
-    O9["Cooperative return\non-loan -> available\n+ required location\n(kit: partial propagation)"]
+    O9["Cooperative return\non-loan -> available\nwarehouse displayed; location unchanged\n(kit: partial propagation)"]
     O1 --> O2
     O3 --> O4
     O3 --> O5
@@ -92,7 +92,7 @@ OPERATOR / ADMINISTRATOR
     -> [Force return: on-loan -> available] + required location
          (kit: partial propagation -> excluded notice)
          (closes active loan, notifies borrower)
-    -> [Cooperative return: on-loan -> available] + required location
+    -> [Cooperative return: on-loan -> available] + warehouse displayed; location unchanged
          (kit: partial propagation -> excluded notice)
          (notifies operators; members only when enabled and current owner)
 

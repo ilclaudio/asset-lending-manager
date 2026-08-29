@@ -20,7 +20,7 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Loan request workflow (submit, approve, reject)
 - Direct assignment by operator/admin (reason is mandatory; max length is configurable)
 - Automatic cancellation of concurrent pending requests after assignment (configurable)
-- Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; location field required on every state change
+- Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; location is required for operator state changes and is independent from warehouse
 - Cooperative asset return from frontend, distinct from operator force-return; optionally available to the current-owner member
 - Optional contact form to send email messages to the current asset owner
 - Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return, cooperative return), when enabled
@@ -70,7 +70,7 @@ QR features use bundled JavaScript libraries:
 1. A member browses an asset and submits a loan request.
 2. The current owner, operator, or administrator approves or rejects it.
 3. Approval transfers ownership and marks the asset (and eligible kit components) as on-loan.
-4. Operators can directly assign assets, change state, force-return assets, and restore them; these actions require a location.
+4. Operators can directly assign assets, change state, force-return assets, and restore them; operator state changes require a location. Cooperative returns leave the location unchanged.
 5. Operators can cooperatively return assets; current-owner members can do so when the setting is enabled.
 6. Decisions, assignments, returns, and state changes are recorded in loan history.
 
@@ -99,7 +99,7 @@ For detailed documentation, see the `DOC/` folder:
 | **maintenance** | ✅ operator (restore) | ❌ | — | ❌ |
 | **retired** | ✅ operator (restore) | ❌ | ❌ | — |
 
-All operator state transitions require a **location** field (mandatory) and accept optional notes.
+Operator state changes require a **location** field (mandatory) and accept optional notes. Cooperative returns display the assigned warehouse, but do not read or modify the independent location field.
 Kit state changes propagate only to eligible components; components already in maintenance or retired, or assigned to another user, are excluded and left unchanged. The operator sees a warning notice listing skipped components and the reason for each.
 Direct assignment can also reassign an already on-loan asset while keeping state `on-loan`.
 

@@ -48,7 +48,7 @@ $almgr_terms_level     = get_terms(
 	)
 );
 // Warehouse is a member-only filter: never query or expose its terms to anonymous visitors.
-$almgr_terms_warehouse = is_user_logged_in()
+$almgr_terms_warehouse = is_user_logged_in() && ALMGR_Asset_Manager::is_warehouse_enabled()
 	? get_terms(
 		array(
 			'taxonomy'   => ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,

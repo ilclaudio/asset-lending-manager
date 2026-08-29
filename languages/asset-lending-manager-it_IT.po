@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Asset Lending Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-14 14:10+0000\n"
-"PO-Revision-Date: 2026-08-29 15:05+0000\n"
+"PO-Revision-Date: 2026-08-29 16:22+0000\n"
 "Last-Translator: Amministra Tore\n"
 "Language-Team: Italiano\n"
 "Language: it_IT\n"
@@ -91,37 +91,36 @@ msgstr "[ALM] Nuova richiesta di prestito ricevuta: {ASSET_TITLE}"
 
 #: includes/class-almgr-notification-manager.php:496
 msgid "a member"
-msgstr ""
+msgstr "un socio"
 
 #: includes/class-almgr-abilities-manager.php:577
 #: includes/class-almgr-abilities-manager.php:620
 #: includes/class-almgr-abilities-manager.php:841
 msgid "A positive integer asset_id is required."
-msgstr ""
+msgstr "È richiesto un asset_id intero positivo."
 
 #: includes/class-almgr-abilities-manager.php:517
 msgid "A positive integer loan_request_id is required."
-msgstr ""
+msgstr "È richiesto un loan_request_id intero positivo."
 
 #: includes/class-almgr-abilities-manager.php:580
 msgid "A request_message is required."
-msgstr ""
+msgstr "È richiesto un request_message."
 
 #: admin/almgr-settings-page.php:436
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:431
 msgid "A user can have more than one pending loan request at the same time"
 msgstr ""
-"Un utente può avere più richieste di prestito in attesa contemporaneamenteUn "
-"utente può avere più di una richiesta di prestito in sospeso "
+"Un utente può avere più di una richiesta di prestito in attesa "
 "contemporaneamente"
 
 #: admin/almgr-settings-page.php:36 admin/almgr-settings-page.php:1281
 msgid "Abilities"
-msgstr ""
+msgstr "Abilità"
 
 #: includes/class-almgr-abilities-manager.php:125
 msgid "Abilities for reading assets and loan information."
-msgstr ""
+msgstr "Abilità per leggere risorse e informazioni sui prestiti."
 
 #: includes/class-almgr-installer.php:246
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-installer.php:246
@@ -251,7 +250,7 @@ msgstr "Tutti i tipi"
 #: includes/class-almgr-admin-manager.php:69
 #: templates/shortcodes/asset-list.php:193
 msgid "All warehouses"
-msgstr ""
+msgstr "Tutte le sedi"
 
 #: admin/almgr-settings-page.php:288
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:283
@@ -264,7 +263,7 @@ msgstr ""
 
 #: admin/almgr-settings-page.php:634
 msgid "Allow members to return their own assets"
-msgstr ""
+msgstr "Consenti ai soci di restituire le proprie risorse"
 
 #: admin/almgr-settings-page.php:426
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:421
@@ -334,7 +333,7 @@ msgstr ""
 
 #: admin/almgr-settings-page.php:1323
 msgid "Also mark almgr/create-loan-request as public."
-msgstr ""
+msgstr "Contrassegna come pubblica anche almgr/create-loan-request."
 
 #: admin/almgr-settings-page.php:233
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:228
@@ -350,18 +349,17 @@ msgstr "Slug componente ambiguo per \"%s\"."
 
 #: includes/class-almgr-abilities-manager.php:427
 msgid "An asset_id is required."
-msgstr ""
+msgstr "È richiesto un asset_id."
 
 #: includes/class-almgr-abilities-manager.php:471
 msgid "An authenticated user is required."
-msgstr ""
+msgstr "È richiesto un utente autenticato."
 
 #: admin/almgr-tools-page.php:104
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-tools-page.php:104
 msgid "An error occurred while loading default terms."
 msgstr ""
-"Si è verificato un errore durante il caricamento dei termini predefiniti.Si "
-"è verificato un errore durante il caricamento dei termini predefiniti."
+"Si è verificato un errore durante il caricamento dei termini predefiniti."
 
 #: includes/class-almgr-notification-manager.php:456
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-notification-manager.php:453
@@ -434,6 +432,8 @@ msgid ""
 "Asset autocomplete suggestions; public when enabled in settings, otherwise "
 "requires almgr_view_assets."
 msgstr ""
+"Suggerimenti di completamento automatico delle risorse; pubblici se "
+"abilitati nelle impostazioni, altrimenti richiedono almgr_view_assets."
 
 #: includes/class-almgr-loan-manager.php:2099
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:2191
@@ -442,7 +442,7 @@ msgstr "Un bene può essere restituito forzatamente solo se è dato in prestito.
 
 #: includes/class-almgr-loan-manager.php:2360
 msgid "Asset can only be returned when it is on loan."
-msgstr ""
+msgstr "La risorsa può essere restituita solo quando è in prestito."
 
 #: admin/plugin-main-page.php:88
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/plugin-main-page.php:88
@@ -591,13 +591,13 @@ msgstr ""
 
 #: includes/class-almgr-abilities-manager.php:805
 msgid "Asset post ID for the requested loan."
-msgstr ""
+msgstr "ID del post della risorsa per il prestito richiesto."
 
 #: includes/class-almgr-abilities-manager.php:192
 #: includes/class-almgr-abilities-manager.php:723
 #: includes/class-almgr-abilities-manager.php:780
 msgid "Asset post ID."
-msgstr ""
+msgstr "ID del post della risorsa."
 
 #: includes/class-almgr-loan-manager.php:2784
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:2695
@@ -608,7 +608,7 @@ msgstr "Risorsa ripristinata a disponibile con successo."
 
 #: includes/class-almgr-loan-manager.php:2470 assets/js/frontend-assets.js:1287
 msgid "Asset returned successfully."
-msgstr ""
+msgstr "Risorsa restituita con successo."
 
 #: includes/class-almgr-asset-manager.php:232
 #: includes/class-almgr-plugin-manager.php:307
@@ -623,8 +623,8 @@ msgstr "Stato risorsa"
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:2194
 msgid "Asset state cannot be changed from its current state."
 msgstr ""
-"Lo stato della risorsa non può essere modificato dallo stato attuale.Lo "
-"stato della risorsa non può essere modificato rispetto al suo stato attuale."
+"Lo stato della risorsa non può essere modificato rispetto al suo stato "
+"attuale."
 
 #: templates/shortcodes/asset-view.php:685
 #: templates/shortcodes/asset-view.php:689
@@ -685,11 +685,11 @@ msgstr "Tipi risorsa"
 
 #: includes/class-almgr-asset-manager.php:276
 msgid "Asset Warehouse"
-msgstr ""
+msgstr "Sede risorsa"
 
 #: includes/class-almgr-asset-manager.php:275
 msgid "Asset Warehouses"
-msgstr ""
+msgstr "Sedi risorsa"
 
 #: templates/shortcodes/asset-history.php:102
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-history.php:102
@@ -892,7 +892,6 @@ msgstr "Annullata"
 msgid "Cannot approve: asset is no longer available for loan."
 msgstr ""
 "Impossibile approvare: la risorsa non è più disponibile per il prestito."
-"Impossibile approvare: la risorsa non è più disponibile per il prestito."
 
 #: includes/class-almgr-loan-manager.php:1815
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:1907
@@ -907,9 +906,8 @@ msgstr "Impossibile assegnare una risorsa in stato di manutenzione o ritirata."
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:394
 msgid "Cannot start CSV export because headers are already sent."
 msgstr ""
-"Impossibile avviare l'esportazione CSV: le intestazioni sono già state "
-"inviate.Impossibile avviare l'esportazione CSV perché gli header sono già "
-"stati inviati."
+"Impossibile avviare l'esportazione CSV perché gli header sono già stati "
+"inviati."
 
 #: templates/shortcodes/partials/asset-history-table.php:50
 #: templates/shortcodes/partials/asset-history-table.php:81
@@ -1055,7 +1053,7 @@ msgstr ""
 
 #: admin/almgr-settings-page.php:55
 msgid "Cooperative return — to operators"
-msgstr ""
+msgstr "Restituzione cooperativa — agli operatori"
 
 #: includes/class-almgr-acf-asset-adapter.php:30
 #: includes/class-almgr-asset-manager.php:493
@@ -1105,7 +1103,7 @@ msgstr ""
 
 #: includes/class-almgr-abilities-manager.php:280
 msgid "Create loan request"
-msgstr ""
+msgstr "Crea richiesta di prestito"
 
 #: admin/almgr-tools-page.php:192 admin/almgr-tools-page.php:400
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-tools-page.php:192
@@ -1124,6 +1122,8 @@ msgid ""
 "Creates a loan request using the shared loan workflow for the authenticated "
 "user."
 msgstr ""
+"Crea una richiesta di prestito utilizzando il flusso di prestito condiviso "
+"per l'utente autenticato."
 
 #: admin/almgr-tools-page.php:179 admin/almgr-tools-page.php:388
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-tools-page.php:179
@@ -1180,12 +1180,11 @@ msgstr "Delimitatore: punto e virgola (;)."
 msgid "Delimiter: semicolon (;). Existing assets are skipped in this MVP."
 msgstr ""
 "Delimitatore: punto e virgola (;). Le risorse già esistenti vengono saltate "
-"in questo MVP.Delimitatore: punto e virgola (;). Le risorse già esistenti "
-"vengono saltate."
+"in questo MVP."
 
 #: templates/shortcodes/asset-view.php:666
 msgid "Describe anything relevant about this return..."
-msgstr ""
+msgstr "Descrivi eventuali dettagli rilevanti su questa restituzione..."
 
 #: templates/shortcodes/asset-view.php:797
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-view.php:752
@@ -1256,6 +1255,9 @@ msgid ""
 "can discover and call these read-only abilities on behalf of an "
 "authenticated user."
 msgstr ""
+"Disattivato per impostazione predefinita. Se abilitato, un adapter MCP o un "
+"altro client esterno può individuare e richiamare queste abilità di sola "
+"lettura per conto di un utente autenticato."
 
 #: admin/almgr-tools-page.php:515
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-tools-page.php:515
@@ -1379,10 +1381,8 @@ msgstr "Abilita REST API"
 
 #: admin/almgr-settings-page.php:1163
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:1138
-#, fuzzy
-#| msgid "Enable the ALM JSON API endpoints under /almgr/v1/."
 msgid "Enable the ALM JSON API endpoints under /wp-json/almgr/v1/."
-msgstr "Abilita gli endpoint JSON API di ALM sotto /almgr/v1/."
+msgstr "Abilita gli endpoint JSON API di ALM sotto /wp-json/almgr/v1/."
 
 #: admin/almgr-settings-page.php:1208
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:1183
@@ -1471,8 +1471,7 @@ msgstr "Esporta utenti CSV"
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-tools-page.php:591
 msgid "Export users to CSV with strict columns compatible with users import."
 msgstr ""
-"Esporta gli utenti in CSV con colonne compatibili con l'importazione utenti."
-"Esporta gli utenti in CSV con colonne rigorose compatibili con l'import "
+"Esporta gli utenti in CSV con colonne fisse compatibili con l'importazione "
 "utenti."
 
 #: admin/almgr-tools-page.php:113
@@ -1552,9 +1551,7 @@ msgstr "Registrazione della voce nello storico per il componente non riuscita."
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:1456
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:1956
 msgid "Failed to log history entry for kit component."
-msgstr ""
-"Impossibile registrare la voce di storico per il componente del kit."
-"Impossibile registrare la voce nella cronologia per il componente del kit."
+msgstr "Impossibile registrare la voce di storico per il componente del kit."
 
 #: includes/class-almgr-loan-manager.php:1349
 #: includes/class-almgr-loan-manager.php:1849
@@ -1605,7 +1602,7 @@ msgstr "Ripristino della risorsa non riuscito. Riprova."
 
 #: assets/js/frontend-assets.js:1289
 msgid "Failed to return asset. Please try again."
-msgstr ""
+msgstr "Restituzione della risorsa non riuscita. Riprova."
 
 #: assets/js/frontend-assets.js:1273
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/assets/js/frontend-assets.js:1185
@@ -1667,12 +1664,11 @@ msgstr "Filtri aperti per impostazione predefinita"
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:860
 msgid "First_Name and Last_Name cannot be empty after sanitization."
 msgstr ""
-"Nome e Cognome non possono essere vuoti dopo la sanitizzazione.First_Name e "
-"Last_Name non possono essere vuoti dopo la sanitizzazione."
+"First_Name e Last_Name non possono essere vuoti dopo la sanitizzazione."
 
 #: admin/almgr-settings-page.php:54
 msgid "Forced return — to borrower"
-msgstr ""
+msgstr "Restituzione forzata — al detentore"
 
 #: admin/almgr-settings-page.php:132
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:127
@@ -1701,15 +1697,15 @@ msgstr "Generico"
 
 #: includes/class-almgr-abilities-manager.php:180
 msgid "Get asset"
-msgstr ""
+msgstr "Ottieni risorsa"
 
 #: includes/class-almgr-abilities-manager.php:204
 msgid "Get asset loan history"
-msgstr ""
+msgstr "Ottieni cronologia prestiti risorsa"
 
 #: includes/class-almgr-abilities-manager.php:243
 msgid "Get loan request"
-msgstr ""
+msgstr "Ottieni richiesta di prestito"
 
 #: admin/plugin-main-page.php:67
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/plugin-main-page.php:67
@@ -1729,6 +1725,10 @@ msgid ""
 "Keep this off if you want AI agents to browse the catalog but never submit "
 "loan requests on a user’s behalf."
 msgstr ""
+"Non ha alcun effetto se l'opzione \"Abilità di sola lettura pubbliche\" "
+"sopra non è abilitata. Lascia questa opzione disattivata se vuoi che gli "
+"agenti AI possano sfogliare il catalogo ma non inviare mai richieste di "
+"prestito per conto di un utente."
 
 #: plugin-config.php:133
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/plugin-config.php:130
@@ -1899,6 +1899,15 @@ msgid ""
 "\n"
 "-- ALM"
 msgstr ""
+"Salve,\n"
+"\n"
+"{ACTOR_NAME} ha restituito la risorsa \"{ASSET_TITLE}\".\n"
+"\n"
+"Note: {NOTES}\n"
+"\n"
+"Visualizza risorsa: {ASSET_URL}\n"
+"\n"
+"-- ALM"
 
 #: plugin-config.php:117
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/plugin-config.php:114
@@ -2009,7 +2018,6 @@ msgstr "Importa utenti da CSV con validazione rigorosa dell'intestazione."
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-tools-page.php:112
 msgid "Import: upload structured CSV files to create or update records."
 msgstr ""
-"Importazione: carica file CSV strutturati per creare o aggiornare i dati."
 "Importazione: carica file CSV strutturati per creare o aggiornare record."
 
 #. %s: link to Frontend settings tab
@@ -2099,7 +2107,7 @@ msgstr "ID richiesta non valido."
 
 #: includes/class-almgr-loan-manager.php:628
 msgid "Invalid requester."
-msgstr ""
+msgstr "Richiedente non valido."
 
 #: includes/class-almgr-tools-manager.php:1146
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:1146
@@ -2122,7 +2130,6 @@ msgstr "Termine di tassonomia stato non valido."
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:1551
 msgid "Invalid State. Allowed values are: available, maintenance, retired."
 msgstr ""
-"Stato non valido. I valori consentiti sono: available, maintenance, retired."
 "Stato non valido. I valori consentiti sono: available, maintenance, retired."
 
 #: includes/class-almgr-tools-manager.php:1581
@@ -2233,19 +2240,19 @@ msgstr ""
 
 #: includes/class-almgr-abilities-manager.php:267
 msgid "List asset loan requests"
-msgstr ""
+msgstr "Elenca richieste di prestito della risorsa"
 
 #: includes/class-almgr-abilities-manager.php:167
 msgid "List assets"
-msgstr ""
+msgstr "Elenca risorse"
 
 #: includes/class-almgr-abilities-manager.php:217
 msgid "List my assets"
-msgstr ""
+msgstr "Elenca le mie risorse"
 
 #: includes/class-almgr-abilities-manager.php:230
 msgid "List my loan requests"
-msgstr ""
+msgstr "Elenca le mie richieste di prestito"
 
 #: templates/shortcodes/asset-view.php:817
 #: templates/shortcodes/asset-view.php:821
@@ -2290,7 +2297,6 @@ msgstr "Richiesta di prestito approvata con successo."
 msgid "Loan request approved successfully. The page will reload."
 msgstr ""
 "Richiesta di prestito approvata con successo. La pagina verrà ricaricata."
-"Richiesta di prestito approvata con successo. La pagina verrà ricaricata."
 
 #: admin/almgr-settings-page.php:242
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:237
@@ -2299,7 +2305,7 @@ msgstr "Decisione sulla richiesta di prestito"
 
 #: includes/class-almgr-abilities-manager.php:255
 msgid "Loan request ID."
-msgstr ""
+msgstr "ID della richiesta di prestito."
 
 #: includes/class-almgr-abilities-manager.php:522
 #: includes/class-almgr-loan-manager.php:238
@@ -2435,7 +2441,7 @@ msgstr "Rivista"
 
 #: includes/class-almgr-installer.php:315
 msgid "Main warehouse"
-msgstr ""
+msgstr "Sede principale"
 
 #: includes/class-almgr-asset-manager.php:663
 #: includes/class-almgr-installer.php:281
@@ -2466,6 +2472,9 @@ msgid ""
 "Mark the read-only abilities (asset catalog, asset detail, my assets, loan "
 "history, loan requests) as public."
 msgstr ""
+"Contrassegna come pubbliche le abilità di sola lettura (catalogo risorse, "
+"dettaglio risorsa, le mie risorse, cronologia prestiti, richieste di "
+"prestito)."
 
 #: admin/almgr-settings-page.php:1071
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:1046
@@ -2626,7 +2635,7 @@ msgstr "Il messaggio non può essere vuoto."
 
 #: includes/class-almgr-abilities-manager.php:809
 msgid "Message explaining why the asset is requested."
-msgstr ""
+msgstr "Messaggio che spiega il motivo della richiesta della risorsa."
 
 #: templates/shortcodes/asset-view.php:321
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-view.php:331
@@ -2661,7 +2670,6 @@ msgstr "Caratteri minimi"
 msgid "Minimum characters typed before autocomplete activates. Default: 3."
 msgstr ""
 "Numero minimo di caratteri digitati prima che l'autocompletamento si attivi. "
-"Predefinito: 3.Caratteri minimi digitati prima che l'autocomplete si attivi. "
 "Predefinito: 3."
 
 #: includes/class-almgr-acf-asset-adapter.php:28
@@ -2681,8 +2689,7 @@ msgstr "Montatura"
 msgid "MVP behavior: existing assets are skipped (no updates)."
 msgstr ""
 "Comportamento MVP: le risorse già esistenti vengono saltate (nessun "
-"aggiornamento).Comportamento attuale: le risorse esistenti vengono saltate "
-"(nessun aggiornamento)."
+"aggiornamento)."
 
 #: admin/almgr-settings-page.php:227
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:222
@@ -2758,7 +2765,7 @@ msgstr "Nessuna riga è stata elaborata in questa esecuzione."
 
 #: includes/class-almgr-asset-manager.php:309
 msgid "No warehouse"
-msgstr ""
+msgstr "Nessuna sede"
 
 #: admin/almgr-settings-page.php:714
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:689
@@ -2822,21 +2829,18 @@ msgstr "Notifica tutti gli operatori per le richieste di prestito"
 
 #: admin/almgr-settings-page.php:206
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:201
-#, fuzzy
-#| msgid "Notify requester and operator when a loan request is submitted"
 msgid ""
 "Notify requester and relevant recipients when a loan request is submitted"
 msgstr ""
-"Notifica il richiedente e l'operatore quando viene inviata una richiesta di "
-"prestito"
+"Notifica il richiedente e i destinatari interessati quando viene inviata una "
+"richiesta di prestito"
 
 #: admin/almgr-settings-page.php:251
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:246
 msgid "Notify requester when a loan request is approved or rejected"
 msgstr ""
-"Notifica al richiedente quando una richiesta di prestito viene approvata o "
-"rifiutataNotifica il richiedente quando una richiesta di prestito viene "
-"approvata o rifiutata"
+"Notifica il richiedente quando una richiesta di prestito viene approvata o "
+"rifiutata"
 
 #: admin/almgr-settings-page.php:861
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:836
@@ -3040,7 +3044,7 @@ msgstr ""
 
 #: admin/almgr-settings-page.php:1226
 msgid "Paginated assets currently held by the authenticated user."
-msgstr ""
+msgstr "Risorse paginate attualmente detenute dall'utente autenticato."
 
 #: admin/almgr-settings-page.php:1231
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:1201
@@ -3056,12 +3060,16 @@ msgid ""
 "Paginated loan requests created by the authenticated user. Supports ?status, "
 "?page, ?per_page."
 msgstr ""
+"Richieste di prestito paginate create dall'utente autenticato. Supporta ?"
+"status, ?page, ?per_page."
 
 #: admin/almgr-settings-page.php:1246
 msgid ""
 "Paginated loan requests visible for an asset, subject to the request-"
 "visibility policy. Supports ?status, ?page, ?per_page."
 msgstr ""
+"Richieste di prestito paginate visibili per una risorsa, soggette alla "
+"policy di visibilità delle richieste. Supporta ?status, ?page, ?per_page."
 
 #: plugin-config.php:168
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/plugin-config.php:161
@@ -3167,11 +3175,11 @@ msgstr "Endpoint di ricerca risorse pubblico"
 
 #: admin/almgr-settings-page.php:1310
 msgid "Public loan-request creation"
-msgstr ""
+msgstr "Creazione pubblica di richieste di prestito"
 
 #: admin/almgr-settings-page.php:1288
 msgid "Public read-only abilities"
-msgstr ""
+msgstr "Abilità di sola lettura pubbliche"
 
 #: includes/class-almgr-acf-asset-adapter.php:29
 #: includes/class-almgr-asset-manager.php:492
@@ -3303,10 +3311,8 @@ msgstr "Motivo del rifiuto (obbligatorio, max %d caratteri):"
 
 #: assets/js/frontend-assets.js:1128
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/assets/js/frontend-assets.js:1040
-#, fuzzy
-#| msgid "Rejection reason must not exceed 255 characters."
 msgid "Rejection reason must not exceed %d characters."
-msgstr "Il motivo del rifiuto non deve superare i 255 caratteri."
+msgstr "Il motivo del rifiuto non deve superare i %d caratteri."
 
 #: admin/almgr-settings-page.php:209
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:204
@@ -3332,7 +3338,6 @@ msgstr "Richiesta approvata"
 msgid "Request automatically canceled: asset approved for another user."
 msgstr ""
 "Richiesta annullata automaticamente: la risorsa è stata approvata per un "
-"altro utente.Richiesta annullata automaticamente: risorsa approvata per un "
 "altro utente."
 
 #: admin/almgr-settings-page.php:51
@@ -3478,60 +3483,72 @@ msgstr "Ritirato"
 #: templates/shortcodes/asset-view.php:633
 #: templates/shortcodes/asset-view.php:673
 msgid "Return asset"
-msgstr ""
+msgstr "Restituisci risorsa"
 
 #: assets/js/frontend-assets.js:679
 msgid "Return failed. Please try again."
-msgstr ""
+msgstr "Restituzione non riuscita. Riprova."
 
 #: plugin-config.php:176
 msgid "Returned"
-msgstr ""
+msgstr "Restituita"
 
 #: assets/js/frontend-assets.js:655
 msgid "Returning..."
-msgstr ""
+msgstr "Restituzione in corso..."
 
 #: admin/almgr-settings-page.php:630
 msgid "Returns"
-msgstr ""
+msgstr "Restituzioni"
 
 #: includes/class-almgr-abilities-manager.php:218
 msgid ""
 "Returns assets currently held by the authenticated user using the shared "
 "member asset service."
 msgstr ""
+"Restituisce le risorse attualmente detenute dall'utente autenticato "
+"utilizzando il servizio condiviso delle risorse del socio."
 
 #: includes/class-almgr-abilities-manager.php:181
 msgid "Returns one asset detail record using the shared asset detail service."
 msgstr ""
+"Restituisce il dettaglio di una risorsa utilizzando il servizio condiviso di "
+"dettaglio risorsa."
 
 #: includes/class-almgr-abilities-manager.php:244
 msgid "Returns one loan request visible to the authenticated user."
-msgstr ""
+msgstr "Restituisce una richiesta di prestito visibile all'utente autenticato."
 
 #: includes/class-almgr-abilities-manager.php:268
 msgid ""
 "Returns requests visible for an owned asset using the shared request query "
 "service."
 msgstr ""
+"Restituisce le richieste visibili per una risorsa posseduta utilizzando il "
+"servizio condiviso di interrogazione delle richieste."
 
 #: includes/class-almgr-abilities-manager.php:231
 msgid ""
 "Returns the authenticated user loan requests using the shared request query "
 "service."
 msgstr ""
+"Restituisce le richieste di prestito dell'utente autenticato utilizzando il "
+"servizio condiviso di interrogazione delle richieste."
 
 #: includes/class-almgr-abilities-manager.php:168
 msgid ""
 "Returns the paginated asset catalog using the shared asset read service."
 msgstr ""
+"Restituisce il catalogo risorse paginato utilizzando il servizio condiviso "
+"di lettura risorse."
 
 #: includes/class-almgr-abilities-manager.php:205
 msgid ""
 "Returns visible loan history for one asset using the shared asset history "
 "service."
 msgstr ""
+"Restituisce la cronologia dei prestiti visibile per una risorsa utilizzando "
+"il servizio condiviso di cronologia risorsa."
 
 #: templates/shortcodes/asset-history.php:119
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-history.php:119
@@ -3737,16 +3754,14 @@ msgstr "Configurazione mittente"
 msgid "Sender email address. Leave empty to use the site admin email."
 msgstr ""
 "Indirizzo email del mittente. Lascia vuoto per usare l'email "
-"dell'amministratore del sito.Indirizzo email del mittente. Lascia vuoto per "
-"usare l'email dell'amministratore del sito."
+"dell'amministratore del sito."
 
 #: admin/almgr-settings-page.php:125
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:120
 msgid "Sender name shown in outgoing emails. Leave empty to use the site name."
 msgstr ""
 "Nome mittente mostrato nelle email in uscita. Lascia vuoto per usare il nome "
-"del sito.Nome del mittente mostrato nelle email in uscita. Lascia vuoto per "
-"usare il nome del sito."
+"del sito."
 
 #. %s: name of the loan request section.
 #: templates/shortcodes/asset-view.php:385
@@ -3855,9 +3870,7 @@ msgstr ""
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-view.php:806
 msgid "Showing the last 10 loan history entries for this asset."
 msgstr ""
-"Visualizzazione delle ultime 10 voci dello storico prestiti per questa "
-"risorsa.Vengono mostrate le ultime 10 voci dello storico prestiti per questa "
-"risorsa."
+"Vengono mostrate le ultime 10 voci dello storico prestiti per questa risorsa."
 
 #: admin/plugin-main-page.php:89
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/plugin-main-page.php:89
@@ -3914,9 +3927,8 @@ msgstr "Saltato in modalità create_only: l'utente esiste già."
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:912
 msgid "Skipped in update_only mode: no existing user found for this email."
 msgstr ""
-"Ignorato in modalità update_only: nessun utente esistente trovato per questa "
-"email.Saltato in modalità update_only: nessun utente esistente trovato per "
-"questa email."
+"Saltato in modalità update_only: nessun utente esistente trovato per questa "
+"email."
 
 #: includes/class-almgr-tools-manager.php:936
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:936
@@ -4060,7 +4072,7 @@ msgstr ""
 
 #: includes/class-almgr-abilities-manager.php:572
 msgid "The loan workflow is not initialized."
-msgstr ""
+msgstr "Il flusso di prestito non è inizializzato."
 
 #: templates/shortcodes/asset-view.php:379
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-view.php:389
@@ -4076,6 +4088,12 @@ msgid ""
 "marked public, the flag external clients such as an MCP adapter use to "
 "decide whether to expose them to AI agents."
 msgstr ""
+"Il plugin registra le Abilità di WordPress per leggere il catalogo e le "
+"richieste di prestito, e per inviare una richiesta di prestito. Sono sempre "
+"disponibili per uso interno/PHP e sono sempre esposte tramite la superficie "
+"REST nativa wp-abilities/v1. Le impostazioni sottostanti controllano solo se "
+"vengono inoltre contrassegnate come pubbliche, il flag che client esterni "
+"come un adapter MCP utilizzano per decidere se esporle agli agenti AI."
 
 #: includes/class-almgr-tools-manager.php:683
 #: includes/class-almgr-tools-manager.php:1342
@@ -4168,9 +4186,7 @@ msgstr ""
 #: templates/shortcodes/asset-view.php:347
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-view.php:357
 msgid "To request a loan, you must log in as a member."
-msgstr ""
-"Per richiedere un prestito, è necessario accedere come membro.Per richiedere "
-"un prestito, è necessario effettuare l'accesso come socio."
+msgstr "Per richiedere un prestito, è necessario accedere come socio."
 
 #: admin/plugin-main-page.php:96
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/plugin-main-page.php:96
@@ -4280,8 +4296,7 @@ msgstr "upsert"
 msgid "Use this section to manage data import, export and utility operations."
 msgstr ""
 "Usa questa sezione per gestire l'importazione, l'esportazione e le "
-"operazioni di utilità sui dati.Usa questa sezione per gestire importazione, "
-"esportazione e operazioni di utilità sui dati."
+"operazioni di utilità sui dati."
 
 #: includes/class-almgr-tools-manager.php:983
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:983
@@ -4302,7 +4317,7 @@ msgstr "Suggerimenti utente"
 
 #: admin/almgr-settings-page.php:1256
 msgid "User suggestions for direct assignment."
-msgstr ""
+msgstr "Suggerimenti utente per l'assegnazione diretta."
 
 #: includes/class-almgr-tools-manager.php:1085
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:1085
@@ -4385,12 +4400,12 @@ msgstr "Visualizza sul frontend"
 #: templates/shortcodes/asset-list.php:191
 #: templates/shortcodes/asset-view.php:174
 msgid "Warehouse"
-msgstr ""
+msgstr "Sede"
 
 #: includes/class-almgr-plugin-manager.php:325
 #: includes/class-almgr-plugin-manager.php:326
 msgid "Warehouses"
-msgstr ""
+msgstr "Sedi"
 
 #: admin/almgr-settings-page.php:1053
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:1028
@@ -4434,6 +4449,9 @@ msgid ""
 "When enabled, a member can return an asset they currently hold, in addition "
 "to operators. This is separate from the operator-only forced return."
 msgstr ""
+"Se abilitata, un socio può restituire una risorsa che detiene attualmente, "
+"oltre agli operatori. Questa opzione è separata dalla restituzione forzata "
+"riservata agli operatori."
 
 #: includes/class-almgr-tools-manager.php:1806
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-tools-manager.php:1806
@@ -4460,8 +4478,7 @@ msgstr "WP Admin → Il tuo profilo"
 msgid "Write a brief message explaining why you need this asset..."
 msgstr ""
 "Scrivi un breve messaggio per spiegare perché hai bisogno di questa risorsa.."
-".Scrivi un breve messaggio per spiegare perché hai bisogno di questa risorsa."
-".."
+"."
 
 #: admin/almgr-settings-page.php:1032
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:1007
@@ -4499,9 +4516,7 @@ msgstr "Sei già il proprietario di questa risorsa e non puoi richiederla."
 #: includes/class-almgr-autocomplete-manager.php:180
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-autocomplete-manager.php:180
 msgid "You do not have permission to access asset autocomplete."
-msgstr ""
-"Non hai il permesso di accedere all'autocompletamento delle risorse.Non hai "
-"l'autorizzazione per accedere al completamento automatico delle risorse."
+msgstr "Non hai il permesso di accedere all'autocompletamento delle risorse."
 
 #: includes/class-almgr-rest-manager.php:314
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-rest-manager.php:228
@@ -4550,7 +4565,7 @@ msgstr "Non hai i permessi per ripristinare gli stati delle risorse."
 
 #: includes/class-almgr-loan-manager.php:2356
 msgid "You do not have permission to return this asset."
-msgstr ""
+msgstr "Non hai il permesso di restituire questa risorsa."
 
 #: includes/class-almgr-frontend-manager.php:571
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-frontend-manager.php:534
@@ -4566,15 +4581,15 @@ msgstr "Non hai i permessi per visualizzare le risorse."
 
 #: includes/class-almgr-rest-manager.php:334
 msgid "You do not have permission to view these loan requests."
-msgstr ""
+msgstr "Non hai il permesso di visualizzare queste richieste di prestito."
 
 #: includes/class-almgr-member-assets-service.php:63
 msgid "You do not have permission to view these member assets."
-msgstr ""
+msgstr "Non hai il permesso di visualizzare le risorse di questo socio."
 
 #: includes/class-almgr-abilities-manager.php:526
 msgid "You do not have permission to view this loan request."
-msgstr ""
+msgstr "Non hai il permesso di visualizzare questa richiesta di prestito."
 
 #: includes/class-almgr-plugin-manager.php:374
 #: includes/class-almgr-plugin-manager.php:386

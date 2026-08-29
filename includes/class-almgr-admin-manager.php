@@ -57,7 +57,7 @@ class ALMGR_Admin_Manager {
 	public function render_warehouse_filter_dropdown() {
 		global $typenow;
 
-		if ( ALMGR_ASSET_CPT_SLUG !== $typenow ) {
+		if ( ALMGR_ASSET_CPT_SLUG !== $typenow || ! ALMGR_Asset_Manager::is_warehouse_enabled() ) {
 			return;
 		}
 

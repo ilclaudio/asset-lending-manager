@@ -631,6 +631,22 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
+						<?php esc_html_e( 'Warehouse management', 'asset-lending-manager' ); ?>
+					</th>
+					<td>
+						<label>
+							<input
+								type="checkbox"
+								name="almgr_warehouse_enabled"
+								value="1"
+								<?php checked( $almgr_settings->get( 'warehouse.enabled', false ) ); ?>
+							>
+							<?php esc_html_e( 'Enable warehouse management. When disabled, the plugin uses only the independent Location field.', 'asset-lending-manager' ); ?>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
 						<?php esc_html_e( 'Allow members to return their own assets', 'asset-lending-manager' ); ?>
 					</th>
 					<td>

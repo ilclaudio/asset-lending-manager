@@ -42,13 +42,16 @@ class ALMGR_Asset_Query_Service {
 			$query_args['s'] = $search;
 		}
 
-		$tax_map   = array(
+		$tax_map = array(
 			'state'     => ALMGR_ASSET_STATE_TAXONOMY_SLUG,
 			'type'      => ALMGR_ASSET_TYPE_TAXONOMY_SLUG,
 			'structure' => ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG,
 			'level'     => ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 			'warehouse' => ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
 		);
+		if ( ! ALMGR_Asset_Manager::is_warehouse_enabled() ) {
+			unset( $tax_map['warehouse'] );
+		}
 		$tax_query = array( 'relation' => 'AND' );
 
 		foreach ( $tax_map as $filter_key => $taxonomy ) {

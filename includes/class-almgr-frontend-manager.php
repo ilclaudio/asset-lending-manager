@@ -722,7 +722,7 @@ class ALMGR_Frontend_Manager {
 		$filter_level = $this->get_validated_query_term_slug( 'almgr_level', ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
 		// Warehouse is a member-only filter: anonymous visitors never see it, and any
 		// manually crafted query string for it is ignored (see Fase 4 visibility rule).
-		$filter_warehouse = is_user_logged_in()
+		$filter_warehouse = is_user_logged_in() && ALMGR_Asset_Manager::is_warehouse_enabled()
 			? $this->get_validated_query_term_slug( 'almgr_warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG )
 			: '';
 		// Read owner filter (operator: by user ID; member: "my assets" checkbox).

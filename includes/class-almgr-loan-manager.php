@@ -2339,6 +2339,7 @@ class ALMGR_Loan_Manager {
 
 		$asset_id = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
+		$location = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
 
 		if ( $asset_id <= 0 ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
@@ -2359,6 +2360,15 @@ class ALMGR_Loan_Manager {
 			wp_send_json_error( array( 'message' => __( 'Asset can only be returned when it is on loan.', 'asset-lending-manager' ) ) );
 		}
 
+		if ( ! ALMGR_Asset_Manager::is_warehouse_enabled() ) {
+			if ( '' === $location ) {
+				wp_send_json_error( array( 'message' => __( 'Location is required.', 'asset-lending-manager' ) ) );
+			}
+			if ( mb_strlen( $location ) > 255 ) {
+				wp_send_json_error( array( 'message' => __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) ) );
+			}
+		}
+
 		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
 		if ( mb_strlen( $notes ) > $notes_max ) {
 			wp_send_json_error(
@@ -2372,7 +2382,7 @@ class ALMGR_Loan_Manager {
 			);
 		}
 
-		$result = $this->return_asset( $asset_id, $notes, $actor_id );
+		$result = $this->return_asset( $asset_id, $notes, $actor_id, $location );
 
 		if ( ! $result['success'] ) {
 			wp_send_json_error( array( 'message' => $result['message'] ) );
@@ -2399,7 +2409,7 @@ class ALMGR_Loan_Manager {
 	 * @param int    $asset_id Asset ID.
 	 * @param string $notes    Notes describing the return.
 	 * @param int    $actor_id User ID performing the return (operator or owning member).
-	 * @param string $location Legacy parameter, ignored; the asset location is not changed.
+	 * @param string $location Physical location in legacy mode.
 	 * @throws Exception When a database error occurs during the return.
 	 * @return array {
 	 *     @type bool   $success            True on success.
@@ -2413,18 +2423,14 @@ class ALMGR_Loan_Manager {
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
-			$warehouse = ALMGR_Asset_Manager::get_asset_warehouse( $asset_id );
-			if ( ! $warehouse ) {
-				throw new Exception( __( 'A warehouse must be assigned before returning this asset.', 'asset-lending-manager' ) );
+			if ( ALMGR_Asset_Manager::is_warehouse_enabled() ) {
+				$location = '';
 			}
-			// Cooperative returns do not prefill or overwrite the operational location.
-			$location = '';
 
 			$is_kit         = $this->is_asset_kit( $asset_id );
 			$previous_owner = $this->get_current_owner( $asset_id );
 
-			$plan             = $this->build_kit_state_change_plan( $asset_id, 'available' );
-			$location_targets = $plan['location_target_ids'];
+			$plan = $this->build_kit_state_change_plan( $asset_id, 'available' );
 
 			$this->set_asset_state( $asset_id, 'available' );
 			$this->set_asset_owner( $asset_id, 0 );
@@ -2448,7 +2454,7 @@ class ALMGR_Loan_Manager {
 
 			$wpdb->query( 'COMMIT' );
 
-			$this->write_location_to_targets( $location_targets, $location );
+			$this->write_location_to_targets( $plan['location_target_ids'], $location );
 
 			if ( $previous_owner ) {
 				do_action( 'almgr_asset_returned', $asset_id, $previous_owner, $actor_id, $notes );

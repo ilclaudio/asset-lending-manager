@@ -35,7 +35,7 @@ This document summarizes the operations available for each plugin role.
 
 ## Summary by role
 
-- Operator -> Create/edit assets; manage taxonomies; submit and manage loan requests; direct assignment; state changes, force return, and cooperative return with required location; restore assets; warehouse filtering.
+- Operator -> Create/edit assets; manage taxonomies; submit and manage loan requests; direct assignment; state changes, force return, and cooperative return; restore assets; warehouse filtering. Operator state changes require location; cooperative returns leave location unchanged.
 - Member -> Submit loan request; approve/reject only if current owner; cooperative return only when enabled and only for assets currently held; warehouse filtering.
 - Administrator -> Same operational scope as operator, including approve/reject even when not current owner. Plus standard WordPress administrator privileges.
 
@@ -72,7 +72,7 @@ OPERATOR / ADMINISTRATOR
     -> [Force return: on-loan -> available] + required location
          (kit: partial propagation -> excluded notice)
          (closes active loan, notifies borrower)
-    -> [Cooperative return: on-loan -> available] + required location
+    -> [Cooperative return: on-loan -> available] + warehouse displayed; location unchanged
          (kit: partial propagation -> excluded notice)
          (notifies operators; members only when enabled and current owner)
 

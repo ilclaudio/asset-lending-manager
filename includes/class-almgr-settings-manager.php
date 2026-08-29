@@ -57,6 +57,9 @@ class ALMGR_Settings_Manager {
 			'body'    => array(),
 		);
 		return array(
+			'warehouse'     => array(
+				'enabled' => false,
+			),
 			'email'         => array(
 				'from_name'    => '',
 				'from_address' => '',

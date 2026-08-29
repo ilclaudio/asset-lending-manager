@@ -320,13 +320,15 @@ class ALMGR_Plugin_Manager {
 		);
 
 		// Taxonomy: asset warehouse.
-		add_submenu_page(
-			$slug_main_menu,
-			__( 'Warehouses', 'asset-lending-manager' ),
-			__( 'Warehouses', 'asset-lending-manager' ),
-			ALMGR_EDIT_ASSET,
-			'edit-tags.php?taxonomy=' . ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
-		);
+		if ( ALMGR_Asset_Manager::is_warehouse_enabled() ) {
+			add_submenu_page(
+				$slug_main_menu,
+				__( 'Warehouses', 'asset-lending-manager' ),
+				__( 'Warehouses', 'asset-lending-manager' ),
+				ALMGR_EDIT_ASSET,
+				'edit-tags.php?taxonomy=' . ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
+			);
+		}
 
 		// Settings page.
 		add_submenu_page(
@@ -496,6 +498,7 @@ class ALMGR_Plugin_Manager {
 
 		if ( 'workflow' === $active_tab ) {
 			// [A/O] fields.
+			$changes['warehouse.enabled']                                    = isset( $_POST['almgr_warehouse_enabled'] );
 			$changes['workflow.cancel_concurrent_requests_on_assign']        = isset( $_POST['almgr_workflow_cancel_concurrent'] );
 			$changes['workflow.cancel_component_requests_when_kit_assigned'] = isset( $_POST['almgr_workflow_cancel_component_requests'] );
 			$changes['workflow.member_return_enabled']                       = isset( $_POST['almgr_workflow_member_return_enabled'] );
@@ -610,6 +613,10 @@ class ALMGR_Plugin_Manager {
 
 		if ( ! empty( $changes ) ) {
 			$this->modules['settings']->set_batch( $changes );
+		}
+
+		if ( ! empty( $changes['warehouse.enabled'] ) ) {
+			ALMGR_Installer::create_default_terms();
 		}
 
 		wp_safe_redirect(

@@ -77,7 +77,9 @@ class ALMGR_Asset_Read_Service {
 		$asset->structure_slugs = $this->get_term_slugs( $asset_id, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
 		$asset->type_slugs      = $this->get_term_slugs( $asset_id, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
 		$asset->level_slugs     = $this->get_term_slugs( $asset_id, ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
-		$asset->warehouse_slugs = $this->get_term_slugs( $asset_id, ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG );
+		$asset->warehouse_slugs = ALMGR_Asset_Manager::is_warehouse_enabled()
+			? $this->get_term_slugs( $asset_id, ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG )
+			: array();
 		$asset->external_code   = (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_external_code', $asset_id );
 		$asset->location        = (string) ALMGR_ACF_Asset_Adapter::get_custom_field( 'almgr_location', $asset_id );
 		$owner_data             = $asset->owner_id > 0 ? get_userdata( $asset->owner_id ) : false;

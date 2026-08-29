@@ -389,6 +389,7 @@
 
 				// Prepare form data.
 				var formData = new FormData();
+				var locationField = document.getElementById('almgr-return-asset-location');
 				formData.append('action',      'almgr_direct_assign_asset');
 				formData.append('nonce',       window.almgrFrontend.directAssignNonce);
 				formData.append('asset_id',    assetId);
@@ -660,6 +661,9 @@
 				formData.append('action',    'almgr_return_asset');
 				formData.append('nonce',     returnAssetNonceField && returnAssetNonceField.value ? returnAssetNonceField.value : window.almgrFrontend.returnAssetNonce);
 				formData.append('asset_id',  assetId);
+				if (locationField) {
+					formData.append('location', locationField.value.trim());
+				}
 				formData.append('notes',     notesField ? notesField.value.trim() : '');
 
 				fetch(window.almgrFrontend.ajaxUrl, { method: 'POST', body: formData })
