@@ -17,13 +17,30 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 2) Simple statistics page.
 
 ## DESIDERATA 1.0.0
-1) Abilities for MCP server (in progress on branch `features/addMCPAbilities`; see `DEV/TODO/TODO_MCP_AbilitiesImplementationPlan.md`).
+1) WordPress Abilities v1 completed (read-only catalog/requests plus `create-loan-request`; see `DOC/AI_ABILITIES_REFERENCE.md`). MCP adapter integration remains future/optional, not required by the plugin.
 2) Integration test suite for core AJAX and workflow state transitions: nonce/capability guard paths, rollback/failure paths (see `ISSUES_TODO.md`).
 3) PHPUnit round-trip test for `almgr_get_allowed_html()` allowlist completeness (see `ISSUES_TODO.md`).
 4) Location content-type: default location (`almgr_warehouse` taxonomy; spec closed in `DEV/TODO/TODO_Warehouse_Location.md`, ready for implementation).
 5) Introduce return concept.
-6) REst procedure for e2e tests.
-7) Documentation for REST API and Abilities.
+6) Reset procedure for e2e tests.
+
+
+## [Unreleased]
+### Added
+- Shared domain services layer used identically by the frontend, the REST API, and Abilities for every equivalent use case: `ALMGR_Asset_Query_Service`, `ALMGR_Asset_Read_Service`, `ALMGR_Asset_Detail_Service`, `ALMGR_Asset_History_Service`, `ALMGR_Member_Assets_Service`, `ALMGR_Loan_Request_Query_Service`, `ALMGR_Access_Policy`, `ALMGR_Pagination`, `ALMGR_Active_Loan_Count_Service`.
+- WordPress Abilities v1 (optional, feature-detected, category `almgr`): `almgr/list-assets`, `almgr/get-asset`, `almgr/list-my-assets`, `almgr/get-asset-loan-history`, `almgr/list-my-loan-requests`, `almgr/list-asset-loan-requests`, `almgr/get-loan-request`, `almgr/create-loan-request`.
+- New REST endpoints: `GET /me/assets` (current user's held assets) and paginated `GET /me/loan-requests`/`GET /assets/{id}/loan-requests` for loan requests.
+- New setting tab **ALM > Settings > Abilities** with `abilities.public` and `abilities.actions_public` toggles, controlling whether Abilities are marked public for external clients such as an MCP adapter (default: off for both).
+- `DOC/REST_API_REFERENCE.md` and `DOC/AI_ABILITIES_REFERENCE.md`: full reference documentation for the REST API and for the Abilities layer (endpoints/abilities, authentication, permissions, input/output, error codes).
+
+### Changed
+- Replaced `DOC/RestApiReference.md` with the more complete `DOC/REST_API_REFERENCE.md`.
+- `readme.txt`/`README.md`: REST API and Abilities descriptions made generic, pointing to the two dedicated reference documents instead of listing endpoint details inline.
+- Several Abilities input schemas now declare `additionalProperties: false` and complete descriptions for required fields, for consistency across all Abilities.
+
+### Fixed
+- Removed a duplicated visibility check in the asset detail template that recalculated loan-request visibility by hand instead of using the shared `ALMGR_Access_Policy`, already used by REST and Abilities for the same use case.
+- Removed dead code: `ALMGR_Loan_Manager::get_asset_history()`, an unused legacy history query superseded by `ALMGR_Asset_History_Service`.
 
 
 ## [0.3.2] - 2026-08-21

@@ -63,15 +63,26 @@ default; operators (`almgr_operator` role) and administrators hold all three.
 
 ### 2.5 Pagination
 
-Two pagination conventions coexist, depending on when the endpoint was added.
-Each endpoint below states which one it uses.
+Three pagination conventions coexist, depending on when the endpoint was
+added. Each endpoint below states which one it uses. None of them use
+WordPress's own `X-WP-Total`/`X-WP-TotalPages` convention — this API uses its
+own custom headers.
 
-- **WP standard headers** (`GET /assets`, `GET /members`): query params `page`
-  and `per_page`; response body is a plain JSON array; pagination totals are
-  returned in the `X-WP-Total` and `X-WP-TotalPages` response headers.
-- **Structured envelope** (`GET /me/loan-requests`, `GET /assets/{id}/loan-requests`):
-  same `page`/`per_page` query params, plus `status`; response body is an object
-  with `data`, `total`, `page`, and `pages` keys (see §3.3).
+- **Catalog envelope** (`GET /assets`, `GET /members`): query params `page`
+  and `per_page`; response body is an object with `data`, `total`, and `pages`
+  keys; the same totals are duplicated in the `X-ALM-Total` and
+  `X-ALM-TotalPages` response headers.
+- **My-assets envelope** (`GET /me/assets`): same shape as above plus a
+  top-level `member_id` key (`{ member_id, total, data, pages }`); same
+  `X-ALM-Total`/`X-ALM-TotalPages` headers.
+- **Unbounded, no pagination** (`GET /members/{member_id}/assets`): returns
+  every matching asset in one response (`{ member_id, total, data }`) — no
+  `pages` key, no pagination headers, no `page`/`per_page` query params. See
+  the related performance note in `DEV/AGENTS/ISSUES_TODO.md`.
+- **Loan-request envelope** (`GET /me/loan-requests`, `GET /assets/{id}/loan-requests`):
+  `page`/`per_page` query params, plus `status`; response body is an object
+  with `data`, `total`, `page`, and `pages` keys (see §3.3). No pagination
+  headers on this one.
 
 ### 2.6 Request-visibility policy
 
@@ -115,14 +126,22 @@ adds full ACF fields and loan history).
 | Field | Type | Notes |
 |---|---|---|
 | `id` | integer | Post ID. |
+| `code` | string | Human-readable asset code (e.g. `AST-00000123`). |
 | `title` | string | |
 | `permalink` | string | |
+| `thumbnail_url` | string\|null | |
 | `structure` | string | Taxonomy slug: `component` or `kit`. |
 | `type` | string | Taxonomy slug (e.g. `telescope`, `book`, ...). |
 | `state` | string | Taxonomy slug: `available`, `on-loan`, `maintenance`, `retired`. |
 | `level` | string | Taxonomy slug: `basic`, `intermediate`, `advanced`. |
+| `owner_id` | integer | Current owner's WordPress user ID, `0` when not on loan. |
+| `owner_name` | string | Current owner's display name, empty when not on loan. |
+| `owner_username` | string | Current owner's `user_login`, empty when not on loan. |
 | ACF fields | mixed | Unprefixed keys for API stability (e.g. `manufacturer`, not `almgr_manufacturer`). Full field list: `manufacturer`, `model`, `data_acquisto`, `cost`, `dimensions`, `weight`, `location`, `components`, `user_manual`, `technical_data_sheet`, `serial_number`, `external_code`, `notes`. |
 | Operator-only fields | mixed | `cost`, `data_acquisto`, `notes`, and (detail only) loan history entries are omitted entirely for callers without `almgr_edit_asset`, rather than returned empty. |
+
+`code`, `permalink`, `thumbnail_url`, and the `owner_*` fields are present in
+both the list and detail forms.
 
 ### 3.2 Member/user object
 
@@ -136,8 +155,8 @@ they are interchangeable.
 | `id` | integer | WordPress user ID. |
 | `display_name` | string | |
 | `email` | string | |
-| `roles` | array | ALM roles only (`almgr_member`, `almgr_operator`), other WordPress roles are not included. |
-| `active_loan_count` | integer | |
+| `almgr_roles` | array | ALM roles only (`member`, `operator`), other WordPress roles are not included. Note the field name: **not** `roles`. |
+| `active_loans_count` | integer | Note the field name: **not** `active_loan_count`. |
 
 **User suggestion** (`POST /users/autocomplete`) — lighter shape, used by the
 direct-assignment picker:
@@ -147,6 +166,25 @@ direct-assignment picker:
 | `id` | integer | |
 | `display_name` | string | |
 | `user_login` | string | Not present on the member-list shape above. |
+
+### 3.2bis Member asset object
+
+A **distinct, lighter shape** from the full Asset object (§3.1) — returned by
+`GET /me/assets` and `GET /members/{member_id}/assets`. State is omitted:
+assets returned by these two endpoints are always on-loan to the member in
+question.
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | integer | |
+| `code` | string | |
+| `title` | string | |
+| `structure` | string | Taxonomy slug. |
+| `type` | string | Taxonomy slug. |
+| `external_code` | string | |
+| `location` | string | |
+| `thumbnail_url` | string\|null | |
+| `permalink` | string | |
 
 ### 3.3 Loan request object
 
@@ -195,7 +233,7 @@ Returned by `POST /assets/autocomplete`:
 
 #### `GET /assets`
 
-Paginated list of published assets. Pagination: WP standard headers (§2.5).
+Paginated list of published assets. Pagination: catalog envelope (§2.5).
 Capability: `almgr_view_assets`.
 
 **Query parameters:**
@@ -209,7 +247,8 @@ Capability: `almgr_view_assets`.
 | `type` | string | — | Filter by type taxonomy slug |
 | `state` | string | — | Filter by state taxonomy slug |
 
-**Response:** JSON array of Asset objects (§3.1, list form).
+**Response:** Catalog envelope (§2.5): `{ data, total, pages }`, `data` is an
+array of Asset objects (§3.1, list form).
 
 #### `GET /assets/{id}`
 
@@ -225,7 +264,7 @@ Detail of a single published asset. Capability: `almgr_view_asset`.
 
 #### `GET /members`
 
-Paginated list of users with ALM roles. Pagination: WP standard headers (§2.5).
+Paginated list of users with ALM roles. Pagination: catalog envelope (§2.5).
 Capability: `almgr_edit_asset` (operator or administrator).
 
 **Query parameters:**
@@ -235,16 +274,33 @@ Capability: `almgr_edit_asset` (operator or administrator).
 | `page` | integer | 1 | Page number |
 | `per_page` | integer | 10 | Results per page |
 
-**Response:** JSON array of Member list items (§3.2).
+**Response:** Catalog envelope (§2.5): `{ data, total, pages }`, `data` is an
+array of Member list items (§3.2).
+
+#### `GET /me/assets`
+
+Assets currently held by the authenticated user. Capability: `almgr_view_asset`.
+
+**Query parameters:**
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `page` | integer | 1 | Page number |
+| `per_page` | integer | 10 | Results per page |
+
+**Response:** My-assets envelope (§2.5): `{ member_id, total, data, pages }`,
+`data` is an array of Member asset objects (§3.2bis).
 
 #### `GET /members/{member_id}/assets`
 
 Assets currently on loan to a specific member. Capability: `almgr_edit_asset`.
+**Unbounded** — returns every matching asset in one response, no pagination
+(§2.5).
 
 **Path parameter:** `member_id` — WordPress user ID (integer).
 
-**Response:** JSON array of Asset objects (§3.1) currently assigned to the
-member (`_almgr_current_owner = member_id`).
+**Response:** `{ member_id, total, data }`, `data` is an array of Member asset
+objects (§3.2bis) currently assigned to the member (`_almgr_current_owner = member_id`).
 
 ---
 
@@ -355,4 +411,7 @@ For the history of changes that affected the REST API, see `CHANGELOG.md`.
 
 ---
 
-*Last update: 2026-08-28 (rev 1)*
+*Last update: 2026-08-29 (rev 2) — corrected pagination envelopes, response
+headers, missing `GET /me/assets` endpoint, and several field names/omissions
+in the Asset and Member data models after verifying against
+`includes/class-almgr-rest-manager.php` directly.*

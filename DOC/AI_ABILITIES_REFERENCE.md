@@ -10,12 +10,16 @@ services used by the web interface and by the REST API described in
 data-shaping logic to a shared service class, so results are always consistent
 with what the same user would see in the frontend or via REST.
 
-The Abilities module is entirely optional and self-disabling: if the Abilities
-API is not available in the running WordPress version, `ALMGR_Abilities_Manager`
-registers nothing and the rest of the plugin is unaffected. MCP (Model Context
-Protocol) support is not built into this plugin — Abilities are the contract;
-an external, separately maintained project (`wordpress/mcp-adapter`) is what can
-bridge them to an MCP client such as Claude Desktop. See §6.
+The Abilities module is entirely optional and self-disabling: the WordPress
+Abilities API itself requires **WordPress 6.9 or later**. On older versions,
+`function_exists( 'wp_register_ability' )` is `false`, `ALMGR_Abilities_Manager`
+registers nothing, and the rest of the plugin is unaffected — no fatal error,
+no degraded behavior elsewhere.
+
+MCP (Model Context Protocol) support is not built into this plugin — Abilities
+are the contract; an external, separately maintained project
+(`wordpress/mcp-adapter`) is what can bridge them to an MCP client such as
+Claude Desktop. See §6.
 
 ---
 
@@ -382,4 +386,5 @@ the history of changes that affected the Abilities layer, see `CHANGELOG.md`.
 
 ---
 
-*Last update: 2026-08-28 (rev 1)*
+*Last update: 2026-08-29 (rev 2) — stated the WordPress 6.9+ requirement for the
+Abilities API explicitly in §1.*

@@ -26,7 +26,7 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Full asset history page for operators via `[almgr_asset_history]`
 - Role-based permissions (`almgr_member`, `almgr_operator`)
 - Read-only REST API for external integrations (asset catalog, member assets, loan requests); see `DOC/REST_API_REFERENCE.md`
-- Optional WordPress Abilities for AI-agent/MCP-oriented integrations, sharing the same domain logic as the web UI and REST API; see `DOC/AI_ABILITIES_REFERENCE.md`
+- Optional WordPress Abilities for programmatic/AI-agent integrations, available only when running WordPress 6.9 or later (the plugin works normally without it), sharing the same domain logic as the web UI and REST API. MCP itself is not bundled — see `DOC/AI_ABILITIES_REFERENCE.md` for details and how to connect an external MCP adapter such as Claude Desktop
 - Back-office Tools page (`ALM → Tools`) with Import, Export, and Utilities tabs
 - Users CSV import from the Tools page (admin only) and users CSV export (admin and operator)
 - Assets CSV import from the Tools page (admin and operator) and assets CSV export (admin and operator)

@@ -183,15 +183,16 @@ class ALMGR_Abilities_Manager {
 				'execute_callback'    => array( $this, 'execute_get_asset' ),
 				'permission_callback' => array( $this, 'can_get_asset' ),
 				'input_schema'        => array(
-					'type'       => 'object',
-					'properties' => array(
+					'type'                 => 'object',
+					'additionalProperties' => false,
+					'properties'           => array(
 						'asset_id' => array(
 							'type'        => 'integer',
 							'minimum'     => 1,
 							'description' => __( 'Asset post ID.', 'asset-lending-manager' ),
 						),
 					),
-					'required'   => array( 'asset_id' ),
+					'required'             => array( 'asset_id' ),
 				),
 				'meta'                => $common_meta,
 			)
@@ -686,9 +687,10 @@ class ALMGR_Abilities_Manager {
 	 */
 	private function get_list_assets_input_schema() {
 		return array(
-			'type'       => 'object',
-			'default'    => (object) array(),
-			'properties' => array_merge(
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'default'              => (object) array(),
+			'properties'           => array_merge(
 				ALMGR_Pagination::input_schema(),
 				array(
 					'search'    => array(
@@ -724,17 +726,19 @@ class ALMGR_Abilities_Manager {
 	 */
 	private function get_history_input_schema() {
 		return array(
-			'type'       => 'object',
-			'properties' => array_merge(
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => array_merge(
 				array(
 					'asset_id' => array(
-						'type'    => 'integer',
-						'minimum' => 1,
+						'type'        => 'integer',
+						'minimum'     => 1,
+						'description' => __( 'Asset post ID.', 'asset-lending-manager' ),
 					),
 				),
 				ALMGR_Pagination::input_schema()
 			),
-			'required'   => array( 'asset_id' ),
+			'required'             => array( 'asset_id' ),
 		);
 	}
 
@@ -745,9 +749,10 @@ class ALMGR_Abilities_Manager {
 	 */
 	private function get_pagination_input_schema() {
 		return array(
-			'type'       => 'object',
-			'default'    => (object) array(),
-			'properties' => ALMGR_Pagination::input_schema(),
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'default'              => (object) array(),
+			'properties'           => ALMGR_Pagination::input_schema(),
 		);
 	}
 
@@ -783,8 +788,9 @@ class ALMGR_Abilities_Manager {
 		$schema['properties'] = array_merge(
 			array(
 				'asset_id' => array(
-					'type'    => 'integer',
-					'minimum' => 1,
+					'type'        => 'integer',
+					'minimum'     => 1,
+					'description' => __( 'Asset post ID.', 'asset-lending-manager' ),
 				),
 			),
 			$schema['properties']
