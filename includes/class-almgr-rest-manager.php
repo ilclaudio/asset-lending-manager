@@ -767,8 +767,7 @@ class ALMGR_REST_Manager {
 
 		// Operator-only fields: cost, purchase date, notes, and loan history.
 		if ( $this->is_operator() ) {
-			$operator_keys = array( 'almgr_cost', 'almgr_data_acquisto', 'almgr_notes' );
-			foreach ( $operator_keys as $key ) {
+			foreach ( ALMGR_Asset_Projection_Service::OPERATOR_ONLY_ACF_KEYS as $key ) {
 				$response_key          = str_replace( 'almgr_', '', $key );
 				$data[ $response_key ] = isset( $acf[ $key ] ) ? ( isset( $acf[ $key ]['value'] ) ? $acf[ $key ]['value'] : null ) : null;
 			}

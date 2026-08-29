@@ -4,7 +4,7 @@ This document describes when notification emails are sent, who receives them,
 which template is used, and under which conditions.
 
 Emails are sent via `wp_mail()` by the `ALMGR_Notification_Manager` class, except
-the contact-form message (event 7), which is sent by `ALMGR_Contact_Manager`.
+the contact-form message (event 8), which is sent by `ALMGR_Contact_Manager`.
 Sender and copy recipients are read from runtime settings:
 `email.from_name`, `email.from_address`, `email.system_email`.
 Event notifications are controlled by:
@@ -31,7 +31,8 @@ Current fallbacks: site name (`get_bloginfo('name')`) and admin email (`get_blog
 | 5 | Direct assignment | Operator or administrator | Previous owner | `direct_assign_to_prev_owner` | Only if previous owner existed and is different from assignee |
 | 5 | Direct assignment | Operator or administrator | System address | `direct_assign_to_prev_owner` | Only if `email.system_email` is configured |
 | 6 | Force return (on-loan -> available) | Operator or administrator | User who had the loan | `force_return` | Only if `notifications.enabled=true` and `notifications.loan_request=true` |
-| 7 | Contact form message about an asset | Authenticated user with contact permission (member or operator) | Current owner | `contact_message` | Only if `contact_form.enabled=true`; sender receives a Cc copy and is set as Reply-To |
+| 7 | Cooperative return (on-loan -> available) | Operator or current-owner member | All operators | `returned_to_operators` | Sent after a successful return; controlled by `notifications.enabled` and `notifications.loan_request` |
+| 8 | Contact form message about an asset | Authenticated user with contact permission (member or operator) | Current owner | `contact_message` | Only if `contact_form.enabled=true`; sender receives a Cc copy and is set as Reply-To |
 
 ---
 
@@ -67,6 +68,8 @@ only one email is sent to that address.
 | `{BORROWER_NAME}` | force_return | User who had the loan |
 | `{ACTOR_NAME}` | force_return | User (operator/administrator) who performed force return |
 | `{NOTES}` | force_return | Optional operator notes (`-` if empty) |
+| `{NOTES}` | returned_to_operators | Optional return notes (`-` if empty) |
+| `{ACTOR_NAME}` | returned_to_operators | User who performed the cooperative return |
 | `{SENDER_NAME}` | contact_message | Display name of the user who sent the contact message |
 | `{MESSAGE}` | contact_message | Free-text message body entered by the sender |
 
@@ -88,11 +91,12 @@ Runtime settings in `almgr_settings`:
 | `notifications.loan_request_operator_mode` | Operator recipient policy for loan requests: `never`, `no_owner`, `always` |
 | `contact_form.enabled` | Enable/disable the contact-form message event (independent of `notifications.enabled`) |
 | `contact_form.max_message_length` | Maximum allowed length of the free-text message body |
+| `workflow.member_return_enabled` | Allows the current-owner member to perform a cooperative return when enabled |
 
 Note: in the current flow, `ALMGR_Notification_Manager` uses runtime settings; `ALMGR_EMAIL_*` constants in `plugin-config.php` are not read directly by the send logic.
 Note: `force_return` currently uses `notifications.loan_request` in addition to master `notifications.enabled`.
-Note: the contact-form event (7) is gated only by `contact_form.enabled`, independent of the `notifications.*` master switches used by events 1-6.
+Note: the contact-form event (8) is gated only by `contact_form.enabled`, independent of the `notifications.*` master switches used by events 1-7.
 
 ---
 
-*Last update: 2026-08-29 (rev 3)*
+*Last update: 2026-08-29 (rev 4)*

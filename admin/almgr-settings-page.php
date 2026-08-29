@@ -51,6 +51,8 @@ $almgr_email_type_labels = array(
 	'canceled'                    => __( 'Request canceled', 'asset-lending-manager' ),
 	'direct_assign'               => __( 'Direct assignment — to assignee', 'asset-lending-manager' ),
 	'direct_assign_to_prev_owner' => __( 'Direct assignment — to previous owner', 'asset-lending-manager' ),
+	'force_return'                => __( 'Forced return — to borrower', 'asset-lending-manager' ),
+	'returned_to_operators'       => __( 'Cooperative return — to operators', 'asset-lending-manager' ),
 	'contact_message'             => __( 'Contact current owner — to recipient', 'asset-lending-manager' ),
 );
 
@@ -63,6 +65,8 @@ $almgr_placeholders = array(
 	'canceled'                    => '{ASSET_TITLE}, {ASSET_URL}, {REQUESTER_NAME}',
 	'direct_assign'               => '{ASSET_TITLE}, {ASSET_URL}, {ASSIGNEE_NAME}, {ACTOR_NAME}, {REASON}',
 	'direct_assign_to_prev_owner' => '{ASSET_TITLE}, {ASSET_URL}, {PREV_OWNER_NAME}, {ASSIGNEE_NAME}, {ACTOR_NAME}, {REASON}',
+	'force_return'                => '{BORROWER_NAME}, {ASSET_TITLE}, {ASSET_URL}, {ACTOR_NAME}, {NOTES}',
+	'returned_to_operators'       => '{ASSET_TITLE}, {ASSET_URL}, {ACTOR_NAME}, {NOTES}',
 	'contact_message'             => '{SENDER_NAME}, {ASSET_TITLE}, {ASSET_URL}, {MESSAGE}',
 );
 
@@ -1218,6 +1222,11 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 						<td><code>almgr_view_asset</code></td>
 					</tr>
 					<tr>
+						<td><code>GET /wp-json/almgr/v1/me/assets</code></td>
+						<td><?php esc_html_e( 'Paginated assets currently held by the authenticated user.', 'asset-lending-manager' ); ?></td>
+						<td><code>almgr_view_asset</code></td>
+					</tr>
+					<tr>
 						<td><code>GET /wp-json/almgr/v1/members</code></td>
 						<td><?php esc_html_e( 'Paginated list of ALM members and operators. Supports ?search, ?role, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_edit_asset</code></td>
@@ -1225,6 +1234,26 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 					<tr>
 						<td><code>GET /wp-json/almgr/v1/members/{id}/assets</code></td>
 						<td><?php esc_html_e( 'Assets currently held by a specific member (on-loan). Returns id, code, title, structure, type, external_code, location, thumbnail_url, permalink.', 'asset-lending-manager' ); ?></td>
+						<td><code>almgr_edit_asset</code></td>
+					</tr>
+					<tr>
+						<td><code>GET /wp-json/almgr/v1/me/loan-requests</code></td>
+						<td><?php esc_html_e( 'Paginated loan requests created by the authenticated user. Supports ?status, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
+						<td><code>almgr_view_asset</code></td>
+					</tr>
+					<tr>
+						<td><code>GET /wp-json/almgr/v1/assets/{id}/loan-requests</code></td>
+						<td><?php esc_html_e( 'Paginated loan requests visible for an asset, subject to the request-visibility policy. Supports ?status, ?page, ?per_page.', 'asset-lending-manager' ); ?></td>
+						<td><code>almgr_view_asset</code></td>
+					</tr>
+					<tr>
+						<td><code>POST /wp-json/almgr/v1/assets/autocomplete</code></td>
+						<td><?php esc_html_e( 'Asset autocomplete suggestions; public when enabled in settings, otherwise requires almgr_view_assets.', 'asset-lending-manager' ); ?></td>
+						<td><code>public or almgr_view_assets</code></td>
+					</tr>
+					<tr>
+						<td><code>POST /wp-json/almgr/v1/users/autocomplete</code></td>
+						<td><?php esc_html_e( 'User suggestions for direct assignment.', 'asset-lending-manager' ); ?></td>
 						<td><code>almgr_edit_asset</code></td>
 					</tr>
 				</tbody>

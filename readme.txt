@@ -30,7 +30,7 @@ Born within an association of amateur astronomers to manage telescopes and equip
 * Asset warehouse (`almgr_warehouse`) with automatic Kit to component propagation
 * Loan request workflow with approval, rejection, direct assignment, and configurable cancellation of competing pending requests
 * Optional contact form to send email messages to the current asset owner
-* Email notifications for the main loan workflow events
+* Email notifications for the main loan workflow events, including cooperative returns to operators
 * Frontend asset state management for operators: set maintenance or retired, force-return on-loan assets, and restore assets to available
 * Cooperative asset return from the frontend, distinct from operator force-return; optionally available to the current-owner member
 * Full loan history, plus a dedicated full asset history page for operators via `[almgr_asset_history]`
@@ -56,6 +56,7 @@ The plugin registers its ACF field group automatically, so no manual field setup
 * On approval, the asset is marked as on loan and the new borrower is recorded.
 * Operators and admins can also directly assign any asset that is not retired or under maintenance, without a prior request (when direct assignment is enabled).
 * Operators can force-return an on-loan asset to available, or restore an asset from maintenance or retired back to available.
+* Operators can cooperatively return an on-loan asset; members can do so when enabled and only for assets they currently hold.
 * All decisions, assignments, and state changes are recorded in loan history.
 
 
@@ -137,6 +138,12 @@ On classic themes, basic setup usually only requires installing the plugin and a
 
 For full release notes see `CHANGELOG.md`.
 
+= 0.4.0 =
+* Added: asset warehouse taxonomy with Kit-to-component propagation and member-only frontend visibility.
+* Added: cooperative asset return for operators and, when enabled, the current-owner member.
+* Added: optional WordPress Abilities for catalog, history, and loan-request integrations on WordPress 6.9+.
+* Changed: REST API and Abilities now use shared domain services for equivalent read operations.
+
 = 0.3.2 =
 * Fixed: Installation formatting for classic and block themes.
 
@@ -163,6 +170,9 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 
 
 == Upgrade Notice ==
+
+= 0.4.0 =
+Adds asset warehouses, cooperative returns, and optional WordPress Abilities. No manual migration is required.
 
 = 0.3.2 =
 Documentation-only release. No code or database changes; no action required.

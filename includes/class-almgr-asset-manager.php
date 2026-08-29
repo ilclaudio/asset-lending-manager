@@ -80,8 +80,32 @@ class ALMGR_Asset_Manager {
 				'register_asset_fields',
 			)
 		);
+		// Replace the default taxonomy checkbox metabox with a single-select field.
+		add_action( 'add_meta_boxes_' . ALMGR_ASSET_CPT_SLUG, array( $this, 'replace_warehouse_meta_box' ), 20 );
 		// Propagate a kit's warehouse to its currently included components on save.
 		add_action( 'save_post_' . ALMGR_ASSET_CPT_SLUG, array( $this, 'propagate_warehouse_to_kit_components' ) );
+	}
+
+	/**
+	 * Replace the default warehouse taxonomy metabox with the single-select version.
+	 *
+	 * @return void
+	 */
+	public function replace_warehouse_meta_box() {
+		remove_meta_box( ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . 'div', ALMGR_ASSET_CPT_SLUG, 'side' );
+		remove_meta_box( ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . 'div', ALMGR_ASSET_CPT_SLUG, 'normal' );
+		remove_meta_box( ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . 'div', ALMGR_ASSET_CPT_SLUG, 'advanced' );
+		remove_meta_box( 'tagsdiv-' . ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, ALMGR_ASSET_CPT_SLUG, 'side' );
+		remove_meta_box( 'tagsdiv-' . ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, ALMGR_ASSET_CPT_SLUG, 'normal' );
+		remove_meta_box( 'tagsdiv-' . ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, ALMGR_ASSET_CPT_SLUG, 'advanced' );
+		add_meta_box(
+			ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . '_select',
+			__( 'Warehouse', 'asset-lending-manager' ),
+			array( __CLASS__, 'render_warehouse_meta_box' ),
+			ALMGR_ASSET_CPT_SLUG,
+			'side',
+			'default'
+		);
 	}
 
 	/**
@@ -279,12 +303,42 @@ class ALMGR_Asset_Manager {
 				'show_ui'           => true,
 				'show_in_rest'      => true,
 				'show_admin_column' => true,
+				'meta_box_cb'       => array( __CLASS__, 'render_warehouse_meta_box' ),
 				'capabilities'      => array(
 					'manage_terms' => ALMGR_EDIT_ASSET,
 					'edit_terms'   => ALMGR_EDIT_ASSET,
 					'delete_terms' => ALMGR_EDIT_ASSET,
 					'assign_terms' => ALMGR_EDIT_ASSET,
 				),
+			)
+		);
+	}
+
+	/**
+	 * Render a single-select warehouse field in the asset editor.
+	 *
+	 * @param WP_Post $post Current asset post.
+	 * @return void
+	 */
+	public static function render_warehouse_meta_box( $post ) {
+		$current_terms = get_the_terms( $post->ID, ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG );
+		$selected      = ( ! empty( $current_terms ) && ! is_wp_error( $current_terms ) )
+			? (int) $current_terms[0]->term_id
+			: 0;
+
+		wp_dropdown_categories(
+			array(
+				'taxonomy'          => ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
+				'name'              => 'tax_input[' . ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . ']',
+				'show_option_none'  => __( 'No warehouse', 'asset-lending-manager' ),
+				'option_none_value' => '',
+				'orderby'           => 'name',
+				'order'             => 'ASC',
+				'selected'          => $selected,
+				'hierarchical'      => true,
+				'hide_empty'        => false,
+				'value_field'       => 'term_id',
+				'class'             => 'widefat',
 			)
 		);
 	}

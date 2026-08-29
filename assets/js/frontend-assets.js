@@ -656,13 +656,10 @@
 				}
 				responseDiv.style.display = 'none';
 
-				var locationField = document.getElementById('almgr-return-asset-location');
-
 				var formData = new FormData();
 				formData.append('action',    'almgr_return_asset');
 				formData.append('nonce',     returnAssetNonceField && returnAssetNonceField.value ? returnAssetNonceField.value : window.almgrFrontend.returnAssetNonce);
 				formData.append('asset_id',  assetId);
-				formData.append('location',  locationField ? locationField.value.trim() : '');
 				formData.append('notes',     notesField ? notesField.value.trim() : '');
 
 				fetch(window.almgrFrontend.ajaxUrl, { method: 'POST', body: formData })

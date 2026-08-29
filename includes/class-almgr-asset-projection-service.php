@@ -13,6 +13,33 @@ defined( 'ABSPATH' ) || exit;
 class ALMGR_Asset_Projection_Service {
 
 	/**
+	 * ACF field keys visible only to callers holding ALMGR_EDIT_ASSET (operators).
+	 *
+	 * Single source of truth for both REST and Abilities, so the two channels
+	 * cannot silently diverge on which asset fields are operator-only.
+	 *
+	 * @var string[]
+	 */
+	const OPERATOR_ONLY_ACF_KEYS = array( 'almgr_cost', 'almgr_data_acquisto', 'almgr_notes' );
+
+	/**
+	 * Filter a raw ACF field-object map (from get_field_objects()) down to the
+	 * keys visible to the current caller: operator-only keys are removed for
+	 * non-operators, everything else passes through unchanged.
+	 *
+	 * @param array $acf_fields Raw ACF field-object map.
+	 * @param bool  $is_operator Whether the caller holds ALMGR_EDIT_ASSET.
+	 * @return array
+	 */
+	public static function filter_acf_fields( array $acf_fields, $is_operator ) {
+		if ( $is_operator ) {
+			return $acf_fields;
+		}
+
+		return array_diff_key( $acf_fields, array_flip( self::OPERATOR_ONLY_ACF_KEYS ) );
+	}
+
+	/**
 	 * Project the common asset fields.
 	 *
 	 * @param object $asset Shared asset record.

@@ -23,7 +23,7 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 - Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; location field required on every state change
 - Cooperative asset return from frontend, distinct from operator force-return; optionally available to the current-owner member
 - Optional contact form to send email messages to the current asset owner
-- Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return), when notifications are enabled
+- Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return, cooperative return), when enabled
 - Loan history tracking
 - Full asset history page for operators via `[almgr_asset_history]`
 - Role-based permissions (`almgr_member`, `almgr_operator`)
@@ -67,17 +67,14 @@ QR features use bundled JavaScript libraries:
 
 ## Loan Workflow
 
-1. A member browses the available assets.
-2. A loan request is submitted for a selected asset.
-3. Notification emails are sent to the requester and, when applicable, to the current owner.
-4. The current owner can approve or reject the request.
-5. On approval, ownership is transferred and asset state is updated to on-loan.
-6. Operators/admins can directly assign any asset that is not retired or under maintenance (when direct assignment is enabled).
-7. Operators can change asset state (→ maintenance, → retired) from the frontend, providing a location and optional notes.
-8. Operators can force-return an on-loan asset to available directly from the frontend; this closes the active loan, clears the owner, and notifies the borrower.
-9. Operators can cooperatively return an on-loan asset; members can do so when enabled and only for assets they currently hold.
-10. Assets in maintenance or retired state can be restored to available by operators.
-11. All decisions, assignments, returns, and state changes are recorded in loan history.
+1. A member browses an asset and submits a loan request.
+2. The current owner, operator, or administrator approves or rejects it.
+3. Approval transfers ownership and marks the asset (and eligible kit components) as on-loan.
+4. Operators can directly assign assets, change state, force-return assets, and restore them; these actions require a location.
+5. Operators can cooperatively return assets; current-owner members can do so when the setting is enabled.
+6. Decisions, assignments, returns, and state changes are recorded in loan history.
+
+Cooperative returns notify all operators. The contact form is separate from the loan workflow and is controlled by its own setting.
 
 For detailed documentation, see the `DOC/` folder:
 - `DOC/RolePermissionsMatrix.md` — role/operation permission matrix
@@ -137,6 +134,12 @@ Settings UI is available in wp-admin under the ALM menu.
 - `[almgr_asset_list]` — embeds the full asset catalog with search filters into any page or post.
 - `[almgr_asset_view]` — embeds the detail view for a single asset.
 - `[almgr_asset_history]` — embeds the full loan history page for a selected asset. This page is operator-only and should be assigned in **ALM → Settings → Frontend** as **Asset history page**.
+
+## Known limitations
+
+- `GET /members/{member_id}/assets` is currently unbounded; use `GET /me/assets` when pagination is required.
+- WordPress Abilities currently cover read operations and loan-request creation; operator mutations are not exposed as Abilities.
+- MCP support requires the separately installed `wordpress/mcp-adapter` project.
 
 ## Uninstall
 

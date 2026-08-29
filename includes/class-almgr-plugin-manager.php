@@ -319,6 +319,15 @@ class ALMGR_Plugin_Manager {
 			'edit-tags.php?taxonomy=' . ALMGR_ASSET_LEVEL_TAXONOMY_SLUG,
 		);
 
+		// Taxonomy: asset warehouse.
+		add_submenu_page(
+			$slug_main_menu,
+			__( 'Warehouses', 'asset-lending-manager' ),
+			__( 'Warehouses', 'asset-lending-manager' ),
+			ALMGR_EDIT_ASSET,
+			'edit-tags.php?taxonomy=' . ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
+		);
+
 		// Settings page.
 		add_submenu_page(
 			$slug_main_menu,

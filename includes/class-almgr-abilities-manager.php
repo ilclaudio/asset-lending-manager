@@ -643,7 +643,7 @@ class ALMGR_Abilities_Manager {
 			$data['parent_kits'] = $asset->parent_kits;
 			$data['history']     = array();
 			$data['state_label'] = (string) $asset->state_label;
-			$data['acf_fields']  = $asset->acf_fields;
+			$data['acf_fields']  = ALMGR_Asset_Projection_Service::filter_acf_fields( $asset->acf_fields, current_user_can( ALMGR_EDIT_ASSET ) );
 		}
 
 		return $data;

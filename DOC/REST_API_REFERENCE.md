@@ -166,7 +166,7 @@ direct-assignment picker:
 |---|---|---|
 | `id` | integer | |
 | `display_name` | string | |
-| `user_login` | string | Not present on the member-list shape above. |
+| `role` | string | Translated role label (`Member` or `Operator`). |
 
 ### 3.2bis Member asset object
 
@@ -222,8 +222,8 @@ Returned by `POST /assets/autocomplete`:
 | `id` | integer | |
 | `title` | string | |
 | `description` | string | Truncated. |
-| `structure` | string | Taxonomy slug. |
-| `type` | string | Taxonomy slug. |
+| `structure` | string | Taxonomy term name. |
+| `type` | string | Taxonomy term name. |
 | `permalink` | string | |
 
 ---
@@ -243,7 +243,7 @@ Capability: `almgr_view_assets`.
 |---|---|---|---|
 | `page` | integer | 1 | Page number |
 | `per_page` | integer | 20 | Results per page (1–100) |
-| `search` | string | — | Full-text search on asset title |
+| `search` | string | — | WordPress full-text search on asset title and content |
 | `structure` | string | — | Filter by structure slug (`component`, `kit`) |
 | `type` | string | — | Filter by type taxonomy slug |
 | `state` | string | — | Filter by state taxonomy slug |
@@ -357,10 +357,10 @@ with `almgr_view_assets`.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `term` | string | Yes | Search string (minimum length configurable; default 2 characters) |
+| `term` | string | Yes | Search string (minimum length configurable; default 3 characters) |
 
 **Response:** JSON array of Asset suggestions (§3.4). Maximum results
-configurable via `autocomplete.max_results` setting (default 10).
+configurable via `autocomplete.max_results` setting (default 5).
 
 #### `POST /users/autocomplete`
 

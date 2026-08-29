@@ -377,10 +377,9 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * The "Return asset" form pre-fills the location field from the asset's
-	 * warehouse when one is assigned.
+	 * The "Return asset" form displays the warehouse assigned to the asset.
 	 */
-	public function test_return_form_prefills_location_from_warehouse() {
+	public function test_return_form_displays_warehouse() {
 		ALMGR_Installer::create_default_terms();
 		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
 
@@ -396,16 +395,14 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 		wp_set_current_user( 0 );
 		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
 
-		$this->assertMatchesRegularExpression(
-			'/id="almgr-return-asset-location"[^>]*value="Main warehouse"/',
-			$html
-		);
+		$this->assertStringContainsString( 'Main warehouse', $html );
+		$this->assertStringNotContainsString( 'almgr-return-asset-location', $html );
 	}
 
 	/**
-	 * Without an assigned warehouse, the "Return asset" location field starts empty.
+	 * Without an assigned warehouse, the return form indicates that none is assigned.
 	 */
-	public function test_return_form_location_empty_without_warehouse() {
+	public function test_return_form_indicates_missing_warehouse() {
 		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
 
 		$borrower_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
@@ -419,9 +416,7 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 		wp_set_current_user( 0 );
 		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
 
-		$this->assertMatchesRegularExpression(
-			'/id="almgr-return-asset-location"[^>]*value=""/',
-			$html
-		);
+		$this->assertStringContainsString( 'No warehouse assigned', $html );
+		$this->assertStringNotContainsString( 'almgr-return-asset-location', $html );
 	}
 }

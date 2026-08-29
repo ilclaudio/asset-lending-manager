@@ -46,6 +46,9 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 - Removed a duplicated visibility check in the asset detail template that recalculated loan-request visibility by hand instead of using the shared `ALMGR_Access_Policy`, already used by REST and Abilities for the same use case.
 - Removed dead code: `ALMGR_Loan_Manager::get_asset_history()`, an unused legacy history query superseded by `ALMGR_Asset_History_Service`.
 
+### Security
+- Fixed the `almgr/get-asset` Ability exposing operator-only fields (cost, purchase date, internal notes) to any authenticated member; it now applies the same field-visibility rule as the REST asset-detail endpoint, via a new shared `ALMGR_Asset_Projection_Service::filter_acf_fields()`.
+
 
 ## [0.3.2] - 2026-08-21
 ### Fixed
