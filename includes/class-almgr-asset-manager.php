@@ -94,27 +94,6 @@ class ALMGR_Asset_Manager {
 		add_action( 'add_meta_boxes', array( $this, 'replace_warehouse_meta_box' ), 99 );
 		// Propagate a kit's warehouse to its currently included components on save.
 		add_action( 'save_post_' . ALMGR_ASSET_CPT_SLUG, array( $this, 'propagate_warehouse_to_kit_components' ), 20 );
-		// When enabled, ensure every saved asset has one warehouse.
-		add_action( 'save_post_' . ALMGR_ASSET_CPT_SLUG, array( $this, 'ensure_asset_warehouse' ), 10 );
-	}
-
-	/**
-	 * Assign the default warehouse when warehouse management is enabled.
-	 *
-	 * @param int $post_id Saved asset ID.
-	 * @return void
-	 */
-	public function ensure_asset_warehouse( $post_id ) {
-		if ( ! self::is_warehouse_enabled() || wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
-			return;
-		}
-
-		if ( ! has_term( '', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, $post_id ) ) {
-			$default = get_term_by( 'slug', 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG );
-			if ( $default ) {
-				self::set_asset_warehouse( $post_id, $default->slug );
-			}
-		}
 	}
 
 	/**
@@ -343,7 +322,11 @@ class ALMGR_Asset_Manager {
 				),
 				'hierarchical'      => true,
 				'show_ui'           => self::is_warehouse_enabled(),
-				'show_in_rest'      => self::is_warehouse_enabled(),
+				// Always false: a REST-enabled taxonomy makes the block editor render its own
+				// native checkbox panel in addition to the custom single-select metabox below,
+				// duplicating the field. Term data stays reachable through the plugin's own
+				// REST/Abilities projections, which do not depend on this flag.
+				'show_in_rest'      => false,
 				'show_admin_column' => self::is_warehouse_enabled(),
 				'meta_box_cb'       => array( __CLASS__, 'render_warehouse_meta_box' ),
 				'capabilities'      => array(

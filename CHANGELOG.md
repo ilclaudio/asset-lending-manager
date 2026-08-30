@@ -45,6 +45,8 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ### Fixed
 - Removed a duplicated visibility check in the asset detail template that recalculated loan-request visibility by hand instead of using the shared `ALMGR_Access_Policy`, already used by REST and Abilities for the same use case.
 - Removed dead code: `ALMGR_Loan_Manager::get_asset_history()`, an unused legacy history query superseded by `ALMGR_Asset_History_Service`.
+- Fixed the asset editor showing the `almgr_warehouse` taxonomy twice: a native block-editor checkbox panel (from `show_in_rest`) alongside the plugin's own single-select metabox. The taxonomy no longer opts into its own core REST route, leaving the single-select field as the only control.
+- Removed automatic assignment of the default warehouse term to any saved asset left without one; assignment is now always explicit (asset editor, kit-to-component propagation, or default-term seeding), per the original feature's own "no auto-assignment" decision.
 
 ### Security
 - Fixed the `almgr/get-asset` Ability exposing operator-only fields (cost, purchase date, internal notes) to any authenticated member; it now applies the same field-visibility rule as the REST asset-detail endpoint, via a new shared `ALMGR_Asset_Projection_Service::filter_acf_fields()`.

@@ -12,9 +12,18 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 
 	/**
 	 * Set up shared taxonomy/CPT registration once per run.
+	 *
+	 * `warehouse.enabled` is turned on for every test in this class: the whole
+	 * feature (editor field, wrapper/read-service exposure, catalog/admin
+	 * filters, kit propagation, return-form display) is gated behind that
+	 * setting in production, and this class exists specifically to exercise
+	 * that feature. Each test runs in its own DB transaction (rolled back by
+	 * `WP_UnitTestCase`), so this does not leak into other test classes.
 	 */
 	public function setUp(): void {
 		parent::setUp();
+
+		( new ALMGR_Settings_Manager() )->set( 'warehouse.enabled', true );
 
 		$asset_manager = new ALMGR_Asset_Manager();
 		$asset_manager->register_post_type();

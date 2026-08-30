@@ -32,6 +32,7 @@ class ALMGR_Abilities_Integration_Test extends WP_UnitTestCase {
 		}
 
 		$settings = new ALMGR_Settings_Manager();
+		$settings->set( 'warehouse.enabled', true );
 		( new ALMGR_Role_Manager() )->activate();
 		$asset_manager = new ALMGR_Asset_Manager();
 		$asset_manager->register_post_type();
