@@ -27,6 +27,9 @@ composer.lock
 # Tests
 .phpunit.result.cache
 
+# E2E: downloaded on-demand by tests/e2e/bin/ensure-wp-cli.js, not committed (see tests/e2e/README.md).
+tests/e2e/.bin/
+
 # OS or Editor folders
 ._*
 .cache

@@ -115,8 +115,16 @@ You can do this in either of these ways:
 
 1. clone the repository directly into the `plugins/` directory of `alm-e2e`;
 2. copy your existing working repository into that plugin path;
-3. if your workflow supports it, use a symlink/junction so the site points to
-   your active working copy.
+3. **recommended:** create a symlink/junction so the site points to your
+   active working copy (e.g. on Windows: `New-Item -ItemType Junction -Path
+   "<alm-e2e>/wp-content/plugins/asset-lending-manager" -Target
+   "<this repository>"`).
+
+A physical copy (options 1-2) goes out of sync with every refactor — this
+already caused a fatal error on `alm-e2e` once (a class introduced on the
+working copy was missing from the stale copy). The junction/symlink in option
+3 avoids that entirely: `alm-e2e` always runs exactly what's in this
+repository, with zero extra sync step.
 
 The important requirement is simple:
 the `alm-e2e` site must be running this repository's code, not a stale copy.
@@ -171,34 +179,43 @@ but the generic install command is the simplest starting point.
 
 ---
 
-## Step 6 — Set the E2E base URL
+## Step 6 — Set the E2E base URL and site path
 
-The Playwright config reads the site URL from the environment variable
-`ALMGR_E2E_BASE_URL`.
+Two environment variables are required before running the suite — one for
+the browser, one for the database reset:
 
-If the variable is not set, the current fallback is:
-
-```text
-https://alm-e2e.local
-```
-
-If your local site uses a different URL, you must set the environment variable
-explicitly before running the suite.
+- `ALMGR_E2E_BASE_URL` — the URL Playwright's browser navigates to. Falls
+  back to `https://alm-e2e.local` if unset.
+- `ALMGR_E2E_SITE_PATH` — the **filesystem** path to the `alm-e2e` site root
+  (the folder containing `wp-config.php`), used by `global-setup.js`/
+  `global-teardown.js` to reset the database before and after every run (see
+  "Database reset" below). There is no fallback: **this one is required**, and
+  the suite fails immediately if it's missing.
 
 ### PowerShell
 
 ```powershell
 $env:ALMGR_E2E_BASE_URL = "https://alm-e2e.local"
+$env:ALMGR_E2E_SITE_PATH = "C:\Users\<you>\Local Sites\alm-e2e\app\public"
 composer test:e2e
 ```
 
 ### Bash
 
 ```bash
-ALMGR_E2E_BASE_URL="https://alm-e2e.local" composer test:e2e
+ALMGR_E2E_BASE_URL="https://alm-e2e.local" \
+ALMGR_E2E_SITE_PATH="/c/Users/<you>/Local Sites/alm-e2e/app/public" \
+composer test:e2e
 ```
 
-If the site URL is different, replace it with the real LocalWP domain.
+Both only apply to the current terminal session. To avoid setting them every
+time, add the lines to your PowerShell profile (`$PROFILE`) or set them as
+persistent user environment variables in Windows.
+
+If your local site uses a different URL or path, replace them accordingly.
+The full list of environment variables the E2E lane understands (including
+the ones for `mysql`/`mysqldump` resolution and test-user credentials) is in
+"Database reset" → "Required environment variables" below.
 
 ---
 
@@ -273,40 +290,125 @@ All tests are intentionally read-only and leave the database unmodified.
 
 ---
 
-## Database policy
+## Database reset
 
-For Phase 3, tests should be read-only whenever possible.
+The current smoke tests are read-only and do not need a reset to pass. Newer
+and future specs are not: loan requests, approvals, direct assignment, state
+changes, and kit propagation all mutate the database, so the suite resets
+`alm-e2e` to a known snapshot before (and after) every run.
 
-That means:
+Full design rationale: `DEV/TODO/TODO_ResetPlan.md`.
 
-- opening pages;
-- checking that responses are successful;
-- checking that expected containers or text render;
-- avoiding writes to options, posts, users, loan requests, or custom tables.
+### How the reset works
 
-With this initial policy, the database does not need cleanup after each run,
-because the current smoke tests should not modify site state.
+1. A baseline SQL dump (synthetic users and assets only) is committed at
+   `tests/e2e/fixtures/baseline.sql`.
+2. `playwright.config.js` registers `tests/e2e/global-setup.js`, which runs
+   `wp db import tests/e2e/fixtures/baseline.sql` against `alm-e2e` before the
+   suite starts.
+3. `tests/e2e/global-teardown.js` repeats the same import after the suite
+   finishes, so `alm-e2e` is left in the same known state for manual
+   inspection between sessions.
+4. No per-test teardown is needed: since every run starts from the same
+   snapshot, later tests never see earlier tests' mutations.
 
-If future E2E tests start creating or updating data, the suite will need an
-explicit reset strategy before it can be considered reliable. Typical options:
+### What's in the baseline
 
-- recreate the `alm-e2e` site from a clean snapshot;
-- clone `alm-site` into a fresh `alm-e2e` instance before a run;
-- seed known fixtures before each run;
-- add teardown/reset helpers for mutated entities.
+- Users: one operator (`e2e-operator`) and two members (`e2e-member-1`,
+  `e2e-member-2` — the second exists specifically for the concurrent
+  loan-request-cancellation scenario).
+- Assets: one available component, one kit with two available components, and
+  one additional component already on loan to `e2e-member-1` (so
+  return/force-return/reject scenarios don't need to create and approve a
+  request first).
+- Seeded by `tests/e2e/bin/seed-baseline.php`, run once via
+  `wp eval-file tests/e2e/bin/seed-baseline.php --path=<alm-e2e root>` against
+  an otherwise-clean `alm-e2e` site, then exported with `wp db export` into
+  `tests/e2e/fixtures/baseline.sql`.
 
-Until then, keep the E2E lane intentionally small and non-destructive.
+### Required environment variables
+
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `ALMGR_E2E_SITE_PATH` | Filesystem path to the `alm-e2e` WordPress root (needed by the reset, not just the browser). | none — required |
+| `ALMGR_E2E_PHP_BIN` | PHP CLI binary used to run `wp-cli.phar`. | `php` |
+| `ALMGR_E2E_MYSQL_BIN_DIR` | Override for the directory containing `mysql`/`mysqldump`. Auto-detected on Windows from Local's `lightning-services` folder; set this explicitly if auto-detection picks the wrong engine version (you have more than one MariaDB/MySQL version installed in Local) or on a non-Windows setup. | auto-detected (Windows) / none |
+| `ALMGR_E2E_OPERATOR_USER` / `ALMGR_E2E_OPERATOR_PASS` | Login used by `loginAsOperator()` (`tests/e2e/support/auth.js`). | `e2e-operator` / `e2e-operator-pw` |
+| `ALMGR_E2E_MEMBER_USER` / `ALMGR_E2E_MEMBER_PASS` | Login used by `loginAsMember()`. | `e2e-member-1` / `e2e-member-1-pw` |
+| `ALMGR_E2E_SKIP_RESET` | Set (to any value) to skip the database reset entirely. Set automatically by `npm run test:e2e:headed`/`test:e2e:ui` — interactive debugging should not re-import the database on every launch. | unset |
+
+Changing the credential env vars only changes who a spec logs in as; it does
+not change what's stored in `baseline.sql`. If you need different fixture
+credentials, edit `tests/e2e/bin/seed-baseline.php` and regenerate the dump
+(see below).
+
+### Regenerating the baseline
+
+Needed whenever a new scenario requires new fixture data (a new asset, a new
+user, a changed initial state):
+
+```bash
+# 1. Bring alm-e2e's content back to a clean slate (only if it has drifted —
+#    ad hoc content from manual testing, leftover mutations from a run that
+#    crashed before global-teardown could run, etc.). There is no single
+#    command for this: it means removing almgr_asset posts, loan-request
+#    table rows, and any non-essential users beyond the three fixture ones,
+#    via `wp post delete`, `wp db query`, `wp user delete`, or by recreating
+#    the alm-e2e site from scratch.
+# 2. Re-run (or update, then re-run) the seed script:
+node tests/e2e/bin/ensure-wp-cli.js   # only needed once, idempotent
+php tests/e2e/.bin/wp-cli.phar --path="<alm-e2e root>" eval-file tests/e2e/bin/seed-baseline.php
+
+# 3. Export the new baseline:
+php tests/e2e/.bin/wp-cli.phar --path="<alm-e2e root>" db export tests/e2e/fixtures/baseline.sql
+
+# 4. Scrub personal/real data before committing — see checklist below.
+
+# 5. Commit the updated tests/e2e/fixtures/baseline.sql.
+```
+
+**Before committing a regenerated dump, scrub anything real out of it.**
+`alm-e2e` is meant to hold only synthetic data, but a real WordPress install
+running on a developer's own machine accumulates real values in a few options
+regardless (admin email, third-party plugin settings, background-job logs).
+Search the exported `.sql` file for anything identifying before committing —
+at minimum:
+
+- `wp option get admin_email` / the site's admin user's real email — replace
+  with a synthetic address (e.g. `admin@example.test`) if it isn't already.
+- Any third-party plugin storing real credentials in `wp_options` (e.g. an
+  SMTP plugin's saved username/password) — delete the option
+  (`wp option delete <option_name>`) if the E2E suite doesn't need it, or blank
+  out just the sensitive fields (`wp option patch update ...`) if it does.
+- `almgr_settings.email.from_address` / `system_email` — replace with
+  synthetic addresses via `wp option patch update almgr_settings email from_address "noreply@example.test"`
+  (repeat for `system_email`).
+- Background-job/log tables that can retain old error messages referencing
+  real addresses or domains (e.g. `wp_actionscheduler_*`, or any mail-plugin
+  debug-log table) — safe to `TRUNCATE` entirely, they hold no fixture data.
+
+A quick way to check: `grep` the exported file for your own name, domain, or
+email address before running step 5.
+
+`mysql`/`mysqldump` must be reachable for steps 2-3: either already on your
+`PATH`, or resolved automatically by `tests/e2e/bin/resolve-mysql-bin.js`
+(Windows/Local only — run `node tests/e2e/bin/resolve-mysql-bin.js` to see what
+it detects), or pointed at explicitly via `ALMGR_E2E_MYSQL_BIN_DIR`.
 
 ---
 
 ## How it works internally
 
 1. `composer test:e2e` delegates to `npm run test:e2e`.
-2. npm runs Playwright using the repository `package.json`.
-3. Playwright loads `playwright.config.js`.
-4. The config points tests to `tests/e2e/specs/`.
-5. The browser uses `ALMGR_E2E_BASE_URL` or the fallback URL.
-6. The suite opens real frontend pages of the `alm-e2e` site and evaluates the response.
+2. The `pretest:e2e` npm hook runs `tests/e2e/bin/ensure-wp-cli.js`, downloading
+   `wp-cli.phar` into `tests/e2e/.bin/` if it isn't already there.
+3. npm runs Playwright using the repository `package.json`.
+4. Playwright loads `playwright.config.js`, which imports the baseline database
+   via `global-setup.js` before the suite and again via `global-teardown.js`
+   after it (see "Database reset" above).
+5. The config points tests to `tests/e2e/specs/`.
+6. The browser uses `ALMGR_E2E_BASE_URL` or the fallback URL.
+7. The suite opens real frontend pages of the `alm-e2e` site and evaluates the response.
 
 ---
 
@@ -323,6 +425,48 @@ The plugin rewrite rules were not flushed. Open `Settings > Permalinks` in the
 **`Fatal error` or `There has been a critical error on this website.`**
 The site is reachable, but WordPress or the plugin failed during rendering.
 Open the same page manually in the browser and inspect the PHP/WordPress logs.
+
+**`ALMGR_E2E_SITE_PATH is not set`**
+The database reset (`global-setup.js`/`global-teardown.js`) needs the
+filesystem path to the `alm-e2e` WordPress root, separately from
+`ALMGR_E2E_BASE_URL` (which is only the browser-facing URL). Set it, e.g.:
+
+```bash
+ALMGR_E2E_SITE_PATH="/c/Users/<you>/Local Sites/alm-e2e/app/public" composer test:e2e
+```
+
+**`wp db import`/`wp db export` fails, or a connection error mentioning a port**
+LocalWP assigns each site its own MySQL/MariaDB port, injected only into the
+PHP process Local itself manages — a `php` CLI started from your own shell
+does not see it, and `wp-cli.phar` will fail to connect (or some sub-steps of
+`db import`/`export` will, while others silently succeed) unless the site's
+`wp-config.php` sets `DB_HOST` explicitly with that port:
+
+```php
+define( 'DB_HOST', '127.0.0.1:<port>' );
+```
+
+Find `<port>` in Local's UI (site → "Database" tab). If Local ever reassigns
+the port (typically only when the site is recreated), update this line.
+
+**`wp db import`/`export` fails with `ERROR at line 1: Unknown command '\U'`**
+On Windows, the `mysql` client's `source` command (used internally by `wp db
+import`) does its own backslash escape processing, so a path like
+`C:\Users\...\baseline.sql` breaks (`\U` looks like an unknown client
+command). `run-wp-cli.js` normalizes every path it builds to forward slashes
+for exactly this reason, so this only bites if you run `wp-cli.phar`
+manually with a backslash path — e.g. when following the "Regenerating the
+baseline" steps above, prefer `--path="C:/Users/.../alm-e2e/app/public"`
+(forward slashes) over the Windows-native backslash form.
+
+**`mysqldump`/`mysql` not found, or `resolve-mysql-bin.js` reports nothing**
+LocalWP does not put these on your system `PATH`; they live inside Local's own
+per-engine runtime folder
+(`%APPDATA%/Local/lightning-services/<mariadb|mysql>-<version>/bin/win32/bin/`
+on Windows). `tests/e2e/bin/run-wp-cli.js` resolves this automatically via
+`resolve-mysql-bin.js` for every `wp db export`/`import` call. If you have more
+than one engine version installed and it picks the wrong one, or you're not on
+Windows, set `ALMGR_E2E_MYSQL_BIN_DIR` explicitly.
 
 **`npm` works but `node` is missing**
 You may be picking up a Windows npm shim from WSL instead of a Linux Node

@@ -20,7 +20,6 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 1) WordPress Abilities v1 completed (read-only catalog/requests plus `create-loan-request`; see `DOC/AI_ABILITIES_REFERENCE.md`). MCP adapter integration remains future/optional, not required by the plugin.
 2) Integration test suite for core AJAX and workflow state transitions: nonce/capability guard paths, rollback/failure paths (see `ISSUES_TODO.md`).
 3) PHPUnit round-trip test for `almgr_get_allowed_html()` allowlist completeness (see `ISSUES_TODO.md`).
-4) Reset procedure for e2e tests.
 
 
 ## [0.4.0] - 2026-08-29
