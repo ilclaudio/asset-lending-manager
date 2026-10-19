@@ -34,7 +34,13 @@
 	animation: almSpin 0.8s linear infinite;
 }
 
-.almgr-autocomplete-dropdown {
+/*
+ * The element selector raises specificity above WordPress core's
+ * "[role=region] { position: relative }" (wp-components stylesheet, enqueued
+ * for logged-in users), which would otherwise override "position: absolute"
+ * on dropdowns that carry role="region".
+ */
+div.almgr-autocomplete-dropdown {
 	position: absolute;
 	top: 100%;
 	left: 0;

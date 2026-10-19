@@ -6,7 +6,7 @@ Tags: asset management, loans, library, inventory, organization
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.3.2
+Stable tag: 0.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -134,6 +134,9 @@ On classic themes, basic setup usually only requires installing the plugin and a
 
 For full release notes see `CHANGELOG.md`.
 
+= 0.3.3 =
+* Fixed: search autocomplete dropdown layout for logged-in users.
+
 = 0.3.2 =
 * Fixed: Installation formatting for classic and block themes.
 
@@ -160,6 +163,9 @@ Both licenses are compatible with GPLv2 or later. License files are included in 
 
 
 == Upgrade Notice ==
+
+= 0.3.3 =
+Fixes the search autocomplete dropdown layout for logged-in users. CSS-only change; no database changes; no manual intervention required.
 
 = 0.3.2 =
 Documentation-only release. No code or database changes; no action required.
