@@ -138,6 +138,12 @@ On classic themes, basic setup usually only requires installing the plugin and a
 
 For full release notes see `CHANGELOG.md`.
 
+= 0.4.0 =
+* Added: asset warehouse taxonomy with Kit-to-component propagation and member-only frontend visibility.
+* Added: cooperative asset return for operators and, when enabled, the current-owner member.
+* Added: optional WordPress Abilities for catalog, history, and loan-request integrations on WordPress 6.9+.
+* Changed: REST API and Abilities now use shared domain services for equivalent read operations.
+
 = 0.3.3 =
 * Fixed: search autocomplete dropdown layout for logged-in users.
 

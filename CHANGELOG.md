@@ -22,40 +22,28 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 3) PHPUnit round-trip test for `almgr_get_allowed_html()` allowlist completeness (see `ISSUES_TODO.md`).
 
 
-## [0.4.0] - 2026-08-29
+## [0.4.0] - 2026-10-10
 ### Added
-- Shared `ALMGR_Asset_Projection_Service` for common asset and member-asset response fields used by REST and Abilities.
-- Shared domain services layer used identically by the frontend, the REST API, and Abilities for every equivalent use case: `ALMGR_Asset_Query_Service`, `ALMGR_Asset_Read_Service`, `ALMGR_Asset_Detail_Service`, `ALMGR_Asset_History_Service`, `ALMGR_Member_Assets_Service`, `ALMGR_Loan_Request_Query_Service`, `ALMGR_Access_Policy`, `ALMGR_Pagination`, `ALMGR_Active_Loan_Count_Service`.
-- WordPress Abilities v1 (optional, feature-detected, category `almgr`): `almgr/list-assets`, `almgr/get-asset`, `almgr/list-my-assets`, `almgr/get-asset-loan-history`, `almgr/list-my-loan-requests`, `almgr/list-asset-loan-requests`, `almgr/get-loan-request`, `almgr/create-loan-request`.
-- New REST endpoints: `GET /me/assets` (current user's held assets) and paginated `GET /me/loan-requests`/`GET /assets/{id}/loan-requests` for loan requests.
-- New setting tab **ALM > Settings > Abilities** with `abilities.public` and `abilities.actions_public` toggles, controlling whether Abilities are marked public for external clients such as an MCP adapter (default: off for both).
-- `DOC/REST_API_REFERENCE.md` and `DOC/AI_ABILITIES_REFERENCE.md`: full reference documentation for the REST API and for the Abilities layer (endpoints/abilities, authentication, permissions, input/output, error codes).
-- New `almgr_warehouse` taxonomy: the asset's administrative home location, independent from the existing dynamic `almgr_location` field. Includes default term seeding, member-only exposure in the frontend/REST/Abilities, a frontend catalog filter, a wp-admin list filter, and automatic propagation from a Kit to its currently included components on save.
-- New cooperative "Return asset" action (`ALMGR_Loan_Manager::return_asset()`, AJAX `almgr_return_asset`): a dedicated form on the asset detail page that closes an active loan, distinct from the existing operator-only forced return — its own history status (`returned`) and hook (`almgr_asset_returned`), with the location field pre-filled from the asset's warehouse when one is assigned.
-- New setting `workflow.member_return_enabled` (default off, **ALM > Settings > Automations**) letting operators allow members to return the asset they currently hold, in addition to operators.
-- Cooperative returns notify all operators by email (new `returned_to_operators` template), since the actor may be the borrower themselves.
-
+- Shared domain services used identically by the frontend, the REST API, and Abilities for every equivalent use case (catalog, asset detail, history, member assets, loan requests, pagination, access policy).
+- Optional WordPress Abilities v1 (category `almgr`): catalog, asset detail and history, own assets, loan-request lists and detail, and `create-loan-request`. New **ALM > Settings > Abilities** tab with `abilities.public` and `abilities.actions_public` (both off by default).
+- New REST endpoints: `GET /me/assets`, `GET /me/loan-requests`, `GET /assets/{id}/loan-requests`.
+- New `almgr_warehouse` taxonomy: the asset's administrative home location, independent from `almgr_location`, with default term, member-only visibility, frontend and wp-admin filters, and Kit-to-component propagation on save.
+- Cooperative "Return asset" action (history status `returned`, hook `almgr_asset_returned`) for operators and, with the new `workflow.member_return_enabled` setting (off by default), for the current-owner member. Operators are notified by email.
+- `DOC/REST_API_REFERENCE.md` and `DOC/AI_ABILITIES_REFERENCE.md`.
 ### Changed
-- REST and Abilities reference documentation aligned with the implemented pagination defaults, filters, response types, and error codes.
-- Replaced `DOC/RestApiReference.md` with the more complete `DOC/REST_API_REFERENCE.md`.
-- `readme.txt`/`README.md`: REST API and Abilities descriptions made generic, pointing to the two dedicated reference documents instead of listing endpoint details inline.
-- Several Abilities input schemas now declare `additionalProperties: false` and complete descriptions for required fields, for consistency across all Abilities.
-
+- REST and Abilities documentation aligned with the implemented behavior; `readme.txt`/`README.md` made generic and pointing to the two reference documents.
+- Abilities input schemas now declare `additionalProperties: false`.
 ### Fixed
-- Removed a duplicated visibility check in the asset detail template that recalculated loan-request visibility by hand instead of using the shared `ALMGR_Access_Policy`, already used by REST and Abilities for the same use case.
-- Removed dead code: `ALMGR_Loan_Manager::get_asset_history()`, an unused legacy history query superseded by `ALMGR_Asset_History_Service`.
-- Fixed the asset editor showing the `almgr_warehouse` taxonomy twice: a native block-editor checkbox panel (from `show_in_rest`) alongside the plugin's own single-select metabox. The taxonomy no longer opts into its own core REST route, leaving the single-select field as the only control.
-- Removed automatic assignment of the default warehouse term to any saved asset left without one; assignment is now always explicit (asset editor, kit-to-component propagation, or default-term seeding), per the original feature's own "no auto-assignment" decision.
-
+- Asset editor showed the warehouse taxonomy twice (core checkbox panel plus the plugin's single-select); only the single-select remains.
+- The default warehouse term is no longer auto-assigned on save; assignment is always explicit.
+- Removed a duplicated loan-request visibility check in the asset detail template and the unused `ALMGR_Loan_Manager::get_asset_history()`.
 ### Security
-- Fixed the `almgr/get-asset` Ability exposing operator-only fields (cost, purchase date, internal notes) to any authenticated member; it now applies the same field-visibility rule as the REST asset-detail endpoint, via a new shared `ALMGR_Asset_Projection_Service::filter_acf_fields()`.
+- The `almgr/get-asset` Ability no longer exposes operator-only fields (cost, purchase date, internal notes) to members.
 
 
 ## [0.3.3] - 2026-10-19
 ### Fixed
 - Search autocomplete dropdown layout for logged-in users: a WordPress core CSS rule was overriding its positioning.
-
-
 
 ## [0.3.2] - 2026-08-21
 ### Fixed
@@ -66,29 +54,21 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ### Fixed
 - Checked compatibility with WordPress 7.1: no code changes required (reviewed iframed post/site editor canvas, client-side media processing, `@wordpress/components` updates, persistent editor toolbar, jQuery UI 1.14.2 upgrade, and block registration — none apply to this plugin).
 
-
 ## [0.3.0] - 2026-07-01
 ### Added
-- Added asset history page.
-- Added unit tests: basic coverage for now.
-- Added integration: basic coverage for now.
-- Added e2e tests: covered only read only features for now.
-- Added feature to send e-mail messages to the owner of a resource.
+- Full asset history page for operators.
+- Email messages to the current owner of an asset.
+- Basic unit, integration, and read-only end-to-end test coverage.
 ### Fixed
-- Kit transfer (loan approval and direct assignment) no longer overwrites components assigned to other users or in maintenance/retired state; excluded components are left untouched and reported to the operator with explicit reasons.
-- Kit state changes (maintenance, retired, force-return, restore) no longer affect components outside the kit's control; only components in a compatible state and with the expected owner are modified.
-- Component sent to maintenance no longer removed from parent kit(s); `_almgr_removed_from_kit_ids` is now written only on permanent retirement.
-- Restore from maintenance is now a state-only change; no kit re-attach is performed because the component was never removed.
-- ACF write return values now checked with read-back: failures inside transactions throw and trigger rollback; post-commit failures log a warning.
-- Operator AJAX handlers (direct assignment, state change, restore state) now reject non-published (draft/private/trash) assets, matching the existing guard on loan request submission.
-- Asset list search field renamed from `s` to `almgr_search` to avoid colliding with the WordPress-reserved global search query variable; `s` is still read as a fallback for previously bookmarked links.
-- Hardened the REST API active-loan-count query (`count_active_loans()`) to use `$wpdb->prepare()` with placeholders instead of an interpolated ID list.
+- Kit transfers (loan approval, direct assignment) and state changes (maintenance, retired, force-return, restore) now modify only eligible components; excluded ones are left untouched and reported to the operator with reasons.
+- A component sent to maintenance stays in its parent kit(s); `_almgr_removed_from_kit_ids` is written only on permanent retirement, and restore from maintenance is a state-only change.
+- ACF writes are now verified with read-back: failures inside transactions trigger a rollback, post-commit failures are logged.
+- Operator AJAX handlers (direct assignment, state change, restore) now reject non-published assets.
+- Asset list search parameter renamed from `s` to `almgr_search` to avoid the WordPress reserved query variable (`s` is still read as a fallback for old links).
+- REST `count_active_loans()` now uses `$wpdb->prepare()` with placeholders.
 ### Changed
-- Kit loan approval and direct assignment use a unified pre-computed transfer plan; the previous `$check_component_conflicts` bypass parameter has been removed.
-- Location field cleared only on kit and included components when an asset moves to on-loan.
-- Location field set only on kit and included components on operator-driven state changes.
-- Excluded and skipped components returned in AJAX response and shown as a warning notice after page redirect.
-- Changed the layout of the asset detail page, now is full height to improve readability.
+- Kit approval and direct assignment use a single pre-computed transfer plan; `almgr_location` is cleared (on assignment) or set (on state changes) only on the kit and its included components.
+- The asset detail page now uses the full height for readability.
 
 
 ## [0.2.3] - 2026-05-23
@@ -122,14 +102,12 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 ### Security
 - Security fixes and hardening from code audit.
 
-
 ## [0.1.1] - 2026-04-01
 ### Added
 - Added a module to manage a REST API with these endpoints: `GET /wp-json/almgr/v1/assets`, `GET /wp-json/almgr/v1/assets/{id}`, `GET /wp-json/almgr/v1/members` and `GET /wp-json/almgr/v1/members/{id}/assets/`.
 - REST API settings tab in wp-admin (admin only) with enable/disable toggle, endpoint reference, and authentication guide.
 ### Security
 - Added resource-status checks on all AJAX endpoints.
-
 
 ## [0.1.0] - 2026-03-15
 First public release.
@@ -150,7 +128,6 @@ First public release.
 - Invalid QR scan codes no longer cause silent home-page redirects.
 - Unowned assets approver policy is consistent across settings, UI, and backend.
 
-
 ## [DEV-0.0.2] - 2026-03-11
 Internal development version — not released publicly.
 ### Changed
@@ -166,7 +143,6 @@ Internal development version — not released publicly.
 - Accessibility improvements.
 ### Security
 - Multiple security fixes applied.
-
 
 ## [DEV-0.0.1] - 2026-02-22
 First internal development version, ready for internal tests.
