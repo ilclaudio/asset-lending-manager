@@ -169,4 +169,66 @@ $on_loan_id = almgr_e2e_ensure_asset( 'e2e-on-loan-asset', 'E2E On Loan Asset' )
 almgr_e2e_set_taxonomies( $on_loan_id, ALMGR_ASSET_COMPONENT_SLUG, 'telescope', 'on-loan', 'basic' );
 update_post_meta( $on_loan_id, '_almgr_current_owner', $user_ids['e2e-member-1'] );
 
+// 4. One dedicated asset per operator-action spec, so every spec starts from its own
+// known state and the order in which specs run does not matter.
+//    - e2e-approve-asset / e2e-reject-asset: available, each with one pending request from the
+//      second member (approved / rejected by the operator in loan-approve-flow / loan-reject-flow).
+//    - e2e-assign-asset: available, assigned by the operator in direct-assign-flow.
+$approve_id = almgr_e2e_ensure_asset( 'e2e-approve-asset', 'E2E Approve Asset' );
+almgr_e2e_set_taxonomies( $approve_id, ALMGR_ASSET_COMPONENT_SLUG, 'telescope', 'available', 'basic' );
+
+$reject_id = almgr_e2e_ensure_asset( 'e2e-reject-asset', 'E2E Reject Asset' );
+almgr_e2e_set_taxonomies( $reject_id, ALMGR_ASSET_COMPONENT_SLUG, 'telescope', 'available', 'basic' );
+
+$assign_id = almgr_e2e_ensure_asset( 'e2e-assign-asset', 'E2E Assign Asset' );
+almgr_e2e_set_taxonomies( $assign_id, ALMGR_ASSET_COMPONENT_SLUG, 'telescope', 'available', 'basic' );
+
+/**
+ * Insert a pending loan request unless the same requester already has one for the asset.
+ *
+ * @param int    $asset_id     Asset post ID.
+ * @param int    $requester_id Requester user ID.
+ * @param string $message      Request message.
+ * @return void
+ */
+function almgr_e2e_ensure_pending_request( int $asset_id, int $requester_id, string $message ): void {
+	global $wpdb;
+	$table = $wpdb->prefix . 'almgr_loan_requests';
+
+	$existing = (int) $wpdb->get_var(
+		$wpdb->prepare(
+			'SELECT COUNT(*) FROM %i WHERE asset_id = %d AND requester_id = %d AND status = %s',
+			$table,
+			$asset_id,
+			$requester_id,
+			'pending'
+		)
+	);
+	if ( $existing > 0 ) {
+		WP_CLI::log( 'Pending request already present for asset ' . $asset_id . '.' );
+		return;
+	}
+
+	$inserted = $wpdb->insert(
+		$table,
+		array(
+			'asset_id'        => $asset_id,
+			'requester_id'    => $requester_id,
+			'owner_id'        => 0,
+			'request_date'    => current_time( 'mysql' ),
+			'request_message' => $message,
+			'status'          => 'pending',
+		),
+		array( '%d', '%d', '%d', '%s', '%s', '%s' )
+	);
+	if ( false === $inserted ) {
+		WP_CLI::error( 'Failed to insert the pending request for asset ' . $asset_id . ': ' . $wpdb->last_error );
+	}
+
+	WP_CLI::log( 'Pending request created for asset ' . $asset_id . '.' );
+}
+
+almgr_e2e_ensure_pending_request( $approve_id, $user_ids['e2e-member-2'], 'E2E pending request to approve.' );
+almgr_e2e_ensure_pending_request( $reject_id, $user_ids['e2e-member-2'], 'E2E pending request to reject.' );
+
 WP_CLI::success( 'Baseline fixture seeded.' );

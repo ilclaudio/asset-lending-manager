@@ -155,6 +155,9 @@ class ALMGR_Loan_Manager {
 	/**
 	 * AJAX handler for loan request rejection.
 	 *
+	 * Transport only: capability, nonce, input parsing, and the JSON response.
+	 * The domain rules live in reject_request().
+	 *
 	 * @return void
 	 */
 	public function ajax_reject_loan_request() {
@@ -168,128 +171,120 @@ class ALMGR_Loan_Manager {
 		}
 		// Verify nonce.
 		check_ajax_referer( 'almgr_loan_request_nonce', 'nonce' );
-		// Check whether loan requests are enabled by the admin.
-		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
-				)
-			);
-		}
 
-		// Get and validate input.
 		$request_id        = isset( $_POST['request_id'] ) ? absint( wp_unslash( $_POST['request_id'] ) ) : 0;
 		$asset_id          = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 		$rejection_message = isset( $_POST['rejection_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['rejection_message'] ) ) : '';
 
-		// Validate inputs.
-		if ( $request_id <= 0 ) {
+		$result = $this->reject_request( $request_id, $asset_id, $rejection_message, get_current_user_id() );
+
+		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
 				array(
-					'message' => __( 'Invalid request ID.', 'asset-lending-manager' ),
+					'message' => $result->get_error_message(),
 				)
 			);
+		}
+
+		wp_send_json_success(
+			array(
+				'message' => __( 'Loan request rejected successfully.', 'asset-lending-manager' ),
+			)
+		);
+	}
+
+	/**
+	 * Reject a pending loan request through the shared loan workflow.
+	 *
+	 * Channel adapters must validate their own transport credentials before
+	 * calling this method. Domain validation, the permission decision,
+	 * persistence, logging, and the notification hook are shared by every caller.
+	 *
+	 * @param int    $request_id Loan request ID.
+	 * @param int    $asset_id   Asset ID the request refers to.
+	 * @param string $message    Rejection message.
+	 * @param int    $actor_id   User ID rejecting the request.
+	 * @return array|WP_Error Request identifiers on success, otherwise an error.
+	 */
+	public function reject_request( $request_id, $asset_id, $message, $actor_id ) {
+		$request_id = absint( $request_id );
+		$asset_id   = absint( $asset_id );
+		$actor_id   = absint( $actor_id );
+		$message    = sanitize_textarea_field( (string) $message );
+
+		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
+			return new WP_Error( 'almgr_loan_requests_disabled', __( 'Loan requests are currently disabled.', 'asset-lending-manager' ) );
+		}
+
+		if ( $request_id <= 0 ) {
+			return new WP_Error( 'almgr_invalid_request_id', __( 'Invalid request ID.', 'asset-lending-manager' ) );
 		}
 
 		if ( $asset_id <= 0 ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Invalid asset ID.', 'asset-lending-manager' ),
-				)
-			);
+			return new WP_Error( 'almgr_invalid_asset_id', __( 'Invalid asset ID.', 'asset-lending-manager' ) );
 		}
 
-		// Validate rejection message.
-		if ( empty( $rejection_message ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Rejection message is required.', 'asset-lending-manager' ),
-				)
-			);
+		if ( empty( $message ) ) {
+			return new WP_Error( 'almgr_rejection_message_required', __( 'Rejection message is required.', 'asset-lending-manager' ) );
 		}
 
 		$rejection_max = (int) $this->settings->get( 'loans.rejection_message_max_length', self::REJECTION_MESSAGE_MAX_LENGTH );
-		if ( $rejection_max > 0 && mb_strlen( $rejection_message ) > $rejection_max ) {
-			wp_send_json_error(
-				array(
-					'message' => sprintf(
-						/* translators: %d: maximum number of characters allowed in rejection message */
-						__( 'Rejection message must not exceed %d characters.', 'asset-lending-manager' ),
-						$rejection_max
-					),
+		if ( $rejection_max > 0 && mb_strlen( $message ) > $rejection_max ) {
+			return new WP_Error(
+				'almgr_rejection_message_too_long',
+				sprintf(
+					/* translators: %d: maximum number of characters allowed in rejection message */
+					__( 'Rejection message must not exceed %d characters.', 'asset-lending-manager' ),
+					$rejection_max
 				)
 			);
 		}
 
 		// Get loan request from database.
 		global $wpdb;
-		$table_name       = $wpdb->prefix . 'almgr_loan_requests';
-			$loan_request = $wpdb->get_row(
-				$wpdb->prepare(
-					'SELECT * FROM %i WHERE id = %d',
-					$table_name,
-					$request_id
-				)
-			);
+		$table_name   = $wpdb->prefix . 'almgr_loan_requests';
+		$loan_request = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT * FROM %i WHERE id = %d',
+				$table_name,
+				$request_id
+			)
+		);
 
 		if ( ! $loan_request ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Loan request not found.', 'asset-lending-manager' ),
-				)
-			);
+			return new WP_Error( 'almgr_loan_request_not_found', __( 'Loan request not found.', 'asset-lending-manager' ) );
 		}
 
 		// Verify asset_id matches.
 		if ( (int) $loan_request->asset_id !== $asset_id ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Asset ID mismatch.', 'asset-lending-manager' ),
-				)
-			);
+			return new WP_Error( 'almgr_asset_mismatch', __( 'Asset ID mismatch.', 'asset-lending-manager' ) );
 		}
 
-		// Check user permissions.
-		$current_user_id = get_current_user_id();
-		$can_reject      = $this->can_user_reject_request( $loan_request, $current_user_id );
-
-		if ( ! $can_reject ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'You do not have permission to reject this request.', 'asset-lending-manager' ),
-				)
-			);
+		if ( ! $this->can_user_reject_request( $loan_request, $actor_id ) ) {
+			return new WP_Error( 'almgr_forbidden', __( 'You do not have permission to reject this request.', 'asset-lending-manager' ) );
 		}
 
 		// Reject the loan request (atomic operation).
-		$result = $this->reject_loan_request( $loan_request, $rejection_message, $current_user_id );
-
-		if ( ! $result ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Failed to reject loan request.', 'asset-lending-manager' ),
-				)
-			);
+		if ( ! $this->reject_loan_request( $loan_request, $message, $actor_id ) ) {
+			return new WP_Error( 'almgr_reject_failed', __( 'Failed to reject loan request.', 'asset-lending-manager' ) );
 		}
 
-		// Log the rejection.
 		ALMGR_Logger::info(
 			'Loan request rejected',
 			array(
 				'request_id'   => $request_id,
 				'asset_id'     => $asset_id,
 				'requester_id' => $loan_request->requester_id,
-				'rejected_by'  => $current_user_id,
+				'rejected_by'  => $actor_id,
 			)
 		);
 
 		// Fire loan request rejected action so ALMGR_Notification_Manager can send emails.
-		do_action( 'almgr_loan_request_rejected', $loan_request, $rejection_message );
+		do_action( 'almgr_loan_request_rejected', $loan_request, $message );
 
-		wp_send_json_success(
-			array(
-				'message' => __( 'Loan request rejected successfully.', 'asset-lending-manager' ),
-			)
+		return array(
+			'request_id' => $request_id,
+			'asset_id'   => $asset_id,
 		);
 	}
 
@@ -467,6 +462,9 @@ class ALMGR_Loan_Manager {
 	/**
 	 * AJAX handler for loan request approval.
 	 *
+	 * Transport only: capability, nonce, input parsing, and the JSON response.
+	 * The domain rules live in approve_request().
+	 *
 	 * @return void
 	 */
 	public function ajax_approve_loan_request() {
@@ -480,106 +478,105 @@ class ALMGR_Loan_Manager {
 		}
 		// Verify nonce.
 		check_ajax_referer( 'almgr_loan_request_nonce', 'nonce' );
-		// Check whether loan requests are enabled by the admin.
-		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Loan requests are currently disabled.', 'asset-lending-manager' ),
-				)
-			);
-		}
 
-		// Get and validate input.
 		$request_id = isset( $_POST['request_id'] ) ? absint( wp_unslash( $_POST['request_id'] ) ) : 0;
 		$asset_id   = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 
-		// Validate inputs.
-		if ( $request_id <= 0 ) {
+		$result = $this->approve_request( $request_id, $asset_id, get_current_user_id() );
+
+		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
 				array(
-					'message' => __( 'Invalid request ID.', 'asset-lending-manager' ),
+					'message' => $result->get_error_message(),
 				)
 			);
 		}
-
-		if ( $asset_id <= 0 ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Invalid asset ID.', 'asset-lending-manager' ),
-				)
-			);
-		}
-
-		// Get loan request from database.
-		global $wpdb;
-		$table_name       = $wpdb->prefix . 'almgr_loan_requests';
-			$loan_request = $wpdb->get_row(
-				$wpdb->prepare(
-					'SELECT * FROM %i WHERE id = %d',
-					$table_name,
-					$request_id
-				)
-			);
-
-		if ( ! $loan_request ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Loan request not found.', 'asset-lending-manager' ),
-				)
-			);
-		}
-
-		// Verify asset_id matches.
-		if ( (int) $loan_request->asset_id !== $asset_id ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Asset ID mismatch.', 'asset-lending-manager' ),
-				)
-			);
-		}
-
-		// Check user permissions.
-		$current_user_id = get_current_user_id();
-		$can_approve     = $this->can_user_approve_request( $loan_request, $current_user_id );
-
-		if ( ! $can_approve ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'You do not have permission to approve this request.', 'asset-lending-manager' ),
-				)
-			);
-		}
-
-		// Approve the loan request (atomic operation).
-		$result = $this->approve_loan_request( $loan_request, $current_user_id );
-
-		if ( ! $result['success'] ) {
-			wp_send_json_error(
-				array(
-					'message' => $result['message'],
-				)
-			);
-		}
-
-		// Log the approval.
-		ALMGR_Logger::info(
-			'Loan request approved',
-			array(
-				'request_id'   => $request_id,
-				'asset_id'     => $asset_id,
-				'requester_id' => $loan_request->requester_id,
-				'approved_by'  => $current_user_id,
-			)
-		);
-
-		// Fire loan request approved action so ALMGR_Notification_Manager can send emails.
-		do_action( 'almgr_loan_request_approved', $loan_request );
 
 		wp_send_json_success(
 			array(
 				'message'             => __( 'Loan request approved successfully. The page will reload.', 'asset-lending-manager' ),
 				'excluded_components' => $result['excluded_components'],
 			)
+		);
+	}
+
+	/**
+	 * Approve a pending loan request through the shared loan workflow.
+	 *
+	 * Channel adapters must validate their own transport credentials before
+	 * calling this method. Domain validation, the permission decision,
+	 * persistence, logging, and the notification hook are shared by every caller.
+	 *
+	 * @param int $request_id Loan request ID.
+	 * @param int $asset_id   Asset ID the request refers to.
+	 * @param int $actor_id   User ID approving the request.
+	 * @return array|WP_Error Request identifiers and excluded kit components on success, otherwise an error.
+	 */
+	public function approve_request( $request_id, $asset_id, $actor_id ) {
+		$request_id = absint( $request_id );
+		$asset_id   = absint( $asset_id );
+		$actor_id   = absint( $actor_id );
+
+		if ( ! $this->settings->get( 'loans.loan_requests_enabled', true ) ) {
+			return new WP_Error( 'almgr_loan_requests_disabled', __( 'Loan requests are currently disabled.', 'asset-lending-manager' ) );
+		}
+
+		if ( $request_id <= 0 ) {
+			return new WP_Error( 'almgr_invalid_request_id', __( 'Invalid request ID.', 'asset-lending-manager' ) );
+		}
+
+		if ( $asset_id <= 0 ) {
+			return new WP_Error( 'almgr_invalid_asset_id', __( 'Invalid asset ID.', 'asset-lending-manager' ) );
+		}
+
+		// Get loan request from database.
+		global $wpdb;
+		$table_name   = $wpdb->prefix . 'almgr_loan_requests';
+		$loan_request = $wpdb->get_row(
+			$wpdb->prepare(
+				'SELECT * FROM %i WHERE id = %d',
+				$table_name,
+				$request_id
+			)
+		);
+
+		if ( ! $loan_request ) {
+			return new WP_Error( 'almgr_loan_request_not_found', __( 'Loan request not found.', 'asset-lending-manager' ) );
+		}
+
+		// Verify asset_id matches.
+		if ( (int) $loan_request->asset_id !== $asset_id ) {
+			return new WP_Error( 'almgr_asset_mismatch', __( 'Asset ID mismatch.', 'asset-lending-manager' ) );
+		}
+
+		if ( ! $this->can_user_approve_request( $loan_request, $actor_id ) ) {
+			return new WP_Error( 'almgr_forbidden', __( 'You do not have permission to approve this request.', 'asset-lending-manager' ) );
+		}
+
+		// Approve the loan request (atomic operation).
+		$result = $this->approve_loan_request( $loan_request, $actor_id );
+
+		if ( ! $result['success'] ) {
+			return new WP_Error( 'almgr_approve_failed', $result['message'] );
+		}
+
+		ALMGR_Logger::info(
+			'Loan request approved',
+			array(
+				'request_id'   => $request_id,
+				'asset_id'     => $asset_id,
+				'requester_id' => $loan_request->requester_id,
+				'approved_by'  => $actor_id,
+			)
+		);
+
+		// Fire loan request approved action so ALMGR_Notification_Manager can send emails.
+		do_action( 'almgr_loan_request_approved', $loan_request );
+
+		return array(
+			'request_id'          => $request_id,
+			'asset_id'            => $asset_id,
+			'excluded_components' => $result['excluded_components'],
 		);
 	}
 
@@ -1668,6 +1665,9 @@ class ALMGR_Loan_Manager {
 	/**
 	 * AJAX handler for direct asset assignment by operator.
 	 *
+	 * Transport only: capability, nonce, input parsing, and the JSON response.
+	 * The domain rules live in assign_asset().
+	 *
 	 * @return void
 	 */
 	public function ajax_direct_assign_asset() {
@@ -1682,41 +1682,68 @@ class ALMGR_Loan_Manager {
 		// Verify nonce.
 		check_ajax_referer( 'almgr_direct_assign_nonce', 'nonce' );
 
-		// Block if direct assignment is disabled.
-		if ( ! $this->settings->get( 'direct_assign.enabled', true ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Direct asset assignment is currently disabled.', 'asset-lending-manager' ),
-				)
-			);
-		}
-
-		// Get and validate input.
 		$asset_id    = isset( $_POST['asset_id'] ) ? absint( wp_unslash( $_POST['asset_id'] ) ) : 0;
 		$assignee_id = isset( $_POST['assignee_id'] ) ? absint( wp_unslash( $_POST['assignee_id'] ) ) : 0;
 		$reason      = isset( $_POST['reason'] ) ? sanitize_textarea_field( wp_unslash( $_POST['reason'] ) ) : '';
 
+		$result = $this->assign_asset( $asset_id, $assignee_id, $reason, get_current_user_id() );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'message'             => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
+				'excluded_components' => $result['excluded_components'],
+			)
+		);
+	}
+
+	/**
+	 * Assign an asset directly to a user through the shared loan workflow.
+	 *
+	 * Channel adapters must validate their own transport credentials and the
+	 * operator capability before calling this method. Domain validation,
+	 * persistence, logging, and the notification hook are shared by every caller.
+	 *
+	 * @param int    $asset_id    Asset ID.
+	 * @param int    $assignee_id Target user ID.
+	 * @param string $reason      Assignment reason.
+	 * @param int    $actor_id    Operator user ID performing the assignment.
+	 * @return array|WP_Error Previous owner and excluded kit components on success, otherwise an error.
+	 */
+	public function assign_asset( $asset_id, $assignee_id, $reason, $actor_id ) {
+		$asset_id    = absint( $asset_id );
+		$assignee_id = absint( $assignee_id );
+		$actor_id    = absint( $actor_id );
+		$reason      = sanitize_textarea_field( (string) $reason );
+
+		// Block if direct assignment is disabled.
+		if ( ! $this->settings->get( 'direct_assign.enabled', true ) ) {
+			return new WP_Error( 'almgr_direct_assign_disabled', __( 'Direct asset assignment is currently disabled.', 'asset-lending-manager' ) );
+		}
+
 		if ( $asset_id <= 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid asset ID.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_invalid_asset_id', __( 'Invalid asset ID.', 'asset-lending-manager' ) );
 		}
 
 		if ( $assignee_id <= 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid assignee ID.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_invalid_assignee_id', __( 'Invalid assignee ID.', 'asset-lending-manager' ) );
 		}
 
 		if ( empty( $reason ) ) {
-			wp_send_json_error( array( 'message' => __( 'Assignment reason is required.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_assign_reason_required', __( 'Assignment reason is required.', 'asset-lending-manager' ) );
 		}
 
 		$assign_max = (int) $this->settings->get( 'loans.direct_assign_reason_max_length', self::DIRECT_ASSIGN_REASON_MAX_LENGTH );
 		if ( $assign_max > 0 && mb_strlen( $reason ) > $assign_max ) {
-			wp_send_json_error(
-				array(
-					'message' => sprintf(
-						/* translators: %d: maximum number of characters allowed */
-						__( 'Assignment reason must not exceed %d characters.', 'asset-lending-manager' ),
-						$assign_max
-					),
+			return new WP_Error(
+				'almgr_assign_reason_too_long',
+				sprintf(
+					/* translators: %d: maximum number of characters allowed */
+					__( 'Assignment reason must not exceed %d characters.', 'asset-lending-manager' ),
+					$assign_max
 				)
 			);
 		}
@@ -1724,59 +1751,50 @@ class ALMGR_Loan_Manager {
 		// Verify asset exists.
 		$asset = get_post( $asset_id );
 		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
-			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_found', __( 'Asset not found.', 'asset-lending-manager' ) );
 		}
 
 		// Direct assignment is allowed only for publicly available assets.
 		if ( 'publish' !== $asset->post_status ) {
-			wp_send_json_error( array( 'message' => __( 'This asset is not available for assignment.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_assignable', __( 'This asset is not available for assignment.', 'asset-lending-manager' ) );
 		}
 
 		// Verify assignee exists and has an ALMGR role.
 		$assignee = get_userdata( $assignee_id );
 		if ( ! $assignee ) {
-			wp_send_json_error( array( 'message' => __( 'Assignee user not found.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_assignee_not_found', __( 'Assignee user not found.', 'asset-lending-manager' ) );
 		}
 
 		$allowed_roles  = (array) $this->settings->get( 'direct_assign.allowed_target_roles', array( ALMGR_MEMBER_ROLE, ALMGR_OPERATOR_ROLE ) );
 		$assignee_roles = (array) $assignee->roles;
 		if ( empty( array_intersect( $allowed_roles, $assignee_roles ) ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'This user is not eligible to receive asset assignments.', 'asset-lending-manager' ),
-				)
-			);
+			return new WP_Error( 'almgr_assignee_not_eligible', __( 'This user is not eligible to receive asset assignments.', 'asset-lending-manager' ) );
 		}
-
-		$current_user_id = get_current_user_id();
 
 		// Perform the assignment.
-		$result = $this->direct_assign_asset( $asset_id, $assignee_id, $reason, $current_user_id );
+		$result = $this->direct_assign_asset( $asset_id, $assignee_id, $reason, $actor_id );
 
 		if ( ! $result['success'] ) {
-			wp_send_json_error( array( 'message' => $result['message'] ) );
+			return new WP_Error( 'almgr_assign_failed', $result['message'] );
 		}
 
-		// Log the assignment.
 		ALMGR_Logger::info(
 			'Asset directly assigned',
 			array(
 				'asset_id'    => $asset_id,
 				'assignee_id' => $assignee_id,
-				'assigned_by' => $current_user_id,
+				'assigned_by' => $actor_id,
 			)
 		);
 
 		// Fire direct assign action so ALMGR_Notification_Manager can send emails.
 		// Pass $assignee->ID (int) rather than the WP_User object for consistency with other actions.
 		$previous_owner_id = isset( $result['previous_owner_id'] ) ? (int) $result['previous_owner_id'] : 0;
-		do_action( 'almgr_direct_assign', $asset_id, $assignee->ID, $current_user_id, $reason, $previous_owner_id );
+		do_action( 'almgr_direct_assign', $asset_id, $assignee->ID, $actor_id, $reason, $previous_owner_id );
 
-		wp_send_json_success(
-			array(
-				'message'             => __( 'Asset assigned successfully.', 'asset-lending-manager' ),
-				'excluded_components' => $result['excluded_components'],
-			)
+		return array(
+			'previous_owner_id'   => $previous_owner_id,
+			'excluded_components' => $result['excluded_components'],
 		);
 	}
 
@@ -2042,6 +2060,9 @@ class ALMGR_Loan_Manager {
 	/**
 	 * AJAX handler for asset state change (maintenance/retired).
 	 *
+	 * Transport only: capability, nonce, input parsing, and the JSON response.
+	 * The domain rules live in change_state().
+	 *
 	 * @return void
 	 */
 	public function ajax_change_asset_state() {
@@ -2055,65 +2076,96 @@ class ALMGR_Loan_Manager {
 		$notes        = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
 		$location     = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
 
+		$result = $this->change_state( $asset_id, $target_state, $notes, $location, get_current_user_id() );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'message'            => __( 'Asset state updated successfully.', 'asset-lending-manager' ),
+				'skipped_components' => $result['skipped_components'],
+			)
+		);
+	}
+
+	/**
+	 * Change an asset state (maintenance, retired, or force-return) through the shared loan workflow.
+	 *
+	 * Channel adapters must validate their own transport credentials and the
+	 * operator capability before calling this method. Domain validation,
+	 * persistence, and the notification hook are shared by every caller.
+	 *
+	 * @param int    $asset_id     Asset ID.
+	 * @param string $target_state Target state slug ('maintenance', 'retired', or 'available').
+	 * @param string $notes        Operator notes.
+	 * @param string $location     Physical location of the asset (required, max 255 chars).
+	 * @param int    $actor_id     Operator user ID performing the action.
+	 * @return array|WP_Error Skipped kit components on success, otherwise an error.
+	 */
+	public function change_state( $asset_id, $target_state, $notes, $location, $actor_id ) {
+		$asset_id     = absint( $asset_id );
+		$target_state = sanitize_key( (string) $target_state );
+		$notes        = sanitize_text_field( (string) $notes );
+		$location     = sanitize_text_field( (string) $location );
+		$actor_id     = absint( $actor_id );
+
 		if ( $asset_id <= 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_invalid_asset_id', __( 'Invalid asset.', 'asset-lending-manager' ) );
 		}
 
 		if ( '' === $location ) {
-			wp_send_json_error( array( 'message' => __( 'Location is required.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_location_required', __( 'Location is required.', 'asset-lending-manager' ) );
 		}
 		if ( mb_strlen( $location ) > 255 ) {
-			wp_send_json_error( array( 'message' => __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_location_too_long', __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) );
 		}
 
 		$allowed_states = array( 'maintenance', 'retired', 'available' );
 		if ( ! in_array( $target_state, $allowed_states, true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid target state.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_invalid_target_state', __( 'Invalid target state.', 'asset-lending-manager' ) );
 		}
 
 		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
 		if ( mb_strlen( $notes ) > $notes_max ) {
-			wp_send_json_error(
-				array(
-					'message' => sprintf(
-						/* translators: %d: maximum number of characters allowed */
-						__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
-						$notes_max
-					),
+			return new WP_Error(
+				'almgr_notes_too_long',
+				sprintf(
+					/* translators: %d: maximum number of characters allowed */
+					__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
+					$notes_max
 				)
 			);
 		}
 
 		$asset = get_post( $asset_id );
 		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
-			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_found', __( 'Asset not found.', 'asset-lending-manager' ) );
 		}
 
 		// State changes are allowed only for publicly available assets.
 		if ( 'publish' !== $asset->post_status ) {
-			wp_send_json_error( array( 'message' => __( 'This asset is not available for state change.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_changeable', __( 'This asset is not available for state change.', 'asset-lending-manager' ) );
 		}
 
 		$current_state = $this->get_asset_state_slug( $asset_id );
 		if ( 'available' === $target_state && 'on-loan' !== $current_state ) {
-			wp_send_json_error( array( 'message' => __( 'Asset can only be force-returned when it is on loan.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_on_loan', __( 'Asset can only be force-returned when it is on loan.', 'asset-lending-manager' ) );
 		}
 		if ( 'available' !== $target_state && ! in_array( $current_state, array( 'available', 'on-loan' ), true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Asset state cannot be changed from its current state.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_invalid_state_transition', __( 'Asset state cannot be changed from its current state.', 'asset-lending-manager' ) );
 		}
 
-		$actor_id = get_current_user_id();
-		$result   = $this->change_asset_state( $asset_id, $target_state, $notes, $actor_id, $location );
+		$result = $this->change_asset_state( $asset_id, $target_state, $notes, $actor_id, $location );
 
 		if ( ! $result['success'] ) {
-			wp_send_json_error( array( 'message' => $result['message'] ) );
+			return new WP_Error( 'almgr_change_state_failed', $result['message'] );
 		}
 
-		wp_send_json_success(
-			array(
-				'message'            => $result['message'],
-				'skipped_components' => $result['skipped_components'],
-			)
+		return array(
+			'asset_id'           => $asset_id,
+			'skipped_components' => $result['skipped_components'],
 		);
 	}
 
@@ -2332,6 +2384,9 @@ class ALMGR_Loan_Manager {
 	 * permission additionally allows the asset's current owner when
 	 * workflow.member_return_enabled is set.
 	 *
+	 * Transport only: nonce, input parsing, and the JSON response. The permission
+	 * decision and the domain rules live in return_asset_checked().
+	 *
 	 * @return void
 	 */
 	public function ajax_return_asset() {
@@ -2341,43 +2396,76 @@ class ALMGR_Loan_Manager {
 		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
 		$location = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
 
+		$result = $this->return_asset_checked( $asset_id, $notes, $location, get_current_user_id() );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'message'            => __( 'Asset returned successfully.', 'asset-lending-manager' ),
+				'skipped_components' => $result['skipped_components'],
+			)
+		);
+	}
+
+	/**
+	 * Validate and perform the cooperative return of an on-loan asset.
+	 *
+	 * Channel adapters must validate their own transport credentials before
+	 * calling this method. The permission decision (operator, or the owning
+	 * member when workflow.member_return_enabled is set), the domain validation,
+	 * and the return itself are shared by every caller. return_asset() remains the
+	 * unchecked workflow core.
+	 *
+	 * @param int    $asset_id Asset ID.
+	 * @param string $notes    Notes describing the return.
+	 * @param string $location Physical location (required when warehouse management is off).
+	 * @param int    $actor_id User ID performing the return.
+	 * @return array|WP_Error Skipped kit components on success, otherwise an error.
+	 */
+	public function return_asset_checked( $asset_id, $notes, $location, $actor_id ) {
+		$asset_id = absint( $asset_id );
+		$actor_id = absint( $actor_id );
+		$notes    = sanitize_text_field( (string) $notes );
+		$location = sanitize_text_field( (string) $location );
+
 		if ( $asset_id <= 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_invalid_asset_id', __( 'Invalid asset.', 'asset-lending-manager' ) );
 		}
 
 		$asset = get_post( $asset_id );
 		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type || 'publish' !== $asset->post_status ) {
-			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_found', __( 'Asset not found.', 'asset-lending-manager' ) );
 		}
 
-		$actor_id              = get_current_user_id();
 		$member_return_enabled = (bool) $this->settings->get( 'workflow.member_return_enabled', false );
 		if ( ! $this->access_policy->can_return_asset( $actor_id, $asset_id, $member_return_enabled ) ) {
-			wp_send_json_error( array( 'message' => __( 'You do not have permission to return this asset.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_forbidden', __( 'You do not have permission to return this asset.', 'asset-lending-manager' ) );
 		}
 
 		if ( 'on-loan' !== $this->get_asset_state_slug( $asset_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'Asset can only be returned when it is on loan.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_on_loan', __( 'Asset can only be returned when it is on loan.', 'asset-lending-manager' ) );
 		}
 
 		if ( ! ALMGR_Asset_Manager::is_warehouse_enabled() ) {
 			if ( '' === $location ) {
-				wp_send_json_error( array( 'message' => __( 'Location is required.', 'asset-lending-manager' ) ) );
+				return new WP_Error( 'almgr_location_required', __( 'Location is required.', 'asset-lending-manager' ) );
 			}
 			if ( mb_strlen( $location ) > 255 ) {
-				wp_send_json_error( array( 'message' => __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) ) );
+				return new WP_Error( 'almgr_location_too_long', __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) );
 			}
 		}
 
 		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
 		if ( mb_strlen( $notes ) > $notes_max ) {
-			wp_send_json_error(
-				array(
-					'message' => sprintf(
-						/* translators: %d: maximum number of characters allowed */
-						__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
-						$notes_max
-					),
+			return new WP_Error(
+				'almgr_notes_too_long',
+				sprintf(
+					/* translators: %d: maximum number of characters allowed */
+					__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
+					$notes_max
 				)
 			);
 		}
@@ -2385,14 +2473,12 @@ class ALMGR_Loan_Manager {
 		$result = $this->return_asset( $asset_id, $notes, $actor_id, $location );
 
 		if ( ! $result['success'] ) {
-			wp_send_json_error( array( 'message' => $result['message'] ) );
+			return new WP_Error( 'almgr_return_failed', $result['message'] );
 		}
 
-		wp_send_json_success(
-			array(
-				'message'            => $result['message'],
-				'skipped_components' => $result['skipped_components'],
-			)
+		return array(
+			'asset_id'           => $asset_id,
+			'skipped_components' => $result['skipped_components'],
 		);
 	}
 
@@ -2600,6 +2686,9 @@ class ALMGR_Loan_Manager {
 	/**
 	 * AJAX handler for restoring an asset to available state.
 	 *
+	 * Transport only: capability, nonce, input parsing, and the JSON response.
+	 * The domain rules live in restore_state().
+	 *
 	 * @return void
 	 */
 	public function ajax_restore_asset_state() {
@@ -2612,57 +2701,86 @@ class ALMGR_Loan_Manager {
 		$notes    = isset( $_POST['notes'] ) ? sanitize_text_field( wp_unslash( $_POST['notes'] ) ) : '';
 		$location = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
 
+		$result = $this->restore_state( $asset_id, $notes, $location, get_current_user_id() );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'message'            => __( 'Asset restored to available successfully.', 'asset-lending-manager' ),
+				'skipped_components' => $result['skipped_components'],
+			)
+		);
+	}
+
+	/**
+	 * Restore an asset from maintenance or retired through the shared loan workflow.
+	 *
+	 * Channel adapters must validate their own transport credentials and the
+	 * operator capability before calling this method. Domain validation and
+	 * persistence are shared by every caller.
+	 *
+	 * @param int    $asset_id Asset ID.
+	 * @param string $notes    Operator notes.
+	 * @param string $location Physical location of the asset (required, max 255 chars).
+	 * @param int    $actor_id Operator user ID performing the action.
+	 * @return array|WP_Error Skipped kit components on success, otherwise an error.
+	 */
+	public function restore_state( $asset_id, $notes, $location, $actor_id ) {
+		$asset_id = absint( $asset_id );
+		$notes    = sanitize_text_field( (string) $notes );
+		$location = sanitize_text_field( (string) $location );
+		$actor_id = absint( $actor_id );
+
 		if ( $asset_id <= 0 ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid asset.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_invalid_asset_id', __( 'Invalid asset.', 'asset-lending-manager' ) );
 		}
 
 		if ( '' === $location ) {
-			wp_send_json_error( array( 'message' => __( 'Location is required.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_location_required', __( 'Location is required.', 'asset-lending-manager' ) );
 		}
 		if ( mb_strlen( $location ) > 255 ) {
-			wp_send_json_error( array( 'message' => __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_location_too_long', __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) );
 		}
 
 		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
 		if ( mb_strlen( $notes ) > $notes_max ) {
-			wp_send_json_error(
-				array(
-					'message' => sprintf(
-						/* translators: %d: maximum number of characters allowed */
-						__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
-						$notes_max
-					),
+			return new WP_Error(
+				'almgr_notes_too_long',
+				sprintf(
+					/* translators: %d: maximum number of characters allowed */
+					__( 'Notes must not exceed %d characters.', 'asset-lending-manager' ),
+					$notes_max
 				)
 			);
 		}
 
 		$asset = get_post( $asset_id );
 		if ( ! $asset || ALMGR_ASSET_CPT_SLUG !== $asset->post_type ) {
-			wp_send_json_error( array( 'message' => __( 'Asset not found.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_found', __( 'Asset not found.', 'asset-lending-manager' ) );
 		}
 
 		// State restore is allowed only for publicly available assets.
 		if ( 'publish' !== $asset->post_status ) {
-			wp_send_json_error( array( 'message' => __( 'This asset is not available for state restore.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_asset_not_changeable', __( 'This asset is not available for state restore.', 'asset-lending-manager' ) );
 		}
 
 		$current_state = $this->get_asset_state_slug( $asset_id );
 		if ( ! in_array( $current_state, array( 'maintenance', 'retired' ), true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Asset is not in a restorable state.', 'asset-lending-manager' ) ) );
+			return new WP_Error( 'almgr_not_restorable', __( 'Asset is not in a restorable state.', 'asset-lending-manager' ) );
 		}
 
-		$actor_id = get_current_user_id();
-		$result   = $this->restore_asset_state( $asset_id, $notes, $actor_id, $location );
+		$result = $this->restore_asset_state( $asset_id, $notes, $actor_id, $location );
 
 		if ( ! $result['success'] ) {
-			wp_send_json_error( array( 'message' => $result['message'] ) );
+			return new WP_Error( 'almgr_restore_failed', $result['message'] );
 		}
 
-		wp_send_json_success(
-			array(
-				'message'            => $result['message'],
-				'skipped_components' => $result['skipped_components'],
-			)
+		return array(
+			'asset_id'           => $asset_id,
+			'skipped_components' => $result['skipped_components'],
 		);
 	}
 

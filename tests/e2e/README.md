@@ -129,6 +129,18 @@ repository, with zero extra sync step.
 The important requirement is simple:
 the `alm-e2e` site must be running this repository's code, not a stale copy.
 
+A stale copy fails silently: specs keep passing against old code (a 0.3.2 copy
+went unnoticed on 2026-10-20 until a spec for a newer feature failed). After
+creating or recreating the site, check that the link is really there:
+
+```powershell
+(Get-Item "<alm-e2e>/app/public/wp-content/plugins/asset-lending-manager").LinkType   # expect: Junction
+Select-String -Path "<alm-e2e>/app/public/wp-content/plugins/asset-lending-manager/asset-lending-manager.php" -Pattern "Version:"
+```
+
+The version printed must match this repository. Local recreating the site
+(or restoring it from a backup) removes the junction, so repeat the check then.
+
 ---
 
 ## Step 4 — Activate and verify the plugin in `alm-e2e`
@@ -321,6 +333,13 @@ Full design rationale: `DEV/TODO/TODO_ResetPlan.md`.
   one additional component already on loan to `e2e-member-1` (so
   return/force-return/reject scenarios don't need to create and approve a
   request first).
+- Dedicated assets for the operator-action specs, so each spec starts from its
+  own known state and the order in which specs run does not matter:
+  `e2e-approve-asset` and `e2e-reject-asset` (available, each with one pending
+  request from `e2e-member-2`, used by `loan-approve-flow` and
+  `loan-reject-flow`) and `e2e-assign-asset` (available and unowned, assigned
+  to `e2e-member-1` by `direct-assign-flow`). The pending requests are inserted
+  directly into the plugin table by the seed script.
 - Seeded by `tests/e2e/bin/seed-baseline.php`, run once via
   `wp eval-file tests/e2e/bin/seed-baseline.php --path=<alm-e2e root>` against
   an otherwise-clean `alm-e2e` site, then exported with `wp db export` into

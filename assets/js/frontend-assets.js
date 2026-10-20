@@ -389,7 +389,6 @@
 
 				// Prepare form data.
 				var formData = new FormData();
-				var locationField = document.getElementById('almgr-return-asset-location');
 				formData.append('action',      'almgr_direct_assign_asset');
 				formData.append('nonce',       window.almgrFrontend.directAssignNonce);
 				formData.append('asset_id',    assetId);
@@ -620,6 +619,8 @@
 			if (!form) {
 				return;
 			}
+
+			var locationField = document.getElementById('almgr-return-asset-location');
 
 			// Character counter for notes field.
 			var notesField = document.getElementById('almgr-return-asset-notes');
