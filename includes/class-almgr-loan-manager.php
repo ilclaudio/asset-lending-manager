@@ -1246,8 +1246,16 @@ class ALMGR_Loan_Manager {
 	private function approve_loan_request( $loan_request, $approved_by ) {
 		global $wpdb;
 
-		// Start transaction.
-		$wpdb->query( 'START TRANSACTION' );
+		// Start a transaction holding the asset (and kit component) row locks. Asset
+		// rows are always locked before request rows, the same order direct
+		// assignment follows, so the two cannot deadlock.
+		$locked = $this->begin_locked_transaction( (int) $loan_request->asset_id );
+		if ( true !== $locked ) {
+			return array(
+				'success' => false,
+				'message' => $locked,
+			);
+		}
 
 		try {
 			$table_name = $wpdb->prefix . 'almgr_loan_requests';
@@ -1468,6 +1476,148 @@ class ALMGR_Loan_Manager {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Collect the IDs of the asset rows an operation must lock.
+	 *
+	 * The asset itself plus, for a kit, its components, in ascending ID order. The
+	 * fixed order is what keeps two operations that share assets from deadlocking:
+	 * every transaction locks its whole set in one statement, in the same order.
+	 *
+	 * @param int $asset_id Asset ID (kit or standalone asset).
+	 * @throws Exception When a kit's components cannot be read (ACF unavailable).
+	 * @return int[] Ascending asset IDs.
+	 */
+	private function get_asset_lock_ids( $asset_id ) {
+		$ids = array( (int) $asset_id );
+
+		if ( $this->is_asset_kit( $asset_id ) ) {
+			$ids = array_merge( $ids, $this->get_kit_components( $asset_id ) );
+		}
+
+		$ids = array_values( array_unique( array_map( 'intval', $ids ) ) );
+		sort( $ids );
+
+		return $ids;
+	}
+
+	/**
+	 * Lock asset rows (`wp_posts`) for the rest of the open transaction.
+	 *
+	 * @param int[] $ids Ascending asset IDs from get_asset_lock_ids().
+	 * @throws Exception When the lock cannot be taken (timeout, deadlock) or an asset is missing.
+	 * @return void
+	 */
+	private function lock_asset_rows( array $ids ) {
+		global $wpdb;
+
+		// One locking read per row, in ascending ID order: the same order for every
+		// transaction, which is what rules out lock-order deadlocks.
+		foreach ( $ids as $id ) {
+			// A lock timeout or deadlock is handled below with a user-facing message:
+			// keep wpdb from printing the raw database error into an AJAX response.
+			$previous_suppress = $wpdb->suppress_errors( true );
+			$found             = $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT ID FROM %i WHERE ID = %d FOR UPDATE',
+					$wpdb->posts,
+					$id
+				)
+			);
+			$wpdb->suppress_errors( $previous_suppress );
+
+			// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			if ( '' !== $wpdb->last_error ) {
+				throw new Exception( __( 'Could not lock the asset because another operation is in progress. Please try again.', 'asset-lending-manager' ) );
+			}
+
+			if ( null === $found ) {
+				throw new Exception( __( 'Asset not found.', 'asset-lending-manager' ) );
+			}
+			// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
+		}
+	}
+
+	/**
+	 * Open a transaction that holds a row lock on an asset (and on a kit's components).
+	 *
+	 * Every state-changing operation on an asset starts here, so two of them on the
+	 * same asset run one after the other instead of both acting on a stale
+	 * snapshot. Steps:
+	 * 1. Read the lock set before the transaction starts, so no consistent read
+	 *    precedes the locking read and the transaction snapshot is taken after the lock.
+	 * 2. START TRANSACTION and lock the rows, always in ascending ID order.
+	 * 3. Flush the post, meta, and term caches of the locked assets, so every read
+	 *    inside the transaction sees the data committed by the operation that held the lock.
+	 * 4. Verify that the kit composition did not change while waiting for the lock.
+	 *
+	 * Lock order across the plugin: asset rows first, loan-request rows second.
+	 * On failure the transaction is already rolled back.
+	 *
+	 * @param int $asset_id Asset ID (kit or standalone asset).
+	 * @throws Exception When the locks or the kit check fail (caught internally and returned as the error message).
+	 * @return true|string True when the transaction is open and locked, otherwise a user-facing error message.
+	 */
+	private function begin_locked_transaction( $asset_id ) {
+		global $wpdb;
+
+		try {
+			$lock_ids = $this->get_asset_lock_ids( $asset_id );
+		} catch ( Exception $e ) {
+			return $e->getMessage();
+		}
+
+		$wpdb->query( 'START TRANSACTION' );
+
+		try {
+			$this->lock_asset_rows( $lock_ids );
+
+			foreach ( $lock_ids as $locked_id ) {
+				clean_post_cache( $locked_id );
+			}
+
+			if ( $this->get_asset_lock_ids( $asset_id ) !== $lock_ids ) {
+				throw new Exception( __( 'The asset changed while the operation was starting. Please try again.', 'asset-lending-manager' ) );
+			}
+		} catch ( Exception $e ) {
+			$wpdb->query( 'ROLLBACK' );
+
+			ALMGR_Logger::error(
+				'Failed to lock asset rows',
+				array(
+					'asset_id' => (int) $asset_id,
+					'error'    => $e->getMessage(),
+					'db_error' => $wpdb->last_error,
+				)
+			);
+
+			return $e->getMessage();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check that an asset can move to a target state from its current state.
+	 *
+	 * Shared by change_state() (before the transaction) and change_asset_state()
+	 * (again, under the lock), so the rule cannot drift between the two.
+	 *
+	 * @param string $target_state  Target state slug ('maintenance', 'retired', or 'available').
+	 * @param string $current_state Current state slug.
+	 * @return WP_Error|null Error when the transition is not allowed, otherwise null.
+	 */
+	private function get_state_transition_error( $target_state, $current_state ) {
+		if ( 'available' === $target_state && 'on-loan' !== $current_state ) {
+			return new WP_Error( 'almgr_asset_not_on_loan', __( 'Asset can only be force-returned when it is on loan.', 'asset-lending-manager' ) );
+		}
+
+		if ( 'available' !== $target_state && ! in_array( $current_state, array( 'available', 'on-loan' ), true ) ) {
+			return new WP_Error( 'almgr_invalid_state_transition', __( 'Asset state cannot be changed from its current state.', 'asset-lending-manager' ) );
+		}
+
+		return null;
 	}
 
 	/**
@@ -1823,11 +1973,17 @@ class ALMGR_Loan_Manager {
 	private function direct_assign_asset( $asset_id, $assignee_id, $reason, $actor_id ) {
 		global $wpdb;
 
-		// Start transaction.
-		$wpdb->query( 'START TRANSACTION' );
+		// Start a transaction holding the asset (and kit component) row locks.
+		$locked = $this->begin_locked_transaction( $asset_id );
+		if ( true !== $locked ) {
+			return array(
+				'success' => false,
+				'message' => $locked,
+			);
+		}
 
 		try {
-			// 1. Reject assets in non-assignable states.
+			// 1. Reject assets in non-assignable states (read under the lock).
 			$current_state = $this->get_asset_state_slug( $asset_id );
 			if ( in_array( $current_state, array( 'retired', 'maintenance' ), true ) ) {
 				throw new Exception( __( 'Cannot assign an asset that is in maintenance or retired state.', 'asset-lending-manager' ) );
@@ -2149,12 +2305,9 @@ class ALMGR_Loan_Manager {
 			return new WP_Error( 'almgr_asset_not_changeable', __( 'This asset is not available for state change.', 'asset-lending-manager' ) );
 		}
 
-		$current_state = $this->get_asset_state_slug( $asset_id );
-		if ( 'available' === $target_state && 'on-loan' !== $current_state ) {
-			return new WP_Error( 'almgr_asset_not_on_loan', __( 'Asset can only be force-returned when it is on loan.', 'asset-lending-manager' ) );
-		}
-		if ( 'available' !== $target_state && ! in_array( $current_state, array( 'available', 'on-loan' ), true ) ) {
-			return new WP_Error( 'almgr_invalid_state_transition', __( 'Asset state cannot be changed from its current state.', 'asset-lending-manager' ) );
+		$transition_error = $this->get_state_transition_error( $target_state, $this->get_asset_state_slug( $asset_id ) );
+		if ( $transition_error ) {
+			return $transition_error;
 		}
 
 		$result = $this->change_asset_state( $asset_id, $target_state, $notes, $actor_id, $location );
@@ -2197,9 +2350,23 @@ class ALMGR_Loan_Manager {
 	private function change_asset_state( $asset_id, $target_state, $notes, $actor_id, $location = '' ) {
 		global $wpdb;
 
-		$wpdb->query( 'START TRANSACTION' );
+		// Start a transaction holding the asset (and kit component) row locks.
+		$locked = $this->begin_locked_transaction( $asset_id );
+		if ( true !== $locked ) {
+			return array(
+				'success' => false,
+				'message' => $locked,
+			);
+		}
 
 		try {
+			// Re-check the transition against the state read under the lock: another
+			// operation may have changed it after the caller validated its input.
+			$transition_error = $this->get_state_transition_error( $target_state, $this->get_asset_state_slug( $asset_id ) );
+			if ( $transition_error ) {
+				throw new Exception( $transition_error->get_error_message() );
+			}
+
 			$is_kit           = $this->is_asset_kit( $asset_id );
 			$previous_owner   = $this->get_current_owner( $asset_id );
 			$location_targets = array(); // IDs to update location on after COMMIT.
@@ -2506,9 +2673,28 @@ class ALMGR_Loan_Manager {
 	public function return_asset( $asset_id, $notes, $actor_id, $location = '' ) {
 		global $wpdb;
 
-		$wpdb->query( 'START TRANSACTION' );
+		// Start a transaction holding the asset (and kit component) row locks.
+		$locked = $this->begin_locked_transaction( $asset_id );
+		if ( true !== $locked ) {
+			return array(
+				'success' => false,
+				'message' => $locked,
+			);
+		}
 
 		try {
+			// Re-check under the lock what the caller validated earlier: the asset must
+			// still be on loan, and the actor must still be allowed to return it (the
+			// owner may have changed in the meantime).
+			if ( 'on-loan' !== $this->get_asset_state_slug( $asset_id ) ) {
+				throw new Exception( __( 'Asset can only be returned when it is on loan.', 'asset-lending-manager' ) );
+			}
+
+			$member_return_enabled = (bool) $this->settings->get( 'workflow.member_return_enabled', false );
+			if ( ! $this->access_policy->can_return_asset( $actor_id, $asset_id, $member_return_enabled ) ) {
+				throw new Exception( __( 'You do not have permission to return this asset.', 'asset-lending-manager' ) );
+			}
+
 			if ( ALMGR_Asset_Manager::is_warehouse_enabled() ) {
 				$location = '';
 			}
@@ -2809,9 +2995,21 @@ class ALMGR_Loan_Manager {
 	private function restore_asset_state( $asset_id, $notes, $actor_id, $location = '' ) {
 		global $wpdb;
 
-		$wpdb->query( 'START TRANSACTION' );
+		// Start a transaction holding the asset (and kit component) row locks.
+		$locked = $this->begin_locked_transaction( $asset_id );
+		if ( true !== $locked ) {
+			return array(
+				'success' => false,
+				'message' => $locked,
+			);
+		}
 
 		try {
+			// Re-check under the lock that the asset is still in a restorable state.
+			if ( ! in_array( $this->get_asset_state_slug( $asset_id ), array( 'maintenance', 'retired' ), true ) ) {
+				throw new Exception( __( 'Asset is not in a restorable state.', 'asset-lending-manager' ) );
+			}
+
 			$is_kit           = $this->is_asset_kit( $asset_id );
 			$location_targets = array();
 

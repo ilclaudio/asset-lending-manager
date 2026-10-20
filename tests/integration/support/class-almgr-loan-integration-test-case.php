@@ -48,11 +48,17 @@ abstract class ALMGR_Loan_Integration_Test_Case extends WP_UnitTestCase {
 
 	/**
 	 * Set up test fixtures.
+	 *
+	 * The plugin state is booted once per process, but WP_UnitTestCase deletes all
+	 * terms after every test class. The default terms are therefore seeded again
+	 * (idempotently) inside each test's own transaction, so no class depends on the
+	 * order in which test classes run.
 	 */
 	public function setUp(): void {
 		parent::setUp();
 
 		$this->boot_minimal_plugin_state();
+		ALMGR_Installer::create_default_terms();
 		$this->reset_runtime_state();
 
 		add_filter( 'wp_doing_ajax', '__return_true' );

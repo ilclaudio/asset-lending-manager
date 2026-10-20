@@ -23,21 +23,6 @@ class LoanWorkflowDomainTest extends ALMGR_Loan_Integration_Test_Case {
 	private $hook_calls = array();
 
 	/**
-	 * Seed the default taxonomy terms inside each test's own transaction.
-	 *
-	 * WP_UnitTestCase deletes all terms after every test class, while the shared
-	 * base class boots the plugin state only once per process. Seeding here keeps
-	 * this class independent from the order in which test classes run.
-	 *
-	 * @return void
-	 */
-	public function setUp(): void {
-		parent::setUp();
-
-		ALMGR_Installer::create_default_terms();
-	}
-
-	/**
 	 * Record every call of an action so tests can assert how often and with what it fires.
 	 *
 	 * @param string $hook Action name.
