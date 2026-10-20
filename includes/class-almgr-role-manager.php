@@ -131,10 +131,12 @@ class ALMGR_Role_Manager {
 	}
 
 	/**
-	 * Allow ALMGR operators to edit image attachment metadata.
+	 * Allow ALMGR operators to edit the metadata of images that belong to an asset.
 	 *
-	 * This enables title and alternative text edits in the Media Library and
-	 * featured-image modal without granting generic post/page editing caps.
+	 * This enables title and alternative text edits in the featured-image modal
+	 * without granting generic post/page editing caps. The grant is limited to
+	 * images related to an `almgr_asset` (see is_asset_image()): images used by
+	 * other content, themes, or other authors stay out of reach.
 	 *
 	 * @param string[] $caps    Primitive capabilities required by WordPress.
 	 * @param string   $cap     Requested meta capability.
@@ -172,7 +174,54 @@ class ALMGR_Role_Manager {
 			return $caps;
 		}
 
+		if ( ! $this->is_asset_image( $attachment ) ) {
+			return $caps;
+		}
+
 		return array( ALMGR_EDIT_ASSET );
+	}
+
+	/**
+	 * Check whether an image attachment belongs to an ALMGR asset.
+	 *
+	 * An image belongs to an asset when it is uploaded to an asset (its parent
+	 * is an `almgr_asset`, which is how the featured-image modal creates it
+	 * before it is selected) or when it is currently the featured image of an
+	 * asset. Both conditions are checked against the live data on every call, so
+	 * replacing a featured image revokes the access to the old one at once.
+	 *
+	 * @param WP_Post $attachment Attachment post.
+	 * @return bool
+	 */
+	private function is_asset_image( $attachment ) {
+		$parent_id = (int) $attachment->post_parent;
+		if ( $parent_id > 0 ) {
+			$parent = get_post( $parent_id );
+			if ( $parent && ALMGR_ASSET_CPT_SLUG === $parent->post_type ) {
+				return true;
+			}
+		}
+
+		$featured_in = new WP_Query(
+			array(
+				'post_type'              => ALMGR_ASSET_CPT_SLUG,
+				'post_status'            => array( 'publish', 'draft', 'pending', 'private', 'future', 'auto-draft' ),
+				'posts_per_page'         => 1,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'meta_query'             => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Single-row lookup of one attachment ID among asset posts, run only for operators during attachment capability checks.
+					array(
+						'key'     => '_thumbnail_id',
+						'value'   => (int) $attachment->ID,
+						'compare' => '=',
+					),
+				),
+			)
+		);
+
+		return ! empty( $featured_in->posts );
 	}
 
 	/**
