@@ -2389,32 +2389,32 @@ msgstr "Regole prestiti"
 #: includes/class-almgr-asset-manager.php:564
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-acf-asset-adapter.php:33
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-asset-manager.php:364
-msgid "Location"
-msgstr "Locazione"
+msgid "Current physical location"
+msgstr "Posizione fisica corrente"
 
 #: templates/shortcodes/asset-view.php:654
 #: templates/shortcodes/asset-view.php:719
 #: templates/shortcodes/asset-view.php:778
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-view.php:672
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/templates/shortcodes/asset-view.php:731
-msgid "Location (required):"
-msgstr "Locazione (obbligatoria):"
+msgid "Current physical location (required):"
+msgstr "Posizione fisica corrente (obbligatoria):"
 
 #: includes/class-almgr-loan-manager.php:2063
 #: includes/class-almgr-loan-manager.php:2365
 #: includes/class-almgr-loan-manager.php:2620
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:2155
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:2526
-msgid "Location is required."
-msgstr "La locazione è richiesta."
+msgid "Current physical location is required."
+msgstr "La posizione fisica corrente è obbligatoria."
 
 #: includes/class-almgr-loan-manager.php:2066
 #: includes/class-almgr-loan-manager.php:2368
 #: includes/class-almgr-loan-manager.php:2623
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:2158
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/includes/class-almgr-loan-manager.php:2529
-msgid "Location must not exceed 255 characters."
-msgstr "La locazione non deve superare i 255 caratteri."
+msgid "Current physical location must not exceed 255 characters."
+msgstr "La posizione fisica corrente non deve superare i 255 caratteri."
 
 #: admin/almgr-settings-page.php:1105
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:1064
@@ -4412,16 +4412,16 @@ msgstr "Visualizza sul frontend"
 #: includes/class-almgr-asset-manager.php:142
 #: templates/shortcodes/asset-list.php:191
 #: templates/shortcodes/asset-view.php:175
-msgid "Warehouse"
-msgstr "Magazzino"
+msgid "Home warehouse"
+msgstr "Magazzino di appartenenza"
 
 #: admin/almgr-settings-page.php:634
 msgid "Warehouse management"
 msgstr "Gestione magazzini"
 
 #: templates/shortcodes/asset-view.php:646
-msgid "Warehouse:"
-msgstr "Magazzino:"
+msgid "Home warehouse:"
+msgstr "Magazzino di appartenenza:"
 
 #: includes/class-almgr-plugin-manager.php:326
 #: includes/class-almgr-plugin-manager.php:327
@@ -4681,3 +4681,12 @@ msgstr "— Predefinita (home) —"
 #: C:/SPAZIODATI/GoogleDriveLavoro/Progetti/PR-ALM-AssetLendingManager/ALM_PRIVATE_DEV/dist/asset-lending-manager/admin/almgr-settings-page.php:742
 msgid "— Not set —"
 msgstr "— Non impostata —"
+
+msgid "Warehouse / Location"
+msgstr "Magazzino / Posizione"
+
+msgid "Not assigned"
+msgstr "Non assegnato"
+
+msgid "Enable warehouse management. When disabled, the plugin uses only the independent current physical location field."
+msgstr "Abilita la gestione dei magazzini. Se disabilitata, il plugin usa solo il campo indipendente della posizione fisica corrente."

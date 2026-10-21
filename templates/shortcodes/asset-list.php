@@ -188,7 +188,7 @@ if ( $filter_owner > 0 ) {
 					<?php if ( is_user_logged_in() ) : ?>
 						<div class="almgr-filter-row">
 							<div class="almgr-filter-field">
-								<label for="almgr_filter_warehouse"><?php esc_html_e( 'Warehouse', 'asset-lending-manager' ); ?></label>
+								<label for="almgr_filter_warehouse"><?php esc_html_e( 'Home warehouse', 'asset-lending-manager' ); ?></label>
 								<select name="almgr_warehouse" id="almgr_filter_warehouse">
 									<option value=""><?php esc_html_e( 'All warehouses', 'asset-lending-manager' ); ?></option>
 										<?php if ( ! is_wp_error( $almgr_terms_warehouse ) && ! empty( $almgr_terms_warehouse ) ) : ?>

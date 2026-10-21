@@ -333,7 +333,7 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 		$kit_id = $this->create_asset( 'Warehouse Propagation Kit' );
 
 		wp_set_object_terms( $kit_id, ALMGR_ASSET_KIT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, false );
-		update_post_meta( $kit_id, 'almgr_components', $component_ids );
+		update_post_meta( $kit_id, 'almgr_components', array_map( 'strval', $component_ids ) );
 
 		return $kit_id;
 	}
@@ -374,6 +374,110 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Create a component asset with the component structure.
+	 *
+	 * @param string $title Asset title.
+	 * @return int
+	 */
+	private function create_component( string $title ): int {
+		$component_id = $this->create_asset( $title );
+		wp_set_object_terms( $component_id, ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, false );
+
+		return $component_id;
+	}
+
+	/**
+	 * A component shared with a Kit of a different warehouse blocks the whole propagation and records the conflict.
+	 */
+	public function test_kit_propagation_is_all_or_nothing_on_conflict() {
+		$shared = $this->create_component( 'Shared Component' );
+		$own    = $this->create_component( 'Own Component' );
+
+		$kit_a = $this->create_kit_with_components( array( $shared ) );
+		ALMGR_Asset_Manager::set_asset_warehouse( $kit_a, 'secondary-warehouse' );
+		ALMGR_Asset_Manager::set_asset_warehouse( $shared, 'secondary-warehouse' );
+
+		$kit_b = $this->create_kit_with_components( array( $shared, $own ) );
+		ALMGR_Asset_Manager::set_asset_warehouse( $kit_b, 'main-warehouse' );
+
+		wp_update_post( array( 'ID' => $kit_b ) );
+
+		$this->assertSame( 'secondary-warehouse', ALMGR_Asset_Manager::get_asset_warehouse( $shared )->slug, 'The shared component must not be overwritten.' );
+		$this->assertNull( ALMGR_Asset_Manager::get_asset_warehouse( $own ), 'No component is touched when any conflicts.' );
+		$this->assertSame( 'main-warehouse', ALMGR_Asset_Manager::get_asset_warehouse( $kit_b )->slug, 'The kit keeps the warehouse the operator chose.' );
+
+		$conflicts = get_post_meta( $kit_b, ALMGR_Asset_Manager::WAREHOUSE_CONFLICT_META, true );
+		$this->assertCount( 1, $conflicts );
+		$this->assertSame( $shared, $conflicts[0]['component_id'] );
+		$this->assertSame( $kit_a, $conflicts[0]['kit_id'] );
+
+		// Resolve the conflict by removing the shared component, then save again.
+		update_post_meta( $kit_b, 'almgr_components', array( (string) $own ) );
+		wp_update_post( array( 'ID' => $kit_b ) );
+
+		$this->assertSame( 'main-warehouse', ALMGR_Asset_Manager::get_asset_warehouse( $own )->slug );
+		$this->assertSame( '', (string) get_post_meta( $kit_b, ALMGR_Asset_Manager::WAREHOUSE_CONFLICT_META, true ), 'The conflict is cleared once propagation succeeds.' );
+	}
+
+	/**
+	 * Another Kit without a warehouse is not a conflict.
+	 */
+	public function test_other_kit_without_warehouse_is_not_a_conflict() {
+		$shared = $this->create_component( 'Shared Component No Warehouse Kit' );
+		$this->create_kit_with_components( array( $shared ) );
+
+		$kit_b = $this->create_kit_with_components( array( $shared ) );
+		ALMGR_Asset_Manager::set_asset_warehouse( $kit_b, 'main-warehouse' );
+		wp_update_post( array( 'ID' => $kit_b ) );
+
+		$this->assertSame( 'main-warehouse', ALMGR_Asset_Manager::get_asset_warehouse( $shared )->slug );
+		$this->assertSame( '', (string) get_post_meta( $kit_b, ALMGR_Asset_Manager::WAREHOUSE_CONFLICT_META, true ) );
+	}
+
+	/**
+	 * The warehouse metabox of a Kit component is disabled and names its Kit; a free asset stays editable.
+	 */
+	public function test_warehouse_metabox_is_disabled_for_kit_components() {
+		$component_id = $this->create_component( 'Metabox Component' );
+		$free_id      = $this->create_component( 'Metabox Free Asset' );
+		$kit_id       = $this->create_kit_with_components( array( $component_id ) );
+
+		ob_start();
+		ALMGR_Asset_Manager::render_warehouse_meta_box( get_post( $component_id ) );
+		$component_html = ob_get_clean();
+
+		ob_start();
+		ALMGR_Asset_Manager::render_warehouse_meta_box( get_post( $free_id ) );
+		$free_html = ob_get_clean();
+
+		$this->assertStringContainsString( 'disabled="disabled"', $component_html );
+		$this->assertStringContainsString( 'almgr-warehouse-managed-by-kit', $component_html );
+		$this->assertStringContainsString( get_the_title( $kit_id ), $component_html );
+		$this->assertStringNotContainsString( 'disabled', $free_html );
+		$this->assertStringNotContainsString( 'almgr-warehouse-managed-by-kit', $free_html );
+	}
+
+	/**
+	 * The warehouse metabox of a Kit shows the stored propagation conflict until it is resolved.
+	 */
+	public function test_warehouse_metabox_shows_stored_conflict() {
+		$shared = $this->create_component( 'Conflict Notice Component' );
+		$kit_a  = $this->create_kit_with_components( array( $shared ) );
+		ALMGR_Asset_Manager::set_asset_warehouse( $kit_a, 'secondary-warehouse' );
+		$kit_b = $this->create_kit_with_components( array( $shared ) );
+		ALMGR_Asset_Manager::set_asset_warehouse( $kit_b, 'main-warehouse' );
+		wp_update_post( array( 'ID' => $kit_b ) );
+
+		ob_start();
+		ALMGR_Asset_Manager::render_warehouse_meta_box( get_post( $kit_b ) );
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( 'was not propagated', $html );
+		$this->assertStringContainsString( 'Conflict Notice Component', $html );
+		$this->assertStringContainsString( 'secondary-warehouse', $html );
+	}
+
+	/**
 	 * Saving a non-Kit asset never triggers warehouse propagation.
 	 */
 	public function test_saving_component_asset_does_not_trigger_propagation() {
@@ -386,9 +490,9 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * The "Return asset" form displays the warehouse assigned to the asset.
+	 * The "Return asset" form shows the assigned warehouse as a reference and still asks for the location.
 	 */
-	public function test_return_form_displays_warehouse() {
+	public function test_return_form_displays_warehouse_and_asks_for_location() {
 		ALMGR_Installer::create_default_terms();
 		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
 
@@ -405,11 +509,12 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
 
 		$this->assertStringContainsString( 'Main warehouse', $html );
-		$this->assertStringNotContainsString( 'almgr-return-asset-location', $html );
+		$this->assertStringContainsString( 'id="almgr-return-asset-location"', $html );
+		$this->assertStringContainsString( 'aria-describedby="almgr-return-asset-warehouse"', $html );
 	}
 
 	/**
-	 * Without an assigned warehouse, the return form indicates that none is assigned.
+	 * Without an assigned warehouse, the return form indicates that none is assigned and still asks for the location.
 	 */
 	public function test_return_form_indicates_missing_warehouse() {
 		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
@@ -426,6 +531,94 @@ class ALMGR_Asset_Warehouse_Test extends WP_UnitTestCase {
 		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
 
 		$this->assertStringContainsString( 'No warehouse assigned', $html );
-		$this->assertStringNotContainsString( 'almgr-return-asset-location', $html );
+		$this->assertStringContainsString( 'id="almgr-return-asset-location"', $html );
+	}
+
+	/**
+	 * The location suggestion prefers the current location, then the warehouse name.
+	 */
+	public function test_suggest_location_prefers_current_location_then_warehouse() {
+		$this->assertSame( 'Shelf 2', ALMGR_Asset_Manager::suggest_location( 'Shelf 2', 'Main warehouse' ) );
+		$this->assertSame( 'Shelf 2', ALMGR_Asset_Manager::suggest_location( '  Shelf 2 ', '' ) );
+		$this->assertSame( 'Main warehouse', ALMGR_Asset_Manager::suggest_location( '', 'Main warehouse' ) );
+		$this->assertSame( 'Main warehouse', ALMGR_Asset_Manager::suggest_location( '   ', 'Main warehouse' ) );
+		$this->assertSame( '', ALMGR_Asset_Manager::suggest_location( '', '' ) );
+	}
+
+	/**
+	 * The combined line always shows the warehouse and appends the location only when set.
+	 */
+	public function test_format_warehouse_location_line() {
+		$this->assertSame( 'Main warehouse / Shelf 2', ALMGR_Asset_Manager::format_warehouse_location( 'Main warehouse', 'Shelf 2' ) );
+		$this->assertSame( 'Main warehouse', ALMGR_Asset_Manager::format_warehouse_location( 'Main warehouse', '' ) );
+		$this->assertSame( 'Not assigned / Shelf 2', ALMGR_Asset_Manager::format_warehouse_location( '', 'Shelf 2' ) );
+		$this->assertSame( 'Not assigned', ALMGR_Asset_Manager::format_warehouse_location( '', '' ) );
+	}
+
+	/**
+	 * The asset detail shows one "Warehouse / Location" line to members, with the location appended when set.
+	 */
+	public function test_detail_shows_combined_warehouse_location_line_to_members() {
+		$asset_id = $this->create_asset();
+		wp_set_object_terms( $asset_id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+		wp_set_object_terms( $asset_id, ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, false );
+		wp_set_object_terms( $asset_id, 'available', ALMGR_ASSET_STATE_TAXONOMY_SLUG, false );
+		update_post_meta( $asset_id, 'almgr_location', 'Optics lab, shelf 2' );
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) ) );
+		$html = $this->render_asset_view( $asset_id );
+		wp_set_current_user( 0 );
+
+		$this->assertStringContainsString( 'Warehouse / Location', $html );
+		$this->assertStringContainsString( ' / Optics lab, shelf 2', $html );
+	}
+
+	/**
+	 * The operator state forms show the home warehouse as a reference next to the location field.
+	 */
+	public function test_state_forms_show_home_warehouse_reference() {
+		ALMGR_Installer::create_default_terms();
+		$operator_id = self::factory()->user->create( array( 'role' => ALMGR_OPERATOR_ROLE ) );
+
+		$cases = array(
+			'available'   => array( 'almgr-change-state-warehouse', 'almgr-change-state-location' ),
+			'maintenance' => array( 'almgr-restore-state-warehouse', 'almgr-restore-state-location' ),
+		);
+		foreach ( $cases as $state => $ids ) {
+			$asset_id = $this->create_asset( 'State Form Asset ' . $state );
+			wp_set_object_terms( $asset_id, ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, false );
+			wp_set_object_terms( $asset_id, $state, ALMGR_ASSET_STATE_TAXONOMY_SLUG, false );
+			wp_set_object_terms( $asset_id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+
+			wp_set_current_user( $operator_id );
+			$html = $this->render_asset_view( $asset_id );
+			wp_set_current_user( 0 );
+
+			$this->assertStringContainsString( 'id="' . $ids[0] . '"', $html, $state );
+			$this->assertStringContainsString( 'aria-describedby="' . $ids[0] . '"', $html, $state );
+			$this->assertStringContainsString( 'id="' . $ids[1] . '"', $html, $state );
+		}
+	}
+
+	/**
+	 * The return form is prefilled with the warehouse name when the asset has no current location.
+	 */
+	public function test_return_form_is_prefilled_with_warehouse_name() {
+		ALMGR_Installer::create_default_terms();
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', true );
+
+		$borrower_id = self::factory()->user->create( array( 'role' => ALMGR_MEMBER_ROLE ) );
+		$asset_id    = $this->create_asset( 'Return Prefill Name Asset' );
+		wp_set_object_terms( $asset_id, ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, false );
+		wp_set_object_terms( $asset_id, 'on-loan', ALMGR_ASSET_STATE_TAXONOMY_SLUG, false );
+		wp_set_object_terms( $asset_id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+		update_post_meta( $asset_id, '_almgr_current_owner', $borrower_id );
+
+		wp_set_current_user( $borrower_id );
+		$html = $this->render_asset_view( $asset_id );
+		wp_set_current_user( 0 );
+		( new ALMGR_Settings_Manager() )->set( 'workflow.member_return_enabled', false );
+
+		$this->assertMatchesRegularExpression( '/id="almgr-return-asset-location"[^>]*value="Main warehouse"|value="Main warehouse"[^>]*id="almgr-return-asset-location"/', $html );
 	}
 }

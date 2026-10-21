@@ -27,7 +27,7 @@ Born within an association of amateur astronomers to manage telescopes and equip
 == Features ==
 * Asset and kit management (a kit is a group of items lent together as a set)
 * Public browsing page with search, taxonomy filters (including member-only warehouse filtering), QR labels, and QR scanner lookup
-* Asset warehouse (`almgr_warehouse`) with automatic Kit to component propagation
+* Asset home warehouse (`almgr_warehouse`) with automatic Kit to component propagation, separate from each asset's current physical location
 * Loan request workflow with approval, rejection, direct assignment, and configurable cancellation of competing pending requests
 * Optional contact form to send email messages to the current asset owner
 * Email notifications for the main loan workflow events, including cooperative returns to operators
@@ -56,7 +56,7 @@ The plugin registers its ACF field group automatically, so no manual field setup
 * On approval, the asset is marked as on loan and the new borrower is recorded.
 * Operators and admins can also directly assign any asset that is not retired or under maintenance, without a prior request (when direct assignment is enabled).
 * Operators can force-return an on-loan asset to available, or restore an asset from maintenance or retired back to available.
-* Operators can cooperatively return an on-loan asset; members can do so when enabled and only for assets they currently hold.
+* Operators can cooperatively return an on-loan asset; members can do so when enabled and only for assets they currently hold. The current physical location is required on every return.
 * All decisions, assignments, and state changes are recorded in loan history.
 
 

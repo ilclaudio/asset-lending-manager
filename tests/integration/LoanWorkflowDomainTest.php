@@ -313,19 +313,174 @@ class LoanWorkflowDomainTest extends ALMGR_Loan_Integration_Test_Case {
 	}
 
 	/**
-	 * With warehouse management on, the location is not required (current behavior, revisited in Phase 3).
+	 * The location is required on a cooperative return, with warehouse management on or off.
 	 *
 	 * @return void
 	 */
-	public function test_return_asset_checked_does_not_require_location_when_warehouse_is_enabled() {
-		( new ALMGR_Settings_Manager() )->set( 'warehouse.enabled', true );
-		$loan        = $this->create_asset_on_loan();
+	public function test_return_asset_checked_requires_location_with_and_without_warehouse() {
 		$operator_id = $this->create_user_with_role( 'administrator' );
 
-		$result = $this->get_loan_manager()->return_asset_checked( $loan['asset_id'], '', '', $operator_id );
+		foreach ( array( false, true ) as $warehouse_enabled ) {
+			( new ALMGR_Settings_Manager() )->set( 'warehouse.enabled', $warehouse_enabled );
+			$loan = $this->create_asset_on_loan();
+
+			$result = $this->get_loan_manager()->return_asset_checked( $loan['asset_id'], '', '', $operator_id );
+
+			$this->assertWPError( $result, 'warehouse ' . ( $warehouse_enabled ? 'on' : 'off' ) );
+			$this->assertSame( 'almgr_location_required', $result->get_error_code() );
+			$this->assertSame( 'on-loan', $this->get_asset_state_slug( $loan['asset_id'] ) );
+		}
+	}
+
+	/**
+	 * A cooperative return writes the location and never changes the warehouse.
+	 *
+	 * @return void
+	 */
+	public function test_return_asset_checked_writes_location_and_keeps_warehouse() {
+		$operator_id = $this->create_user_with_role( 'administrator' );
+
+		foreach ( array( false, true ) as $warehouse_enabled ) {
+			( new ALMGR_Settings_Manager() )->set( 'warehouse.enabled', $warehouse_enabled );
+			$loan = $this->create_asset_on_loan();
+			wp_set_object_terms( $loan['asset_id'], 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+
+			$result = $this->get_loan_manager()->return_asset_checked( $loan['asset_id'], '', 'Optics lab, shelf 2', $operator_id );
+
+			$label = 'warehouse ' . ( $warehouse_enabled ? 'on' : 'off' );
+			$this->assertIsArray( $result, $label );
+			$this->assertSame( 'available', $this->get_asset_state_slug( $loan['asset_id'] ), $label );
+			$this->assertSame( 'Optics lab, shelf 2', get_post_meta( $loan['asset_id'], 'almgr_location', true ), $label );
+			$this->assertSame(
+				array( 'main-warehouse' ),
+				wp_get_object_terms( $loan['asset_id'], ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, array( 'fields' => 'slugs' ) ),
+				$label
+			);
+		}
+	}
+
+	/**
+	 * Returning a kit writes the location on the kit and its returned components, and leaves their warehouse alone.
+	 *
+	 * @return void
+	 */
+	public function test_return_asset_checked_writes_location_on_kit_and_components() {
+		( new ALMGR_Settings_Manager() )->set( 'warehouse.enabled', true );
+		$operator_id  = $this->create_user_with_role( 'administrator' );
+		$owner_id     = $this->create_user_with_role( ALMGR_MEMBER_ROLE );
+		$kit_id       = $this->create_asset(
+			array(
+				'structure' => ALMGR_ASSET_KIT_SLUG,
+				'state'     => 'on-loan',
+				'owner_id'  => $owner_id,
+			)
+		);
+		$component_id = $this->create_asset(
+			array(
+				'state'    => 'on-loan',
+				'owner_id' => $owner_id,
+			)
+		);
+		update_post_meta( $kit_id, 'almgr_components', array( $component_id ) );
+		wp_set_object_terms( $kit_id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+		wp_set_object_terms( $component_id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+
+		$result = $this->get_loan_manager()->return_asset_checked( $kit_id, '', 'Optics lab, shelf 2', $operator_id );
 
 		$this->assertIsArray( $result );
-		$this->assertSame( 'available', $this->get_asset_state_slug( $loan['asset_id'] ) );
+		foreach ( array( $kit_id, $component_id ) as $id ) {
+			$this->assertSame( 'available', $this->get_asset_state_slug( $id ) );
+			$this->assertSame( 'Optics lab, shelf 2', get_post_meta( $id, 'almgr_location', true ) );
+			$this->assertSame(
+				array( 'main-warehouse' ),
+				wp_get_object_terms( $id, ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, array( 'fields' => 'slugs' ) )
+			);
+		}
+	}
+
+	/**
+	 * Maintenance, retirement, forced return and restore write the location and never touch the warehouse.
+	 *
+	 * @return void
+	 */
+	public function test_state_changes_write_location_and_keep_warehouse() {
+		$operator_id = $this->create_user_with_role( 'administrator' );
+		$manager     = $this->get_loan_manager();
+
+		foreach ( array( false, true ) as $warehouse_enabled ) {
+			( new ALMGR_Settings_Manager() )->set( 'warehouse.enabled', $warehouse_enabled );
+
+			foreach ( array( 'maintenance', 'retired' ) as $target ) {
+				$label    = 'warehouse ' . ( $warehouse_enabled ? 'on' : 'off' ) . ', ' . $target;
+				$asset_id = $this->create_asset();
+				wp_set_object_terms( $asset_id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+
+				$result = $manager->change_state( $asset_id, $target, '', 'Repair shop', $operator_id );
+				$this->assertIsArray( $result, $label );
+				$this->assertSame( $target, $this->get_asset_state_slug( $asset_id ), $label );
+				$this->assertSame( 'Repair shop', get_post_meta( $asset_id, 'almgr_location', true ), $label );
+				$this->assertSame( array( 'main-warehouse' ), $this->get_warehouse_slugs( $asset_id ), $label );
+
+				$result = $manager->restore_state( $asset_id, '', 'Optics lab', $operator_id );
+				$this->assertIsArray( $result, $label );
+				$this->assertSame( 'available', $this->get_asset_state_slug( $asset_id ), $label );
+				$this->assertSame( 'Optics lab', get_post_meta( $asset_id, 'almgr_location', true ), $label );
+				$this->assertSame( array( 'main-warehouse' ), $this->get_warehouse_slugs( $asset_id ), $label );
+			}
+
+			$loan   = $this->create_asset_on_loan();
+			$label  = 'forced return, warehouse ' . ( $warehouse_enabled ? 'on' : 'off' );
+			$result = $manager->change_state( $loan['asset_id'], 'available', '', 'Front desk', $operator_id );
+			$this->assertIsArray( $result, $label );
+			$this->assertSame( 'available', $this->get_asset_state_slug( $loan['asset_id'] ), $label );
+			$this->assertSame( 'Front desk', get_post_meta( $loan['asset_id'], 'almgr_location', true ), $label );
+		}
+	}
+
+	/**
+	 * Sending a kit to maintenance and restoring it writes the location on the kit and its components only.
+	 *
+	 * @return void
+	 */
+	public function test_kit_state_changes_write_location_on_kit_and_components_and_keep_warehouse() {
+		( new ALMGR_Settings_Manager() )->set( 'warehouse.enabled', true );
+		$operator_id  = $this->create_user_with_role( 'administrator' );
+		$kit_id       = $this->create_asset( array( 'structure' => ALMGR_ASSET_KIT_SLUG ) );
+		$component_id = $this->create_asset();
+		$other_id     = $this->create_asset();
+		update_post_meta( $kit_id, 'almgr_components', array( $component_id ) );
+		foreach ( array( $kit_id, $component_id, $other_id ) as $id ) {
+			wp_set_object_terms( $id, 'main-warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
+		}
+
+		$result = $this->get_loan_manager()->change_state( $kit_id, 'maintenance', '', 'Repair shop', $operator_id );
+		$this->assertIsArray( $result );
+		foreach ( array( $kit_id, $component_id ) as $id ) {
+			$this->assertSame( 'maintenance', $this->get_asset_state_slug( $id ) );
+			$this->assertSame( 'Repair shop', get_post_meta( $id, 'almgr_location', true ) );
+		}
+
+		$result = $this->get_loan_manager()->restore_state( $kit_id, '', 'Optics lab', $operator_id );
+		$this->assertIsArray( $result );
+		foreach ( array( $kit_id, $component_id ) as $id ) {
+			$this->assertSame( 'available', $this->get_asset_state_slug( $id ) );
+			$this->assertSame( 'Optics lab', get_post_meta( $id, 'almgr_location', true ) );
+		}
+
+		$this->assertSame( '', (string) get_post_meta( $other_id, 'almgr_location', true ), 'An unrelated asset must not receive the location.' );
+		foreach ( array( $kit_id, $component_id, $other_id ) as $id ) {
+			$this->assertSame( array( 'main-warehouse' ), $this->get_warehouse_slugs( $id ) );
+		}
+	}
+
+	/**
+	 * Return the warehouse term slugs assigned to an asset.
+	 *
+	 * @param int $asset_id Asset ID.
+	 * @return string[]
+	 */
+	private function get_warehouse_slugs( int $asset_id ): array {
+		return wp_get_object_terms( $asset_id, ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, array( 'fields' => 'slugs' ) );
 	}
 
 	/**

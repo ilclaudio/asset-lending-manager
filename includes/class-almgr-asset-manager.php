@@ -22,6 +22,11 @@ require_once 'class-almgr-installer.php';
 class ALMGR_Asset_Manager {
 
 	/**
+	 * Post meta holding the unresolved kit warehouse conflicts of a Kit.
+	 */
+	const WAREHOUSE_CONFLICT_META = '_almgr_warehouse_conflict';
+
+	/**
 	 * Whether warehouse management is enabled.
 	 *
 	 * @return bool
@@ -118,7 +123,7 @@ class ALMGR_Asset_Manager {
 		}
 		add_meta_box(
 			ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . '_select',
-			__( 'Warehouse', 'asset-lending-manager' ),
+			__( 'Home warehouse', 'asset-lending-manager' ),
 			array( __CLASS__, 'render_warehouse_meta_box' ),
 			ALMGR_ASSET_CPT_SLUG,
 			'side',
@@ -127,12 +132,72 @@ class ALMGR_Asset_Manager {
 	}
 
 	/**
+	 * Normalize the raw almgr_components value into a list of component IDs.
+	 *
+	 * @param mixed $raw_components Raw ACF value (post objects or IDs).
+	 * @return int[]
+	 */
+	public static function normalize_component_ids( $raw_components ) {
+		if ( ! is_array( $raw_components ) ) {
+			return array();
+		}
+
+		$component_ids = array();
+		foreach ( $raw_components as $component ) {
+			$component_id = is_object( $component ) ? (int) $component->ID : absint( $component );
+			if ( $component_id > 0 ) {
+				$component_ids[] = $component_id;
+			}
+		}
+
+		return array_values( array_unique( $component_ids ) );
+	}
+
+	/**
+	 * Find the components that cannot take a Kit's warehouse.
+	 *
+	 * A component conflicts when another Kit that includes it has a different
+	 * warehouse assigned. Another Kit without a warehouse is not a conflict.
+	 * Shared by the editor propagation and the CSV import, so the rule lives in
+	 * one place.
+	 *
+	 * @param int    $kit_id         ID of the Kit being saved or imported.
+	 * @param string $warehouse_slug Warehouse slug the Kit is about to propagate.
+	 * @param int[]  $component_ids  Component IDs of the Kit.
+	 * @return array[] One entry per conflict: component_id, kit_id (the other Kit), warehouse (its name).
+	 */
+	public static function get_kit_warehouse_conflicts( $kit_id, $warehouse_slug, array $component_ids ) {
+		$conflicts = array();
+
+		foreach ( $component_ids as $component_id ) {
+			foreach ( self::get_parent_kit_ids( $component_id ) as $other_kit_id ) {
+				if ( (int) $kit_id === $other_kit_id ) {
+					continue;
+				}
+				$other_warehouse = self::get_asset_warehouse( $other_kit_id );
+				if ( null !== $other_warehouse && $other_warehouse->slug !== $warehouse_slug ) {
+					$conflicts[] = array(
+						'component_id' => (int) $component_id,
+						'kit_id'       => $other_kit_id,
+						'warehouse'    => (string) $other_warehouse->name,
+					);
+				}
+			}
+		}
+
+		return $conflicts;
+	}
+
+	/**
 	 * Propagate a Kit's warehouse to its currently included components.
 	 *
-	 * Runs unconditionally and without rollback on every save of a Kit asset:
-	 * if the Kit has no warehouse assigned, nothing is propagated. Individual
-	 * per-component failures are logged and do not stop propagation to the
-	 * remaining components (see TODO_Warehouse_Location.md, decision 6).
+	 * Runs without rollback on every save of a Kit asset: if the Kit has no
+	 * warehouse assigned, nothing is propagated. The propagation is all or
+	 * nothing: when any component also belongs to another Kit with a different
+	 * warehouse, no component is touched and the conflict is stored on the Kit
+	 * (shown in the warehouse metabox until it is resolved). Individual
+	 * per-component write failures are logged and do not stop propagation to
+	 * the remaining components (see TODO_Warehouse_Location.md, decision 6).
 	 *
 	 * @param int $post_id ID of the saved asset post.
 	 * @return void
@@ -149,6 +214,9 @@ class ALMGR_Asset_Manager {
 			return;
 		}
 
+		// Any previous conflict is stale: it is recomputed below.
+		delete_post_meta( $post_id, self::WAREHOUSE_CONFLICT_META );
+
 		$kit_warehouse = self::get_asset_warehouse( $post_id );
 		if ( null === $kit_warehouse ) {
 			return;
@@ -159,12 +227,14 @@ class ALMGR_Asset_Manager {
 			return;
 		}
 
-		foreach ( $raw_components as $component ) {
-			$component_id = is_object( $component ) ? (int) $component->ID : absint( $component );
-			if ( $component_id <= 0 ) {
-				continue;
-			}
+		$component_ids = self::normalize_component_ids( $raw_components );
+		$conflicts     = self::get_kit_warehouse_conflicts( $post_id, $kit_warehouse->slug, $component_ids );
+		if ( ! empty( $conflicts ) ) {
+			update_post_meta( $post_id, self::WAREHOUSE_CONFLICT_META, $conflicts );
+			return;
+		}
 
+		foreach ( $component_ids as $component_id ) {
 			if ( ! self::set_asset_warehouse( $component_id, $kit_warehouse->slug ) ) {
 				ALMGR_Logger::warning(
 					'Failed to propagate kit warehouse to component.',
@@ -351,7 +421,11 @@ class ALMGR_Asset_Manager {
 			? (int) $current_terms[0]->term_id
 			: 0;
 
-		wp_dropdown_categories(
+		// A Kit component takes its warehouse from the Kit: the field is shown but
+		// disabled, so it is never submitted and the stored value stays untouched.
+		$parent_kit_ids = self::get_parent_kit_ids( $post->ID );
+
+		$dropdown = wp_dropdown_categories(
 			array(
 				'taxonomy'          => ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
 				'name'              => 'tax_input[' . ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG . ']',
@@ -364,8 +438,62 @@ class ALMGR_Asset_Manager {
 				'hide_empty'        => false,
 				'value_field'       => 'term_id',
 				'class'             => 'widefat',
+				'echo'              => false,
 			)
 		);
+		if ( ! empty( $parent_kit_ids ) ) {
+			$dropdown = preg_replace( '/<select\b/', '<select disabled="disabled" aria-describedby="almgr-warehouse-managed-by-kit"', (string) $dropdown, 1 );
+		}
+		echo wp_kses(
+			(string) $dropdown,
+			array(
+				'select' => array(
+					'id'               => true,
+					'name'             => true,
+					'class'            => true,
+					'disabled'         => true,
+					'aria-describedby' => true,
+				),
+				'option' => array(
+					'value'    => true,
+					'class'    => true,
+					'selected' => true,
+				),
+			)
+		);
+
+		if ( ! empty( $parent_kit_ids ) ) {
+			$kit_links = array();
+			foreach ( $parent_kit_ids as $kit_id ) {
+				$kit_url     = get_edit_post_link( $kit_id );
+				$kit_links[] = $kit_url
+					? '<a href="' . esc_url( $kit_url ) . '">' . esc_html( get_the_title( $kit_id ) ) . '</a>'
+					: esc_html( get_the_title( $kit_id ) );
+			}
+			echo '<p id="almgr-warehouse-managed-by-kit" class="description">';
+			echo esc_html__( 'The warehouse of this asset is managed by its kit:', 'asset-lending-manager' ) . ' ';
+			echo wp_kses( implode( ', ', $kit_links ), array( 'a' => array( 'href' => true ) ) );
+			echo '</p>';
+		}
+
+		$conflicts = get_post_meta( $post->ID, self::WAREHOUSE_CONFLICT_META, true );
+		if ( is_array( $conflicts ) && ! empty( $conflicts ) ) {
+			echo '<div class="notice notice-warning inline"><p>';
+			echo esc_html__( 'The warehouse was not propagated to the components of this kit:', 'asset-lending-manager' );
+			echo '</p><ul>';
+			foreach ( $conflicts as $conflict ) {
+				echo '<li>' . esc_html(
+					sprintf(
+						/* translators: 1: component title, 2: other kit title, 3: warehouse name of the other kit */
+						__( '"%1$s" also belongs to "%2$s", which has the warehouse "%3$s".', 'asset-lending-manager' ),
+						get_the_title( (int) $conflict['component_id'] ),
+						get_the_title( (int) $conflict['kit_id'] ),
+						(string) $conflict['warehouse']
+					)
+				) . '</li>';
+			}
+			echo '</ul></div>';
+		}
 	}
 
 	/**
@@ -395,6 +523,44 @@ class ALMGR_Asset_Manager {
 		$result = wp_set_object_terms( $asset_id, $term_slug, ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG, false );
 
 		return ! is_wp_error( $result );
+	}
+
+	/**
+	 * Suggest the value to prefill in a "current physical location" field.
+	 *
+	 * The current location wins when set; otherwise the home warehouse name is
+	 * offered as a starting point. The field stays editable and required: the
+	 * operator always confirms the value.
+	 *
+	 * @param string $current_location Current value of almgr_location.
+	 * @param string $warehouse_name   Home warehouse name, or an empty string when none applies.
+	 * @return string Suggested value, possibly empty.
+	 */
+	public static function suggest_location( $current_location, $warehouse_name ) {
+		$current_location = trim( (string) $current_location );
+
+		return '' !== $current_location ? $current_location : trim( (string) $warehouse_name );
+	}
+
+	/**
+	 * Format the combined "warehouse / location" line shown with warehouse management on.
+	 *
+	 * The warehouse is always shown ("Not assigned" when missing); the location
+	 * is appended only when set (it is empty while the asset is on loan).
+	 *
+	 * @param string $warehouse_name Home warehouse name, or an empty string when none is assigned.
+	 * @param string $location       Current physical location, or an empty string.
+	 * @return string Plain text, to be escaped by the caller.
+	 */
+	public static function format_warehouse_location( $warehouse_name, $location ) {
+		$warehouse_name = trim( (string) $warehouse_name );
+		$location       = trim( (string) $location );
+
+		if ( '' === $warehouse_name ) {
+			$warehouse_name = __( 'Not assigned', 'asset-lending-manager' );
+		}
+
+		return '' === $location ? $warehouse_name : $warehouse_name . ' / ' . $location;
 	}
 
 	/**
@@ -481,33 +647,52 @@ class ALMGR_Asset_Manager {
 		// Load parent kit membership (only populated when this asset is a component).
 		$wrapper->parent_kits = array();
 		if ( has_term( ALMGR_ASSET_COMPONENT_SLUG, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG, $asset_id ) ) {
-			$almgr_kit_query = new WP_Query(
-				array(
-					'post_type'      => ALMGR_ASSET_CPT_SLUG,
-					'post_status'    => 'publish',
-					'posts_per_page' => -1,
-					'fields'         => 'ids',
-					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- ACF stores kit component relationships in post meta; this lookup is limited to asset IDs.
-						array(
-							'key'   => 'almgr_components',
-							'value' => '"' . $asset_id . '"',
-						'compare'   => 'LIKE',
-					),
-					),
-				)
-			);
-			foreach ( $almgr_kit_query->posts as $almgr_kit_id ) {
-				$almgr_kit_id           = (int) $almgr_kit_id;
+			foreach ( self::get_parent_kit_ids( $asset_id ) as $almgr_kit_id ) {
 				$wrapper->parent_kits[] = array(
 					'id'        => $almgr_kit_id,
 					'title'     => get_the_title( $almgr_kit_id ),
 					'permalink' => get_permalink( $almgr_kit_id ),
 				);
 			}
-			wp_reset_postdata();
 		}
 
 		return $wrapper;
+	}
+
+	/**
+	 * Return the IDs of the published Kits that include an asset as a component.
+	 *
+	 * Single lookup shared by the asset view model and the warehouse rules.
+	 * ACF stores the component IDs as strings, hence the quoted LIKE.
+	 *
+	 * @param int $asset_id ID of the asset post.
+	 * @return int[] Kit IDs, possibly empty.
+	 */
+	public static function get_parent_kit_ids( $asset_id ) {
+		$asset_id = absint( $asset_id );
+		if ( $asset_id <= 0 ) {
+			return array();
+		}
+
+		$kit_query = new WP_Query(
+			array(
+				'post_type'      => ALMGR_ASSET_CPT_SLUG,
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- ACF stores kit component relationships in post meta; this lookup is limited to asset IDs.
+					array(
+						'key'     => 'almgr_components',
+						'value'   => '"' . $asset_id . '"',
+						'compare' => 'LIKE',
+					),
+				),
+			)
+		);
+		$kit_ids   = array_map( 'intval', $kit_query->posts );
+		wp_reset_postdata();
+
+		return $kit_ids;
 	}
 
 
@@ -544,7 +729,7 @@ class ALMGR_Asset_Manager {
 			'almgr_cost'                 => __( 'Cost', 'asset-lending-manager' ),
 			'almgr_dimensions'           => __( 'Dimensions', 'asset-lending-manager' ),
 			'almgr_weight'               => __( 'Weight', 'asset-lending-manager' ),
-			'almgr_location'             => __( 'Location', 'asset-lending-manager' ),
+			'almgr_location'             => __( 'Current physical location', 'asset-lending-manager' ),
 			'almgr_user_manual'          => __( 'User manual', 'asset-lending-manager' ),
 			'almgr_technical_data_sheet' => __( 'Technical data sheet', 'asset-lending-manager' ),
 			'almgr_serial_number'        => __( 'Serial number', 'asset-lending-manager' ),

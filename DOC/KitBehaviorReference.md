@@ -99,9 +99,20 @@ are restored. Components that reached their current state independently are not 
 
 ### Location behavior on state changes
 
-After a state change the operator provides a location value. That value is written
-to the kit and to every included component. Excluded components retain their
-current location.
+After a state change, a restore, or a cooperative return, a current physical location
+value is required (prefilled with the current value or, failing that, the home
+warehouse name). That value is written to the kit and to every included component.
+Excluded components retain their current location. The warehouse is never changed by
+these operations.
+
+### Warehouse behavior
+
+Saving a kit that has a warehouse assigned propagates it to every included component,
+all or nothing. If any component also belongs to another kit that has a different
+warehouse, no component is touched; the conflict is shown in the kit's warehouse
+metabox until a later save succeeds. A kit without a warehouse leaves its components
+unchanged. In its own editor, a component that belongs to a kit shows the warehouse
+field disabled (managed by the kit).
 
 ---
 

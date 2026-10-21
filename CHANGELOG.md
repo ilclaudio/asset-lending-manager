@@ -22,6 +22,13 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 3) PHPUnit round-trip test for `almgr_get_allowed_html()` allowlist completeness (see `ISSUES_TODO.md`).
 
 
+## [Unreleased]
+### Changed
+- Cooperative return now always asks for the current physical location, with warehouse management on or off (previously the location was skipped when warehouse management was on). The home warehouse is shown as a reference and is never changed by a return.
+- Labels: "Location" is now "Current physical location" and "Warehouse" is "Home warehouse" in forms, the asset editor and filters; the asset detail shows a combined "Warehouse / Location" line when warehouse management is on. Slugs, field keys and REST/Abilities keys are unchanged.
+- Return, maintenance, retired and restore forms prefill the current physical location with the current value or, failing that, the home warehouse name.
+- Kit warehouse propagation is all or nothing: if a component also belongs to another Kit with a different warehouse, no component is changed and the conflict is shown in the Kit's warehouse field. The warehouse of an asset included in a Kit is read-only in its editor.
+
 ## [0.4.0] - 2026-10-10
 ### Added
 - Shared domain services used identically by the frontend, the REST API, and Abilities for every equivalent use case (catalog, asset detail, history, member assets, loan requests, pagination, access policy).

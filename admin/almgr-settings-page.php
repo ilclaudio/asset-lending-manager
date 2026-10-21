@@ -641,7 +641,7 @@ if ( ! in_array( $almgr_loan_request_operator_mode, array( 'never', 'no_owner', 
 								value="1"
 								<?php checked( $almgr_settings->get( 'warehouse.enabled', false ) ); ?>
 							>
-							<?php esc_html_e( 'Enable warehouse management. When disabled, the plugin uses only the independent Location field.', 'asset-lending-manager' ); ?>
+							<?php esc_html_e( 'Enable warehouse management. When disabled, the plugin uses only the independent current physical location field.', 'asset-lending-manager' ); ?>
 						</label>
 					</td>
 				</tr>

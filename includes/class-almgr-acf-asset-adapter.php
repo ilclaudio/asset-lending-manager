@@ -30,7 +30,7 @@ class ALMGR_ACF_Asset_Adapter {
 				__( 'Cost', 'asset-lending-manager' ),
 				__( 'Dimensions', 'asset-lending-manager' ),
 				__( 'Weight', 'asset-lending-manager' ),
-				__( 'Location', 'asset-lending-manager' ),
+				__( 'Current physical location', 'asset-lending-manager' ),
 				__( 'Components', 'asset-lending-manager' ),
 				__( 'User manual', 'asset-lending-manager' ),
 				__( 'Technical data sheet', 'asset-lending-manager' ),
@@ -277,7 +277,7 @@ class ALMGR_ACF_Asset_Adapter {
 					),
 					array(
 						'key'               => 'field_694a66be43fd0',
-						'label'             => 'Location',
+						'label'             => 'Current physical location',
 						'name'              => 'almgr_location',
 						'aria-label'        => '',
 						'type'              => 'text',

@@ -1,70 +1,31 @@
-# Unit Tests — Setup Guide
+# Unit Tests
 
-Unit tests cover pure helper methods with no WordPress or database dependency.
-They run in a few seconds and require no special environment beyond PHP and Composer.
+Unit tests cover isolated PHP logic that does not require a WordPress runtime or a database. They are the fastest feedback lane for helpers, normalization, formatting, and other deterministic behaviour.
 
----
+For common commands, safety rules, and test-lane selection, see the [test guide](../README.md).
 
-## Prerequisites
-
-- **PHP 8.x** available in the system PATH — verify with `php -v`
-- **Composer** installed — verify with `composer --version`
-
----
-
-## First-time setup
-
-From the plugin root, install PHP dependencies:
-
-```bash
-composer install
-```
-
-This installs PHPUnit and the other dev tools into `vendor/`. You only need to
-do this once (and again after a `composer.json` change).
-
----
-
-## Running the tests
+## Run the lane
 
 ```bash
 composer test:unit
 ```
 
-Expected output:
+The repository pre-commit hook runs this command for staged changes. You can also run it directly while developing.
 
-```
-PHPUnit 9.6.x by Sebastian Bergmann and contributors.
+## Scope and placement
 
-.........................................           41 / 41 (100%)
+Add tests under `tests/unit/` when production code can be exercised without bootstrapping WordPress or connecting to MySQL. Typical examples include:
 
-OK (41 tests, N assertions)
-```
+- CSV normalization and formula-injection protection;
+- pagination and input normalization;
+- email-template inventories and formatting helpers;
+- settings behaviour that can be tested in memory.
 
-The test count grows as new tests are added. If the suite passes, all dots are
-green. A failure prints `F` in place of a dot and reports the assertion that failed.
+If the behaviour needs WordPress hooks, options, post data, capabilities, or a database, use the [integration lane](../integration/README.md) instead.
 
----
+## Conventions
 
-## What is covered
-
-Unit tests verify pure business logic that has no WordPress or database dependency:
-
-- CSV import/export helpers — normalization, sanitization, formula-injection prevention
-- Loan plan builder formatting helpers
-- Email template placeholder inventory
-- Settings service API (in-memory only, no real DB option store)
-- Autocomplete term validation
-- REST API pagination clamping
-- Notification routing decision logic
-
-For the full list of test methods with one-line descriptions, see
-[`DEV/TODO/TODO_UnitTests.md`](../../DEV/TODO/TODO_UnitTests.md).
-
----
-
-## Pre-commit hook
-
-Unit tests run automatically as a pre-commit hook.
-A failing suite **blocks the commit** until the issue is resolved.
-This ensures the unit test suite always passes on the main branch.
+- Name test files after the unit or behaviour they cover.
+- Keep test data local to the test and use synthetic values.
+- Assert observable behaviour, including edge cases and error results.
+- Avoid reflection for new tests when a narrow testable API can be exposed without broadening production behaviour.

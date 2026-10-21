@@ -39,8 +39,9 @@ $almgr_is_operator              = is_user_logged_in() && current_user_can( ALMGR
 $almgr_member_return_enabled    = (bool) $almgr_settings->get( 'workflow.member_return_enabled', false );
 $almgr_warehouse_enabled        = ALMGR_Asset_Manager::is_warehouse_enabled();
 $almgr_can_return_asset         = is_user_logged_in() && $almgr_access_policy->can_return_asset( $almgr_current_user_id, $almgr_asset_id, $almgr_member_return_enabled );
-$almgr_return_warehouse_term    = $almgr_warehouse_enabled ? ALMGR_Asset_Manager::get_asset_warehouse( $almgr_asset_id ) : null;
-$almgr_return_location_default  = $almgr_return_warehouse_term ? $almgr_return_warehouse_term->name : '';
+$almgr_home_warehouse_term      = $almgr_warehouse_enabled ? ALMGR_Asset_Manager::get_asset_warehouse( $almgr_asset_id ) : null;
+$almgr_home_warehouse_name      = $almgr_home_warehouse_term ? $almgr_home_warehouse_term->name : '';
+$almgr_location_suggestion      = ALMGR_Asset_Manager::suggest_location( $almgr_asset_location, $almgr_home_warehouse_name );
 
 $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset->detail_image_html : '';
 ?>
@@ -74,7 +75,6 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 		$almgr_structure       = isset( $asset->almgr_structure ) ? implode( ', ', $asset->almgr_structure ) : '-';
 		$almgr_type            = isset( $asset->almgr_type ) ? implode( ', ', $asset->almgr_type ) : '-';
 		$almgr_level           = isset( $asset->almgr_level ) ? implode( ', ', $asset->almgr_level ) : '-';
-		$almgr_warehouse       = isset( $asset->almgr_warehouse ) ? implode( ', ', $asset->almgr_warehouse ) : '-';
 		$almgr_state_slug      = isset( $asset->state_slug ) ? (string) $asset->state_slug : '';
 		$almgr_state_label     = isset( $asset->state_label ) ? (string) $asset->state_label : '';
 		$almgr_state_class_map = ALMGR_Asset_Manager::get_state_classes();
@@ -172,15 +172,16 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 						<?php if ( is_user_logged_in() && $almgr_warehouse_enabled ) : ?>
 							<div class="almgr-asset-acf-row almgr-acf-warehouse">
 								<dt class="almgr-asset-acf-label">
-									<?php esc_html_e( 'Warehouse', 'asset-lending-manager' ); ?>
+									<?php esc_html_e( 'Warehouse / Location', 'asset-lending-manager' ); ?>
 								</dt>
 								<dd class="almgr-asset-acf-value">
-									<?php echo esc_html( $almgr_warehouse ); ?>
+									<?php echo esc_html( ALMGR_Asset_Manager::format_warehouse_location( $almgr_home_warehouse_name, $almgr_asset_location ) ); ?>
 								</dd>
 							</div>
 						<?php endif; ?>
 						<?php foreach ( $almgr_asset_fields as $almgr_asset_row ) : ?>
-							<?php if ( $almgr_asset_row['value'] ) : ?>
+							<?php // With warehouse management on, the location is shown in the combined "Warehouse / Location" row above. ?>
+							<?php if ( $almgr_asset_row['value'] && ! ( $almgr_warehouse_enabled && 'almgr_location' === $almgr_asset_row['name'] ) ) : ?>
 								<div class="almgr-asset-acf-row almgr-acf-<?php echo esc_attr( $almgr_asset_row['name'] ); ?>">
 									<dt class="almgr-asset-acf-label">
 										<?php echo esc_html( (string) $almgr_asset_row['label'] ); ?>
@@ -643,19 +644,18 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 						<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>" />
 						<?php if ( $almgr_warehouse_enabled ) : ?>
 						<div class="almgr-form-field">
-							<span class="almgr-form-label"><?php esc_html_e( 'Warehouse:', 'asset-lending-manager' ); ?></span>
-							<span class="almgr-form-value">
-								<?php echo esc_html( $almgr_return_location_default ? $almgr_return_location_default : __( 'No warehouse assigned', 'asset-lending-manager' ) ); ?>
+							<span class="almgr-form-label"><?php esc_html_e( 'Home warehouse:', 'asset-lending-manager' ); ?></span>
+							<span class="almgr-form-value" id="almgr-return-asset-warehouse">
+								<?php echo esc_html( $almgr_home_warehouse_name ? $almgr_home_warehouse_name : __( 'No warehouse assigned', 'asset-lending-manager' ) ); ?>
 							</span>
 						</div>
-						<?php else : ?>
+						<?php endif; ?>
 						<div class="almgr-form-field">
 							<label for="almgr-return-asset-location">
-								<?php esc_html_e( 'Location (required):', 'asset-lending-manager' ); ?>
+								<?php esc_html_e( 'Current physical location (required):', 'asset-lending-manager' ); ?>
 							</label>
-							<input type="text" id="almgr-return-asset-location" name="location" value="<?php echo esc_attr( $almgr_asset_location ); ?>" maxlength="255" required placeholder="<?php esc_attr_e( 'e.g. Room A, shelf 3', 'asset-lending-manager' ); ?>" />
+							<input type="text" id="almgr-return-asset-location" name="location" value="<?php echo esc_attr( $almgr_location_suggestion ); ?>" maxlength="255" required<?php echo $almgr_warehouse_enabled ? ' aria-describedby="almgr-return-asset-warehouse"' : ''; ?> placeholder="<?php esc_attr_e( 'e.g. Room A, shelf 3', 'asset-lending-manager' ); ?>" />
 						</div>
-						<?php endif; ?>
 						<div class="almgr-form-field">
 							<label for="almgr-return-asset-notes">
 								<?php esc_html_e( 'Notes (optional):', 'asset-lending-manager' ); ?>
@@ -714,17 +714,26 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 							<form id="almgr-change-state-form" class="almgr-loan-form" method="post">
 								<?php wp_nonce_field( 'almgr_change_state_nonce', 'almgr_change_state_nonce_field' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>" />
+							<?php if ( $almgr_warehouse_enabled ) : ?>
+							<div class="almgr-form-field">
+								<span class="almgr-form-label"><?php esc_html_e( 'Home warehouse:', 'asset-lending-manager' ); ?></span>
+								<span class="almgr-form-value" id="almgr-change-state-warehouse">
+									<?php echo esc_html( $almgr_home_warehouse_name ? $almgr_home_warehouse_name : __( 'No warehouse assigned', 'asset-lending-manager' ) ); ?>
+								</span>
+							</div>
+							<?php endif; ?>
 							<div class="almgr-form-field">
 								<label for="almgr-change-state-location">
-									<?php esc_html_e( 'Location (required):', 'asset-lending-manager' ); ?>
+									<?php esc_html_e( 'Current physical location (required):', 'asset-lending-manager' ); ?>
 								</label>
 								<input
 									type="text"
 									id="almgr-change-state-location"
 									name="location"
-									value="<?php echo esc_attr( $almgr_asset_location ); ?>"
+									value="<?php echo esc_attr( $almgr_location_suggestion ); ?>"
 									maxlength="255"
 									required
+									<?php echo $almgr_warehouse_enabled ? 'aria-describedby="almgr-change-state-warehouse"' : ''; ?>
 									placeholder="<?php esc_attr_e( "e.g. Room A, shelf 3 or at David's house", 'asset-lending-manager' ); ?>"
 								/>
 							</div>
@@ -773,17 +782,26 @@ $almgr_detail_image_html = isset( $asset->detail_image_html ) ? (string) $asset-
 							<form id="almgr-restore-state-form" class="almgr-loan-form" method="post">
 								<?php wp_nonce_field( 'almgr_restore_state_nonce', 'almgr_restore_state_nonce_field' ); ?>
 							<input type="hidden" name="asset_id" value="<?php echo esc_attr( $almgr_asset_id ); ?>" />
+							<?php if ( $almgr_warehouse_enabled ) : ?>
+							<div class="almgr-form-field">
+								<span class="almgr-form-label"><?php esc_html_e( 'Home warehouse:', 'asset-lending-manager' ); ?></span>
+								<span class="almgr-form-value" id="almgr-restore-state-warehouse">
+									<?php echo esc_html( $almgr_home_warehouse_name ? $almgr_home_warehouse_name : __( 'No warehouse assigned', 'asset-lending-manager' ) ); ?>
+								</span>
+							</div>
+							<?php endif; ?>
 							<div class="almgr-form-field">
 								<label for="almgr-restore-state-location">
-									<?php esc_html_e( 'Location (required):', 'asset-lending-manager' ); ?>
+									<?php esc_html_e( 'Current physical location (required):', 'asset-lending-manager' ); ?>
 								</label>
 								<input
 									type="text"
 									id="almgr-restore-state-location"
 									name="location"
-									value="<?php echo esc_attr( $almgr_asset_location ); ?>"
+									value="<?php echo esc_attr( $almgr_location_suggestion ); ?>"
 									maxlength="255"
 									required
+									<?php echo $almgr_warehouse_enabled ? 'aria-describedby="almgr-restore-state-warehouse"' : ''; ?>
 									placeholder="<?php esc_attr_e( 'e.g. Room A, shelf 3', 'asset-lending-manager' ); ?>"
 								/>
 							</div>

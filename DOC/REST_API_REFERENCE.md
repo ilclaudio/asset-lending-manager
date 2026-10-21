@@ -134,7 +134,7 @@ adds full ACF fields and loan history).
 | `type` | array | Taxonomy slugs (e.g. `telescope`, `book`, ...). |
 | `state` | array | Taxonomy slugs: `available`, `on-loan`, `maintenance`, `retired`. |
 | `level` | array | Taxonomy slugs: `basic`, `intermediate`, `advanced`. |
-| `warehouse` | array | Assigned warehouse taxonomy slugs. |
+| `warehouse` | array | Assigned warehouse taxonomy slugs. Empty when warehouse management is off. |
 | `owner_id` | integer | Current owner's WordPress user ID, `0` when not on loan. |
 | `owner_name` | string | Current owner's display name, empty when not on loan. |
 | `owner_username` | string | Current owner's `user_login`, empty when not on loan. |

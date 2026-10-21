@@ -14,13 +14,13 @@ The plugin follows WordPress coding standards, uses a modular architecture, and 
 
 - Asset and kit management
 - Frontend asset browsing with filters (type, state, structure, warehouse, search)
-- Asset warehouse (`almgr_warehouse`) with member-only visibility and automatic Kit → component propagation
+- Asset home warehouse (`almgr_warehouse`) with member-only visibility and all-or-nothing Kit → component propagation, separate from each asset's current physical location
 - QR code generation and print label from asset detail page
 - QR scanner from asset list (camera-based quick lookup)
 - Loan request workflow (submit, approve, reject)
 - Direct assignment by operator/admin (reason is mandatory; max length is configurable)
 - Automatic cancellation of concurrent pending requests after assignment (configurable)
-- Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; location is required for operator state changes and is independent from warehouse
+- Asset state management from frontend: operators can set maintenance, retired, or force-return on-loan assets to available; the current physical location is required and is independent from the home warehouse
 - Cooperative asset return from frontend, distinct from operator force-return; optionally available to the current-owner member
 - Optional contact form to send email messages to the current asset owner
 - Email notifications for all loan workflow events (request, approval, rejection, cancellation, direct assignment, forced return, cooperative return), when enabled
@@ -70,7 +70,7 @@ QR features use bundled JavaScript libraries:
 1. A member browses an asset and submits a loan request.
 2. The current owner, operator, or administrator approves or rejects it.
 3. Approval transfers ownership and marks the asset (and eligible kit components) as on-loan.
-4. Operators can directly assign assets, change state, force-return assets, and restore them; operator state changes require a location. Cooperative returns leave the location unchanged.
+4. Operators can directly assign assets, change state, force-return assets, and restore them; state changes and cooperative returns require the current physical location.
 5. Operators can cooperatively return assets; current-owner members can do so when the setting is enabled.
 6. Decisions, assignments, returns, and state changes are recorded in loan history.
 
@@ -99,7 +99,7 @@ For detailed documentation, see the `DOC/` folder:
 | **maintenance** | ✅ operator (restore) | ❌ | — | ❌ |
 | **retired** | ✅ operator (restore) | ❌ | ❌ | — |
 
-Operator state changes require a **location** field (mandatory) and accept optional notes. Cooperative returns display the assigned warehouse, but do not read or modify the independent location field.
+State changes and cooperative returns require the **current physical location** (mandatory, prefilled with the current value or the home warehouse name) and accept optional notes. When warehouse management is on, the home warehouse is shown as a reference and is never changed by these actions.
 Kit state changes propagate only to eligible components; components already in maintenance or retired, or assigned to another user, are excluded and left unchanged. The operator sees a warning notice listing skipped components and the reason for each.
 Direct assignment can also reassign an already on-loan asset while keeping state `on-loan`.
 
@@ -162,39 +162,29 @@ define( 'ALMGR_REMOVE_ALL_DATA', true );
 
 ## Development
 
-Install dependencies:
+For the complete testing guide, see [tests/README.md](tests/README.md).
+
+Install the PHP dependencies:
+
 ```bash
 composer install
 ```
 
-Run lint:
+Run the coding-standard checks:
+
 ```bash
 composer lint
 composer lint:fix
 ```
 
-### Tests
+### Test overview
 
-All test commands require **PHP 8.x** in the system PATH and `composer install` already run (see above).
+| Lane | Command | Environment |
+| --- | --- | --- |
+| Unit | `composer test:unit` | PHP and Composer only |
+| Integration | `composer test:integration` | WordPress Test Suite and a disposable database |
+| E2E | `composer test:e2e` | Dedicated `alm-e2e` site, Node.js, and Playwright |
 
-**Unit tests** run without a WordPress installation or database — no additional setup needed:
-```bash
-composer test:unit
-```
-
-Unit tests run automatically as a pre-commit hook: a failing suite blocks the commit.
-For setup details and a description of what is covered, see [`tests/unit/README.md`](tests/unit/README.md).
-
-**Integration tests** run against a real WordPress environment and a dedicated test database.
-Before running them for the first time, follow the setup guide:
-[`tests/integration/README.md`](tests/integration/README.md).
-```bash
-composer test:integration
-```
-
-**Functional (E2E) tests** run through a real browser against a dedicated local WordPress site (`alm-e2e`).
-```bash
-composer test:e2e
-```
-
-For environment setup instructions (Node.js, Playwright browsers, `alm-e2e` site, base URL) see [`tests/e2e/README.md`](tests/e2e/README.md).
+`composer test:all` runs the unit and integration lanes. It intentionally does
+not run E2E tests. Read [tests/README.md](tests/README.md) before running a
+lane that writes to a database.

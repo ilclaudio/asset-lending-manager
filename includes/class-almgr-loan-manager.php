@@ -2272,10 +2272,10 @@ class ALMGR_Loan_Manager {
 		}
 
 		if ( '' === $location ) {
-			return new WP_Error( 'almgr_location_required', __( 'Location is required.', 'asset-lending-manager' ) );
+			return new WP_Error( 'almgr_location_required', __( 'Current physical location is required.', 'asset-lending-manager' ) );
 		}
 		if ( mb_strlen( $location ) > 255 ) {
-			return new WP_Error( 'almgr_location_too_long', __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) );
+			return new WP_Error( 'almgr_location_too_long', __( 'Current physical location must not exceed 255 characters.', 'asset-lending-manager' ) );
 		}
 
 		$allowed_states = array( 'maintenance', 'retired', 'available' );
@@ -2588,7 +2588,7 @@ class ALMGR_Loan_Manager {
 	 *
 	 * @param int    $asset_id Asset ID.
 	 * @param string $notes    Notes describing the return.
-	 * @param string $location Physical location (required when warehouse management is off).
+	 * @param string $location Current physical location (required, max 255 characters).
 	 * @param int    $actor_id User ID performing the return.
 	 * @return array|WP_Error Skipped kit components on success, otherwise an error.
 	 */
@@ -2616,13 +2616,11 @@ class ALMGR_Loan_Manager {
 			return new WP_Error( 'almgr_asset_not_on_loan', __( 'Asset can only be returned when it is on loan.', 'asset-lending-manager' ) );
 		}
 
-		if ( ! ALMGR_Asset_Manager::is_warehouse_enabled() ) {
-			if ( '' === $location ) {
-				return new WP_Error( 'almgr_location_required', __( 'Location is required.', 'asset-lending-manager' ) );
-			}
-			if ( mb_strlen( $location ) > 255 ) {
-				return new WP_Error( 'almgr_location_too_long', __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) );
-			}
+		if ( '' === $location ) {
+			return new WP_Error( 'almgr_location_required', __( 'Current physical location is required.', 'asset-lending-manager' ) );
+		}
+		if ( mb_strlen( $location ) > 255 ) {
+			return new WP_Error( 'almgr_location_too_long', __( 'Current physical location must not exceed 255 characters.', 'asset-lending-manager' ) );
 		}
 
 		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
@@ -2662,7 +2660,7 @@ class ALMGR_Loan_Manager {
 	 * @param int    $asset_id Asset ID.
 	 * @param string $notes    Notes describing the return.
 	 * @param int    $actor_id User ID performing the return (operator or owning member).
-	 * @param string $location Physical location in legacy mode.
+	 * @param string $location Current physical location written to the kit and its returned components.
 	 * @throws Exception When a database error occurs during the return.
 	 * @return array {
 	 *     @type bool   $success            True on success.
@@ -2693,10 +2691,6 @@ class ALMGR_Loan_Manager {
 			$member_return_enabled = (bool) $this->settings->get( 'workflow.member_return_enabled', false );
 			if ( ! $this->access_policy->can_return_asset( $actor_id, $asset_id, $member_return_enabled ) ) {
 				throw new Exception( __( 'You do not have permission to return this asset.', 'asset-lending-manager' ) );
-			}
-
-			if ( ALMGR_Asset_Manager::is_warehouse_enabled() ) {
-				$location = '';
 			}
 
 			$is_kit         = $this->is_asset_kit( $asset_id );
@@ -2925,10 +2919,10 @@ class ALMGR_Loan_Manager {
 		}
 
 		if ( '' === $location ) {
-			return new WP_Error( 'almgr_location_required', __( 'Location is required.', 'asset-lending-manager' ) );
+			return new WP_Error( 'almgr_location_required', __( 'Current physical location is required.', 'asset-lending-manager' ) );
 		}
 		if ( mb_strlen( $location ) > 255 ) {
-			return new WP_Error( 'almgr_location_too_long', __( 'Location must not exceed 255 characters.', 'asset-lending-manager' ) );
+			return new WP_Error( 'almgr_location_too_long', __( 'Current physical location must not exceed 255 characters.', 'asset-lending-manager' ) );
 		}
 
 		$notes_max = (int) $this->settings->get( 'loans.change_state_notes_max_length', self::CHANGE_STATE_NOTES_MAX_LENGTH );
