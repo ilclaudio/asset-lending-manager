@@ -391,21 +391,22 @@ class ALMGR_Abilities_Manager {
 	 * Execute asset catalog read.
 	 *
 	 * @param mixed $input Ability input.
-	 * @return array
+	 * @return array|WP_Error
 	 */
 	public function execute_list_assets( $input = null ) {
-		$input  = $this->normalize_input( $input );
-		$result = $this->asset_reads->get_assets(
-			array(
-				'page'      => $input['page'],
-				'per_page'  => $input['per_page'],
-				'search'    => $input['search'],
-				'state'     => $input['state'],
-				'type'      => $input['type'],
-				'structure' => $input['structure'],
-				'owner'     => $input['owner'],
-			)
+		$input   = $this->normalize_input( $input );
+		$filters = array(
+			'page'     => $input['page'],
+			'per_page' => $input['per_page'],
 		);
+		foreach ( array_keys( ALMGR_Asset_Query_Service::get_api_filter_definitions() ) as $key ) {
+			$filters[ $key ] = $input[ $key ];
+		}
+
+		$result = $this->asset_reads->get_assets( $filters );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
 
 		return array(
 			'data'  => array_map( array( $this, 'project_asset' ), $result->get_items() ),
@@ -596,14 +597,12 @@ class ALMGR_Abilities_Manager {
 	private function normalize_input( $input ) {
 		$input    = is_array( $input ) ? $input : array();
 		$defaults = array(
-			'page'      => ALMGR_Pagination::normalize_page( $input['page'] ?? 1 ),
-			'per_page'  => ALMGR_Pagination::normalize_per_page( $input['per_page'] ?? null ),
-			'search'    => '',
-			'state'     => '',
-			'type'      => '',
-			'structure' => '',
-			'owner'     => 0,
+			'page'     => ALMGR_Pagination::normalize_page( $input['page'] ?? 1 ),
+			'per_page' => ALMGR_Pagination::normalize_per_page( $input['per_page'] ?? null ),
 		);
+		foreach ( ALMGR_Asset_Query_Service::get_api_filter_definitions() as $key => $definition ) {
+			$defaults[ $key ] = $definition['default'];
+		}
 
 		return array_merge( $defaults, $input );
 	}
@@ -673,36 +672,19 @@ class ALMGR_Abilities_Manager {
 	 * @return array
 	 */
 	private function get_list_assets_input_schema() {
+		$filters = array();
+		foreach ( ALMGR_Asset_Query_Service::get_api_filter_definitions() as $key => $definition ) {
+			$filters[ $key ] = array_intersect_key(
+				$definition,
+				array_flip( array( 'type', 'default', 'minimum', 'description' ) )
+			);
+		}
+
 		return array(
 			'type'                 => 'object',
 			'additionalProperties' => false,
 			'default'              => (object) array(),
-			'properties'           => array_merge(
-				ALMGR_Pagination::input_schema(),
-				array(
-					'search'    => array(
-						'type'    => 'string',
-						'default' => '',
-					),
-					'state'     => array(
-						'type'    => 'string',
-						'default' => '',
-					),
-					'type'      => array(
-						'type'    => 'string',
-						'default' => '',
-					),
-					'structure' => array(
-						'type'    => 'string',
-						'default' => '',
-					),
-					'owner'     => array(
-						'type'    => 'integer',
-						'minimum' => 0,
-						'default' => 0,
-					),
-				)
-			),
+			'properties'           => array_merge( ALMGR_Pagination::input_schema(), $filters ),
 		);
 	}
 

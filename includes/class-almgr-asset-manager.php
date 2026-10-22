@@ -27,6 +27,14 @@ class ALMGR_Asset_Manager {
 	const WAREHOUSE_CONFLICT_META = '_almgr_warehouse_conflict';
 
 	/**
+	 * Frontend filter option value meaning "no warehouse assigned".
+	 *
+	 * The tilde cannot appear in a term slug (`sanitize_title()` strips it), so
+	 * the value never collides with a real warehouse.
+	 */
+	const WAREHOUSE_UNASSIGNED_OPTION = '~unassigned';
+
+	/**
 	 * Whether warehouse management is enabled.
 	 *
 	 * @return bool
@@ -34,6 +42,18 @@ class ALMGR_Asset_Manager {
 	public static function is_warehouse_enabled() {
 		$settings = get_option( 'almgr_settings', array() );
 		return is_array( $settings ) && ! empty( $settings['warehouse']['enabled'] );
+	}
+
+	/**
+	 * Whether the current visitor may see and filter by warehouse.
+	 *
+	 * Warehouse is member-only: anonymous visitors never see it, and nobody does
+	 * while warehouse management is disabled.
+	 *
+	 * @return bool
+	 */
+	public static function can_view_warehouse() {
+		return is_user_logged_in() && self::is_warehouse_enabled();
 	}
 
 	/**

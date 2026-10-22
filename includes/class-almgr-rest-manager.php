@@ -347,59 +347,69 @@ class ALMGR_REST_Manager {
 	 * @return array
 	 */
 	private function get_assets_args() {
-		return array(
-			'page'      => array(
+		$args = array(
+			'page'     => array(
 				'type'              => 'integer',
 				'default'           => 1,
 				'minimum'           => 1,
 				'sanitize_callback' => 'absint',
 			),
-			'per_page'  => array(
+			'per_page' => array(
 				'type'              => 'integer',
 				'default'           => ALMGR_Pagination::DEFAULT_PER_PAGE,
 				'minimum'           => 1,
 				'maximum'           => ALMGR_Pagination::MAX_PER_PAGE,
 				'sanitize_callback' => 'absint',
 			),
-			'search'    => array(
-				'type'              => 'string',
-				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function ( $value ) {
-					return is_string( $value ) && mb_strlen( $value ) <= 200;
-				},
-			),
-			'state'     => array(
-				'type'              => 'string',
-				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function ( $value ) {
-					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_STATE_TAXONOMY_SLUG );
-				},
-			),
-			'type'      => array(
-				'type'              => 'string',
-				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function ( $value ) {
-					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_TYPE_TAXONOMY_SLUG );
-				},
-			),
-			'structure' => array(
-				'type'              => 'string',
-				'default'           => '',
-				'sanitize_callback' => 'sanitize_text_field',
-				'validate_callback' => function ( $value ) {
-					return '' === $value || (bool) term_exists( $value, ALMGR_ASSET_STRUCTURE_TAXONOMY_SLUG );
-				},
-			),
-			'owner'     => array(
-				'type'              => 'integer',
-				'default'           => 0,
-				'minimum'           => 0,
-				'sanitize_callback' => 'absint',
-			),
 		);
+
+		foreach ( ALMGR_Asset_Query_Service::get_api_filter_definitions() as $key => $definition ) {
+			$args[ $key ] = $this->build_filter_arg( $definition );
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Build a REST argument schema from a shared catalog filter definition.
+	 *
+	 * @param array $definition Entry of ALMGR_Asset_Query_Service::get_api_filter_definitions().
+	 * @return array
+	 */
+	private function build_filter_arg( array $definition ) {
+		$arg = array(
+			'type'    => $definition['type'],
+			'default' => $definition['default'],
+		);
+
+		if ( isset( $definition['description'] ) ) {
+			$arg['description'] = $definition['description'];
+		}
+
+		if ( 'integer' === $definition['type'] ) {
+			$arg['minimum']           = $definition['minimum'];
+			$arg['sanitize_callback'] = 'absint';
+		}
+
+		if ( 'string' === $definition['type'] ) {
+			$arg['sanitize_callback'] = 'sanitize_text_field';
+		}
+
+		if ( isset( $definition['max_length'] ) ) {
+			$max_length               = (int) $definition['max_length'];
+			$arg['validate_callback'] = function ( $value ) use ( $max_length ) {
+				return is_string( $value ) && mb_strlen( $value ) <= $max_length;
+			};
+		}
+
+		if ( isset( $definition['taxonomy'] ) ) {
+			$taxonomy                 = $definition['taxonomy'];
+			$arg['validate_callback'] = function ( $value ) use ( $taxonomy ) {
+				return '' === $value || (bool) term_exists( $value, $taxonomy );
+			};
+		}
+
+		return $arg;
 	}
 
 	/**
@@ -497,27 +507,27 @@ class ALMGR_REST_Manager {
 	/**
 	 * Handle GET /wp-json/almgr/v1/assets — paginated asset list.
 	 *
-	 * Query parameters: page, per_page, search, state, type, structure, owner.
+	 * Query parameters: page, per_page and the filters defined by
+	 * ALMGR_Asset_Query_Service::get_api_filter_definitions().
 	 *
 	 * @param WP_REST_Request $request REST request object.
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_assets( WP_REST_Request $request ) {
-		$page     = ALMGR_Pagination::normalize_page( $request->get_param( 'page' ) );
-		$per_page = $this->clamp_per_page( (int) $request->get_param( 'per_page' ) );
-
-		$result = $this->asset_reads->get_assets(
-			array(
-				'page'      => $page,
-				'per_page'  => $per_page,
-				'search'    => (string) $request->get_param( 'search' ),
-				'state'     => (string) $request->get_param( 'state' ),
-				'type'      => (string) $request->get_param( 'type' ),
-				'structure' => (string) $request->get_param( 'structure' ),
-				'owner'     => (int) $request->get_param( 'owner' ),
-			)
+		$filters = array(
+			'page'     => ALMGR_Pagination::normalize_page( $request->get_param( 'page' ) ),
+			'per_page' => $this->clamp_per_page( (int) $request->get_param( 'per_page' ) ),
 		);
-		$items  = array();
+		foreach ( array_keys( ALMGR_Asset_Query_Service::get_api_filter_definitions() ) as $key ) {
+			$filters[ $key ] = $request->get_param( $key );
+		}
+
+		$result = $this->asset_reads->get_assets( $filters );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$items = array();
 		foreach ( $result->get_items() as $asset ) {
 			$prepared = $this->prepare_asset( $asset, 'list' );
 			if ( null !== $prepared ) {

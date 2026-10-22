@@ -207,9 +207,22 @@ Paginated asset catalog. Permission: `almgr_view_assets`.
 
 **Input:** `page`, `per_page`, `search` (string), `state` (taxonomy slug),
 `type` (taxonomy slug), `structure` (taxonomy slug), `owner` (integer user ID,
-default `0`).
+default `0`), `warehouse` (home warehouse slug), `warehouse_unassigned`
+(boolean, default `false`; `true` returns only assets with no home warehouse).
 
-**Output:** `{ data: Asset[] (list form), total, pages }`.
+The two warehouse inputs are available only while warehouse management is
+enabled and cannot be combined.
+
+**Output:** `{ data: Asset[] (list form), total, pages }`, or `WP_Error`:
+
+| Code | Meaning |
+|---|---|
+| `almgr_warehouse_disabled` | A warehouse input was set while warehouse management is disabled. |
+| `almgr_warehouse_not_found` | The `warehouse` slug does not exist. |
+| `almgr_invalid_warehouse_filter` | Both `warehouse` and `warehouse_unassigned` were set. |
+
+These are the same codes the REST `GET /assets` endpoint returns: both channels
+get them from the shared catalog query service.
 
 #### `almgr/get-asset`
 

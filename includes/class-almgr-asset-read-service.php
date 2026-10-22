@@ -32,11 +32,15 @@ class ALMGR_Asset_Read_Service {
 	 * Return shared asset records for catalog filters.
 	 *
 	 * @param array $filters Catalog filters and pagination.
-	 * @return ALMGR_Asset_Read_Result
+	 * @return ALMGR_Asset_Read_Result|WP_Error
 	 */
 	public function get_assets( array $filters = array() ) {
 		$query_result = $this->asset_queries->get_assets( $filters );
-		$items        = array();
+		if ( is_wp_error( $query_result ) ) {
+			return $query_result;
+		}
+
+		$items = array();
 
 		foreach ( $query_result->get_items() as $asset_id ) {
 			$asset = $this->get_asset( $asset_id );

@@ -13,6 +13,7 @@
  * - $filter_state:       string  Active state taxonomy filter slug.
  * - $filter_level:       string  Active level taxonomy filter slug.
  * - $filter_warehouse:   string  Active warehouse taxonomy filter slug (member-only).
+ * - $filter_warehouse_unassigned: bool True if the "Not assigned" warehouse option is active.
  * - $filter_owner:       int     Active owner user ID (0 if none).
  * - $filter_owner_name:  string  Display name of the active owner filter user.
  * - $filter_my_assets:   bool    True if member's "show only my assets" is active.
@@ -48,7 +49,7 @@ $almgr_terms_level     = get_terms(
 	)
 );
 // Warehouse is a member-only filter: never query or expose its terms to anonymous visitors.
-$almgr_terms_warehouse = is_user_logged_in() && ALMGR_Asset_Manager::is_warehouse_enabled()
+$almgr_terms_warehouse = ALMGR_Asset_Manager::can_view_warehouse()
 	? get_terms(
 		array(
 			'taxonomy'   => ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG,
@@ -70,7 +71,7 @@ if ( ! empty( $filter_state ) ) {
 if ( ! empty( $filter_level ) ) {
 	++$almgr_active_filters_count;
 }
-if ( ! empty( $filter_warehouse ) ) {
+if ( ! empty( $filter_warehouse ) || ! empty( $filter_warehouse_unassigned ) ) {
 	++$almgr_active_filters_count;
 }
 if ( $filter_owner > 0 ) {
@@ -185,12 +186,15 @@ if ( $filter_owner > 0 ) {
 						</div>
 					</div>
 					<!-- Row 2b: Warehouse (member-only) -->
-					<?php if ( is_user_logged_in() ) : ?>
+					<?php if ( ALMGR_Asset_Manager::can_view_warehouse() ) : ?>
 						<div class="almgr-filter-row">
 							<div class="almgr-filter-field">
 								<label for="almgr_filter_warehouse"><?php esc_html_e( 'Home warehouse', 'asset-lending-manager' ); ?></label>
 								<select name="almgr_warehouse" id="almgr_filter_warehouse">
 									<option value=""><?php esc_html_e( 'All warehouses', 'asset-lending-manager' ); ?></option>
+									<option value="<?php echo esc_attr( ALMGR_Asset_Manager::WAREHOUSE_UNASSIGNED_OPTION ); ?>" <?php selected( ! empty( $filter_warehouse_unassigned ) ); ?>>
+										<?php esc_html_e( 'Not assigned', 'asset-lending-manager' ); ?>
+									</option>
 										<?php if ( ! is_wp_error( $almgr_terms_warehouse ) && ! empty( $almgr_terms_warehouse ) ) : ?>
 											<?php foreach ( $almgr_terms_warehouse as $almgr_term ) : ?>
 												<option value="<?php echo esc_attr( $almgr_term->slug ); ?>" <?php selected( $filter_warehouse, $almgr_term->slug ); ?>>

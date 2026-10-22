@@ -25,6 +25,8 @@
 
 'use strict';
 
+const { expect } = require( '@playwright/test' );
+
 /**
  * @return {{username: string, password: string}}
  */
@@ -59,9 +61,18 @@ function getMemberCredentials() {
  * @return {Promise<void>}
  */
 async function loginAs( page, credentials ) {
-	await page.goto( '/wp-login.php' );
-	await page.fill( '#user_login', credentials.username );
-	await page.fill( '#user_pass', credentials.password );
+	await page.goto( '/wp-login.php', { waitUntil: 'networkidle' } );
+
+	const userField = page.locator( '#user_login' );
+	const passField = page.locator( '#user_pass' );
+
+	await userField.fill( credentials.username );
+	await passField.fill( credentials.password );
+
+	// Guard against the login page scripts altering the fields while filling.
+	await expect( userField ).toHaveValue( credentials.username );
+	await expect( passField ).toHaveValue( credentials.password );
+
 	await Promise.all( [
 		page.waitForNavigation(),
 		page.click( '#wp-submit' ),

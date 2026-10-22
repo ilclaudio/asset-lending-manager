@@ -23,7 +23,11 @@ TAGS: Added, Changed, Deprecated, Removed, Fixed, Security.
 
 
 ## [Unreleased]
+### Added
+- REST `GET /assets` and the `almgr/list-assets` Ability accept `warehouse` (home warehouse slug) and `warehouse_unassigned` (assets with no home warehouse). The frontend catalog gained a "Not assigned" warehouse option.
+- New REST error codes shared with the Abilities: `almgr_warehouse_disabled`, `almgr_warehouse_not_found`, `almgr_invalid_warehouse_filter` (HTTP 400).
 ### Changed
+- Filtering by warehouse while warehouse management is off now returns `almgr_warehouse_disabled` instead of being silently ignored. The warehouse filter row of the frontend catalog is no longer shown to logged-in users while warehouse management is off.
 - Cooperative return now always asks for the current physical location, with warehouse management on or off (previously the location was skipped when warehouse management was on). The home warehouse is shown as a reference and is never changed by a return.
 - Labels: "Location" is now "Current physical location" and "Warehouse" is "Home warehouse" in forms, the asset editor and filters; the asset detail shows a combined "Warehouse / Location" line when warehouse management is on. Slugs, field keys and REST/Abilities keys are unchanged.
 - Return, maintenance, retired and restore forms prefill the current physical location with the current value or, failing that, the home warehouse name.

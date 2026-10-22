@@ -113,6 +113,9 @@ Common codes:
 | `almgr_forbidden` | 403 | Insufficient capability, or request-visibility policy denied access. |
 | `almgr_not_found` | 404 | Asset not found. |
 | `almgr_invalid_term` | 400 | Autocomplete search term too short or invalid. |
+| `almgr_warehouse_disabled` | 400 | `GET /assets` was called with `warehouse` or `warehouse_unassigned` while warehouse management is disabled. |
+| `almgr_warehouse_not_found` | 400 | `GET /assets` was called with a `warehouse` slug that does not exist. |
+| `almgr_invalid_warehouse_filter` | 400 | `GET /assets` was called with both `warehouse` and `warehouse_unassigned`. |
 
 ---
 
@@ -248,9 +251,17 @@ Capability: `almgr_view_assets`.
 | `type` | string | — | Filter by type taxonomy slug |
 | `state` | string | — | Filter by state taxonomy slug |
 | `owner` | integer | 0 | Filter by current owner user ID |
+| `warehouse` | string | — | Filter by home warehouse slug. Only available while warehouse management is enabled. Cannot be combined with `warehouse_unassigned`. |
+| `warehouse_unassigned` | boolean | false | When `true`, return only assets with no home warehouse. Only available while warehouse management is enabled. Cannot be combined with `warehouse`. |
 
 **Response:** Catalog envelope (§2.5): `{ data, total, pages }`, `data` is an
 array of Asset objects (§3.1, list form).
+
+**Warehouse filter errors.** The two warehouse parameters are validated by the
+shared catalog query service, so the REST API and the `almgr/list-assets`
+Ability return the same error codes (§2.7). A request that sets either
+parameter is rejected with `almgr_warehouse_disabled` while warehouse
+management is off, instead of returning an unfiltered list.
 
 #### `GET /assets/{id}`
 

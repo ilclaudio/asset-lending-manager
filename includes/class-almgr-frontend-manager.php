@@ -721,10 +721,17 @@ class ALMGR_Frontend_Manager {
 		$filter_state = $this->get_validated_query_term_slug( 'almgr_state', ALMGR_ASSET_STATE_TAXONOMY_SLUG );
 		$filter_level = $this->get_validated_query_term_slug( 'almgr_level', ALMGR_ASSET_LEVEL_TAXONOMY_SLUG );
 		// Warehouse is a member-only filter: anonymous visitors never see it, and any
-		// manually crafted query string for it is ignored (see Fase 4 visibility rule).
-		$filter_warehouse = is_user_logged_in() && ALMGR_Asset_Manager::is_warehouse_enabled()
-			? $this->get_validated_query_term_slug( 'almgr_warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG )
-			: '';
+		// manually crafted query string for it is ignored. The "Not assigned" option
+		// is translated into the shared `warehouse_unassigned` filter.
+		$filter_warehouse            = '';
+		$filter_warehouse_unassigned = false;
+		if ( ALMGR_Asset_Manager::can_view_warehouse() ) {
+			if ( ALMGR_Asset_Manager::WAREHOUSE_UNASSIGNED_OPTION === $this->get_sanitized_query_text( 'almgr_warehouse' ) ) {
+				$filter_warehouse_unassigned = true;
+			} else {
+				$filter_warehouse = $this->get_validated_query_term_slug( 'almgr_warehouse', ALMGR_ASSET_WAREHOUSE_TAXONOMY_SLUG );
+			}
+		}
 		// Read owner filter (operator: by user ID; member: "my assets" checkbox).
 		$filter_owner      = 0;
 		$filter_owner_name = '';
@@ -750,14 +757,15 @@ class ALMGR_Frontend_Manager {
 		$current_page = max( 1, $this->get_sanitized_query_absint( 'almgr_paged' ) );
 
 		$query_filters = array(
-			'page'      => $current_page,
-			'per_page'  => $per_page,
-			'search'    => $search_term,
-			'structure' => $filter_structure,
-			'type'      => $filter_type,
-			'state'     => $filter_state,
-			'level'     => $filter_level,
-			'warehouse' => $filter_warehouse,
+			'page'                 => $current_page,
+			'per_page'             => $per_page,
+			'search'               => $search_term,
+			'structure'            => $filter_structure,
+			'type'                 => $filter_type,
+			'state'                => $filter_state,
+			'level'                => $filter_level,
+			'warehouse'            => $filter_warehouse,
+			'warehouse_unassigned' => $filter_warehouse_unassigned,
 		);
 		$result        = $filter_owner > 0
 			? $this->member_assets->get_assets_for_member( get_current_user_id(), $filter_owner, $query_filters )
